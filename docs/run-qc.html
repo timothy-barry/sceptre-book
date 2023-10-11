@@ -198,7 +198,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 </header><p>The fourth step of the pipeline is to run quality control (QC).</p>
-<div class="cell" data-layout-align="center">
+<div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-1_3f7faa931c2d7a004b670a0fddec360d">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="pipeline_schematic_step_4.png" class="img-fluid figure-img" width="650"></p>
@@ -207,11 +207,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>We begin by loading the <code>sceptre</code> package.</p>
-<div class="cell">
+<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-2_7799f30420268152341d00d87f0cb3a5">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We initialize <code>sceptre_object</code>s corresponding to the high-MOI CRISPRi and low-MOI CRISPRko data. We call the first three pipeline functions on both datasets: <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>.</p>
-<div class="cell">
+<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-3_cace3cb446642b6f6df8cce82cb7a2bb">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># low-MOI CRISPRko data</span></span>
 <span><span class="co"># 1. import data</span></span>
 <span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span>response_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
@@ -229,7 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>                          positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
+<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-4_12ec0d0c70371aa6e7ccbb95aff31054">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
 <span><span class="co"># 1. import data</span></span>
 <span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span>response_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
@@ -254,10 +254,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="plot-the-cell-specific-covariates" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="plot-the-cell-specific-covariates">
 <span class="header-section-number">4.1</span> Plot the cell-specific covariates</h2>
 <p>A helpful initial step in applying QC is to visualize the distribution of the cell-specific covariates. To this end we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code>, which creates a histogram of the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, and (if applicable) <code>response_p_mito</code>. Cellwise QC removes cells that lie in the extreme right tail of the <code>response_p_mito</code> distribution or that lie in the extreme left <em>or</em> right tail of the <code>response_n_nonzero</code> or <code>response_n_umis</code> distribution. To help guide the selection of QC thresholds, <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code> plots candidate QC thresholds as vertical lines on the histograms. The optional arguments <code>response_n_nonzero_range</code>, <code>response_n_umis_range</code>, and <code>p_mito_threshold</code> control the location of these candidate QC thresholds. <code>response_n_nonzero_range</code> (resp., <code>response_n_umis_range</code>) is a length-two vector of quantiles (default: <code>c(0.01, 0.99)</code>) indicating the location at which to draw candidate QC thresholds on the <code>response_n_nonzero</code> (resp., <code>response_n_umis</code>) histogram. Next, <code>p_mito_threshold</code> is a single numeric value in the interval [0,1] specifying the location at which to draw a candidate QC threshold on the <code>response_p_mito</code> plot. We call <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code> on the high-MOI CRISPRi <code>sceptre_object</code> (i.e., <code>sceptre_object_highmoi</code>), setting <code>p_mito_threshold</code> to <code>0.075</code>.</p>
-<div class="cell">
+<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-5_ccec861dc99319bc74a0d8e89bfa4b1c">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span>, p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center">
+<div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-6_304ee6b49414b6b7b55edd02572ae757">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="plot_covariates_highmoi.png" class="img-fluid figure-img" width="650"></p>
@@ -267,10 +267,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Inspecting these plots (and tinkering with <code>response_n_nonzero_range</code>, <code>response_n_umis_range</code>, and <code>p_mito_threshold</code> as necessary) helps guide the selection of reasonable QC thresholds. In general it is good to clip long, asymmetric tails so as to remove outlier cells. The QC thresholds appear to be drawn at sensible locations on these data.</p>
 <p>We also call <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code> low-MOI CRISPRko data, again setting <code>p_mito_threshold</code> to 0.075.</p>
-<div class="cell">
+<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-7_b6a8a746623ac52681c8acc7992a26ef">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span>, p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center">
+<div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-8_f2535db1f7ae8fbcefae9a6cfaf8df99">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="plot_covariates_lowmoi.png" class="img-fluid figure-img" width="650"></p>
@@ -288,7 +288,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="pairwise-qc-parameters" class="level3" data-number="4.2.2"><h3 data-number="4.2.2" class="anchored" data-anchor-id="pairwise-qc-parameters">
 <span class="header-section-number">4.2.2</span> Pairwise QC parameters</h3>
 <p>The parameters <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl_thresh</code> control pairwise QC (i.e., QC at the level of the target-response pair). Recall that for a given target-response pair, we divide the cells into treatment and control groups. The treatment group consists of the cells that contain a gRNA targeting the given target, and the control group consists of the cells against which the treatment cells are compared. (The control group can be either the complement set or NT cells; this choice is governed by the <code>control_group</code> parameter.) We define the “number of nonzero treatment cells” (resp., the “number of nonzero control cells”) as the number of cells in the treatment group (resp., control group) that contain nonzero expression of the response. (We sometimes use the shorthand <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> to refer to the number of nonzero treatment cells and control cells, respectively.) <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> are reasonable metrics of pair quality, with higher quality pairs exhibiting larger values for <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>. The schematic below illustrates the definition of <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>.</p>
-<div class="cell" data-layout-align="center">
+<div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-9_6bd485d266cbeef57e59fb6c19227909">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="pairwise_qc_schematic.png" class="img-fluid figure-img" width="550"></p>
@@ -300,17 +300,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section></section><section id="run-qc" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="run-qc">
 <span class="header-section-number">4.3</span> Run QC</h2>
 <p>We call <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code> on <code>sceptre_object_highmoi</code> and <code>sceptre_object_lowmoi</code> to run QC on the high-MOI CRISPRi and low-MOI CRISPRko data. In both cases we set <code>p_mito_threshold</code> to <code>0.075</code> but otherwise fall back on the default parameter values.</p>
-<div class="cell">
+<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-10_9622d2e956e81fc0e7f5b07e318d9568">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
 <span>                                 p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span></span>
 <span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
 <span>                                 p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can call the function <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the resulting <code>sceptre_object</code> to render a visualization of the outcome of the QC step. We call <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on <code>sceptre_object_lowmoi</code> as an example.</p>
-<div class="cell">
+<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-11_d5058c458a0d2d03ec7c4eb390cff552">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center">
+<div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-12_f1b6c4ba993bd76068e474a362e5c1ba">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="plot_qc_lowmoi.png" class="img-fluid figure-img" width="500"></p>
@@ -320,7 +320,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>We described in Get Started (<code>vignette("sceptre")</code>) how to interpret this figure. The top panel displays the percentage of cells removed (vertical axis) as a result of applying the different cellwise QC filters (horizontal axis). For example, over 20<span class="math inline">\(\%\)</span> of cells were removed because they contain multiple gRNAs, and about 2<span class="math inline">\(\%\)</span> of cells were removed because they exhibit extremely high or extremely values for <code>response_n_nonzero</code>. Note that the “multiple gRNAs” filter in general is applied only to low-MOI data. Next, the bottom panel plots the set of discovery target-response pairs, where the vertical (resp., horizontal) position of a given pair indicates its <code>n_nonzero_cntrl</code> (resp., <code>n_nonzero_trt</code>) value. Pairs with a sufficiently large value for <code>n_nonzero_cntrl</code> <em>and</em> <code>n_nonzero_trt</code> (colored in green) pass pairwise QC; all other pairs are removed.</p>
 <p>Finally, we call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on <code>sceptre_object_lowmoi</code> to print a summary of the status of the analysis. The summary contains information about cellwise and pairwise QC; see the first entry under the “Attributes of the data” field and the second two entries under the “Analysis parameters” field.</p>
-<div class="cell">
+<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-13_2c5c092c3a11e8dabba89f5f6ae7f19a">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
