@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Single-Cell CRISPR Screen Analysis with sceptre - 5&nbsp; Run calibration check</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./run-qc.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+</head>
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./run-calibration-check.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Single-Cell CRISPR Screen Analysis with <code>sceptre</code></a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sceptre.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">The whole game</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./import-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./set-analysis-parameters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./assign-grnas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./run-qc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./run-calibration-check.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#calibration-check-methodology" id="toc-calibration-check-methodology" class="nav-link active" data-scroll-target="#calibration-check-methodology"><span class="header-section-number">5.1</span> Calibration check methodology</a>
+  <ul class="collapse">
+<li><a href="#differential-expression-paradigm" id="toc-differential-expression-paradigm" class="nav-link" data-scroll-target="#differential-expression-paradigm"><span class="header-section-number">5.1.1</span> Differential expression paradigm</a></li>
+  <li><a href="#constructing-the-negative-control-pairs" id="toc-constructing-the-negative-control-pairs" class="nav-link" data-scroll-target="#constructing-the-negative-control-pairs"><span class="header-section-number">5.1.2</span> Constructing the negative control pairs</a></li>
+  <li><a href="#analyzing-the-negative-control-pairs" id="toc-analyzing-the-negative-control-pairs" class="nav-link" data-scroll-target="#analyzing-the-negative-control-pairs"><span class="header-section-number">5.1.3</span> Analyzing the negative control pairs</a></li>
+  </ul>
+</li>
+  <li><a href="#carrying-out-the-calibration-check-and-obtaining-the-results" id="toc-carrying-out-the-calibration-check-and-obtaining-the-results" class="nav-link" data-scroll-target="#carrying-out-the-calibration-check-and-obtaining-the-results"><span class="header-section-number">5.2</span> Carrying out the calibration check and obtaining the results</a></li>
+  <li><a href="#improving-calibration" id="toc-improving-calibration" class="nav-link" data-scroll-target="#improving-calibration"><span class="header-section-number">5.3</span> Improving calibration</a></li>
+  <li><a href="#changing-the-output_amount-argument" id="toc-changing-the-output_amount-argument" class="nav-link" data-scroll-target="#changing-the-output_amount-argument"><span class="header-section-number">5.4</span> Changing the <code>output_amount</code> argument</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span>
+</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header><p>The fifth step of the pipeline is to run the calibration check. The calibration check involves applying <code>sceptre</code> to analyze negative control target-response pairs — pairs for which we know there is no association between the target and response — to ensure control of the false discovery rate.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="pipeline_schematic_step_5.png" class="img-fluid figure-img" width="650"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We begin by loading <code>sceptre</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We initialize <code>sceptre_object</code>s corresponding to the low-MOI CRISPRko data and high-MOI CRISPRi data. We call the pipeline functions that precede <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> (namely, <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>) on both datasets.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># low-MOI CRISPRko data</span></span>
+<span><span class="co"># 1. import data</span></span>
+<span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span>response_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
+<span>                                     grna_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>,</span>
+<span>                                     extra_covariates <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span>,</span>
+<span>                                     grna_target_data_frame <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_target_data_frame</span>,</span>
+<span>                                     moi <span class="op">=</span> <span class="st">"low"</span><span class="op">)</span></span>
+<span><span class="va">positive_control_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span>
+<span><span class="va">discovery_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
+<span>                                         positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 2-4. set analysis parameters, assign gRNAs, run qc</span></span>
+<span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span>,</span>
+<span>                          positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
+<span><span class="co"># 1. import data</span></span>
+<span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span>response_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
+<span>                                      grna_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>,</span>
+<span>                                      grna_target_data_frame <span class="op">=</span> <span class="va">grna_target_data_frame_highmoi</span>,</span>
+<span>                                      moi <span class="op">=</span> <span class="st">"high"</span>,</span>
+<span>                                      extra_covariates <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span>,</span>
+<span>                                      response_names <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">gene_names</span><span class="op">)</span></span>
+<span><span class="va">positive_control_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span><span class="op">)</span></span>
+<span><span class="va">discovery_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span>,</span>
+<span>                                       positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
+<span>                                       distance_threshold <span class="op">=</span> <span class="fl">5e6</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 2-4. set analysis parameters, assign gRNAs, run qc</span></span>
+<span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span>,</span>
+<span>                          positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
+<span>                          side <span class="op">=</span> <span class="st">"left"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We are now ready to run the calibration check.</p>
+<section id="calibration-check-methodology" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="calibration-check-methodology">
+<span class="header-section-number">5.1</span> Calibration check methodology</h2>
+<p>We begin by describing the methodology underlying the calibration check.</p>
+<section id="differential-expression-paradigm" class="level3" data-number="5.1.1"><h3 data-number="5.1.1" class="anchored" data-anchor-id="differential-expression-paradigm">
+<span class="header-section-number">5.1.1</span> Differential expression paradigm</h3>
+<p>The goal of the calibration check is to test for association between subsets of negative control gRNAs and responses. Suppose for simplicity that we are conducting a singleton analysis, i.e.&nbsp;suppose that we seek to test for association between an individual negative control gRNA and a response. The “treatment group” is the set of cells containing the given non-targeting gRNA, and the “control group” is the set of cells against which the treatment group is compared to carry out the test of association. The control group can be either the complement set or the NT cells. Within the context of the calibration check analysis, the complement set consists of the cells that do not contain the given non-targeting gRNA; the NT cells, on the other hand, consist of the cells that contain any non-targeting gRNA <em>excluding</em> the given non-targeting gRNA that we are testing for association against the response (see schematic below.) <code>sceptre</code> carries out the test of association by testing for differential expression of the response across the treatment and control groups, yielding a p-value.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="control_vs_complement_undercover.png" class="img-fluid figure-img" width="750"></p>
+<figcaption class="figure-caption"><strong>Figure 1</strong>: A schematic illustrating the differential expression paradigm of the calibration check analysis. The single-cell CRISPR screen experiment produces a pool of cells; in this example the cells contain targeting gRNAs and three different non-targeting gRNAs (labeled NT<span class="math inline">\(_1\)</span>, NT<span class="math inline">\(_2\)</span>, and NT<span class="math inline">\(_3\)</span>). Suppose that we seek to test for association between a given non-targeting gRNA (e.g., NT<span class="math inline">\(_2\)</span>) and a response. First, we divide the cells into treatment and control groups, where the treatment group consists of the cells that contain NT<span class="math inline">\(_2\)</span>, and the control group can be either the complement set or the NT cells. Within the context of the calibration check analysis, the complement set consists of all cells that do not contain NT<span class="math inline">\(_2\)</span>; the NT cells, on the other hand, consist of cells that contain a non-targeting gRNA excluding NT<span class="math inline">\(_2\)</span>. (Thus, in this example, the NT cells consist of cells that contain NT<span class="math inline">\(_1\)</span> or NT<span class="math inline">\(_3\)</span>.) <code>sceptre</code> tests for differential expression of the given response across the treatment and control groups, yielding a p-value for the test of association bewteen the given non-targeting gRNA and the response.</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="constructing-the-negative-control-pairs" class="level3" data-number="5.1.2"><h3 data-number="5.1.2" class="anchored" data-anchor-id="constructing-the-negative-control-pairs">
+<span class="header-section-number">5.1.2</span> Constructing the negative control pairs</h3>
+<p>The calibration check involves forming a set of negative control target-response pairs and then testing these pairs for association to ensure control of the false discovery rate. <code>sceptre</code> automatically constructs the negative control pairs, and it does so in such a way that the negative control pairs are highly similar to the discovery pairs, the difference being that the negative control pairs are devoid of biological signal. <code>sceptre</code> builds the negative control pairs as follows. First, <code>sceptre</code> forms “negative control groups” by randomly grouping together distinct sets of negative control gRNAs. For example, in a screen containing nine negative control gRNAs (labeled NT<sub>1</sub><em>-</em> NT<sub>9</sub>), gRNAs NT<sub>2</sub>, NT<sub>5</sub>, and NT<sub>7</sub> might be assigned randomly to one group, gRNAs NT<sub>3</sub>, NT<sub>6</sub>, and NT<sub>9</sub> might be assigned randomly to another group, and so on. (See schematic below). The number of negative control gRNAs per group (by default) is set equal to the average number of gRNAs per discovery target. For example, in a screen in which each discovery target is targeted by three gRNAs, each negative control group is formed by randomly putting together three negative control gRNAs. The negative control gRNA groups can (and often do) overlap; for example, a given NT gRNA (e.g., NT<sub>2</sub>) could be a part of multiple negative control groups.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="neg_control_pair_construction.png" class="img-fluid figure-img" width="550"></p>
+<figcaption class="figure-caption">A schematic illustrating how the negative control target response pairs are constructed. First, negative control gRNA groups are formed by randomly assembling negative control gRNAs into groups of size one or more. Next, the negative control gRNA groups are randomly paired to responses.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>In a singleton analysis (i.e., an analysis in which we seek to test for association between individual gRNAs and responses), each negative control gRNA is placed into its own negative control group of size one. (Recall that we can prompt <code>sceptre</code> to run a singleton analysis by setting <code>grna_grouping_strategy</code> to <code>"singleton"</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>). We often use the term “negative control target” interchangeably with “negative control gRNA group.”</p>
+<p>After forming the negative control targets, <code>sceptre</code> constructs the set of negative control pairs by randomly pairing the negative control targets to the responses. The number of negative control pairs that <code>sceptre</code> constructs is set equal to the number of pairs in the discovery set (after QC is applied to the discovery pairs). Moreover, the negative control pairs are subjected to the same pairwise QC as the discovery pairs. In this sense the negative control pairs are “matched” to the discovery pairs in three respects: (1) the number of gRNAs contained within each target is the same across the negative control and discovery pairs; (2) the negative control pairs are subjected to the same pairwise QC as the discovery pairs; (3) the number of negative control pairs is equal to the number of discovery pairs.</p>
+</section><section id="analyzing-the-negative-control-pairs" class="level3" data-number="5.1.3"><h3 data-number="5.1.3" class="anchored" data-anchor-id="analyzing-the-negative-control-pairs">
+<span class="header-section-number">5.1.3</span> Analyzing the negative control pairs</h3>
+<p>Finally, <code>sceptre</code> tests for association between the negative control targets and the responses to which the negative control targets have been paired. If <code>grna_grouping_strategy</code> is set to <code>"singleton"</code>, then the analysis proceeds as described in the section “Differential expression paradigm.” If, on the other hand, <code>grna_grouping_strategy</code> is set to <code>"union"</code> (the default), then negative control gRNAs contained within a given negative control target are combined via the union operation, and this combined gRNA is tested for association against the responses as if it were a singleton gRNA. Consider again Figure 1 (section “Differential expression paradigm”). Suppose that NT<sub>1</sub> and NT<sub>2</sub> constitute a given negative control target, and suppose we seek to test for association between this negative control target and a given response. In this case the “treatment cells” are those containing either NT<sub>1</sub> or NT<sub>2</sub>. Meanwhile, the “complement set” control group consists of cells that do <em>not</em> contain NT<sub>1</sub> or NT<sub>2</sub>. Finally, the “NT cells” control gorup consists of cells containing NT<sub>3</sub>.</p>
+</section></section><section id="carrying-out-the-calibration-check-and-obtaining-the-results" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="carrying-out-the-calibration-check-and-obtaining-the-results">
+<span class="header-section-number">5.2</span> Carrying out the calibration check and obtaining the results</h2>
+<p>We carry out the calibration check by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> on the <code>sceptre_object</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> takes the arguments <code>sceptre_object</code> (required), <code>output_amount</code> (optional), <code>n_calibration_pairs</code> (optional), <code>calibration_group_size</code> (optional), <code>print_progress</code> (optional), and <code>parallel</code> (optional). <code>output_amount</code> is an integer (taking values 1, 2, or 3; default: <code>output_amount = 1</code>) specifying the amount of output to return from <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code>. We describe <code>output_amount</code> in greater detail later. Next, <code>n_calibration_pairs</code> is the number of negative control target-response pairs to test for association. By default <code>n_calibration_pairs</code> is set to the number of discovery target-response pairs that passes pairwise QC. <code>calibration_group_size</code> is the number of negative control gRNAs to put together to construct each negative control target. By default <code>calibration_group_size</code> is set to the median number of gRNAs per discovery target. Finally, <code>print_progress</code> and <code>parallel</code> control whether to print updates to the console and run the computation in parallel, respectively.</p>
+<p>We run the calibration check on the high-MOI CRISPRi and low-MOI CRISPRko data, setting <code>parallel</code> to <code>TRUE</code> but otherwise falling back on the default arguments.</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span>,</span>
+<span>                                                parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span>,</span>
+<span>                                               parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can plot the outcome of the calibration check by calling <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the resulting <code>sceptre_object</code>. Below, we plot the outcome of the calibration check on the low-MOI CRISPRko data.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="plot_calibration_lowmoi.png" class="img-fluid figure-img" width="650"></p>
+<figcaption class="figure-caption">Outcome of the calibration check on the low-MOI CRISPRko data.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>We described in the Get Started vignette (<code>vignette("sceptre")</code>) how to interpret this figure. Briefly, the upper left (resp., right) plot is a QQ plot of the negative control p-values on an untransformed (resp., transformed) scale; the p-values should lie predominantly along the diagonal line. The lower left plot is a histogram of the estimated (log-2) fold changes; the histogram should be symmetric and centered about zero. Finally, the lower right panel is a text box displaying the number of false discoveries made on the negative control pairs (after applying the multiple testing adjustment) and the mean estimated (log-2) fold change. Both of these numbers ideally are close to zero. (We emphasize that it is OK if the number of false discoveries is nonzero; see subsequent section.)</p>
+<p>We can obtain a data frame containing the results by calling <code>get_result</code> on the resulting <code>sceptre_object</code>, setting <code>analysis</code> to <code>"run_calibration_check"</code>. We obtain the data frame and print its first few rows below.</p>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">calibration_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
+<span>                                 analysis <span class="op">=</span> <span class="st">"run_calibration_check"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">calibration_result</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    response_id          grna_target n_nonzero_trt n_nonzero_cntrl pass_qc
+1:       SLC8B1  NTg4&amp;NTg7&amp;NTg8&amp;NTg9           236             162    TRUE
+2:       UBE2L6 NTg1&amp;NTg5&amp;NTg7&amp;NTg10           982             812    TRUE
+3:       TMEM37  NTg3&amp;NTg4&amp;NTg5&amp;NTg9            46              18    TRUE
+4:       PARPBP NTg3&amp;NTg8&amp;NTg9&amp;NTg10            51              61    TRUE
+5:       MTMR10 NTg1&amp;NTg3&amp;NTg8&amp;NTg10            87             250    TRUE
+6: RP11-799D4.4  NTg2&amp;NTg3&amp;NTg4&amp;NTg7            25              44    TRUE
+        p_value log_2_fold_change significant
+1: 0.0000955005        0.23780413       FALSE
+2: 0.0003396914        0.05625781       FALSE
+3: 0.0004477911        0.56398692       FALSE
+4: 0.0010338764        0.53570790       FALSE
+5: 0.0010732514       -0.39425294       FALSE
+6: 0.0011500039       -0.64984993       FALSE</code></pre>
+</div>
+</div>
+<p>Each row of this data frame corresponds to a negative control target-response pair. (There are 6,205 rows in total, corresponding to the 6,205 negative control target-response pairs that <code>sceptre</code> constructed and tested for association.) The columns <code>response_id</code> and <code>grna_target</code> indicate the response and gRNA target that constitute a given pair. The individual non-targeting gRNAs that make up a negative control target are listed, concatenated into a string via the ampersand (“&amp;”) separator. (For example, the negative control gRNA target “NTg4&amp;NTg7&amp;NTg8&amp;NTg9” was formed by combining the negative control gRNAs NTg4, NTg7, NTg8, and NTg9.) The remaining columns of the data frame are <code>n_nonzero_trt</code> (i.e., the number of nonzero treatment cells), <code>n_nonzero_cntrl</code> (i.e., the number of nonzero control cells), <code>pass_qc</code> (i.e., whether the given pair passes pairwise QC), <code>p_value</code> (i.e., the p-value of the given pair), <code>log_2_fold_change</code> (i.e., the estimated log-2 fold change of the given pair), and <code>significant</code> (i.e., whether the pair is called as significant after applying the multiple testing correction procedure).</p>
+</section><section id="improving-calibration" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="improving-calibration">
+<span class="header-section-number">5.3</span> Improving calibration</h2>
+</section><section id="changing-the-output_amount-argument" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="changing-the-output_amount-argument">
+<span class="header-section-number">5.4</span> Changing the <code>output_amount</code> argument</h2>
+<p>The argument <code>output_amount</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> controls the amount of information contained within the output data frame. <code>output_amount</code> can take values 1, 2, or 3 (default value 1). We again run the calibration check on the high-MOI CRISPRi data, this time setting <code>output_amount</code> to <code>2</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">calibration_result_output_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span>,</span>
+<span>                                                     parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                                                     output_amount <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span>analysis <span class="op">=</span> <span class="st">"run_calibration_check"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The resulting data frame contains the additional columns <code>z_orig</code>, <code>stage</code>, <code>xi</code>, <code>omega</code>, and <code>alpha</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">calibration_result_output_2</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">z_orig</span>, <span class="va">stage</span>, <span class="va">xi</span>, <span class="va">omega</span>, <span class="va">alpha</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      z_orig stage         xi    omega      alpha
+1: -3.404460     2 -0.6503220 1.195424  0.9119020
+2: -2.494207     2 -0.6621881 1.193589  0.9361685
+3: -2.572771     2 -0.6336386 1.129223  0.7491185
+4: -2.543947     2  0.3705702 1.087020 -0.5132352
+5: -2.411835     2 -0.4010868 1.023403  0.4533119
+6: -2.341085     2 -0.6168560 1.189035  0.8471043</code></pre>
+</div>
+</div>
+<p><code>z_orig</code> is the “original” z-score obtained by regressing the response UMI count vector onto the raw (i.e., non-resampled) gRNA indicator vector and covariate matrix. Next, <code>stage</code> indicates the “stage” in which</p>
+
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./run-qc.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

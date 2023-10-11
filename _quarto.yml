@@ -1,0 +1,26 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Single-Cell CRISPR Screen Analysis with `sceptre`"
+  author: "Timothy Barry and Eugene Katsevich"
+  date: "10/11/2023"
+  chapters:
+    - index.qmd
+    - sceptre.qmd
+    - import-data.qmd
+    - set-analysis-parameters.qmd
+    - assign-grnas.qmd
+    - run-qc.qmd
+    - run-calibration-check.qmd
+
+format:
+  html:
+    theme: cosmo
+    code-link: true
+
+execute:
+  cache: true
+
+editor: visual
