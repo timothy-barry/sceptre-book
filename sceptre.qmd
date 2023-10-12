@@ -7,17 +7,26 @@ knitr::opts_chunk$set(
 
 # The whole game {.unnumbered}
 
-**`sceptre` facilitates statistically rigorous, computationally efficient, and user-friendly single-cell CRISPR screen data analysis.** The standard pipeline involved in applying `sceptre` to analyze a dataset consists of several steps, which we summarize in the following schematic.
+**`sceptre` is an R package that facilitates statistically rigorous, computationally efficient, and user-friendly single-cell CRISPR screen data analysis.** Users can install `sceptre` via the following command.
+
+```{r, eval=FALSE}
+install.packages("devtools")
+devtools::install_github("katsevich-lab/sceptre")
+```
+
+Users can load `sceptre` via a call to `library()`.
+
+```{r}
+library(sceptre)
+```
+
+The standard pipeline involved in applying `sceptre` to analyze a dataset consists of several steps, which we summarize in the following schematic.
 
 ```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap=c("Standard `sceptre` pipeline")}
 knitr::include_graphics("pipeline_schematic.png")
 ```
 
-This vignette illustrates application of `sceptre` to a CRISPRi screen of candidate enhancers in K562 cells (Gasperini et al, 2019). The goal of the analysis is to confidently link enhancers to genes by testing for changes in gene expression in response to the CRISPR perturbations of the candidate enhancers. We begin by loading the `sceptre` package.
-
-```{r,results='hide'}
-library(sceptre)
-```
+This vignette illustrates application of `sceptre` to a CRISPRi screen of candidate enhancers in K562 cells (Gasperini et al, 2019). The goal of the analysis is to confidently link enhancers to genes by testing for changes in gene expression in response to the CRISPR perturbations of the candidate enhancers.
 
 ```{r, echo = FALSE}
 library(Matrix)
@@ -59,7 +68,7 @@ That's it. Note that `|>` is the base R pipe operator, equivalent in this contex
 
 ## I. Import data
 
-The first step is to import the data. **Data can be imported into `sceptre` from 10X Cell Ranger or Parse outputs, as well as from R matrices.** The simplest way to import the data is to read the output of one or more calls to `cellranger_count()` into `sceptre` via the function `import_data_from_cellranger()`, although users can instead input data from the Parse Biosciences count matrix generation software or from standard R matrices. `import_data_from_cellranger()` requires three arguments: `directories`, `grna_target_data_frame`, and `moi`.
+The first step is to import the data. **Data can be imported into `sceptre` from 10X Cell Ranger or Parse outputs, as well as from R matrices.** The simplest way to import the data is to read the output of one or more calls to `cellranger_count()` into `sceptre` via the function `import_data_from_cellranger()`. `import_data_from_cellranger()` requires three arguments: `directories`, `grna_target_data_frame`, and `moi`.
 
 1.  `directories` is a character vector specifying the locations of the directories outputted by one or more calls to `cellranger_count()`. Below, we set the variable `directories` to the (machine-dependent) location of the example CRISPRi data on disk.
 
