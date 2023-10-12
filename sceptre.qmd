@@ -1,10 +1,3 @@
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 # The whole game {.unnumbered}
 
 **`sceptre` is an R package that facilitates statistically rigorous, computationally efficient, and user-friendly single-cell CRISPR screen data analysis.** Users can install `sceptre` via the following command.
@@ -26,13 +19,11 @@ The standard pipeline involved in applying `sceptre` to analyze a dataset consis
 knitr::include_graphics("pipeline_schematic.png")
 ```
 
-This vignette illustrates application of `sceptre` to a CRISPRi screen of candidate enhancers in K562 cells (Gasperini et al, 2019). The goal of the analysis is to confidently link enhancers to genes by testing for changes in gene expression in response to the CRISPR perturbations of the candidate enhancers.
+This chapter illustrates application of `sceptre` to a CRISPRi screen of candidate enhancers in K562 cells (Gasperini et al, 2019). The goal of the analysis is to confidently link enhancers to genes by testing for changes in gene expression in response to the CRISPR perturbations of the candidate enhancers.
 
 ```{r, echo = FALSE}
 library(Matrix)
 ```
-
-## Initial code demonstration
 
 Using `sceptre` is simple; carrying out an entire analysis requires only a few lines of code. Below, we provide a minimal working example of applying `sceptre` to analyze the example data. First, we load the example data into R via the function `import_data_from_cellranger()`, which creates a `sceptre_object`, an object-based representation of the single-cell CRISPR screen data. Next, we specify the gRNA-gene pairs that we seek to test for association. Then, we call the pipeline functions on the `sceptre_object` in order. Finally, we write the outputs to the directory `~/sceptre_outputs`.
 
@@ -66,7 +57,7 @@ write_outputs_to_directory(sceptre_object, "~/sceptre_outputs")
 
 That's it. Note that `|>` is the base R pipe operator, equivalent in this context to the more familiar `%>%`. We describe each step of the pipeline in greater detail below.
 
-## I. Import data
+## 1. Import data {#sec-whole_game_import_data}
 
 The first step is to import the data. **Data can be imported into `sceptre` from 10X Cell Ranger or Parse outputs, as well as from R matrices.** The simplest way to import the data is to read the output of one or more calls to `cellranger_count()` into `sceptre` via the function `import_data_from_cellranger()`. `import_data_from_cellranger()` requires three arguments: `directories`, `grna_target_data_frame`, and `moi`.
 
@@ -120,9 +111,9 @@ sceptre_object
 
 Several metrics are displayed, including the number of cells, the number of genes (or "responses"), and the number of gRNAs present in the data. `sceptre` also automatically computes the following cell-specific covariates: `grna_n_nonzero` (i.e., the number of gRNAs expressed in the cell), `grna_n_umis` (i.e., the number of gRNA UMIs sequenced in the cell), `response_n_nonzero` (i.e., the number of responses expressed in the cell), `response_n_umis` (i.e., the number of response UMIs sequenced in the cell), `response_p_mito` (i.e., the fraction of transcripts mapping to mitochondrial genes), and `batch`. (Cells loaded from different directories are assumed to come from different batches.)
 
-See `vignette("import-data")` for more details about data import.
+See @sec-import_data for more details about data import.
 
-## II. Set analysis parameters
+## 2. Set analysis parameters
 
 The second step is to set the analysis parameters. The most important analysis parameters are the discovery pairs, positive control pairs, sidedness, and gRNA grouping strategy.
 
@@ -170,7 +161,9 @@ sceptre_object <- set_analysis_parameters(
 print(sceptre_object) # output suppressed for brevity
 ```
 
-## III. Assign gRNAs to cells (optional)
+See @sec-set_analysis_parameters for more information about setting the analysis parameters.
+
+## 3. Assign gRNAs to cells (optional) {#sec-sceptre_assign_grnas}
 
 The third step is to assign gRNAs to cells. This step can be skipped, in which case gRNAs are assigned to cells automatically using default options. The gRNA assignment step involves using the gRNA UMI counts to determine which cells contain which gRNAs. We begin by plotting the UMI count distribution of several randomly selected gRNAs via a call to the function `plot_grna_count_distributions()`.
 
@@ -211,7 +204,9 @@ knitr::include_graphics("grna_count_assignments.png")
 
 The top panel plots the gRNA-to-cell assignments of three randomly selected gRNAs. In each plot the points represent cells; the vertical axis indicates the UMI count of the gRNA in a given cell, and the horizontal axis indicates whether the cell has been classified as "perturbed" (i.e., it *contains* the gRNA) or unperturbed (i.e., it does *not contain* the gRNA). Perturbed (resp., unperturbed) cells are shown in the left (resp., right) column. The bottom left panel is a barplot of the number of cells to which each gRNA has been mapped. Finally, the bottom right panel is a histogram of the number of gRNAs contained in each cell. The mean number of gRNAs per cell --- i.e., the MOI --- is displayed in purple text.
 
-## IV. Run quality control (optional)
+See @sec-assign_grnas for more information about assigning gRNAs to cells.
+
+## 4. Run quality control (optional) {#sec-sceptre_qc}
 
 The fourth step is to run quality control (QC). This step likewise can be skipped, in which case QC is applied automatically using default options. **`sceptre` implements two kinds of QC: cellwise QC and pairwise QC. The former aims to remove low-quality cells, while the latter aims to remove low-quality target-response pairs.**
 
@@ -240,7 +235,9 @@ knitr::include_graphics("qc.png")
 
 The top panel depicts the outcome of the cellwise QC. The various cellwise QC filters (e.g., "N nonzero responses," "N response UMIs," "Percent mito", etc.) are shown on the horizontal axis, and the percentage of cells removed due application of a given QC filter is shown on the vertical axis. Note that a cell can be flagged by multiple QC filters; for example, a cell might have an extremely high `response_n_umi` value *and* an extremely high `response_n_nonzero` value. Thus, the height of the "any filter" bar (which indicates the percentage of cells removed due to application of *any* filter) need not be equal to the sum of the heights of the other bars. The bottom panel depicts the outcome of the pairwise QC. Each point corresponds to a target-response pair; the vertical axis (resp., horizontal axis) indicates the `n_nonzero_trt` (resp., `n_nonzero_cntrl`) value of that pair. Pairs for which `n_nonzero_trt` or `n_nonzero_cntrl` fall below the threshold are removed (red), while the remaining pairs are retained (green).
 
-## V. Run calibration check
+See @sec-run_qc for more information about QC.
+
+## 5. Run calibration check {#sec-sceptre_calibration_check}
 
 The fifth step is to run the calibration check. **The calibration check is an analysis that verifies that `sceptre` controls the rate of false discoveries on the dataset under analysis.** The calibration check proceeds as follows. First, negative control target-response pairs are constructed (automatically) by coupling subsets of NT gRNAs to randomly selected responses. Importantly, the negative control pairs are constructed in such a way that they are similar to the discovery pairs, the difference being that the negative control pairs are devoid of biological signal. Next, `sceptre` is applied to analyze the negative control pairs. Given that the negative control pairs are absent of signal, `sceptre` should produce approximately uniformly distributed p-values on the negative control pairs. Moreover, after an appropriate multiple testing correction, `sceptre` should make zero (or very few) discoveries on the negative control pairs. Verifying calibration via the calibration check increases our confidence that the discovery set that `sceptre` ultimately produces is uncontaminated by excess false positives.
 
@@ -274,9 +271,9 @@ The visualization consists of four panels, which we describe below.
 
 -   Finally, the bottom right panel is a text box displaying (i) the number of false discoveries that `sceptre` has made on the negative control data and (ii) the mean estimated log-fold change. The number of false discoveries should be a small integer like zero, one, two, or three, with zero being ideal. The mean estimated log-fold change, meanwhile, should be a numeric value close to zero; a number in the range \[-0.1, 0.1\] is adequate.
 
-`sceptre` may not exhibit good calibration initially, which is OK. See the Calibration Check vignette (`vignette("calibration-check)"`) for strategies for improving calibration.
+`sceptre` may not exhibit good calibration initially, which is OK. See @sec-run_calibration_check for more information about the calibration check analysis, including concrete strategies for improving calibration.
 
-## VI. Run power check (optional)
+## 6. Run power check (optional)
 
 The sixth step --- which is optional --- is to run the power check. The power check involves applying `sceptre` to analyze the positive control pairs. Given that the positive control pairs are known to contain signal, `sceptre` should produce significant (i.e., small) p-values on the positive control pairs. **The power check enables us to assess `sceptre`'s power (i.e., its ability to detect true associations) on the dataset under analysis.** We run the power check by calling the function `run_power_check()` on the `sceptre_object`.
 
@@ -300,7 +297,7 @@ knitr::include_graphics("power_check.png")
 
 Each point in the plot corresponds to a target-response pair, with positive control pairs in the left column and negative control pairs in the right column. The vertical axis indicates the p-value of a given pair; smaller (i.e., more significant) p-values are positioned higher along this axis (p-values truncated at $10^{-20}$ for visualization). The positive control p-values should be small, and in particular, smaller than the negative control p-values.
 
-## VII. Run discovery analysis
+## 7. Run discovery analysis
 
 The seventh and penultimate step is to run the discovery analysis. The discovery analysis entails applying `sceptre` to analyze the discovery pairs. We run the discovery analysis by calling the function `run_discovery_analysis()`.
 
@@ -332,7 +329,7 @@ The visualization consists of four panels.
 
 -   The bottom right panel is a text box displaying the number of discovery pairs called as significant.
 
-## VIII. Write outputs to directory
+## 8. Write outputs to directory
 
 The eighth and final step is to write the outputs of the analysis to a directory on disk. We call the function `write_outputs_to_directory()`, which takes as arguments a `sceptre_object` and `directory`; `directory` is a string indicating the location of the directory in which to write the results contained within the `sceptre_object`.
 
@@ -355,7 +352,7 @@ We also can obtain the calibration check, power check, and discovery analysis re
 result <- get_result(sceptre_object, analysis = "run_discovery_analysis")
 ```
 
-`result` is a data frame, the rows of which correspond to target-response pairs, and the columns of which are as follows: `response_id`, `grna_target`, `n_nonzero_trt`, `n_nonzero_cntrl`, `pass_qc` (a `TRUE`/`FALSE` value indicating whether the pair passes pairwise QC), `p_value`, `log_2_fold_change`, and `significant` (a `TRUE`/`FALSE` value indicating whether the pair is called as significant).
+The variable `result` is a data frame, the rows of which correspond to target-response pairs, and the columns of which are as follows: `response_id`, `grna_target`, `n_nonzero_trt`, `n_nonzero_cntrl`, `pass_qc` (a `TRUE`/`FALSE` value indicating whether the pair passes pairwise QC), `p_value`, `log_2_fold_change`, and `significant` (a `TRUE`/`FALSE` value indicating whether the pair is called as significant).
 
 ```{r}
 head(result)
@@ -363,4 +360,4 @@ head(result)
 
 ## Further reading
 
-Each step of the pipeline has its own dedicated vignette. We encourage advanced users to read these additional vignettes to learn more about the various options available at each step of the pipeline. We recommend that users begin with the Import Data vignette (`vignette("import-data")`) and then move through the remaining vignettes in order.
+Each step of the pipeline has its own dedicated chapter. We encourage advanced users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with @sec-import_data.

@@ -1,20 +1,6 @@
----
-title: "Set analysis parameters"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Set analysis parameters}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+# Set analysis parameters {#sec-set_analysis_parameters}
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
-This vignette explicates the "set analysis parameters" step of the `sceptre` pipeline. The purpose of this step is to select the parameters that govern how the statistical analysis is to be carried out.
+This chapter explicates the "set analysis parameters" step of the `sceptre` pipeline. The purpose of this step is to select the parameters that govern how the statistical analysis is to be carried out.
 
 ```{r, out.width = "650px", fig.align="center", echo = FALSE}
 knitr::include_graphics("pipeline_schematic_step_2.png")
@@ -26,7 +12,7 @@ We begin by loading the `sceptre` package.
 library(sceptre)
 ```
 
-Throughout, we examine two example datasets. First, we examine the example high-MOI CRISPRi screen of candidate enhancers in K562 cells. This is the example dataset that we used in the Get Started (`vignette("sceptre")`) and Import Data (`vignette("import-data")`) vignettes. We initialize a `sceptre_object` called `sceptre_object_highmoi` to represent these data.
+Throughout, we examine two example datasets. First, we examine the example high-MOI CRISPRi screen of candidate enhancers in K562 cells. This is the example dataset that we used in *The whole game* and in @sec-import_data. We initialize a `sceptre_object` called `sceptre_object_highmoi` to represent these data.
 
 ```{r}
 data(highmoi_example_data)
@@ -146,7 +132,7 @@ head(discovery_pairs_highmoi_trans)
 
 Some users may wish to run both *cis* and *trans* analyses on their data. We recommend that such users carry out the `sceptre` pipeline twice: once using a *cis* discovery set and once using a *trans* discovery set.
 
-### Reducing the multiplicity burden 
+### Reducing the multiplicity burden
 
 `sceptre` computes a p-value for each target-response pair in the discovery set. These p-values are subjected to a multiple testing correction procedure (by default, the Benjamini-Hochberg method) to produce a discovery set that controls some notion of aggregate type-I error (by default, the false discovery rate). In general it is good to restrict one's attention to pairs that are promising or scientifically interesting. Including a large number of uninteresting or "null" pairs (i.e., pairs for which there is no relationship between the target and response) in the discovery set causes the power of the multiple testing correction procedure to decrease, resulting in fewer discoveries.
 
@@ -154,17 +140,17 @@ Some users may wish to run both *cis* and *trans* analyses on their data. We rec
 
 `sceptre` can run left-tailed, right-tailed, and two-tailed tests of association. Left-tailed tests assess a *decrease* in expression, right-tailed tests assess an *increase* in expression, and two-tailed tests assess an increase *or* decrease in expression. The parameter `side` controls the sidedness of the test and can take values `"left"`, `"right"`, or `"both"`. (`"both"` indicates a two-tailed test.) Two-tailed tests typically are the best choice for *trans* analyses, as the direction of *trans* relationships generally is uncertain. For *cis* analyses, on the other hand, the sidedness of the test should be chosen on the basis of the type of genomic element targeted and the CRISPR perturbation modality. The following table summarizes whether a left- or right-tailed test is appropriate for a *cis* analysis as a function of these variables.
 
-+----------------+---------------------+------------------------+---------------+
-| Target element | CRISPR modality     | Testing for            | Sidedness     |
-+================+=====================+========================+===============+
-| Enhancer       | CRISPRi or CRISPRko | Decrease in expression | Left          |
-+----------------+---------------------+------------------------+---------------+
-| Enhancer       | CRISPRa             | Increase in expression | Right         |
-+----------------+---------------------+------------------------+---------------+
-| Silencer       | CRISPRi or CRISPRko | Increase in expression | Right         |
-+----------------+---------------------+------------------------+---------------+
-| Silencer       | CRISPRa             | Decrease in expression | Left          |
-+----------------+---------------------+------------------------+---------------+
++----------------+---------------------+------------------------+--------------+
+| Target element | CRISPR modality     | Testing for            | Sidedness    |
++================+=====================+========================+==============+
+| Enhancer       | CRISPRi or CRISPRko | Decrease in expression | Left         |
++----------------+---------------------+------------------------+--------------+
+| Enhancer       | CRISPRa             | Increase in expression | Right        |
++----------------+---------------------+------------------------+--------------+
+| Silencer       | CRISPRi or CRISPRko | Increase in expression | Right        |
++----------------+---------------------+------------------------+--------------+
+| Silencer       | CRISPRa             | Decrease in expression | Left         |
++----------------+---------------------+------------------------+--------------+
 
 : Recommended sidedness of the test as a function of target element and CRISPR modality for *cis* analyses.
 

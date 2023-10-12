@@ -1,13 +1,6 @@
----
-title: "Import data"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Import data}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+# Import data {#sec-import_data}
 
-This vignette describes how to import single-cell CRISPR screen data into `sceptre`, which is the first step of the `sceptre` pipeline.
+This chapter describes how to import single-cell CRISPR screen data into `sceptre`, which is the first step of the `sceptre` pipeline.
 
 ```{r, out.width = "650px", fig.align="center", echo = FALSE}
 knitr::include_graphics("pipeline_schematic_step_1.png")
@@ -25,7 +18,7 @@ library(sceptre)
 
 ### Import from 10X CellRanger
 
-The Get Started vignette (`vignette("sceptre")`) describes how to import data from 10X CellRanger. We include a minimal working example here.
+@sec-whole_game_import_data of *The whole game* describes how to import data from 10X CellRanger. We include a minimal working example here.
 
 ```{r,results='hide'}
 directories <- paste0(system.file("extdata", package = "sceptre"), "/highmoi_example/gem_group_", 1:2)
@@ -96,13 +89,13 @@ We describe the inputs below.
 
 `response_matrix` and `grna_matrix` should be stored in one of the following formats: `matrix`, `dgTMatrix`, `dgCMatrix`, or `dgRMatrix`.
 
--   `grna_target_data_frame` is the data frame mapping each gRNA to its target. The `grna_target_data_frame` that we pass to `import_data()` is exactly the same as the one that we pass to `import_data_from_cellranger()`. See `vignette("sceptre")` for more information about this argument.
+-   `grna_target_data_frame` is the data frame mapping each gRNA to its target. The `grna_target_data_frame` that we pass to `import_data()` is exactly the same as the one that we pass to `import_data_from_cellranger()`. See @sec-whole_game_import_data of *The whole game* for more information about this argument.
 
     ```{r}
     grna_target_data_frame[c(1:4, 21:24, 80:83),]
     ```
 
--   `moi` is a string specifying the MOI of the dataset, either "high" or "low". This argument serves the same function as it does in `import_data_from_cellranger()`. See `vignette("sceptre")` for more information.
+-   `moi` is a string specifying the MOI of the dataset, either "high" or "low". This argument serves the same function as it does in `import_data_from_cellranger()`. See @sec-whole_game_import_data of *The whole game* for more information.
 
     ```{r}
     moi <- "high"

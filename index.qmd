@@ -2,7 +2,7 @@ Single-cell CRISPR screens (e.g., perturb-seq) combine CRISPR genome engineering
 
 # Using this Book {.unnumbered}
 
-We encourage all users to read the opening chapter (i.e., *The Whole Game*), and we encourage advanced users to read the subsequent chapters (i.e., *Import Data* to *Run Power Check and Discovery Analysis*) in order.
+All users should read the opening chapter (i.e., *The whole game*), and advanced users should read the subsequent chapters (i.e., *Import data* to *Run power check and discovery analysis*) in order.
 
 # Acknowledgements {.unnumbered}
 

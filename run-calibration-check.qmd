@@ -1,11 +1,4 @@
----
-title: "Run calibration check"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Run calibration check}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+# Run calibration check {#sec-run_calibration_check}
 
 The fifth step of the pipeline is to run the calibration check. The calibration check involves applying `sceptre` to analyze negative control target-response pairs --- pairs for which we know there is no association between the target and response --- to ensure control of the false discovery rate. The calibration check enables us to verify that the discovery set that `sceptre` ultimately produces is uncontaminated by excess false positives.
 
@@ -115,7 +108,7 @@ ggplot2::ggsave(filename = "plot_calibration_lowmoi.png", plot = p, device = "pn
 knitr::include_graphics("plot_calibration_lowmoi.png")
 ```
 
-We described in the Get Started vignette (`vignette("sceptre")`) how to interpret this figure. Briefly, the upper left (resp., right) plot is a QQ plot of the negative control p-values on an untransformed (resp., transformed) scale; the p-values should lie predominantly along the diagonal line. The lower left plot is a histogram of the estimated (log-2) fold changes; the histogram should be symmetric and centered about zero. Finally, the lower right panel is a text box displaying the number of false discoveries made on the negative control pairs (after applying the multiple testing adjustment) and the mean estimated (log-2) fold change. Both of these numbers ideally should be close to zero. (It is OK if the number of false discoveries is nonzero; see next section.)
+We described @sec-sceptre_calibration_check of how to interpret this figure. Briefly, the upper left (resp., right) plot is a QQ plot of the negative control p-values on an untransformed (resp., transformed) scale; the p-values should lie predominantly along the diagonal line. The lower left plot is a histogram of the estimated (log-2) fold changes; the histogram should be symmetric and centered about zero. Finally, the lower right panel is a text box displaying the number of false discoveries made on the negative control pairs (after applying the multiple testing adjustment) and the mean estimated (log-2) fold change. Both of these numbers ideally should be close to zero. (It is OK if the number of false discoveries is nonzero; see next section.)
 
 We can obtain a data frame containing the results by calling `get_result` on the `sceptre_object`, setting `analysis` to `"run_calibration_check"`. We obtain the result data frame and print the first few rows of this data frame below.
 

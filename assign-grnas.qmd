@@ -1,18 +1,4 @@
----
-title: "Assign gRNAs"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Assign gRNAs}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+# Assign gRNAs {#sec-assign_grnas}
 
 The third step of the pipeline is to assign gRNAs to cells. This step entails using the gRNA UMI counts to determine which cells contain which gRNAs. `sceptre` provides three gRNA-to-cell assignment methods: the "mixture model method," the "maximum method," and "the thresholding method."
 
@@ -74,7 +60,7 @@ We are now ready to carry out the gRNA assignment step on both datasets.
 
 ## Visualize the gRNA count distributions
 
-A helpful first step in assigning gRNAs to cells is to visualize the gRNA UMI count distributions. As discussed in the Get Started vignette (`vignette("sceptre")`), we can use the function `plot_grna_count_distributions()` to plot the empirical UMI count distribution of one or more gRNAs. `plot_grna_count_distributions()` takes several arguments: `sceptre_object` (required), `n_grnas_to_plot` (optional), `grnas_to_plot` (optional), and `threshold` (optional). `n_grnas_to_plot` is an integer specifying the number of randomly-selected gRNAs to plot. `grnas_to_plot` is a character vector specifying (by name) one or more specific gRNAs to plot. Finally, `threshold` is an integer specifying the location at which to draw a dotted vertical line. We call  `plot_grna_count_distributions()` on the low-MOI CRISPRko data, plotting nine random gRNAs.
+A helpful first step in assigning gRNAs to cells is to visualize the gRNA UMI count distributions. As discussed in @sec-sceptre_assign_grnas of *The whole game*, we can use the function `plot_grna_count_distributions()` to plot the empirical UMI count distribution of one or more gRNAs. `plot_grna_count_distributions()` takes several arguments: `sceptre_object` (required), `n_grnas_to_plot` (optional), `grnas_to_plot` (optional), and `threshold` (optional). `n_grnas_to_plot` is an integer specifying the number of randomly-selected gRNAs to plot. `grnas_to_plot` is a character vector specifying (by name) one or more specific gRNAs to plot. Finally, `threshold` is an integer specifying the location at which to draw a dotted vertical line. We call  `plot_grna_count_distributions()` on the low-MOI CRISPRko data, plotting nine random gRNAs.
 
 ```{r, eval=FALSE}
 plot_grna_count_distributions(sceptre_object = sceptre_object_lowmoi,
@@ -88,7 +74,7 @@ ggplot2::ggsave(filename = "grna_count_distribution_step3.png", plot = p, device
 knitr::include_graphics("grna_count_distribution_step3.png")
 ```
 
-We see that the gRNA count distributions exhibit generally bimodal behavior. As discussed in Get Started, this bimodality is due to the phenomenon of background contamination: gRNA reads sometimes map to cells that do not contain the corresponding gRNA. `sceptre` provides three methods for assigning gRNAs to cells, all of which account for background contamination.
+We see that the gRNA count distributions exhibit generally bimodal behavior. As discussed in *The whole game*, this bimodality is due to the phenomenon of background contamination: gRNA reads sometimes map to cells that do not contain the corresponding gRNA. `sceptre` provides three methods for assigning gRNAs to cells, all of which account for background contamination.
 
 ## Assign gRNAs to cells
 
@@ -180,7 +166,7 @@ ggplot2::ggsave(filename = "lowmoi_maximum_assignment_step3.png", plot = p, devi
 knitr::include_graphics("lowmoi_maximum_assignment_step3.png")
 ```
 
-The Get Started vignette (`vignette("sceptre")`) describes how to interpret this plot. Briefly, the top panel displays the gRNA-to-cell assignments of several individual gRNAS, and the bottom left panel shows the number of cells per gRNA. Typically, the bottom right panel plots the number of gRNAs per cell, but the bottom right panel is not meaningful under the maximum assignment strategy and is thus omitted.
+@sec-sceptre_assign_grnas of *The whole game* describes how to interpret this plot. Briefly, the top panel displays the gRNA-to-cell assignments of several individual gRNAS, and the bottom left panel shows the number of cells per gRNA. Typically, the bottom right panel plots the number of gRNAs per cell, but the bottom right panel is not meaningful under the maximum assignment strategy and is thus omitted.
 
 It is informative to compare the output of multiple gRNA assignment methods and check for consistency across methods. To this end we render a visualization of the gRNA-to-cell assignments on the same dataset, this time based on the mixture method.
 
