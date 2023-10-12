@@ -1,4 +1,11 @@
-# Run quality control
+---
+title: "Run quality control"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Run quality control}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
 The fourth step of the pipeline is to run quality control (QC).
 

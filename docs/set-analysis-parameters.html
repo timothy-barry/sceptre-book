@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.3.433">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Single-Cell CRISPR Screen Analysis with sceptre - 2&nbsp; Set analysis parameters</title>
 <style>
@@ -204,7 +204,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 </header><p>This vignette explicates the “set analysis parameters” step of the <code>sceptre</code> pipeline. The purpose of this step is to select the parameters that govern how the statistical analysis is to be carried out.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-2_f69c4a1fda2cd2f471187a7cf157bd54">
+<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-2_c476d8e05cf9ae9aaa9f65511038403a">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="pipeline_schematic_step_2.png" class="img-fluid figure-img" width="650"></p>
@@ -213,11 +213,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>We begin by loading the <code>sceptre</code> package.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-3_b7f17af5bbe29f3f6885f66ed821b77b">
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-3_0b54a85c6bb552a1847673dd0d030043">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Throughout, we examine two example datasets. First, we examine the example high-MOI CRISPRi screen of candidate enhancers in K562 cells. This is the example dataset that we used in the Get Started (<code>vignette("sceptre")</code>) and Import Data (<code>vignette("import-data")</code>) vignettes. We initialize a <code>sceptre_object</code> called <code>sceptre_object_highmoi</code> to represent these data.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-4_335556c5cfdc8f069d617184979811a7">
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-4_de9c5bb3c66025115459bb6701ae7045">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">highmoi_example_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">grna_target_data_frame_highmoi</span><span class="op">)</span></span>
 <span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span>response_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
@@ -228,7 +228,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>                                      response_names <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">gene_names</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We additionally examine an example low-MOI CRISPRko screen of gene transcription start sites in immune cells. We initialize a <code>sceptre_object</code> called <code>sceptre_object_lowmoi</code> to store this latter dataset.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-5_377bf6cffe2382cfb990583763c592f3">
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-5_a02a8923c7ba107aa477a3dca02e568a">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span>response_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
 <span>                                     grna_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>,</span>
 <span>                                     extra_covariates <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span>,</span>
@@ -236,61 +236,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>                                     moi <span class="op">=</span> <span class="st">"low"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We print the details of the CRISPRko dataset below.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-6_7a4d2716b6051bdfa6408f18012618ad">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span></span>
-<span><span class="co">#&gt; An object of class sceptre_object.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attributes of the data:</span></span>
-<span><span class="co">#&gt;  • 20729 cells</span></span>
-<span><span class="co">#&gt;  • 299 responses</span></span>
-<span><span class="co">#&gt;  • Low multiplicity-of-infection </span></span>
-<span><span class="co">#&gt;  • 101 targeting gRNAs (distributed across 26 targets) </span></span>
-<span><span class="co">#&gt;  • 9 non-targeting gRNAs </span></span>
-<span><span class="co">#&gt;  • 6 covariates (bio_rep, grna_n_nonzero, grna_n_umis, response_n_nonzero, response_n_umis, response_p_mito)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-6_013041151d9bc8c214ed5b80168e30e8">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An object of class sceptre_object.
+
+Attributes of the data:
+    • 20729 cells
+    • 299 responses
+    • Low multiplicity-of-infection 
+    • 101 targeting gRNAs (distributed across 26 targets) 
+    • 9 non-targeting gRNAs 
+    • 6 covariates (bio_rep, grna_n_nonzero, grna_n_umis, response_n_nonzero, response_n_umis, response_p_mito)</code></pre>
+</div>
 </div>
 <p>The CRISPR perturbations target gene transcription start sites. Each gene is targeted by three or four gRNAs, and nine gRNAs in the dataset are non-targeting. The “responses” are genes. We print a few rows of the gRNA target data frame corresponding to this dataset below.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-7_01d34f5b579eacfa75832ce0c024bc10">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_target_data_frame</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span>,<span class="op">]</span></span>
-<span><span class="co">#&gt;   grna_id grna_target</span></span>
-<span><span class="co">#&gt; 1  ATF2g1        ATF2</span></span>
-<span><span class="co">#&gt; 2  ATF2g2        ATF2</span></span>
-<span><span class="co">#&gt; 3  ATF2g3        ATF2</span></span>
-<span><span class="co">#&gt; 4  ATF2g4        ATF2</span></span>
-<span><span class="co">#&gt; 5  BRD4g1        BRD4</span></span>
-<span><span class="co">#&gt; 6  BRD4g2        BRD4</span></span>
-<span><span class="co">#&gt; 7  BRD4g3        BRD4</span></span>
-<span><span class="co">#&gt; 8  BRD4g4        BRD4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-7_c5c1782c863252eefc26af7c09d6ade4">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_target_data_frame</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span>,<span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  grna_id grna_target
+1  ATF2g1        ATF2
+2  ATF2g2        ATF2
+3  ATF2g3        ATF2
+4  ATF2g4        ATF2
+5  BRD4g1        BRD4
+6  BRD4g2        BRD4
+7  BRD4g3        BRD4
+8  BRD4g4        BRD4</code></pre>
+</div>
 </div>
 <p>Our goal in analyzing the CRISPRko dataset is to dissect gene regulatory networks by linking perturbations of genes to changes in the expression of other genes.</p>
 <p>We set the analysis parameters by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code> on the <code>sceptre_object</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code> takes several arguments: <code>positive_control_pairs</code>, <code>discovery_pairs</code>, <code>side</code>, <code>grna_grouping_strategy</code>, <code>control_group</code>, <code>resampling_mechanism</code>, <code>formula_object</code>, <code>multiple_testing_method</code>, <code>multiple_testing_alpha</code>, and <code>fit_parametric_curve</code>. The only required argument among these is <code>discovery_pairs</code>. We describe these arguments below.</p>
 <section id="positive-control-pairs" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="positive-control-pairs">
 <span class="header-section-number">2.1</span> Positive control pairs</h2>
 <p>Positive control pairs are target-response pairs for which we know (or have strong reason to believe) that there is a regulatory relationship between the target and the response. We can use positive control pairs to verify that <code>sceptre</code> (or any association testing method for that matter) is sensitive (i.e., capable of detecting true associations) on the dataset under analysis. We use the function <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> to construct the positive control pairs. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> takes as an argument a <code>sceptre_object</code> and returns a data frame with columns <code>grna_target</code> and <code>response_id</code>, where gRNA targets and response IDs with matching names are paired. We call <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> on the high-MOI CRISPRi dataset and the low-MOI CRISPRko dataset. In both cases the positive control set consists of transcription start sites paired to the gene regulated by those transcription start sites.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-8_b2e7a8c0c4f40dbe826b0f87caa922a9">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">positive_control_pairs_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">positive_control_pairs_highmoi</span><span class="op">)</span> <span class="co"># high MOI CRISPRi dataset</span></span>
-<span><span class="co">#&gt;       grna_target     response_id</span></span>
-<span><span class="co">#&gt; 1 ENSG00000069482 ENSG00000069482</span></span>
-<span><span class="co">#&gt; 2 ENSG00000100316 ENSG00000100316</span></span>
-<span><span class="co">#&gt; 3 ENSG00000104131 ENSG00000104131</span></span>
-<span><span class="co">#&gt; 4 ENSG00000122026 ENSG00000122026</span></span>
-<span><span class="co">#&gt; 5 ENSG00000135821 ENSG00000135821</span></span>
-<span><span class="co">#&gt; 6 ENSG00000147669 ENSG00000147669</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-8_04923bccbaf6d858ead8996e38f1679b">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">positive_control_pairs_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">positive_control_pairs_highmoi</span><span class="op">)</span> <span class="co"># high MOI CRISPRi dataset</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      grna_target     response_id
+1 ENSG00000069482 ENSG00000069482
+2 ENSG00000100316 ENSG00000100316
+3 ENSG00000104131 ENSG00000104131
+4 ENSG00000122026 ENSG00000122026
+5 ENSG00000135821 ENSG00000135821
+6 ENSG00000147669 ENSG00000147669</code></pre>
 </div>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-9_d26dab4497e77a14ca38c9c8397bcd61">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">positive_control_pairs_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">positive_control_pairs_lowmoi</span><span class="op">)</span> <span class="co"># low MOI CRISPRko dataset</span></span>
-<span><span class="co">#&gt;   grna_target response_id</span></span>
-<span><span class="co">#&gt; 1       CMTM6       CMTM6</span></span>
-<span><span class="co">#&gt; 2      IFNGR2      IFNGR2</span></span>
-<span><span class="co">#&gt; 3        JAK2        JAK2</span></span>
-<span><span class="co">#&gt; 4      NFKBIA      NFKBIA</span></span>
-<span><span class="co">#&gt; 5       STAT1       STAT1</span></span>
-<span><span class="co">#&gt; 6       STAT2       STAT2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-9_257d0bc73395a6139972ca25cf2de719">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">positive_control_pairs_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">positive_control_pairs_lowmoi</span><span class="op">)</span> <span class="co"># low MOI CRISPRko dataset</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  grna_target response_id
+1       CMTM6       CMTM6
+2      IFNGR2      IFNGR2
+3        JAK2        JAK2
+4      NFKBIA      NFKBIA
+5       STAT1       STAT1
+6       STAT2       STAT2</code></pre>
+</div>
 </div>
 <p>Positive control pairs need not consist exclusively of gene transcription start sites paired to target genes. For example, enhancer-gene links that have been validated previously (through, e.g., arrayed CRISPR screens) also can serve as positive control pairs. Users manually can append additional positive control pairs to the positive control pair data frame via a call to <code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code>. For example, suppose we know on the high-MOI CRISPRi data that <code>candidate_enh_1</code> regulates gene <code>ENSG00000069482</code> and that <code>candidate_enh_10</code> regulates gene <code>ENSG00000135821</code>. We can add these enhancer-gene links to the positive control pair data frame as follows.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-10_c559ca3f6c05cd0f3be159cf92050b22">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># construct data frame of additional positive control pairs</span></span>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-10_d8f264f4ec0ac3d8350fbd0ad2fccad6">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># construct data frame of additional positive control pairs</span></span>
 <span><span class="va">additional_positive_control_pairs</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>grna_target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"candidate_enh_1"</span>, <span class="st">"candidate_enh_10"</span><span class="op">)</span>,</span>
 <span>             response_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ENSG00000069482"</span>, <span class="st">"ENSG00000135821"</span><span class="op">)</span><span class="op">)</span></span>
@@ -298,20 +306,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="co"># append additional pairs to positive control data frame</span></span>
 <span><span class="va">positive_control_pairs_highmoi_updated</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">positive_control_pairs_highmoi</span>,</span>
 <span>                                                <span class="va">additional_positive_control_pairs</span><span class="op">)</span></span>
-<span><span class="va">positive_control_pairs_highmoi_updated</span></span>
-<span><span class="co">#&gt;         grna_target     response_id</span></span>
-<span><span class="co">#&gt; 1   ENSG00000069482 ENSG00000069482</span></span>
-<span><span class="co">#&gt; 2   ENSG00000100316 ENSG00000100316</span></span>
-<span><span class="co">#&gt; 3   ENSG00000104131 ENSG00000104131</span></span>
-<span><span class="co">#&gt; 4   ENSG00000122026 ENSG00000122026</span></span>
-<span><span class="co">#&gt; 5   ENSG00000135821 ENSG00000135821</span></span>
-<span><span class="co">#&gt; 6   ENSG00000147669 ENSG00000147669</span></span>
-<span><span class="co">#&gt; 7   ENSG00000155380 ENSG00000155380</span></span>
-<span><span class="co">#&gt; 8   ENSG00000176890 ENSG00000176890</span></span>
-<span><span class="co">#&gt; 9   ENSG00000187840 ENSG00000187840</span></span>
-<span><span class="co">#&gt; 10  ENSG00000196683 ENSG00000196683</span></span>
-<span><span class="co">#&gt; 11  candidate_enh_1 ENSG00000069482</span></span>
-<span><span class="co">#&gt; 12 candidate_enh_10 ENSG00000135821</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">positive_control_pairs_highmoi_updated</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        grna_target     response_id
+1   ENSG00000069482 ENSG00000069482
+2   ENSG00000100316 ENSG00000100316
+3   ENSG00000104131 ENSG00000104131
+4   ENSG00000122026 ENSG00000122026
+5   ENSG00000135821 ENSG00000135821
+6   ENSG00000147669 ENSG00000147669
+7   ENSG00000155380 ENSG00000155380
+8   ENSG00000176890 ENSG00000176890
+9   ENSG00000187840 ENSG00000187840
+10  ENSG00000196683 ENSG00000196683
+11  candidate_enh_1 ENSG00000069482
+12 candidate_enh_10 ENSG00000135821</code></pre>
+</div>
 </div>
 <p>We then could supply <code>positive_control_pairs_highmoi_updated</code> instead of <code>positive_control_pairs_highmoi</code> to <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>.</p>
 </section><section id="discovery-pairs" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="discovery-pairs">
@@ -321,55 +331,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="header-section-number">2.2.0.1</span> Construct <em>cis</em> pairs</h4>
 <p><code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> returns the set of target-response pairs for which the target and response are located on the same chromosome and in close physical proximity to one another. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> assumes that the columns <code>chr</code>, <code>start</code>, and <code>stop</code> are present within the <code>grna_target_data_frame</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> also assumes that the responses are genes as opposed to, say, proteins. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> is a useful pair constructor function for screens that aim to map noncoding regulatory elements (e.g., enhancers, silencers, or noncoding GWAS variants) to target genes in <em>cis</em>. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> takes several arguments: <code>sceptre_object</code> (required) <code>distance_threshold</code> (optional), <code>positive_control_pairs</code> (optional), and <code>ref_genome</code> (optional). Each target is paired to the set of genes within <code>distance_threshold</code> bases of that target. (The default value of <code>distance_threshold</code> is 500,000 bases, or half a megabase.) The <code>positive_control_pairs</code> data frame optionally can be passed to <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code>, in which case the positive control targets (i.e., the entries within the <code>grna_target</code> column of <code>positive_control_pairs</code>) are excluded from the <em>cis</em> pairs. Finally, <code>ref_genome</code> is a string indicating the reference genome that <code>chr</code>, <code>start</code>, and <code>stop</code> are defined with respect to. (The only reference genome currently available is “10X_GRCh38_2020,” which is the GRCh38 reference genome that has shipped with CellRanger since 2020.)</p>
 <p>We use <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> to construct the discovery pairs for the high-MOI CRISPRi dataset. We set <code>distance_threshold</code> to <code>5e6</code> (i.e., 5 megabases) so as to increase the number of pairs in the discovery set for illustration purposes.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-11_e4cd06d3a1814beae21134cc8a97ed24">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-11_6bcd660af29668860845231438090d53">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
 <span>                                               positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_highmoi</span>,</span>
 <span>                                               distance_threshold <span class="op">=</span> <span class="fl">5e6</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>discovery_pairs_highmoi</code> is a data frame with columns <code>grna_target</code> and <code>response_id</code>; each candidate enhancer is mapped to the set of genes in close proximity to that candidate enhancer.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-12_43de162c69161534b778317995d59f8a">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_highmoi</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">50</span><span class="op">)</span>,<span class="op">]</span></span>
-<span><span class="co">#&gt;        grna_target     response_id</span></span>
-<span><span class="co">#&gt; 1  candidate_enh_1 ENSG00000174529</span></span>
-<span><span class="co">#&gt; 10 candidate_enh_1 ENSG00000117280</span></span>
-<span><span class="co">#&gt; 20 candidate_enh_2 ENSG00000143493</span></span>
-<span><span class="co">#&gt; 30 candidate_enh_2 ENSG00000136643</span></span>
-<span><span class="co">#&gt; 40 candidate_enh_3 ENSG00000142733</span></span>
-<span><span class="co">#&gt; 50 candidate_enh_3 ENSG00000117748</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-12_5dcf0a18ead7232feb78b7dfae139205">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_highmoi</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">50</span><span class="op">)</span>,<span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       grna_target     response_id
+1  candidate_enh_1 ENSG00000174529
+10 candidate_enh_1 ENSG00000117280
+20 candidate_enh_2 ENSG00000143493
+30 candidate_enh_2 ENSG00000136643
+40 candidate_enh_3 ENSG00000142733
+50 candidate_enh_3 ENSG00000117748</code></pre>
+</div>
 </div>
 </section><section id="construct-trans-pairs" class="level4" data-number="2.2.0.2"><h4 data-number="2.2.0.2" class="anchored" data-anchor-id="construct-trans-pairs">
 <span class="header-section-number">2.2.0.2</span> Construct <em>trans</em> pairs</h4>
 <p><code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> returns the entire set of possible target-response pairs. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> is a useful pair constructor function for analyses in which we seek to conduct a <em>trans</em> analysis, testing each target against each response. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> takes as arguments <code>sceptre_object</code> (required), <code>positive_control_pairs</code> (optional), <code>exclude_positive_control_pairs</code> (optional), and <code>exclude_positive_control_targets</code> (optional). By default <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> returns a data frame with columns <code>grna_target</code> and <code>response_id</code>, where each gRNA target is mapped to each response ID. If the <code>positive_control_pairs</code> data frame is passed and <code>exclude_positive_control_pairs</code> is set to <code>TRUE</code>, then the positive control target-response pairs are excluded from the <em>trans</em> pairs. Next, if <code>positive_control_pairs</code> is passed and <code>exclude_positive_control_targets</code> is set to <code>TRUE</code>, then <em>all</em> pairs containing a positive control gRNA target are excluded from the <em>trans</em> pairs. (In this sense setting <code>exclude_positive_control_targets</code> to <code>TRUE</code> is stronger than setting <code>exclude_positive_control_pairs</code> to <code>TRUE</code>.)</p>
 <p>We use <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> to construct the discovery set for the low-MOI CRISPRko dataset, excluding the positive control pairs. The discovery set consists of the set of genes targeted by one or more gRNAs paired to the set of <em>all other</em> genes.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-13_20878202cc8666b4177fb9eebc129610">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-13_d0f8da690a9d7f2b0e89fcd64b22dc7e">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
 <span>                                                positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_lowmoi</span>,</span>
 <span>                                                exclude_positive_control_pairs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">discovery_pairs_lowmoi</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   grna_target response_id</span></span>
-<span><span class="co">#&gt; 1        ATF2       PCBP3</span></span>
-<span><span class="co">#&gt; 2        BRD4       PCBP3</span></span>
-<span><span class="co">#&gt; 3        CAV1       PCBP3</span></span>
-<span><span class="co">#&gt; 4       CD274       PCBP3</span></span>
-<span><span class="co">#&gt; 5        CD86       PCBP3</span></span>
-<span><span class="co">#&gt; 6       CMTM6       PCBP3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">discovery_pairs_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  grna_target response_id
+1        ATF2       PCBP3
+2        BRD4       PCBP3
+3        CAV1       PCBP3
+4       CD274       PCBP3
+5        CD86       PCBP3
+6       CMTM6       PCBP3</code></pre>
+</div>
 </div>
 <p>We also can use <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> to construct a <em>trans</em> discovery set for the high-MOI, enhancer-targeting CRISPRi dataset. To this end we call <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>, setting <code>exclude_positive_control_targets</code> to <code>TRUE</code> so as to exclude all positive control gRNA targets from the <em>trans</em> pairs.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-14_695ab8b55de64609022cd6d33e86f723">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_highmoi_trans</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-14_c9c5bed820353192715e6292741f69a3">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_highmoi_trans</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
 <span>                                                       positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_highmoi</span>,</span>
 <span>                                                       exclude_positive_control_targets <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The resulting data frame, <code>discovery_pairs_highmoi_trans</code>, maps each candidate enhancer to the entire set of genes.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-15_d6846ed74bae7d38bd2bc3ff70bcc9d9">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">discovery_pairs_highmoi_trans</span><span class="op">)</span></span>
-<span><span class="co">#&gt;        grna_target     response_id</span></span>
-<span><span class="co">#&gt; 1  candidate_enh_1 ENSG00000069275</span></span>
-<span><span class="co">#&gt; 2 candidate_enh_10 ENSG00000069275</span></span>
-<span><span class="co">#&gt; 3 candidate_enh_11 ENSG00000069275</span></span>
-<span><span class="co">#&gt; 4 candidate_enh_12 ENSG00000069275</span></span>
-<span><span class="co">#&gt; 5 candidate_enh_13 ENSG00000069275</span></span>
-<span><span class="co">#&gt; 6 candidate_enh_14 ENSG00000069275</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-15_11d60a8b071fa950973ae7e5b2d9102c">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">discovery_pairs_highmoi_trans</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       grna_target     response_id
+1  candidate_enh_1 ENSG00000069275
+2 candidate_enh_10 ENSG00000069275
+3 candidate_enh_11 ENSG00000069275
+4 candidate_enh_12 ENSG00000069275
+5 candidate_enh_13 ENSG00000069275
+6 candidate_enh_14 ENSG00000069275</code></pre>
+</div>
 </div>
 <p>Some users may wish to run both <em>cis</em> and <em>trans</em> analyses on their data. We recommend that such users carry out the <code>sceptre</code> pipeline twice: once using a <em>cis</em> discovery set and once using a <em>trans</em> discovery set.</p>
 </section><section id="reducing-the-multiplicity-burden" class="level3" data-number="2.2.1"><h3 data-number="2.2.1" class="anchored" data-anchor-id="reducing-the-multiplicity-burden">
@@ -421,7 +437,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table></section><section id="grna-grouping-strategy" class="level2" data-number="2.4"><h2 data-number="2.4" class="anchored" data-anchor-id="grna-grouping-strategy">
 <span class="header-section-number">2.4</span> gRNA grouping strategy</h2>
 <p>Multiple gRNAs typically are designed to target a given genomic element. The parameter <code>grna_grouping_strategy</code> controls if and how gRNAs that target the same genomic element are combined. The default gRNA grouping strategy is <code>"union"</code>. <code>"union"</code> constructs a “grouped gRNA” by combining all gRNAs that target a given genomic element via a union operation; this “grouped gRNA” is then tested for association against the responses to which the element is paired. We illustrate this grouping strategy using an example. Suppose that “gRNA 1” and “gRNA 2” target the same genomic element. Suppose that “gRNA 1” is present in the cells indexed 3, 6, 9 and that “gRNA 2” is present in the cells indexed 1, 4, 6, 10. The “grouped gRNA” formed combining “gRNA 1” and “gRNA 2” via the union operation is defined to be present in the cells indexed 1, 3, 4, 6, 9, 10. (See schematic below.) This “grouped gRNA” is then tested against responses as if it were a single gRNA.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-16_4a8d20362ffec0ac7d57e36d4060e95a">
+<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-16_3ad2f5dd10d06c1e82c31462183f7176">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="union_grouping.png" class="img-fluid figure-img" width="450"></p>
@@ -433,7 +449,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="control-group" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="control-group">
 <span class="header-section-number">2.5</span> Control group</h2>
 <p>The primary goal of <code>sceptre</code> is to test for association between a given gRNA target and response. <code>control_group</code> is a parameter that controls the set of cells used to carry out the test of association. Suppose for simplicity that we are carrying out a singleton analysis, i.e.&nbsp;suppose that we are testing for association between an individual targeting gRNA and a response. We define the “treatment group” as the set of cells that contain the given targeting gRNA, and we define the “control group” as the set of cells against which the treatment group is compared to conduct the association test. There are two choices for the control group: the “complement set” and the “non-targeting (NT) cells.” The complement set consists of the cells that <em>do not</em> contain the given targeting gRNA; the NT cells, by contrast, consist of the cells that contain a non-targeting gRNA. (See schematic below.) <code>sceptre</code> tests for association between the given targeting gRNA and the response by testing for differential expression of the response across the treatment group and the control group. Users can select the control group to use by passing either <code>"complement"</code> or <code>"nt_cells"</code> to <code>control_group</code>.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-17_cd54567c2748fe250f55130d6042a5a2">
+<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-17_7243ab2792cf5d2f5ee5bb8332b1f479">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="control_vs_complement.png" class="img-fluid figure-img" width="760"></p>
@@ -442,7 +458,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The choice of the control group should be made on the basis of the MOI of the dataset and the type of genomic element being targeted. In high-MOI screens each cell contains multiple gRNAs. Very few (if any) cells contain exclusively NT gRNAs, and so the complement set is the only choice for the control group. In low-MOI screens there is more flexibility. The default choice for the control group is the NT cells, as we seek to compare the effect of the targeting gRNA to that of a “null” gRNA rather than to the average of the effects of all other gRNAs introduced in the pooled screen. However, the complement set is a reasonable choice for low-MOI enhancer-targeting screens, as gRNAs in enhancer-targeting screens tend to exert small and local effects, rendering the average effect over gRNAs in the complement set similar to that of a “null” gRNA. Thus, we recommend trying both the complement set and the NT cells for the control group in low-MOI enhancer-targeting screens and selecting between these options on the basis of their performance on the negative control and positive control data. The decision tree below summarizes the control group that we recommend selecting as a function of MOI and genomic element targeted.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-18_0a997f914f5abed9a628e58419c26cfb">
+<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-18_10f12759db95452e3d139ed6b1512e7b">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="control_group_dec_tree.png" class="img-fluid figure-img" width="350"></p>
@@ -453,13 +469,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="formula" class="level2" data-number="2.6"><h2 data-number="2.6" class="anchored" data-anchor-id="formula">
 <span class="header-section-number">2.6</span> Formula</h2>
 <p>The parameter <code>formula_object</code> specifies how <code>sceptre</code> is to adjust for the cell-specific covariates. <code>formula_object</code> is optional; if not provided, <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code> constructs a default <code>formula_object</code>. The default <code>formula_object</code> is formed by summing over all covariates and log-transforming the count-based covariates. For example, the high-MOI CRISPRi data contain the cell-specific covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_p_mito</code>, and <code>batch</code>. The first four of these covariates are count-based. Thus, the default formula object for this dataset is as follows:</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-19_b38ab8b4bd41075e3992ce835ea85265">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_umis</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-19_e27ebe96d22bc1e7977b568b12d2ef75">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_umis</span><span class="op">)</span> <span class="op">+</span></span>
 <span>          <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">grna_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">grna_n_umis</span><span class="op">)</span> <span class="op">+</span> <span class="va">response_p_mito</span> <span class="op">+</span> <span class="va">batch</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Similarly, the low-MOI CRISPRko data contain the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_p_mito</code>, and <code>bio_rep</code>. The default formula object for the CRISPRko dataset is as follows:</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-20_9fd01aca628f119b675e8883729a552e">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_umis</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-20_dbd9a02b9a1f00fa154e273979abd4e5">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_umis</span><span class="op">)</span> <span class="op">+</span></span>
 <span>          <span class="va">response_p_mito</span> <span class="op">+</span> <span class="va">batch</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>(The covariates <code>grna_n_nonzero</code> and <code>grna_n_umis</code> by default are not included in the formula object, as <code>grna_n_nonzero</code> and <code>grna_n_umis</code> typically do not contain substantial information in low MOI after quality control.)</p>
@@ -467,7 +483,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="resampling-mechanism" class="level2" data-number="2.7"><h2 data-number="2.7" class="anchored" data-anchor-id="resampling-mechanism">
 <span class="header-section-number">2.7</span> Resampling mechanism</h2>
 <p>The parameter <code>resampling_mechanism</code> controls the inferential procedure that <code>sceptre</code> uses to compute a p-value for a target-response pair. Suppose for simplicity that we are carrying out a singleton gRNA analysis. There are three pieces of information relevant to testing for association between a given gRNA and response: (1) the vector of UMI counts of the response; (2) the “gRNA indicator vector,” where a given entry of the vector is set to “1” if the corresponding cell is part of the treatment group (i.e., it contains the gRNA) and “0” if it is part of the control group; and (3) the matrix of cell-specific covariates. First, <code>sceptre</code> regresses the response vector onto the gRNA indicator vector and covariate matrix via a negative binomial (NB) GLM. <code>sceptre</code> computes the z-score <span class="math inline">\(z_\textrm{obs}\)</span> corresponding to a test of the null hypothesis that the coefficient corresponding to the gRNA indicator vector in the fitted GLM is zero. Next, <code>sceptre</code> <em>resamples</em> the gRNA indicator vector <em>B</em> times, where <em>B</em> is some large integer (e.g., <em>B</em> = 5000). (We discuss exactly how the gRNA indicator vector is resampled below.) Finally, for each of the resampled gRNA indicator vectors, <code>sceptre</code> recomputes the z-score, producing <em>B</em> “null” z-scores <span class="math inline">\(\tilde{z_1}, \dots, \tilde{z_B}\)</span>. The observed z-score <span class="math inline">\(z_\textrm{obs}\)</span> is compared to the null z-scores <span class="math inline">\(\tilde{z_1}, \dots, \tilde{z_B}\)</span> to compute a p-value.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-21_46608473a22ebaa8ffc1b34e64312ac2">
+<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-21_cdfed91c99fe95fe9ee695733f93c219">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="sceptre_pt_1.png" class="img-fluid figure-img" width="650"></p>
@@ -515,7 +531,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="fit-parametric-curve" class="level2" data-number="2.8"><h2 data-number="2.8" class="anchored" data-anchor-id="fit-parametric-curve">
 <span class="header-section-number">2.8</span> Fit parametric curve</h2>
 <p>As described above, for a given gRNA-response pair, <code>sceptre</code> computes an “observed” z-score <span class="math inline">\(z_\textrm{obs}\)</span> and a set of “null” z-scores <span class="math inline">\(\tilde{z_1}, \dots, \tilde{z_B}\)</span> (regardless of whether <code>resampling_mechanism</code> is set to <code>permutations</code> or <code>crt</code>). By default, <code>sceptre</code> fits a parametric density (specifically, a skew-normal density) to the distribution of null z-scores and then computes a p-value by evaluating the tail probability of the fitted density at the observed z-score <span class="math inline">\(z_\textrm{obs}\)</span> (see figure below). The parametric density functionality can be deactivated by setting <code>fit_parametric_curve</code> to <code>FALSE</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, in which case a p-value is computed by directly comparing the observed z-score to the null z-scores.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-22_ab1ecd1e7dd5410775d2077be2a0bd85">
+<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-22_e6dfe2e0e1fba1c292762a3ea882704d">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="fit_parametric_curve.png" class="img-fluid figure-img" width="650"></p>
@@ -523,7 +539,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Most users need not to worry about the <code>fit_parametric_curve</code> argument. <code>sceptre</code> provides <code>fit_parametric_curve</code> as an option to facilitate diagnosis of miscalibrated results on the negative control data.</p>
+<p>When <code>fit_parametric_curve</code> is set to <code>FALSE</code>, <code>sceptre</code> must compute a greater number of “null” test statistics to maintain p-value precision. Thus, setting <code>fit_parametric_curve</code> to <code>FALSE</code> increases compute (in some cases substantially). We recommend setting <code>fit_parametric_curve</code> to <code>FALSE</code> only when the negative control p-values exhibit miscalibration.</p>
 </section><section id="multiple-testing-method-and-multiple-testing-alpha" class="level2" data-number="2.9"><h2 data-number="2.9" class="anchored" data-anchor-id="multiple-testing-method-and-multiple-testing-alpha">
 <span class="header-section-number">2.9</span> Multiple testing method and multiple testing <span class="math inline">\(\alpha\)</span>
 </h2>
@@ -532,8 +548,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="setting-the-analysis-parameters" class="level2" data-number="2.10"><h2 data-number="2.10" class="anchored" data-anchor-id="setting-the-analysis-parameters">
 <span class="header-section-number">2.10</span> Setting the analysis parameters</h2>
 <p>We set the analysis parameters by calling <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code> on the <code>sceptre_object</code>s, passing <code>discovery_pairs</code> and <code>positive_control_pairs</code> (and, on the high-MOI CRISPRi data, <code>side</code>). We allow all other arguments to take default values.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-23_6f64a9d84987fea84f47939385b00aee">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-23_702c545bd60fd7e37300e10279cdc22a">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
 <span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>, </span>
 <span>                                                  discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_highmoi</span>, </span>
 <span>                                                  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_highmoi</span>,</span>
@@ -545,36 +561,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>                                                 positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on the resulting <code>sceptre_object</code>, which prints to the console a summary tracking the status of the analysis. Notice that the “Analysis parameters” field of the output contains information about the analysis parameters that we have selected (or that have been set by default).</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-24_3c00900590e779761a76a37b913d4c32">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span><span class="op">)</span></span>
-<span><span class="co">#&gt; An object of class sceptre_object.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attributes of the data:</span></span>
-<span><span class="co">#&gt;  • 45919 cells</span></span>
-<span><span class="co">#&gt;  • 526 responses</span></span>
-<span><span class="co">#&gt;  • High multiplicity-of-infection </span></span>
-<span><span class="co">#&gt;  • 70 targeting gRNAs (distributed across 35 targets) </span></span>
-<span><span class="co">#&gt;  • 25 non-targeting gRNAs </span></span>
-<span><span class="co">#&gt;  • 6 covariates (batch, grna_n_nonzero, grna_n_umis, response_n_nonzero, response_n_umis, response_p_mito)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Analysis status:</span></span>
-<span><span class="co">#&gt;  ✓ import_data()</span></span>
-<span><span class="co">#&gt;  ✓ set_analysis_parameters()</span></span>
-<span><span class="co">#&gt;  ✗ assign_grnas()</span></span>
-<span><span class="co">#&gt;  ✗ run_qc()</span></span>
-<span><span class="co">#&gt;  ✗ run_calibration_check()</span></span>
-<span><span class="co">#&gt;  ✗ run_power_check()</span></span>
-<span><span class="co">#&gt;  ✗ run_discovery_analysis()</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Analysis parameters: </span></span>
-<span><span class="co">#&gt;  • Discovery pairs: data frame with 610 pairs</span></span>
-<span><span class="co">#&gt;  • Positive control pairs: data frame with 10 pairs</span></span>
-<span><span class="co">#&gt;  • Sidedness of test: left</span></span>
-<span><span class="co">#&gt;  • N nonzero treatment cells threshold: not specified</span></span>
-<span><span class="co">#&gt;  • N nonzero control cells threshold: not specified</span></span>
-<span><span class="co">#&gt;  • Resampling mechanism: conditional resampling</span></span>
-<span><span class="co">#&gt;  • gRNA grouping strategy: union</span></span>
-<span><span class="co">#&gt;  • Formula object: log(response_n_nonzero) + log(response_n_umis) + log(grna_n_nonzero) + log(grna_n_umis) + batch</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-24_d59b0cadbe5a3fc077b894dd960fd65f">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An object of class sceptre_object.
+
+Attributes of the data:
+    • 45919 cells
+    • 526 responses
+    • High multiplicity-of-infection 
+    • 70 targeting gRNAs (distributed across 35 targets) 
+    • 25 non-targeting gRNAs 
+    • 6 covariates (batch, grna_n_nonzero, grna_n_umis, response_n_nonzero, response_n_umis, response_p_mito)
+
+Analysis status:
+    ✓ import_data()
+    ✓ set_analysis_parameters()
+    ✗ assign_grnas()
+    ✗ run_qc()
+    ✗ run_calibration_check()
+    ✗ run_power_check()
+    ✗ run_discovery_analysis()
+
+Analysis parameters: 
+    • Discovery pairs: data frame with 610 pairs
+    • Positive control pairs: data frame with 10 pairs
+    • Sidedness of test: left
+    • N nonzero treatment cells threshold: not specified
+    • N nonzero control cells threshold: not specified
+    • Resampling mechanism: conditional resampling
+    • gRNA grouping strategy: union
+    • Formula object: log(response_n_nonzero) + log(response_n_umis) + log(grna_n_nonzero) + log(grna_n_umis) + batch</code></pre>
+</div>
 </div>
 
 

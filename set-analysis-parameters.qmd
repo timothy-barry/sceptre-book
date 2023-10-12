@@ -1,11 +1,18 @@
+---
+title: "Set analysis parameters"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Set analysis parameters}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
-
-# Set analysis parameters
 
 This vignette explicates the "set analysis parameters" step of the `sceptre` pipeline. The purpose of this step is to select the parameters that govern how the statistical analysis is to be carried out.
 
@@ -139,7 +146,7 @@ head(discovery_pairs_highmoi_trans)
 
 Some users may wish to run both *cis* and *trans* analyses on their data. We recommend that such users carry out the `sceptre` pipeline twice: once using a *cis* discovery set and once using a *trans* discovery set.
 
-### Reducing the multiplicity burden
+### Reducing the multiplicity burden 
 
 `sceptre` computes a p-value for each target-response pair in the discovery set. These p-values are subjected to a multiple testing correction procedure (by default, the Benjamini-Hochberg method) to produce a discovery set that controls some notion of aggregate type-I error (by default, the false discovery rate). In general it is good to restrict one's attention to pairs that are promising or scientifically interesting. Including a large number of uninteresting or "null" pairs (i.e., pairs for which there is no relationship between the target and response) in the discovery set causes the power of the multiple testing correction procedure to decrease, resulting in fewer discoveries.
 
@@ -239,7 +246,7 @@ As described above, for a given gRNA-response pair, `sceptre` computes an "obser
 knitr::include_graphics("fit_parametric_curve.png")
 ```
 
-Most users need not to worry about the `fit_parametric_curve` argument. `sceptre` provides `fit_parametric_curve` as an option to facilitate diagnosis of miscalibrated results on the negative control data.
+When `fit_parametric_curve` is set to `FALSE`, `sceptre` must compute a greater number of "null" test statistics to maintain p-value precision. Thus, setting `fit_parametric_curve` to `FALSE` increases compute (in some cases substantially). We recommend setting `fit_parametric_curve` to `FALSE` only when the negative control p-values exhibit miscalibration.
 
 ## Multiple testing method and multiple testing $\alpha$
 

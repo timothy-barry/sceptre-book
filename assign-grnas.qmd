@@ -1,11 +1,18 @@
+---
+title: "Assign gRNAs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Assign gRNAs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
-
-# Assign gRNAs
 
 The third step of the pipeline is to assign gRNAs to cells. This step entails using the gRNA UMI counts to determine which cells contain which gRNAs. `sceptre` provides three gRNA-to-cell assignment methods: the "mixture model method," the "maximum method," and "the thresholding method."
 
@@ -67,7 +74,7 @@ We are now ready to carry out the gRNA assignment step on both datasets.
 
 ## Visualize the gRNA count distributions
 
-A helpful first step in assigning gRNAs to cells is to visualize the gRNA UMI count distributions. As discussed in the Get Started vignette (`vignette("sceptre")`), we can use the function `plot_grna_count_distributions()` to plot the empirical UMI count distribution of one or more gRNAs. `plot_grna_count_distributions()` takes several arguments: `sceptre_object` (required), `n_grnas_to_plot` (optional), `grnas_to_plot` (optional), and `threshold` (optional). `n_grnas_to_plot` is an integer specifying the number of randomly-selected gRNAs to plot. `grnas_to_plot` is a character vector specifying (by name) one or more specific gRNAs to plot. Finally, `threshold` is an integer specifying the location at which to draw a dotted vertical line. We call `plot_grna_count_distributions()` on the low-MOI CRISPRko data, plotting nine random gRNAs.
+A helpful first step in assigning gRNAs to cells is to visualize the gRNA UMI count distributions. As discussed in the Get Started vignette (`vignette("sceptre")`), we can use the function `plot_grna_count_distributions()` to plot the empirical UMI count distribution of one or more gRNAs. `plot_grna_count_distributions()` takes several arguments: `sceptre_object` (required), `n_grnas_to_plot` (optional), `grnas_to_plot` (optional), and `threshold` (optional). `n_grnas_to_plot` is an integer specifying the number of randomly-selected gRNAs to plot. `grnas_to_plot` is a character vector specifying (by name) one or more specific gRNAs to plot. Finally, `threshold` is an integer specifying the location at which to draw a dotted vertical line. We call  `plot_grna_count_distributions()` on the low-MOI CRISPRko data, plotting nine random gRNAs.
 
 ```{r, eval=FALSE}
 plot_grna_count_distributions(sceptre_object = sceptre_object_lowmoi,
@@ -159,6 +166,7 @@ Note that setting `threshold` to `1` causes background contamination to be ignor
 We can call `plot()` on the `sceptre_object` to render a plot summarizing the outcome of the gRNA-to-cell assignment step. `plot()` takes the arguments `sceptre_object` (required) `n_grnas_to_plot` (optional), `grnas_to_plot` (optional), and `return_indiv_plots` (optional). `n_grnas_to_plot` is the number of (randomly-selected) gRNAs to plot; `grnas_to_plot` is a vector of names of one or more gRNAs to plot; and `return_indiv_plots` is a logical value indicating whether to return the constituent panels of the plot individually (`TRUE`) or combined into a single figure (`FALSE`; default).
 
 We visualize the outcome of the gRNA-to-cell assignment step on the low-MOI CRISPRko data based on the maximum assignment strategy. We specifically plot the gRNAs "IFNGR2g2", "STAT1g2", and "STAT5Ag4". (These gRNAs were selected arbitrarily for the purpose of illustrating the `grnas_to_plot` argument.)
+
 
 ```{r,eval=FALSE}
 grnas_to_plot <- c("IFNGR2g2", "STAT1g2", "STAT5Ag4")

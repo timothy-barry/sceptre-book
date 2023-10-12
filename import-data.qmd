@@ -1,4 +1,11 @@
-# Import data
+---
+title: "Import data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Import data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
 This vignette describes how to import single-cell CRISPR screen data into `sceptre`, which is the first step of the `sceptre` pipeline.
 
