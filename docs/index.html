@@ -6,10 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Timothy Barry and Eugene Katsevich">
-<meta name="dcterms.date" content="2023-10-11">
+<meta name="author" content="Timothy Barry, Eugene Katsevich">
 
-<title>Single-Cell CRISPR Screen Analysis with sceptre</title>
+<title>Applied Single-Cell CRISPR Screen Data Analysis: A Guide Using sceptre and R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -33,6 +32,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./sceptre.html" rel="next">
+<link href="./book_cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -90,7 +90,15 @@ ul.task-list li input[type="checkbox"] {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Single-Cell CRISPR Screen Analysis with <code>sceptre</code></a> 
+      <a href="./">Applied Single-Cell CRISPR Screen Data Analysis: A Guide Using <code>sceptre</code> and R</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/timothy-barry/sceptre-book" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -154,33 +162,21 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a></li>
   </ul>
-</nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Single-Cell CRISPR Screen Analysis with <code>sceptre</code></h1>
+<h1 class="title">Applied Single-Cell CRISPR Screen Data Analysis: A Guide Using <code>sceptre</code> and R</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Timothy Barry and Eugene Katsevich </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">October 11, 2023</p>
-    </div>
-  </div>
   
     
   </div>
@@ -188,8 +184,9 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
+
 <section id="welcome" class="level1 unnumbered">
-<h1 class="unnumbered">Welcome</h1>
+<h1 class="unnumbered">Welcome</h1><p><img src="book_cover.png" title="Applied Single-Cell CRISPR Screen Data Analysis: A Guide Using `sceptre` and R" class="quarto-cover-image img-fluid"></p>
 
 
 </section>
@@ -438,6 +435,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Applied Single-Cell CRISPR Screen Data Analysis was written by Timothy Barry and Eugene Katsevich</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
 
 
 

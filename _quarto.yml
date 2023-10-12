@@ -3,9 +3,18 @@ project:
   output-dir: docs
 
 book:
-  title: "Single-Cell CRISPR Screen Analysis with `sceptre`"
-  author: "Timothy Barry and Eugene Katsevich"
-  date: "10/11/2023"
+  title: "Applied Single-Cell CRISPR Screen Data Analysis: A Guide Using `sceptre` and R"
+  reader-mode: true
+  page-footer:
+    left: |
+      Applied Single-Cell CRISPR Screen Data Analysis was written by Timothy Barry and Eugene Katsevich
+    right: |
+      This book was built with <a href="https://quarto.org/">Quarto</a>.
+  cover-image: book_cover.png
+  favicon: book_cover.png
+  repo-url: https://github.com/timothy-barry/sceptre-book
+  repo-branch: main
+  repo-actions: [edit, issue]
   chapters:
     - index.qmd
     - sceptre.qmd
@@ -19,6 +28,7 @@ format:
   html:
     theme: cosmo
     code-link: true
+    author-meta: "Timothy Barry, Eugene Katsevich"
 
 execute:
   cache: true
