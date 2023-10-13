@@ -8,7 +8,7 @@
 
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
 
-<title>Applied Single-Cell CRISPR Screen Data Analysis</title>
+<title>Hands-On Single-Cell CRISPR Screen Analysis</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -75,7 +75,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Navigating this Book</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Welcome</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -90,7 +90,7 @@ ul.task-list li input[type="checkbox"] {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Applied Single-Cell CRISPR Screen Data Analysis</a> 
+      <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/timothy-barry/sceptre-book" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
@@ -111,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Navigating this Book</span></a>
+ <span class="menu-text">Welcome</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -166,7 +166,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#navigating-this-book" id="toc-navigating-this-book" class="nav-link active" data-scroll-target="#navigating-this-book">Navigating this Book</a></li>
+  <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a></li>
+  <li><a href="#navigating-this-book" id="toc-navigating-this-book" class="nav-link" data-scroll-target="#navigating-this-book">Navigating this Book</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -175,7 +176,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Applied Single-Cell CRISPR Screen Data Analysis</h1>
+<h1 class="title">Hands-On Single-Cell CRISPR Screen Analysis</h1>
 </div>
 
 
@@ -190,12 +191,15 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p><img src="book_cover.png" title="Applied Single-Cell CRISPR Screen Data Analysis" class="quarto-cover-image img-fluid"></p>
-<p>Single-cell CRISPR screens (e.g., perturb-seq) combine CRISPR genome engineering and single-cell sequencing to survey the effects of genetic perturbations on individual cells. Single-cell CRISPR screens pose enormous potential for unraveling mechanisms underlying disease and accelerating drug discovery. However, the analysis of these screens presents considerable statistical and computational challenges. <em>Applied Single-Cell CRISPR Screen Data Analysis</em> is a step-by-step guide to carrying out statistically rigorous and computationally efficient single-cell CRISPR screen data analysis using the <code>sceptre</code> R package. <code>sceptre</code> was developed by <a href="https://timothy-barry.github.io/">Timothy Barry</a>, Joseph Deutsch, and <a href="https://ekatsevi.github.io/">Eugene Katsevich</a>.</p>
-<p><code>sceptre</code> is compatible with a broad range of single-cell CRISPR screen experimental designs. In particular, datasets can vary along the following axes: multiplicity of infection (low or high), genomic element targeted (gene or noncoding regulatory element), CRISPR modality (CRISPRko, CRISPRi, CRISPRa, or CRISPR prime/base editing), and molecular readout (gene expression, protein expression, or chromatin accessibility). This book uses two real datasets to illustrate use of <code>sceptre</code>: a high-MOI CRISPRi screen of noncoding regulatory elements and a low-MOI CRISPRko screen of gene transcription start sites. On both datasets the molecular phenotype measured is the transcriptome (i.e., the gene expressions).</p>
+
+<section id="welcome" class="level1 unnumbered">
+<h1 class="unnumbered">Welcome</h1><p><img src="book_cover.png" title="Hands-On Single-Cell CRISPR Screen Analysis" class="quarto-cover-image img-fluid"></p>
+<p>Single-cell CRISPR screens (e.g., perturb-seq) combine CRISPR genome engineering and single-cell sequencing to survey the effects of genetic perturbations on individual cells. Single-cell CRISPR screens pose enormous potential for unraveling mechanisms underlying disease and accelerating drug discovery. However, the analysis of these screens presents considerable statistical and computational challenges. <em>Hands-On Single-Cell CRISPR Screen Analysis</em> is a step-by-step guide to carrying out statistically rigorous and computationally efficient single-cell CRISPR screen data analysis using the <code>sceptre</code> R package. <code>sceptre</code> was developed by <a href="https://timothy-barry.github.io/">Timothy Barry</a>, Joseph Deutsch, and <a href="https://ekatsevi.github.io/">Eugene Katsevich</a>.</p>
+<p><code>sceptre</code> is compatible with a broad range of single-cell CRISPR screen experimental designs. In particular, datasets can vary along the following axes: multiplicity of infection (low or high), genomic element targeted (gene or noncoding regulatory element), CRISPR modality (CRISPRko, CRISPRi, CRISPRa, or CRISPR prime or base editing), and molecular readout (gene expression, protein expression, or chromatin accessibility). This book uses two real datasets to illustrate use of <code>sceptre</code>: a high-MOI CRISPRi screen of noncoding regulatory elements and a low-MOI CRISPRko screen of gene transcription start sites.</p>
+</section>
 <section id="navigating-this-book" class="level1 unnumbered">
 <h1 class="unnumbered">Navigating this Book</h1>
-<p>Users should start by reading the <em>The whole game</em> (link below), which provides a high-level overview of <code>sceptre</code>. Users who wish to learn more about individual steps of the <code>sceptre</code> pipeline should read the subsequent chapters (i.e., <em>Import data</em> to <em>Run power check and discovery analysis</em>) in order.</p>
+<p>Users should begin by reading the <em>The whole game</em> (link below), which provides a high-level overview of <code>sceptre</code>. Users who wish to learn more about individual steps of the <code>sceptre</code> pipeline should read the subsequent chapters (i.e., <em>Import data</em> to <em>Run power check and discovery analysis</em>) in order.</p>
 
 
 </section>
@@ -446,7 +450,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">Applied Single-Cell CRISPR Screen Data Analysis was written by Timothy Barry and Eugene Katsevich</div>   
+    <div class="nav-footer-left">Hands-On Single-Cell CRISPR Screen Analysis was written by Timothy Barry and Eugene Katsevich</div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>

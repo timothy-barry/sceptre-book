@@ -3,11 +3,11 @@ project:
   output-dir: docs
 
 book:
-  title: "Applied Single-Cell CRISPR Screen Data Analysis"
+  title: "Hands-On Single-Cell CRISPR Screen Analysis"
   reader-mode: true
   page-footer:
     left: |
-      Applied Single-Cell CRISPR Screen Data Analysis was written by Timothy Barry and Eugene Katsevich
+      Hands-On Single-Cell CRISPR Screen Analysis was written by Timothy Barry and Eugene Katsevich
     right: |
       This book was built with <a href="https://quarto.org/">Quarto</a>.
   cover-image: book_cover.png
