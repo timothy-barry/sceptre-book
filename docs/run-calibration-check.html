@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.3.450">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
-<title>Applied Single-Cell CRISPR Screen Data Analysis - 5&nbsp; Run calibration check</title>
+<title>Applied Single-Cell CRISPR Screen Data Analysis - 6&nbsp; Run calibration check</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -100,7 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./run-calibration-check.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./run-calibration-check.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run calibration check</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -132,7 +132,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Navigating this Book</span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Welcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -144,37 +144,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./import-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./set-analysis-parameters.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./assign-grnas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./run-qc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./run-calibration-check.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./acknowledgements.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
   </div>
 </li>
     </ul>
@@ -186,21 +186,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
 <li>
-<a href="#calibration-check-methodology" id="toc-calibration-check-methodology" class="nav-link active" data-scroll-target="#calibration-check-methodology"><span class="header-section-number">5.1</span> Calibration check methodology</a>
+<a href="#calibration-check-methodology" id="toc-calibration-check-methodology" class="nav-link active" data-scroll-target="#calibration-check-methodology"><span class="header-section-number">6.1</span> Calibration check methodology</a>
   <ul class="collapse">
-<li><a href="#differential-expression-paradigm" id="toc-differential-expression-paradigm" class="nav-link" data-scroll-target="#differential-expression-paradigm"><span class="header-section-number">5.1.1</span> Differential expression paradigm</a></li>
-  <li><a href="#constructing-the-negative-control-pairs" id="toc-constructing-the-negative-control-pairs" class="nav-link" data-scroll-target="#constructing-the-negative-control-pairs"><span class="header-section-number">5.1.2</span> Constructing the negative control pairs</a></li>
-  <li><a href="#analyzing-the-negative-control-pairs" id="toc-analyzing-the-negative-control-pairs" class="nav-link" data-scroll-target="#analyzing-the-negative-control-pairs"><span class="header-section-number">5.1.3</span> Analyzing the negative control pairs</a></li>
+<li><a href="#differential-expression-paradigm" id="toc-differential-expression-paradigm" class="nav-link" data-scroll-target="#differential-expression-paradigm"><span class="header-section-number">6.1.1</span> Differential expression paradigm</a></li>
+  <li><a href="#constructing-the-negative-control-pairs" id="toc-constructing-the-negative-control-pairs" class="nav-link" data-scroll-target="#constructing-the-negative-control-pairs"><span class="header-section-number">6.1.2</span> Constructing the negative control pairs</a></li>
+  <li><a href="#analyzing-the-negative-control-pairs" id="toc-analyzing-the-negative-control-pairs" class="nav-link" data-scroll-target="#analyzing-the-negative-control-pairs"><span class="header-section-number">6.1.3</span> Analyzing the negative control pairs</a></li>
   </ul>
 </li>
-  <li><a href="#running-the-calibration-check" id="toc-running-the-calibration-check" class="nav-link" data-scroll-target="#running-the-calibration-check"><span class="header-section-number">5.2</span> Running the calibration check</a></li>
-  <li><a href="#diagnosing-miscalibration" id="toc-diagnosing-miscalibration" class="nav-link" data-scroll-target="#diagnosing-miscalibration"><span class="header-section-number">5.3</span> Diagnosing miscalibration</a></li>
-  <li><a href="#improving-calibration" id="toc-improving-calibration" class="nav-link" data-scroll-target="#improving-calibration"><span class="header-section-number">5.4</span> Improving calibration</a></li>
+  <li><a href="#running-the-calibration-check" id="toc-running-the-calibration-check" class="nav-link" data-scroll-target="#running-the-calibration-check"><span class="header-section-number">6.2</span> Running the calibration check</a></li>
+  <li><a href="#diagnosing-miscalibration" id="toc-diagnosing-miscalibration" class="nav-link" data-scroll-target="#diagnosing-miscalibration"><span class="header-section-number">6.3</span> Diagnosing miscalibration</a></li>
+  <li><a href="#improving-calibration" id="toc-improving-calibration" class="nav-link" data-scroll-target="#improving-calibration"><span class="header-section-number">6.4</span> Improving calibration</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/run-calibration-check.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title"><span id="sec-run_calibration_check" class="quarto-section-identifier"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></h1>
+<h1 class="title"><span id="sec-run_calibration_check" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></h1>
 </div>
 
 
@@ -267,11 +267,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We are now ready to run the calibration check.</p>
-<section id="calibration-check-methodology" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="calibration-check-methodology">
-<span class="header-section-number">5.1</span> Calibration check methodology</h2>
+<section id="calibration-check-methodology" class="level2" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="calibration-check-methodology">
+<span class="header-section-number">6.1</span> Calibration check methodology</h2>
 <p>We begin by describing the methodology underlying the calibration check.</p>
-<section id="differential-expression-paradigm" class="level3" data-number="5.1.1"><h3 data-number="5.1.1" class="anchored" data-anchor-id="differential-expression-paradigm">
-<span class="header-section-number">5.1.1</span> Differential expression paradigm</h3>
+<section id="differential-expression-paradigm" class="level3" data-number="6.1.1"><h3 data-number="6.1.1" class="anchored" data-anchor-id="differential-expression-paradigm">
+<span class="header-section-number">6.1.1</span> Differential expression paradigm</h3>
 <p>The goal of the calibration check is to test for association between subsets of negative control gRNAs and responses. Suppose for simplicity that we are conducting a singleton analysis, i.e.&nbsp;suppose that we seek to test for association between an individual negative control gRNA and a response. The “treatment group” is the set of cells containing the given non-targeting gRNA, and the “control group” is the set of cells against which the treatment group is compared to carry out the test of association. The control group can be either the complement set or the NT cells. Within the context of the calibration check analysis, the complement set consists of the cells that do not contain the given non-targeting gRNA; the NT cells, on the other hand, consist of the cells that contain any non-targeting gRNA <em>excluding</em> the given non-targeting gRNA that we are testing for association against the response (see schematic below.) <code>sceptre</code> carries out the test of association by testing for differential expression of the response across the treatment and control groups, yielding a p-value.</p>
 <div class="cell" data-layout-align="center" data-hash="run-calibration-check_cache/html/unnamed-chunk-5_fae5e9ea543e0dced215e8aadfbf9e53">
 <div class="cell-output-display">
@@ -281,8 +281,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section><section id="constructing-the-negative-control-pairs" class="level3" data-number="5.1.2"><h3 data-number="5.1.2" class="anchored" data-anchor-id="constructing-the-negative-control-pairs">
-<span class="header-section-number">5.1.2</span> Constructing the negative control pairs</h3>
+</section><section id="constructing-the-negative-control-pairs" class="level3" data-number="6.1.2"><h3 data-number="6.1.2" class="anchored" data-anchor-id="constructing-the-negative-control-pairs">
+<span class="header-section-number">6.1.2</span> Constructing the negative control pairs</h3>
 <p>The calibration check involves forming a set of negative control target-response pairs and then testing these pairs for association to ensure control of the false discovery rate. <code>sceptre</code> automatically constructs the negative control pairs, and it does so in such a way that the negative control pairs are highly similar to the discovery pairs, the difference being that the negative control pairs are devoid of biological signal. <code>sceptre</code> builds the negative control pairs as follows. First, <code>sceptre</code> forms “negative control groups” by randomly grouping together distinct sets of negative control gRNAs. For example, in a screen containing nine negative control gRNAs (labeled NT<sub>1</sub><em>-</em> NT<sub>9</sub>), gRNAs NT<sub>2</sub>, NT<sub>5</sub>, and NT<sub>7</sub> might be assigned randomly to one group, gRNAs NT<sub>3</sub>, NT<sub>6</sub>, and NT<sub>9</sub> might be assigned randomly to another group, and so on. (See schematic below). The number of negative control gRNAs per group (by default) is set equal to the average number of gRNAs per discovery target. For example, in a screen in which each discovery target is targeted by three gRNAs, each negative control group is formed by randomly putting together three negative control gRNAs. The negative control gRNA groups can (and often do) overlap; for example, a given NT gRNA (e.g., NT<sub>2</sub>) could be a part of multiple negative control groups.</p>
 <div class="cell" data-layout-align="center" data-hash="run-calibration-check_cache/html/unnamed-chunk-6_d26b10237f7eb7662f5eacfc9febdc3c">
 <div class="cell-output-display">
@@ -294,11 +294,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>In a singleton analysis (i.e., an analysis in which we seek to test for association between individual gRNAs and responses), each negative control gRNA is placed into its own negative control group of size one. (Recall that we can prompt <code>sceptre</code> to run a singleton analysis by setting <code>grna_grouping_strategy</code> to <code>"singleton"</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>). We often use the term “negative control target” interchangeably with “negative control gRNA group.”</p>
 <p>After forming the negative control targets, <code>sceptre</code> constructs the set of negative control pairs by randomly pairing the negative control targets to the responses. The number of negative control pairs that <code>sceptre</code> constructs is set equal to the number of pairs in the discovery set (after QC is applied to the discovery pairs). Moreover, the negative control pairs are subjected to the same pairwise QC as the discovery pairs. In this sense the negative control pairs are “matched” to the discovery pairs in three respects: (1) the number of gRNAs contained within each target is the same across the negative control and discovery pairs; (2) the negative control pairs are subjected to the same pairwise QC as the discovery pairs; (3) the number of negative control pairs is equal to the number of discovery pairs.</p>
-</section><section id="analyzing-the-negative-control-pairs" class="level3" data-number="5.1.3"><h3 data-number="5.1.3" class="anchored" data-anchor-id="analyzing-the-negative-control-pairs">
-<span class="header-section-number">5.1.3</span> Analyzing the negative control pairs</h3>
+</section><section id="analyzing-the-negative-control-pairs" class="level3" data-number="6.1.3"><h3 data-number="6.1.3" class="anchored" data-anchor-id="analyzing-the-negative-control-pairs">
+<span class="header-section-number">6.1.3</span> Analyzing the negative control pairs</h3>
 <p>The calibration check entails testing for association between the negative control targets and the responses to which the negative control targets have been paired. If <code>grna_grouping_strategy</code> is set to <code>"singleton"</code>, the analysis proceeds as described in the section “Differential expression paradigm.” If <code>grna_grouping_strategy</code> is set to <code>"union"</code> (the default), negative control gRNAs contained within a given negative control target are combined via the union operation; this combined gRNA is then tested for association against the responses as if it were a singleton gRNA. Consider again Figure 1 (section “Differential expression paradigm”). Suppose that NT<sub>1</sub> and NT<sub>2</sub> constitute a given negative control target, and suppose we seek to test for association between this negative control target and a given response. The “treatment group” would be the cells containing either NT<sub>1</sub> or NT<sub>2</sub>. Meanwhile, the “complement set” would consist of cells that do <em>not</em> contain NT<sub>1</sub> or NT<sub>2</sub>. Finally, the “NT cells” would consist of cells containing NT<sub>3</sub>.</p>
-</section></section><section id="running-the-calibration-check" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="running-the-calibration-check">
-<span class="header-section-number">5.2</span> Running the calibration check</h2>
+</section></section><section id="running-the-calibration-check" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="running-the-calibration-check">
+<span class="header-section-number">6.2</span> Running the calibration check</h2>
 <p>We carry out the calibration check by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> on the <code>sceptre_object</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> takes the arguments <code>sceptre_object</code> (required), <code>n_calibration_pairs</code> (optional), <code>calibration_group_size</code> (optional), <code>print_progress</code> (optional), and <code>parallel</code> (optional), and <code>output_amount</code> (optional). <code>n_calibration_pairs</code> is the number of negative control target-response pairs to test for association. By default <code>n_calibration_pairs</code> is set to the number of discovery target-response pairs that passes pairwise QC. Next, <code>calibration_group_size</code> is the number of negative control gRNAs to put together to construct each negative control target. By default <code>calibration_group_size</code> is set to the median number of gRNAs per discovery target. Finally, <code>print_progress</code> and <code>parallel</code> control whether to print updates to the console and run the computation in parallel, respectively. We describe the <code>output_amount</code> argument in a subsequent section. Below, we run the calibration check on the high-MOI CRISPRi and low-MOI CRISPRko data, setting <code>parallel</code> to <code>TRUE</code>.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-7_0c928cc6d55aa1e1d3c0f2318988465f">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -340,12 +340,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Each row of this data frame corresponds to a negative control target-response pair. The columns <code>response_id</code> and <code>grna_target</code> indicate the response and target that make up a given negative control target-response pair. The individual non-targeting gRNAs that form a negative control target are listed, concatenated into a string via the ampersand (“&amp;”) separator. (For example, the negative control gRNA target “NTg4&amp;NTg7&amp;NTg8&amp;NTg9” was formed by combining the negative control gRNAs NTg4, NTg7, NTg8, and NTg9.) The remaining columns of the data frame are as follows: <code>n_nonzero_trt</code> (the number of nonzero treatment cells of a given pair), <code>n_nonzero_cntrl</code> (the number of nonzero control cells of a given pair), <code>pass_qc</code> (whether a given pair passes pairwise QC), <code>p_value</code> (the p-value of a given pair), <code>log_2_fold_change</code> (the estimated log-2 fold change of a given pair), and <code>significant</code> (whether a given pair is called as significant after applying the multiple testing correction adjustment).</p>
-</section><section id="diagnosing-miscalibration" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="diagnosing-miscalibration">
-<span class="header-section-number">5.3</span> Diagnosing miscalibration</h2>
+</section><section id="diagnosing-miscalibration" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="diagnosing-miscalibration">
+<span class="header-section-number">6.3</span> Diagnosing miscalibration</h2>
 <p>The negative control p-values may demonstrate <em>miscalibration</em>, which is a deviation of the p-values from the expected uniform distribution under the null hypothesis. Indicators of miscalibration include (i) the presence of points that lie considerably above or below the diagonal line on the negative control QQ plots and (ii) a large number of false discoveries on the negative control data. Miscalibration is problematic because it suggests that <code>sceptre</code> does not control the rate of false discoveries on the dataset under analysis. Miscalibration can be more or less severe; the table below provides a rough guideline for interpreting miscalibration severity as a function of the number of false discoveries made on the negative control data.</p>
 <div id="tbl-calibration_quality" class="anchored">
 <table class="table">
-<caption>Table&nbsp;5.1: Calibration quality as a (rough) function of the number of false discoveries made on the negative control data in the calibration check analysis.</caption>
+<caption>Table&nbsp;6.1: Calibration quality as a (rough) function of the number of false discoveries made on the negative control data in the calibration check analysis.</caption>
 <thead><tr class="header">
 <th>Number of false discoveries</th>
 <th>Calibration quality</th>
@@ -370,7 +370,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </div>
-<p>There are three main reasons that <code>sceptre</code> might be miscalibrated on a single-cell CRISPR screen dataset: sparsity, the absence of relevant covariates, and model misspecification (Barry et al., 2023). First, sparsity — which refers to the presence of a large proportion of zeros in the response UMI count vector — can cause the skew-normal approximation to the distribution of the null test statistics to break down, which in turn can result in p-value miscalibration. Second, the absence of important covariates (such as batch) from the model likewise can result in miscalibrated p-values. Finally, misspecification of the negative binomial GLM underlying <code>sceptre</code> (due, for example, to the presence of outlier cells) also can lead to miscalibration. Pairwise and cellwise QC (<a href="run-qc.html"><span>Chapter&nbsp;4</span></a>) provide the first line of defense against sparsity and model misspecification. Additionally, the resampling methodology of <code>sceptre</code> protects against misspecification of the negative binomial GLM.</p>
+<p>There are three main reasons that <code>sceptre</code> might be miscalibrated on a single-cell CRISPR screen dataset: sparsity, the absence of relevant covariates, and model misspecification (Barry et al., 2023). First, sparsity — which refers to the presence of a large proportion of zeros in the response UMI count vector — can cause the skew-normal approximation to the distribution of the null test statistics to break down, which in turn can result in p-value miscalibration. Second, the absence of important covariates (such as batch) from the model likewise can result in miscalibrated p-values. Finally, misspecification of the negative binomial GLM underlying <code>sceptre</code> (due, for example, to the presence of outlier cells) also can lead to miscalibration. Pairwise and cellwise QC (<a href="run-qc.html"><span>Chapter&nbsp;5</span></a>) provide the first line of defense against sparsity and model misspecification. Additionally, the resampling methodology of <code>sceptre</code> protects against misspecification of the negative binomial GLM.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-11_ae0df3c611e7ba95ccc18526069a468c">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span>,</span>
@@ -389,16 +389,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="plot_calibration_highmoi_bad.png" class="img-fluid figure-img" width="650"></p>
-<figcaption class="figure-caption">Removing several covariates from the model causes calibration quality to degrade on the high-MOI CRISPRi data. There are five false discoveries, and so this is an example of mild miscalibration, per <a href="#tbl-calibration_quality">Table&nbsp;<span>5.1</span></a>.</figcaption></figure>
+<figcaption class="figure-caption">Removing several covariates from the model causes calibration quality to degrade on the high-MOI CRISPRi data. There are five false discoveries, and so this is an example of mild miscalibration, per <a href="#tbl-calibration_quality">Table&nbsp;<span>6.1</span></a>.</figcaption></figure>
 </div>
 </div>
 </div>
-</section><section id="improving-calibration" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="improving-calibration">
-<span class="header-section-number">5.4</span> Improving calibration</h2>
+</section><section id="improving-calibration" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="improving-calibration">
+<span class="header-section-number">6.4</span> Improving calibration</h2>
 <p>There are several concrete steps that users can take to improve the calibration of <code>sceptre</code>. We list five of the most important strategies here, ordered roughly from most to least promising. These strategies need not be applied one-at-a-time and instead can be mixed and matched.</p>
 <ol type="1">
 <li>
-<p><strong>Deactivate the parametric curve fitting functionality</strong>. <code>sceptre</code> by default computes the p-value for a given target-response pair by fitting a parametric curve (specifically, a skew-normal density) to the distribution of null test statistics and then evaluating the tail probability of the fitted curve at the observed test statistic. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_parametric_curve"><span>Section&nbsp;2.8</span></a>.) If the parametric curve provides a poor fit to the distribution of the null test statistics, the resulting p-value can be miscalibrated. Users can deactivate the parametric curve fitting functionality of <code>sceptre</code> and instead return an exact p-value by setting <code>fit_parametric_curve</code> to <code>FALSE</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, as follows.</p>
+<p><strong>Deactivate the parametric curve fitting functionality</strong>. <code>sceptre</code> by default computes the p-value for a given target-response pair by fitting a parametric curve (specifically, a skew-normal density) to the distribution of null test statistics and then evaluating the tail probability of the fitted curve at the observed test statistic. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_parametric_curve"><span>Section&nbsp;3.8</span></a>.) If the parametric curve provides a poor fit to the distribution of the null test statistics, the resulting p-value can be miscalibrated. Users can deactivate the parametric curve fitting functionality of <code>sceptre</code> and instead return an exact p-value by setting <code>fit_parametric_curve</code> to <code>FALSE</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, as follows.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-14_ff2abb08b547bfa74f2059c4533188fd">
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span>,</span>
@@ -427,7 +427,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </li>
 <li>
-<p><strong>Change the resampling mechanism or the control group</strong>. <code>sceptre</code> provides two options for the resampling mechanism (namely, <code>"permutations"</code> or <code>"crt"</code>; see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_resampling_mech"><span>Section&nbsp;2.7</span></a>) and two options for the control group (namely, <code>"complement_set"</code> or <code>"nt_cells"</code>; see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_control_group"><span>Section&nbsp;2.5</span></a>). (Note that <code>"nt_cells"</code> is available as an option only in low-MOI screens.) Switching the resampling mechanism and/or control group may improve calibration. Below, we set the resampling mechanism to <code>"crt"</code> and the control group to <code>"complement_set"</code> on the low-MOI CRISPRko data; these choices are the opposite of the defaults.</p>
+<p><strong>Change the resampling mechanism or the control group</strong>. <code>sceptre</code> provides two options for the resampling mechanism (namely, <code>"permutations"</code> or <code>"crt"</code>; see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_resampling_mech"><span>Section&nbsp;3.7</span></a>) and two options for the control group (namely, <code>"complement_set"</code> or <code>"nt_cells"</code>; see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_control_group"><span>Section&nbsp;3.5</span></a>). (Note that <code>"nt_cells"</code> is available as an option only in low-MOI screens.) Switching the resampling mechanism and/or control group may improve calibration. Below, we set the resampling mechanism to <code>"crt"</code> and the control group to <code>"complement_set"</code> on the low-MOI CRISPRko data; these choices are the opposite of the defaults.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-17_f7774a81e918d773b813c66e1035fcfc">
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
 <span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
@@ -687,12 +687,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./run-qc.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run quality control</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./acknowledgements.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

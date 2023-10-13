@@ -132,7 +132,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Navigating this Book</span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Welcome</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -144,37 +144,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./import-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./set-analysis-parameters.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./assign-grnas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./run-qc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./run-calibration-check.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./acknowledgements.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
   </div>
 </li>
     </ul>
@@ -341,7 +341,7 @@ Attributes of the data:
 </div>
 </div>
 <p>Several metrics are displayed, including the number of cells, the number of genes (or “responses”), and the number of gRNAs present in the data. <code>sceptre</code> also automatically computes the following cell-specific covariates: <code>grna_n_nonzero</code> (i.e., the number of gRNAs expressed in the cell), <code>grna_n_umis</code> (i.e., the number of gRNA UMIs sequenced in the cell), <code>response_n_nonzero</code> (i.e., the number of responses expressed in the cell), <code>response_n_umis</code> (i.e., the number of response UMIs sequenced in the cell), <code>response_p_mito</code> (i.e., the fraction of transcripts mapping to mitochondrial genes), and <code>batch</code>. (Cells loaded from different directories are assumed to come from different batches.)</p>
-<p>See <a href="import-data.html"><span>Chapter&nbsp;1</span></a> for more details about data import.</p>
+<p>See <a href="import-data.html"><span>Chapter&nbsp;2</span></a> for more details about data import.</p>
 </section><section id="set-analysis-parameters" class="level2"><h2 class="anchored" data-anchor-id="set-analysis-parameters">2. Set analysis parameters</h2>
 <p>The second step is to set the analysis parameters. The most important analysis parameters are the discovery pairs, positive control pairs, sidedness, and gRNA grouping strategy.</p>
 <ol type="1">
@@ -402,7 +402,7 @@ Attributes of the data:
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span> <span class="co"># output suppressed for brevity</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>See <a href="set-analysis-parameters.html"><span>Chapter&nbsp;2</span></a> for more information about setting the analysis parameters.</p>
+<p>See <a href="set-analysis-parameters.html"><span>Chapter&nbsp;3</span></a> for more information about setting the analysis parameters.</p>
 </section><section id="sec-sceptre_assign_grnas" class="level2"><h2 class="anchored" data-anchor-id="sec-sceptre_assign_grnas">3. Assign gRNAs to cells (optional)</h2>
 <p>The third step is to assign gRNAs to cells. This step can be skipped, in which case gRNAs are assigned to cells automatically using default options. The gRNA assignment step involves using the gRNA UMI counts to determine which cells contain which gRNAs. We begin by plotting the UMI count distribution of several randomly selected gRNAs via a call to the function <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code>.</p>
 <div class="cell" data-hash="sceptre_cache/html/unnamed-chunk-16_c022741723bd7d97a7bb459ba9756c81">
@@ -436,7 +436,7 @@ Attributes of the data:
 </div>
 </div>
 <p>The top panel plots the gRNA-to-cell assignments of three randomly selected gRNAs. In each plot the points represent cells; the vertical axis indicates the UMI count of the gRNA in a given cell, and the horizontal axis indicates whether the cell has been classified as “perturbed” (i.e., it <em>contains</em> the gRNA) or unperturbed (i.e., it does <em>not contain</em> the gRNA). Perturbed (resp., unperturbed) cells are shown in the left (resp., right) column. The bottom left panel is a barplot of the number of cells to which each gRNA has been mapped. Finally, the bottom right panel is a histogram of the number of gRNAs contained in each cell. The mean number of gRNAs per cell — i.e., the MOI — is displayed in purple text.</p>
-<p>See <a href="assign-grnas.html"><span>Chapter&nbsp;3</span></a> for more information about assigning gRNAs to cells.</p>
+<p>See <a href="assign-grnas.html"><span>Chapter&nbsp;4</span></a> for more information about assigning gRNAs to cells.</p>
 </section><section id="sec-sceptre_qc" class="level2"><h2 class="anchored" data-anchor-id="sec-sceptre_qc">4. Run quality control (optional)</h2>
 <p>The fourth step is to run quality control (QC). This step likewise can be skipped, in which case QC is applied automatically using default options. <strong><code>sceptre</code> implements two kinds of QC: cellwise QC and pairwise QC. The former aims to remove low-quality cells, while the latter aims to remove low-quality target-response pairs.</strong></p>
 <p>The cellwise QC that <code>sceptre</code> implements is standard in single-cell analysis. Cells for which <code>response_n_nonzero</code> (i.e., the number of expressed responses) or <code>response_n_umis</code> (i.e., the number of response UMIs) is extremely high or extremely low are removed. Likewise, cells for which <code>response_p_mito</code> (i.e., the fraction of UMIs mapping to mitochondrial genes) is excessively high are removed. Additionally, in low-MOI, cells that contain multiple gRNAs (as determined during the RNA-to-cell assignment step) are removed. Finally, users optionally can provide a list of additional cells to remove.</p>
@@ -459,7 +459,7 @@ Attributes of the data:
 </div>
 </div>
 <p>The top panel depicts the outcome of the cellwise QC. The various cellwise QC filters (e.g., “N nonzero responses,” “N response UMIs,” “Percent mito”, etc.) are shown on the horizontal axis, and the percentage of cells removed due application of a given QC filter is shown on the vertical axis. Note that a cell can be flagged by multiple QC filters; for example, a cell might have an extremely high <code>response_n_umi</code> value <em>and</em> an extremely high <code>response_n_nonzero</code> value. Thus, the height of the “any filter” bar (which indicates the percentage of cells removed due to application of <em>any</em> filter) need not be equal to the sum of the heights of the other bars. The bottom panel depicts the outcome of the pairwise QC. Each point corresponds to a target-response pair; the vertical axis (resp., horizontal axis) indicates the <code>n_nonzero_trt</code> (resp., <code>n_nonzero_cntrl</code>) value of that pair. Pairs for which <code>n_nonzero_trt</code> or <code>n_nonzero_cntrl</code> fall below the threshold are removed (red), while the remaining pairs are retained (green).</p>
-<p>See <a href="run-qc.html"><span>Chapter&nbsp;4</span></a> for more information about QC.</p>
+<p>See <a href="run-qc.html"><span>Chapter&nbsp;5</span></a> for more information about QC.</p>
 </section><section id="sec-sceptre_calibration_check" class="level2"><h2 class="anchored" data-anchor-id="sec-sceptre_calibration_check">5. Run calibration check</h2>
 <p>The fifth step is to run the calibration check. <strong>The calibration check is an analysis that verifies that <code>sceptre</code> controls the rate of false discoveries on the dataset under analysis.</strong> The calibration check proceeds as follows. First, negative control target-response pairs are constructed (automatically) by coupling subsets of NT gRNAs to randomly selected responses. Importantly, the negative control pairs are constructed in such a way that they are similar to the discovery pairs, the difference being that the negative control pairs are devoid of biological signal. Next, <code>sceptre</code> is applied to analyze the negative control pairs. Given that the negative control pairs are absent of signal, <code>sceptre</code> should produce approximately uniformly distributed p-values on the negative control pairs. Moreover, after an appropriate multiple testing correction, <code>sceptre</code> should make zero (or very few) discoveries on the negative control pairs. Verifying calibration via the calibration check increases our confidence that the discovery set that <code>sceptre</code> ultimately produces is uncontaminated by excess false positives.</p>
 <p>We run the calibration check by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> on the <code>sceptre_object</code>.</p>
@@ -486,7 +486,7 @@ Attributes of the data:
 <li><p>The lower left panel is a histogram of the estimated log-2 fold changes. The histogram should be roughly symmetric and centered around zero.</p></li>
 <li><p>Finally, the bottom right panel is a text box displaying (i) the number of false discoveries that <code>sceptre</code> has made on the negative control data and (ii) the mean estimated log-fold change. The number of false discoveries should be a small integer like zero, one, two, or three, with zero being ideal. The mean estimated log-fold change, meanwhile, should be a numeric value close to zero; a number in the range [-0.1, 0.1] is adequate.</p></li>
 </ul>
-<p><code>sceptre</code> may not exhibit good calibration initially, which is OK. See <a href="run-calibration-check.html"><span>Chapter&nbsp;5</span></a> for more information about the calibration check analysis, including concrete strategies for improving calibration.</p>
+<p><code>sceptre</code> may not exhibit good calibration initially, which is OK. See <a href="run-calibration-check.html"><span>Chapter&nbsp;6</span></a> for more information about the calibration check analysis, including concrete strategies for improving calibration.</p>
 </section><section id="run-power-check-optional" class="level2"><h2 class="anchored" data-anchor-id="run-power-check-optional">6. Run power check (optional)</h2>
 <p>The sixth step — which is optional — is to run the power check. The power check involves applying <code>sceptre</code> to analyze the positive control pairs. Given that the positive control pairs are known to contain signal, <code>sceptre</code> should produce significant (i.e., small) p-values on the positive control pairs. <strong>The power check enables us to assess <code>sceptre</code>’s power (i.e., its ability to detect true associations) on the dataset under analysis.</strong> We run the power check by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code> on the <code>sceptre_object</code>.</p>
 <div class="cell" data-hash="sceptre_cache/html/unnamed-chunk-27_da54ee4b64e2cef4f2404b480ca35c6a">
@@ -574,7 +574,7 @@ Attributes of the data:
 </div>
 </div>
 </section><section id="further-reading" class="level2"><h2 class="anchored" data-anchor-id="further-reading">Further reading</h2>
-<p>Each step of the pipeline has its own dedicated chapter. We encourage interested users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with <a href="import-data.html"><span>Chapter&nbsp;1</span></a>.</p>
+<p>Each step of the pipeline has its own dedicated chapter. We encourage interested users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with <a href="import-data.html"><span>Chapter&nbsp;2</span></a>.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
@@ -811,12 +811,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Navigating this Book</span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Welcome</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./import-data.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Import data</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
