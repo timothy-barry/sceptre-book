@@ -6,4 +6,4 @@ Single-cell CRISPR screens (e.g., perturb-seq) combine CRISPR genome engineering
 
 # Navigating this Book {.unnumbered}
 
-Users should begin by reading the *The whole game* (link below), which provides a high-level overview of `sceptre`. Users who wish to learn more about individual steps of the `sceptre` pipeline should read the subsequent chapters (i.e., *Import data* to *Run power check and discovery analysis*) in order.
+Users should start by reading the *The whole game* (link below), which provides a high-level overview of `sceptre`. Users who wish to learn more about individual steps of the `sceptre` pipeline should read the subsequent chapters (i.e., *Import data* to *Run power check and discovery analysis*) in order.
