@@ -23,6 +23,7 @@ book:
     - assign-grnas.qmd
     - run-qc.qmd
     - run-calibration-check.qmd
+    - acknowledgements.qmd
 
 format:
   html:

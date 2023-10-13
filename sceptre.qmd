@@ -360,4 +360,4 @@ head(result)
 
 ## Further reading
 
-Each step of the pipeline has its own dedicated chapter. We encourage advanced users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with @sec-import_data.
+Each step of the pipeline has its own dedicated chapter. We encourage interested users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with @sec-import_data.

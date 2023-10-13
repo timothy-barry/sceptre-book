@@ -75,7 +75,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Using this Book</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Navigating this Book</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -111,7 +111,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Using this Book</span></a>
+ <span class="menu-text">Navigating this Book</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -150,6 +150,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -160,8 +166,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#using-this-book" id="toc-using-this-book" class="nav-link active" data-scroll-target="#using-this-book">Using this Book</a></li>
-  <li><a href="#acknowledgements" id="toc-acknowledgements" class="nav-link" data-scroll-target="#acknowledgements">Acknowledgements</a></li>
+  <li><a href="#navigating-this-book" id="toc-navigating-this-book" class="nav-link active" data-scroll-target="#navigating-this-book">Navigating this Book</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -186,14 +191,11 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 <p><img src="book_cover.png" title="Applied Single-Cell CRISPR Screen Data Analysis" class="quarto-cover-image img-fluid"></p>
-<p>Single-cell CRISPR screens (e.g., perturb-seq) combine CRISPR genome engineering and single-cell sequencing to survey the effects of genetic perturbations on individual cells. Single-cell CRISPR screens pose enormous potential for unraveling mechanisms underlying disease and accelerating drug discovery. However, the analysis of these screens poses considerable statistical and computational challenges. <em>Applied Single-Cell CRISPR Screen Data Analysis</em> is a step-by-step guide to statistically rigorous, computationally efficient, and user-friendly single-cell CRISPR screen data analysis using the <code>sceptre</code> R package. <code>sceptre</code> was developed by Timothy Barry, Joseph Deutsch, and Eugene Katsevich.</p>
-<section id="using-this-book" class="level1 unnumbered">
-<h1 class="unnumbered">Using this Book</h1>
-<p>All users should read the opening chapter (i.e., <em>The whole game</em>), and advanced users should read the subsequent chapters (i.e., <em>Import data</em> to <em>Run power check and discovery analysis</em>) in order.</p>
-</section>
-<section id="acknowledgements" class="level1 unnumbered">
-<h1 class="unnumbered">Acknowledgements</h1>
-<p>We gratefully acknowledge Kathryn Roeder, John Morris, Kaishu Mason, Xuran Wang, and Ziang Niu for contributing to the research and development underlying <code>sceptre</code>. We additionally thank the many <code>sceptre</code> users who have provided valuable feedback on early versions of the package.</p>
+<p>Single-cell CRISPR screens (e.g., perturb-seq) combine CRISPR genome engineering and single-cell sequencing to survey the effects of genetic perturbations on individual cells. Single-cell CRISPR screens pose enormous potential for unraveling mechanisms underlying disease and accelerating drug discovery. However, the analysis of these screens presents considerable statistical and computational challenges. <em>Applied Single-Cell CRISPR Screen Data Analysis</em> is a step-by-step guide to carrying out statistically rigorous and computationally efficient single-cell CRISPR screen data analysis using the <code>sceptre</code> R package. <code>sceptre</code> was developed by <a href="https://timothy-barry.github.io/">Timothy Barry</a>, Joseph Deutsch, and <a href="https://ekatsevi.github.io/">Eugene Katsevich</a>.</p>
+<p><code>sceptre</code> is compatible with a broad range of single-cell CRISPR screen experimental designs. In particular, datasets can vary along the following axes: multiplicity of infection (low or high), genomic element targeted (gene or noncoding regulatory element), CRISPR modality (CRISPRko, CRISPRi, CRISPRa, or CRISPR prime/base editing), and molecular readout (gene expression, protein expression, or chromatin accessibility). This book uses two real datasets to illustrate use of <code>sceptre</code>: a high-MOI CRISPRi screen of noncoding regulatory elements and a low-MOI CRISPRko screen of gene transcription start sites. On both datasets the molecular phenotype measured is the transcriptome (i.e., the gene expressions).</p>
+<section id="navigating-this-book" class="level1 unnumbered">
+<h1 class="unnumbered">Navigating this Book</h1>
+<p>Users should start by reading the <em>The whole game</em> (link below), which provides a high-level overview of <code>sceptre</code>. Users who wish to learn more about individual steps of the <code>sceptre</code> pipeline should read the subsequent chapters (i.e., <em>Import data</em> to <em>Run power check and discovery analysis</em>) in order.</p>
 
 
 </section>

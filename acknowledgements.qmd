@@ -1,0 +1,7 @@
+---
+title: "Acknowledgements"
+format: html
+editor: visual
+---
+
+We enthusiastically acknowledge Kathryn Roeder, John Morris, Kaishu Mason, Xuran Wang, and Ziang Niu for contributing to the research and development underlying `sceptre`. We additionally thank the many `sceptre` users who have provided valuable feedback on early versions of the package.

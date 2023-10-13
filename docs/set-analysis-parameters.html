@@ -132,7 +132,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Using this Book</span></a>
+ <span class="menu-text">Navigating this Book</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -171,6 +171,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./acknowledgements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
+  </div>
+</li>
     </ul>
 </div>
 </nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
@@ -183,15 +189,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li>
 <a href="#discovery-pairs" id="toc-discovery-pairs" class="nav-link" data-scroll-target="#discovery-pairs"><span class="header-section-number">2.2</span> Discovery pairs</a>
   <ul class="collapse">
-<li><a href="#reducing-the-multiplicity-burden" id="toc-reducing-the-multiplicity-burden" class="nav-link" data-scroll-target="#reducing-the-multiplicity-burden"><span class="header-section-number">2.2.1</span> Reducing the multiplicity burden</a></li>
+<li><a href="#construct-cis-pairs" id="toc-construct-cis-pairs" class="nav-link" data-scroll-target="#construct-cis-pairs"><span class="header-section-number">2.2.1</span> Construct <em>cis</em> pairs</a></li>
+  <li><a href="#construct-trans-pairs" id="toc-construct-trans-pairs" class="nav-link" data-scroll-target="#construct-trans-pairs"><span class="header-section-number">2.2.2</span> Construct <em>trans</em> pairs</a></li>
+  <li><a href="#reducing-the-multiplicity-burden" id="toc-reducing-the-multiplicity-burden" class="nav-link" data-scroll-target="#reducing-the-multiplicity-burden"><span class="header-section-number">2.2.3</span> Reducing the multiplicity burden</a></li>
   </ul>
 </li>
   <li><a href="#side" id="toc-side" class="nav-link" data-scroll-target="#side"><span class="header-section-number">2.3</span> Side</a></li>
   <li><a href="#grna-grouping-strategy" id="toc-grna-grouping-strategy" class="nav-link" data-scroll-target="#grna-grouping-strategy"><span class="header-section-number">2.4</span> gRNA grouping strategy</a></li>
-  <li><a href="#control-group" id="toc-control-group" class="nav-link" data-scroll-target="#control-group"><span class="header-section-number">2.5</span> Control group</a></li>
+  <li><a href="#sec-set_analysis_parameters_control_group" id="toc-sec-set_analysis_parameters_control_group" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_control_group"><span class="header-section-number">2.5</span> Control group</a></li>
   <li><a href="#formula" id="toc-formula" class="nav-link" data-scroll-target="#formula"><span class="header-section-number">2.6</span> Formula</a></li>
-  <li><a href="#resampling-mechanism" id="toc-resampling-mechanism" class="nav-link" data-scroll-target="#resampling-mechanism"><span class="header-section-number">2.7</span> Resampling mechanism</a></li>
-  <li><a href="#fit-parametric-curve" id="toc-fit-parametric-curve" class="nav-link" data-scroll-target="#fit-parametric-curve"><span class="header-section-number">2.8</span> Fit parametric curve</a></li>
+  <li><a href="#sec-set_analysis_parameters_resampling_mech" id="toc-sec-set_analysis_parameters_resampling_mech" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_resampling_mech"><span class="header-section-number">2.7</span> Resampling mechanism</a></li>
+  <li><a href="#sec-set_analysis_parameters_parametric_curve" id="toc-sec-set_analysis_parameters_parametric_curve" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_parametric_curve"><span class="header-section-number">2.8</span> Fit parametric curve</a></li>
   <li><a href="#multiple-testing-method-and-multiple-testing-alpha" id="toc-multiple-testing-method-and-multiple-testing-alpha" class="nav-link" data-scroll-target="#multiple-testing-method-and-multiple-testing-alpha"><span class="header-section-number">2.9</span> Multiple testing method and multiple testing <span class="math inline">\(\alpha\)</span></a></li>
   <li><a href="#setting-the-analysis-parameters" id="toc-setting-the-analysis-parameters" class="nav-link" data-scroll-target="#setting-the-analysis-parameters"><span class="header-section-number">2.10</span> Setting the analysis parameters</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/set-analysis-parameters.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -335,8 +343,8 @@ Attributes of the data:
 </section><section id="discovery-pairs" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="discovery-pairs">
 <span class="header-section-number">2.2</span> Discovery pairs</h2>
 <p>Discovery pairs are target-response pairs whose association status we do not know but seek to learn. Unlike positive control and negative control pairs, which serve a mainly technical purpose, discovery pairs are of primary scientific interest. Discovery pairs must be supplied to <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>; all other arguments (aside from <code>sceptre_object</code>) are optional. <code>sceptre</code> provides two helper functions for constructing discovery pairs: <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>.</p>
-<section id="construct-cis-pairs" class="level4" data-number="2.2.0.1"><h4 data-number="2.2.0.1" class="anchored" data-anchor-id="construct-cis-pairs">
-<span class="header-section-number">2.2.0.1</span> Construct <em>cis</em> pairs</h4>
+<section id="construct-cis-pairs" class="level3" data-number="2.2.1"><h3 data-number="2.2.1" class="anchored" data-anchor-id="construct-cis-pairs">
+<span class="header-section-number">2.2.1</span> Construct <em>cis</em> pairs</h3>
 <p><code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> returns the set of target-response pairs for which the target and response are located on the same chromosome and in close physical proximity to one another. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> assumes that the columns <code>chr</code>, <code>start</code>, and <code>stop</code> are present within the <code>grna_target_data_frame</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> also assumes that the responses are genes as opposed to, say, proteins. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> is a useful pair constructor function for screens that aim to map noncoding regulatory elements (e.g., enhancers, silencers, or noncoding GWAS variants) to target genes in <em>cis</em>. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> takes several arguments: <code>sceptre_object</code> (required) <code>distance_threshold</code> (optional), <code>positive_control_pairs</code> (optional), and <code>ref_genome</code> (optional). Each target is paired to the set of genes within <code>distance_threshold</code> bases of that target. (The default value of <code>distance_threshold</code> is 500,000 bases, or half a megabase.) The <code>positive_control_pairs</code> data frame optionally can be passed to <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code>, in which case the positive control targets (i.e., the entries within the <code>grna_target</code> column of <code>positive_control_pairs</code>) are excluded from the <em>cis</em> pairs. Finally, <code>ref_genome</code> is a string indicating the reference genome that <code>chr</code>, <code>start</code>, and <code>stop</code> are defined with respect to. (The only reference genome currently available is “10X_GRCh38_2020,” which is the GRCh38 reference genome that has shipped with CellRanger since 2020.)</p>
 <p>We use <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> to construct the discovery pairs for the high-MOI CRISPRi dataset. We set <code>distance_threshold</code> to <code>5e6</code> (i.e., 5 megabases) so as to increase the number of pairs in the discovery set for illustration purposes.</p>
 <div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-10_c2943c914ba75bd31add8c8ff5c61598">
@@ -357,8 +365,8 @@ Attributes of the data:
 50 candidate_enh_3 ENSG00000117748</code></pre>
 </div>
 </div>
-</section><section id="construct-trans-pairs" class="level4" data-number="2.2.0.2"><h4 data-number="2.2.0.2" class="anchored" data-anchor-id="construct-trans-pairs">
-<span class="header-section-number">2.2.0.2</span> Construct <em>trans</em> pairs</h4>
+</section><section id="construct-trans-pairs" class="level3" data-number="2.2.2"><h3 data-number="2.2.2" class="anchored" data-anchor-id="construct-trans-pairs">
+<span class="header-section-number">2.2.2</span> Construct <em>trans</em> pairs</h3>
 <p><code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> returns the entire set of possible target-response pairs. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> is a useful pair constructor function for analyses in which we seek to conduct a <em>trans</em> analysis, testing each target against each response. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> takes as arguments <code>sceptre_object</code> (required), <code>positive_control_pairs</code> (optional), <code>exclude_positive_control_pairs</code> (optional), and <code>exclude_positive_control_targets</code> (optional). By default <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> returns a data frame with columns <code>grna_target</code> and <code>response_id</code>, where each gRNA target is mapped to each response ID. If the <code>positive_control_pairs</code> data frame is passed and <code>exclude_positive_control_pairs</code> is set to <code>TRUE</code>, then the positive control target-response pairs are excluded from the <em>trans</em> pairs. Next, if <code>positive_control_pairs</code> is passed and <code>exclude_positive_control_targets</code> is set to <code>TRUE</code>, then <em>all</em> pairs containing a positive control gRNA target are excluded from the <em>trans</em> pairs. (In this sense setting <code>exclude_positive_control_targets</code> to <code>TRUE</code> is stronger than setting <code>exclude_positive_control_pairs</code> to <code>TRUE</code>.)</p>
 <p>We use <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> to construct the discovery set for the low-MOI CRISPRko dataset, excluding the positive control pairs. The discovery set consists of the set of genes targeted by one or more gRNAs paired to the set of <em>all other</em> genes.</p>
 <div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-12_489dbce2973f8a912f5e81417d7edc4e">
@@ -396,8 +404,8 @@ Attributes of the data:
 </div>
 </div>
 <p>Some users may wish to run both <em>cis</em> and <em>trans</em> analyses on their data. We recommend that such users carry out the <code>sceptre</code> pipeline twice: once using a <em>cis</em> discovery set and once using a <em>trans</em> discovery set.</p>
-</section><section id="reducing-the-multiplicity-burden" class="level3" data-number="2.2.1"><h3 data-number="2.2.1" class="anchored" data-anchor-id="reducing-the-multiplicity-burden">
-<span class="header-section-number">2.2.1</span> Reducing the multiplicity burden</h3>
+</section><section id="reducing-the-multiplicity-burden" class="level3" data-number="2.2.3"><h3 data-number="2.2.3" class="anchored" data-anchor-id="reducing-the-multiplicity-burden">
+<span class="header-section-number">2.2.3</span> Reducing the multiplicity burden</h3>
 <p><code>sceptre</code> computes a p-value for each target-response pair in the discovery set. These p-values are subjected to a multiple testing correction procedure (by default, the Benjamini-Hochberg method) to produce a discovery set that controls some notion of aggregate type-I error (by default, the false discovery rate). In general it is good to restrict one’s attention to pairs that are promising or scientifically interesting. Including a large number of uninteresting or “null” pairs (i.e., pairs for which there is no relationship between the target and response) in the discovery set causes the power of the multiple testing correction procedure to decrease, resulting in fewer discoveries.</p>
 </section></section><section id="side" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="side">
 <span class="header-section-number">2.3</span> Side</h2>
@@ -405,10 +413,10 @@ Attributes of the data:
 <table class="table">
 <caption>Recommended sidedness of the test as a function of target element and CRISPR modality for <em>cis</em> analyses.</caption>
 <colgroup>
-<col style="width: 22%">
-<col style="width: 29%">
-<col style="width: 33%">
-<col style="width: 15%">
+<col style="width: 20%">
+<col style="width: 27%">
+<col style="width: 30%">
+<col style="width: 18%">
 </colgroup>
 <thead><tr class="header">
 <th>Target element</th>
@@ -454,7 +462,7 @@ Attributes of the data:
 </div>
 </div>
 <p>The other available gRNA grouping strategy is <code>"singleton"</code>. The <code>"singleton"</code> strategy involves individually testing each gRNA targeting a given element against the responses to which that element is paired. <code>"singleton"</code> may be more appropriate than <code>"union"</code> for experiments in which gRNA effectiveness is expected to vary considerably across gRNAs. However, <code>"union"</code> is the default rather than <code>"singleton"</code> because <code>"union"</code> tends to yield more powerful results.</p>
-</section><section id="control-group" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="control-group">
+</section><section id="sec-set_analysis_parameters_control_group" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="sec-set_analysis_parameters_control_group">
 <span class="header-section-number">2.5</span> Control group</h2>
 <p>The primary goal of <code>sceptre</code> is to test for association between a given gRNA target and response. <code>control_group</code> is a parameter that controls the set of cells used to carry out the test of association. Suppose for simplicity that we are carrying out a singleton analysis, i.e.&nbsp;suppose that we are testing for association between an individual targeting gRNA and a response. We define the “treatment group” as the set of cells that contain the given targeting gRNA, and we define the “control group” as the set of cells against which the treatment group is compared to conduct the association test. There are two choices for the control group: the “complement set” and the “non-targeting (NT) cells.” The complement set consists of the cells that <em>do not</em> contain the given targeting gRNA; the NT cells, by contrast, consist of the cells that contain a non-targeting gRNA. (See schematic below.) <code>sceptre</code> tests for association between the given targeting gRNA and the response by testing for differential expression of the response across the treatment group and the control group. Users can select the control group to use by passing either <code>"complement"</code> or <code>"nt_cells"</code> to <code>control_group</code>.</p>
 <div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-16_09db848210ffbcd05433a52308ba2d84">
@@ -488,7 +496,7 @@ Attributes of the data:
 </div>
 <p>(The covariates <code>grna_n_nonzero</code> and <code>grna_n_umis</code> by default are not included in the formula object, as <code>grna_n_nonzero</code> and <code>grna_n_umis</code> typically do not contain substantial information in low MOI after quality control.)</p>
 <p>Users can specify a custom formula by passing a formula object to the argument <code>formula_object</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>. User-specified formulas should be defined in terms of the cell-specific covariates, which can be viewed by evaluating the <code>sceptre_object</code> in the console.</p>
-</section><section id="resampling-mechanism" class="level2" data-number="2.7"><h2 data-number="2.7" class="anchored" data-anchor-id="resampling-mechanism">
+</section><section id="sec-set_analysis_parameters_resampling_mech" class="level2" data-number="2.7"><h2 data-number="2.7" class="anchored" data-anchor-id="sec-set_analysis_parameters_resampling_mech">
 <span class="header-section-number">2.7</span> Resampling mechanism</h2>
 <p>The parameter <code>resampling_mechanism</code> controls the inferential procedure that <code>sceptre</code> uses to compute a p-value for a target-response pair. Suppose for simplicity that we are carrying out a singleton gRNA analysis. There are three pieces of information relevant to testing for association between a given gRNA and response: (1) the vector of UMI counts of the response; (2) the “gRNA indicator vector,” where a given entry of the vector is set to “1” if the corresponding cell is part of the treatment group (i.e., it contains the gRNA) and “0” if it is part of the control group; and (3) the matrix of cell-specific covariates. First, <code>sceptre</code> regresses the response vector onto the gRNA indicator vector and covariate matrix via a negative binomial (NB) GLM. <code>sceptre</code> computes the z-score <span class="math inline">\(z_\textrm{obs}\)</span> corresponding to a test of the null hypothesis that the coefficient corresponding to the gRNA indicator vector in the fitted GLM is zero. Next, <code>sceptre</code> <em>resamples</em> the gRNA indicator vector <em>B</em> times, where <em>B</em> is some large integer (e.g., <em>B</em> = 5000). (We discuss exactly how the gRNA indicator vector is resampled below.) Finally, for each of the resampled gRNA indicator vectors, <code>sceptre</code> recomputes the z-score, producing <em>B</em> “null” z-scores <span class="math inline">\(\tilde{z_1}, \dots, \tilde{z_B}\)</span>. The observed z-score <span class="math inline">\(z_\textrm{obs}\)</span> is compared to the null z-scores <span class="math inline">\(\tilde{z_1}, \dots, \tilde{z_B}\)</span> to compute a p-value.</p>
 <div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-20_fdfbdc3fa92c9595456d4e7562551c25">
@@ -536,7 +544,7 @@ Attributes of the data:
 </tbody>
 </table>
 <p>Resampling forms the foundation of statistical inference within the <code>sceptre</code> framework. In fact, “sceptre” is a loose acronym for “<strong>s</strong>ingle <strong>c</strong>ell <strong>p</strong>er<strong>t</strong>urbation analysis via <strong>re</strong>sampling.” The resampling machinery of <code>sceptre</code> is reasonably fast due to several algorithmic advances, including the technique of resampling score statistics and a novel sparsity-exploiting algorithm for computing GLM score tests.</p>
-</section><section id="fit-parametric-curve" class="level2" data-number="2.8"><h2 data-number="2.8" class="anchored" data-anchor-id="fit-parametric-curve">
+</section><section id="sec-set_analysis_parameters_parametric_curve" class="level2" data-number="2.8"><h2 data-number="2.8" class="anchored" data-anchor-id="sec-set_analysis_parameters_parametric_curve">
 <span class="header-section-number">2.8</span> Fit parametric curve</h2>
 <p>As described above, for a given gRNA-response pair, <code>sceptre</code> computes an “observed” z-score <span class="math inline">\(z_\textrm{obs}\)</span> and a set of “null” z-scores <span class="math inline">\(\tilde{z_1}, \dots, \tilde{z_B}\)</span> (regardless of whether <code>resampling_mechanism</code> is set to <code>permutations</code> or <code>crt</code>). By default, <code>sceptre</code> fits a parametric density (specifically, a skew-normal density) to the distribution of null z-scores and then computes a p-value by evaluating the tail probability of the fitted density at the observed z-score <span class="math inline">\(z_\textrm{obs}\)</span> (see figure below). The parametric density functionality can be deactivated by setting <code>fit_parametric_curve</code> to <code>FALSE</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, in which case a p-value is computed by directly comparing the observed z-score to the null z-scores.</p>
 <div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-21_3e3073e9cbabd678d5dbbf6a27657269">
