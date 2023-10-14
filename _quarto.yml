@@ -23,7 +23,9 @@ book:
     - assign-grnas.qmd
     - run-qc.qmd
     - run-calibration-check.qmd
+  appendices:
     - acknowledgements.qmd
+    - glossary.qmd
 
 format:
   html:

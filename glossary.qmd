@@ -1,0 +1,77 @@
+# Glossary {.appendix}
+
+We use the following key terms in this book.
+
+## Assay design
+
+The following terms describe the design of a single-cell CRISPR screen assay.
+
+-   **Guide RNA (gRNA):** An RNA guiding the Cas9 (or one of its variants) to its target in order to perturb it.
+
+-   **Target:** The genomic element targeted by a gRNA. Possible targets include gene transcription start sites and noncoding elements such as enhancers or silencers.
+
+-   **Targeting gRNA:** A gRNA that is intended to perturb a genomic target.
+
+-   **Non-targeting gRNA:** A gRNA whose barcode sequence either does not map anywhere in the genome or maps to a location whose perturbation is known to have no effect. Non-targeting gRNAs serve as negative controls.
+
+-   **Response:** A molecular phenotype read out in the single-cell CRISPR screen, with which one is interested in associating CRISPR perturbations. Possible responses include gene expression, protein expression, and chromatin accessibility.
+
+-   **Multiplicity of infection (MOI):** The MOI of a screen can be categorized as low or high, and can also be quantified. A high-MOI (respectively, low-MOI) dataset is one in which the experimenter has aimed to insert multiple gRNAs (respectively, a single gRNA) into each cell. Quantitatively, the MOI of a screen is the average number of gRNAs delivered per cell. For example, an MOI of 0.5 means that on average each cell receives 0.5 gRNAs.
+
+## Hypothesis construction
+
+The main statistical task in single-cell CRISPR screen analysis is to test hypotheses of the form: Does perturbing a target impact a response? We use the following terminology to describe the construction of such hypotheses.
+
+-   **gRNA group:** Two or more gRNAs whose effects one wishes to study together. In particular, one wishes to test whether any gRNA in the group has an effect on a response of interest. Typically, gRNAs with the same target are grouped together.
+
+-   **Target-response pair:** A pair consisting of a target and a response. For example, a target-response pair could be a specific enhancer and a specific gene. Each target-response pair corresponds to a hypothesis to be tested: Does perturbing the target impact the response?
+
+-   **Negative control pair:** A target-response pair in which the target is a non-targeting gRNA. Negative control pairs are used to assess the calibration of a statistical analysis method.
+
+-   **Positive control pair:** A target-response pair in which the target is a targeting gRNA known to have an effect on the response. For example, a positive control pair may consist of a gRNA targeting a gene transcription start site and the expression of that gene. Positive control pairs are used to assess the power of a statistical analysis method.
+
+-   **Discovery pair:** A target-response pair in which the target is a targeting gRNA whose effect on the response is unknown. The main goal of a single-cell CRISPR screen is to search for new associations among discovery pairs.
+
+-   **Cis pair:** A target-response pair in which the target and response are located in close proximity on the same chromosome. For example, a cis pair may consist of a gRNA targeting an enhancer and a gene whose transcription start site is a few kilobases away. 
+
+-   **Trans pair:** A target-response pair where the target and response are not necessarily located in close proximity or on the same chromosome as one another.
+
+## Statistical properties
+
+-   **Calibration:** The extent to which the p-values returned by a statistical analysis method are uniformly distributed under the null hypothesis. A well-calibrated method will return p-values that, when processed by a multiple testing procedure, will result in a false discovery rate close to the nominal level.
+
+-   **Power:** The ability of a statistical analysis method to detect true associations. For example, a method has high power if it can detect many of the true associations with high probability.
+
+-   **Calibration check:** A procedure for assessing the calibration of a statistical analysis method. A calibration check typically proceeds by applying the method to a set of negative control pairs and then checking the extent to which the resulting p-values are uniformly distributed.
+
+-   **Power check:** A procedure for assessing the power of a statistical analysis method. A power check typically proceeds by applying the method to a set of positive control pairs and then checking the extent to which the resulting p-values are small.
+
+-   **QQ plot:** A plot used to assess the calibration of a statistical analysis method. A QQ plot is a scatter plot of the p-values returned by the method against the quantiles of the uniform distribution. A well-calibrated method will produce a QQ plot that is close to the diagonal.
+
+## Statistical methodologies
+
+-   **Multiple testing procedure:** A procedure for controlling the false discovery rate. A multiple testing procedure takes as input a list of p-values and outputs a list of adjusted p-values. The adjusted p-values are designed to control the false discovery rate at a specified level.
+
+-   **False discovery rate:**
+
+-   **Cellwise quality control:**
+
+-   **Pairwise quality control:**
+
+-   **Covariate:**
+
+-   **Control group:**
+
+-   **Treatment group:**
+
+-   **Complement set:**
+
+-   **Non-targeting set:**
+
+-   **Resampling:**
+
+-   **Formula object:**
+
+-   **Permutation test:**
+
+-   **Conditional randomization test:**
