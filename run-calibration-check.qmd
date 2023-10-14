@@ -120,7 +120,7 @@ Each row of this data frame corresponds to a negative control target-response pa
 
 ## Diagnosing miscalibration
 
-The negative control p-values may demonstrate *miscalibration*, which is a deviation of the p-values from the expected uniform distribution under the null hypothesis. Indicators of miscalibration include (i) the presence of points that lie considerably above or below the diagonal line on the negative control QQ plots and (ii) a large number of false discoveries on the negative control data. Miscalibration is problematic because it suggests that `sceptre` does not control the rate of false discoveries on the dataset under analysis. Miscalibration can be more or less severe; the table below provides a rough guideline for interpreting miscalibration severity as a function of the number of false discoveries made on the negative control data.
+The negative control p-values may demonstrate *miscalibration*, which is a deviation of the p-values from the expected uniform distribution under the null hypothesis. Indicators of miscalibration include (i) the presence of points that lie considerably above or below the diagonal line on the negative control QQ plots and (ii) a large number of false discoveries on the negative control data. Miscalibration is problematic because it suggests that `sceptre` is not controlling the rate of false discoveries on the dataset under analysis. Miscalibration can be more or less severe; the table below provides a rough guideline for interpreting miscalibration severity as a function of the number of false discoveries made on the negative control data.
 
 | Number of false discoveries | Calibration quality     |
 |-----------------------------|-------------------------|
@@ -131,7 +131,9 @@ The negative control p-values may demonstrate *miscalibration*, which is a devia
 
 : Calibration quality as a (rough) function of the number of false discoveries made on the negative control data in the calibration check analysis. {#tbl-calibration_quality}
 
-There are three main reasons that `sceptre` might be miscalibrated on a single-cell CRISPR screen dataset: sparsity, the absence of relevant covariates, and model misspecification (Barry et al., 2023). First, sparsity --- which refers to the presence of a large proportion of zeros in the response UMI count vector --- can cause the skew-normal approximation to the distribution of the null test statistics to break down, which in turn can result in p-value miscalibration. Second, the absence of important covariates (such as batch) from the model likewise can result in miscalibrated p-values. Finally, misspecification of the negative binomial GLM underlying `sceptre` (due, for example, to the presence of outlier cells) also can lead to miscalibration. Pairwise and cellwise QC (@sec-run_qc) provide the first line of defense against sparsity and model misspecification. Additionally, the resampling methodology of `sceptre` protects against misspecification of the negative binomial GLM. 
+There are three main reasons that `sceptre` might be miscalibrated on a single-cell CRISPR screen dataset: sparsity, the absence of relevant covariates, and model misspecification (Barry et al., 2023). First, sparsity --- which refers to the presence of a large proportion of zeros in the response UMI count vector --- can cause the skew-normal approximation to the distribution of the null test statistics to break down, which in turn can result in p-value miscalibration. Second, the absence of important covariates (such as batch) from the model likewise can result in miscalibrated p-values. A final possible cause of miscalibration is misspecification of the negative binomial GLM underlying `sceptre` (due, for example, to the presence of outlier cells). Pairwise and cellwise QC (@sec-run_qc) provide the first line of defense against sparsity and model misspecification. Additionally, the resampling methodology of `sceptre` protects against misspecification of the negative binomial GLM. In spite of these safeguards, `sceptre` may exhibit miscalibration on some datasets.
+
+To illustrate the phenomenon of miscalibration, we again run the calibration check on the high-MOI CRISPRi data, this time excluding several important covariates from the formula object. In particular, we set `formula_object` to `formula(~log(grna_n_umis))` in `set_analysis_parameters()`, thereby excluding `batch`, `response_n_umis`, and other covariates.
 
 ```{r, results='hide'}
 sceptre_object_highmoi <- sceptre_object_highmoi |>
@@ -145,15 +147,22 @@ sceptre_object_highmoi <- run_calibration_check(sceptre_object_highmoi,
                                                 parallel = TRUE)
 ```
 
+We create a plot to visualize the outcome of the calibration check analysis.
+
 ```{r, eval=FALSE}
 plot(sceptre_object_highmoi)
 ```
 
-```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap="Removing several covariates from the model causes calibration quality to degrade on the high-MOI CRISPRi data. There are five false discoveries, and so this is an example of mild miscalibration, per @tbl-calibration_quality."}
+```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap="Removing several covariates results in mild miscalibration on the high-MOI CRISPRi data."}
 p <- plot(sceptre_object_highmoi)
 ggplot2::ggsave(filename = "plot_calibration_highmoi_bad.png", plot = p, device = "png", scale = 1.1, width = 5, height = 4, dpi = 330)
 knitr::include_graphics("plot_calibration_highmoi_bad.png")
 ```
+
+The negative control p-values no longer lie along the diagonal line in the QQ plots; a handful of p-values in the tail of the distribution, for example, trends markedly above the diagonal. Moreover, there are five false discoveries. This is an example of mild miscalibration, per @tbl-calibration_quality.
+
+What should one do if `sceptre` exhibits miscalibration on a given dataset? 
+
 
 ## Improving calibration
 
