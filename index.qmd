@@ -1,4 +1,4 @@
-# Welcome
+# Welcome {.unnumbered}
 
 Single-cell CRISPR screens (e.g., perturb-seq) combine CRISPR genome engineering and single-cell sequencing to survey the effects of genetic perturbations on individual cells. Single-cell CRISPR screens pose enormous potential for unraveling mechanisms underlying disease and accelerating drug discovery. However, the analysis of these screens presents considerable statistical and computational challenges. *Applied Single-Cell CRISPR Screen Data Analysis* is a step-by-step guide to carrying out statistically rigorous and computationally efficient single-cell CRISPR screen data analysis using the `sceptre` R package. `sceptre` was developed by [Timothy Barry](https://timothy-barry.github.io/), Joseph Deutsch, and [Eugene Katsevich](https://ekatsevi.github.io/).
 

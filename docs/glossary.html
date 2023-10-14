@@ -8,7 +8,7 @@
 
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
 
-<title>Applied Single-Cell CRISPR Screen Data Analysis</title>
+<title>Applied Single-Cell CRISPR Screen Data Analysis - Appendix B — Glossary</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -31,7 +31,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./sceptre.html" rel="next">
+<link href="./acknowledgements.html" rel="prev">
 <link href="./book_cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -75,7 +75,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Welcome</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./acknowledgements.html">Appendices</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -110,7 +110,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Welcome</span></a>
   </div>
 </li>
@@ -150,18 +150,29 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./acknowledgements.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./glossary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
   </div>
 </li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -172,17 +183,19 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a></li>
-  <li><a href="#navigating-this-book" id="toc-navigating-this-book" class="nav-link" data-scroll-target="#navigating-this-book">Navigating this Book</a></li>
+  <li><a href="#assay-design" id="toc-assay-design" class="nav-link active" data-scroll-target="#assay-design"><span class="header-section-number">B.1</span> Assay design</a></li>
+  <li><a href="#hypothesis-construction" id="toc-hypothesis-construction" class="nav-link" data-scroll-target="#hypothesis-construction"><span class="header-section-number">B.2</span> Hypothesis construction</a></li>
+  <li><a href="#statistical-properties" id="toc-statistical-properties" class="nav-link" data-scroll-target="#statistical-properties"><span class="header-section-number">B.3</span> Statistical properties</a></li>
+  <li><a href="#statistical-methodologies" id="toc-statistical-methodologies" class="nav-link" data-scroll-target="#statistical-methodologies"><span class="header-section-number">B.4</span> Statistical methodologies</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/glossary.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Applied Single-Cell CRISPR Screen Data Analysis</h1>
+<h1 class="title">Appendix B — Glossary</h1>
 </div>
 
 
@@ -197,15 +210,59 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-
-<section id="welcome" class="level1 unnumbered">
-<h1 class="unnumbered">Welcome</h1><p><img src="book_cover.png" title="Applied Single-Cell CRISPR Screen Data Analysis" class="quarto-cover-image img-fluid"></p>
-<p>Single-cell CRISPR screens (e.g., perturb-seq) combine CRISPR genome engineering and single-cell sequencing to survey the effects of genetic perturbations on individual cells. Single-cell CRISPR screens pose enormous potential for unraveling mechanisms underlying disease and accelerating drug discovery. However, the analysis of these screens presents considerable statistical and computational challenges. <em>Applied Single-Cell CRISPR Screen Data Analysis</em> is a step-by-step guide to carrying out statistically rigorous and computationally efficient single-cell CRISPR screen data analysis using the <code>sceptre</code> R package. <code>sceptre</code> was developed by <a href="https://timothy-barry.github.io/">Timothy Barry</a>, Joseph Deutsch, and <a href="https://ekatsevi.github.io/">Eugene Katsevich</a>.</p>
-<p><code>sceptre</code> is compatible with a broad range of single-cell CRISPR screen experimental designs. In particular, datasets can vary along the following axes: multiplicity of infection (low or high), genomic element targeted (gene or noncoding regulatory element), CRISPR modality (CRISPRko, CRISPRi, CRISPRa, or CRISPR prime/base editing), and molecular readout (gene expression, protein expression, or chromatin accessibility). This book uses two real datasets to illustrate use of <code>sceptre</code>: a high-MOI CRISPRi screen of noncoding regulatory elements and a low-MOI CRISPRko screen of gene transcription start sites. On both datasets the molecular phenotype measured is the transcriptome (i.e., the gene expressions).</p>
+<p>We use the following key terms in this book.</p>
+<section id="assay-design" class="level2" data-number="B.1">
+<h2 data-number="B.1" class="anchored" data-anchor-id="assay-design"><span class="header-section-number">B.1</span> Assay design</h2>
+<p>The following terms describe the design of a single-cell CRISPR screen assay.</p>
+<ul>
+<li><p><strong>Guide RNA (gRNA):</strong> An RNA guiding the Cas9 (or one of its variants) to its target in order to perturb it.</p></li>
+<li><p><strong>Target:</strong> The genomic element targeted by a gRNA. Possible targets include gene transcription start sites and noncoding elements such as enhancers or silencers.</p></li>
+<li><p><strong>Targeting gRNA:</strong> A gRNA that is intended to perturb a genomic target.</p></li>
+<li><p><strong>Non-targeting gRNA:</strong> A gRNA whose barcode sequence either does not map anywhere in the genome or maps to a location whose perturbation is known to have no effect. Non-targeting gRNAs serve as negative controls.</p></li>
+<li><p><strong>Response:</strong> A molecular phenotype read out in the single-cell CRISPR screen, with which one is interested in associating CRISPR perturbations. Possible responses include gene expression, protein expression, and chromatin accessibility.</p></li>
+<li><p><strong>Multiplicity of infection (MOI):</strong> The MOI of a screen can be categorized as low or high, and can also be quantified. A high-MOI (respectively, low-MOI) dataset is one in which the experimenter has aimed to insert multiple gRNAs (respectively, a single gRNA) into each cell. Quantitatively, the MOI of a screen is the average number of gRNAs delivered per cell. For example, an MOI of 0.5 means that on average each cell receives 0.5 gRNAs.</p></li>
+</ul>
 </section>
-<section id="navigating-this-book" class="level1 unnumbered">
-<h1 class="unnumbered">Navigating this Book</h1>
-<p>Users should start by reading the <em>The whole game</em> (link below), which provides a high-level overview of <code>sceptre</code>. Users who wish to learn more about individual steps of the <code>sceptre</code> pipeline should read the subsequent chapters (i.e., <em>Import data</em> to <em>Run power check and discovery analysis</em>) in order.</p>
+<section id="hypothesis-construction" class="level2" data-number="B.2">
+<h2 data-number="B.2" class="anchored" data-anchor-id="hypothesis-construction"><span class="header-section-number">B.2</span> Hypothesis construction</h2>
+<p>The main statistical task in single-cell CRISPR screen analysis is to test hypotheses of the form: Does perturbing a target impact a response? We use the following terminology to describe the construction of such hypotheses.</p>
+<ul>
+<li><p><strong>gRNA group:</strong> Two or more gRNAs whose effects one wishes to study together. In particular, one wishes to test whether any gRNA in the group has an effect on a response of interest. Typically, gRNAs with the same target are grouped together.</p></li>
+<li><p><strong>Target-response pair:</strong> A pair consisting of a target and a response. For example, a target-response pair could be a specific enhancer and a specific gene. Each target-response pair corresponds to a hypothesis to be tested: Does perturbing the target impact the response?</p></li>
+<li><p><strong>Negative control pair:</strong> A target-response pair in which the target is a non-targeting gRNA. Negative control pairs are used to assess the calibration of a statistical analysis method.</p></li>
+<li><p><strong>Positive control pair:</strong> A target-response pair in which the target is a targeting gRNA known to have an effect on the response. For example, a positive control pair may consist of a gRNA targeting a gene transcription start site and the expression of that gene. Positive control pairs are used to assess the power of a statistical analysis method.</p></li>
+<li><p><strong>Discovery pair:</strong> A target-response pair in which the target is a targeting gRNA whose effect on the response is unknown. The main goal of a single-cell CRISPR screen is to search for new associations among discovery pairs.</p></li>
+<li><p><strong>Cis pair:</strong> A target-response pair in which the target and response are located in close proximity on the same chromosome. For example, a cis pair may consist of a gRNA targeting an enhancer and a gene whose transcription start site is a few kilobases away.</p></li>
+<li><p><strong>Trans pair:</strong> A target-response pair where the target and response are not necessarily located in close proximity or on the same chromosome as one another.</p></li>
+</ul>
+</section>
+<section id="statistical-properties" class="level2" data-number="B.3">
+<h2 data-number="B.3" class="anchored" data-anchor-id="statistical-properties"><span class="header-section-number">B.3</span> Statistical properties</h2>
+<ul>
+<li><p><strong>Calibration:</strong> The extent to which the p-values returned by a statistical analysis method are uniformly distributed under the null hypothesis. A well-calibrated method will return p-values that, when processed by a multiple testing procedure, will result in a false discovery rate close to the nominal level.</p></li>
+<li><p><strong>Power:</strong> The ability of a statistical analysis method to detect true associations. For example, a method has high power if it can detect many of the true associations with high probability.</p></li>
+<li><p><strong>Calibration check:</strong> A procedure for assessing the calibration of a statistical analysis method. A calibration check typically proceeds by applying the method to a set of negative control pairs and then checking the extent to which the resulting p-values are uniformly distributed.</p></li>
+<li><p><strong>Power check:</strong> A procedure for assessing the power of a statistical analysis method. A power check typically proceeds by applying the method to a set of positive control pairs and then checking the extent to which the resulting p-values are small.</p></li>
+<li><p><strong>QQ plot:</strong> A plot used to assess the calibration of a statistical analysis method. A QQ plot is a scatter plot of the p-values returned by the method against the quantiles of the uniform distribution. A well-calibrated method will produce a QQ plot that is close to the diagonal.</p></li>
+</ul>
+</section>
+<section id="statistical-methodologies" class="level2" data-number="B.4">
+<h2 data-number="B.4" class="anchored" data-anchor-id="statistical-methodologies"><span class="header-section-number">B.4</span> Statistical methodologies</h2>
+<ul>
+<li><p><strong>Multiple testing procedure:</strong> A procedure for controlling the false discovery rate. A multiple testing procedure takes as input a list of p-values and outputs a list of adjusted p-values. The adjusted p-values are designed to control the false discovery rate at a specified level.</p></li>
+<li><p><strong>False discovery rate:</strong></p></li>
+<li><p><strong>Cellwise quality control:</strong></p></li>
+<li><p><strong>Pairwise quality control:</strong></p></li>
+<li><p><strong>Covariate:</strong></p></li>
+<li><p><strong>Control group:</strong></p></li>
+<li><p><strong>Treatment group:</strong></p></li>
+<li><p><strong>Complement set:</strong></p></li>
+<li><p><strong>Non-targeting set:</strong></p></li>
+<li><p><strong>Resampling:</strong></p></li>
+<li><p><strong>Formula object:</strong></p></li>
+<li><p><strong>Permutation test:</strong></p></li>
+<li><p><strong>Conditional randomization test:</strong></p></li>
+</ul>
 
 
 </section>
@@ -446,11 +503,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./acknowledgements.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./sceptre.html" class="pagination-link">
-        <span class="nav-page-text">The whole game</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

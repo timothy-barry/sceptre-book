@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.3.450">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
-<title>Applied Single-Cell CRISPR Screen Data Analysis - 2&nbsp; Import data</title>
+<title>Applied Single-Cell CRISPR Screen Data Analysis - 1&nbsp; Import data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -100,7 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Import data</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -132,7 +132,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Welcome</span></span></a>
+ <span class="menu-text">Welcome</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -144,37 +144,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./import-data.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./set-analysis-parameters.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./assign-grnas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./run-qc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./run-calibration-check.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./acknowledgements.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
   </div>
 </li>
     </ul>
@@ -186,19 +192,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
 <li>
-<a href="#import-data-from-an-existing-software-package" id="toc-import-data-from-an-existing-software-package" class="nav-link active" data-scroll-target="#import-data-from-an-existing-software-package"><span class="header-section-number">2.1</span> Import data from an existing software package</a>
+<a href="#import-data-from-an-existing-software-package" id="toc-import-data-from-an-existing-software-package" class="nav-link active" data-scroll-target="#import-data-from-an-existing-software-package"><span class="header-section-number">1.1</span> Import data from an existing software package</a>
   <ul class="collapse">
-<li><a href="#import-from-10x-cell-ranger" id="toc-import-from-10x-cell-ranger" class="nav-link" data-scroll-target="#import-from-10x-cell-ranger"><span class="header-section-number">2.1.1</span> Import from 10X Cell Ranger</a></li>
-  <li><a href="#import-from-the-parse-program" id="toc-import-from-the-parse-program" class="nav-link" data-scroll-target="#import-from-the-parse-program"><span class="header-section-number">2.1.2</span> Import from the Parse program</a></li>
-  <li><a href="#add-extra-covariates" id="toc-add-extra-covariates" class="nav-link" data-scroll-target="#add-extra-covariates"><span class="header-section-number">2.1.3</span> Add extra covariates</a></li>
+<li><a href="#import-from-10x-cell-ranger" id="toc-import-from-10x-cell-ranger" class="nav-link" data-scroll-target="#import-from-10x-cell-ranger"><span class="header-section-number">1.1.1</span> Import from 10X Cell Ranger</a></li>
+  <li><a href="#import-from-the-parse-program" id="toc-import-from-the-parse-program" class="nav-link" data-scroll-target="#import-from-the-parse-program"><span class="header-section-number">1.1.2</span> Import from the Parse program</a></li>
+  <li><a href="#add-extra-covariates" id="toc-add-extra-covariates" class="nav-link" data-scroll-target="#add-extra-covariates"><span class="header-section-number">1.1.3</span> Add extra covariates</a></li>
   </ul>
 </li>
-  <li><a href="#import-data-from-a-collection-of-r-objects" id="toc-import-data-from-a-collection-of-r-objects" class="nav-link" data-scroll-target="#import-data-from-a-collection-of-r-objects"><span class="header-section-number">2.2</span> Import data from a collection of R objects</a></li>
+  <li><a href="#import-data-from-a-collection-of-r-objects" id="toc-import-data-from-a-collection-of-r-objects" class="nav-link" data-scroll-target="#import-data-from-a-collection-of-r-objects"><span class="header-section-number">1.2</span> Import data from a collection of R objects</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/import-data.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title"><span id="sec-import_data" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Import data</span></span></h1>
+<h1 class="title"><span id="sec-import_data" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></h1>
 </div>
 
 
@@ -224,11 +230,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-hash="import-data_cache/html/unnamed-chunk-2_b9e4d2ea6aadc99451b51f6ef9679bd2">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="import-data-from-an-existing-software-package" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="import-data-from-an-existing-software-package">
-<span class="header-section-number">2.1</span> Import data from an existing software package</h2>
+<section id="import-data-from-an-existing-software-package" class="level2" data-number="1.1"><h2 data-number="1.1" class="anchored" data-anchor-id="import-data-from-an-existing-software-package">
+<span class="header-section-number">1.1</span> Import data from an existing software package</h2>
 <p><code>sceptre</code> links up with two programs for upstream processing of single-cell CRISPR screen data: 10X Cell Ranger and the analogous software tool developed by Parse Biosciences. (We refer to the latter program as the “Parse program.”) We describe how to import data from each of these tools below.</p>
-<section id="import-from-10x-cell-ranger" class="level3" data-number="2.1.1"><h3 data-number="2.1.1" class="anchored" data-anchor-id="import-from-10x-cell-ranger">
-<span class="header-section-number">2.1.1</span> Import from 10X Cell Ranger</h3>
+<section id="import-from-10x-cell-ranger" class="level3" data-number="1.1.1"><h3 data-number="1.1.1" class="anchored" data-anchor-id="import-from-10x-cell-ranger">
+<span class="header-section-number">1.1.1</span> Import from 10X Cell Ranger</h3>
 <p><a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> of <em>The whole game</em> describes how to import data from 10X Cell Ranger. We include a minimal working example here.</p>
 <div class="cell" data-hash="import-data_cache/html/unnamed-chunk-3_166b438f44fed96658c28aff892f39e3">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">directories</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span></span>
@@ -241,11 +247,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  grna_target_data_frame <span class="op">=</span> <span class="va">grna_target_data_frame_highmoi</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="import-from-the-parse-program" class="level3" data-number="2.1.2"><h3 data-number="2.1.2" class="anchored" data-anchor-id="import-from-the-parse-program">
-<span class="header-section-number">2.1.2</span> Import from the Parse program</h3>
+</section><section id="import-from-the-parse-program" class="level3" data-number="1.1.2"><h3 data-number="1.1.2" class="anchored" data-anchor-id="import-from-the-parse-program">
+<span class="header-section-number">1.1.2</span> Import from the Parse program</h3>
 <p>A function to import data from the Parse program is coming soon.</p>
-</section><section id="add-extra-covariates" class="level3" data-number="2.1.3"><h3 data-number="2.1.3" class="anchored" data-anchor-id="add-extra-covariates">
-<span class="header-section-number">2.1.3</span> Add extra covariates</h3>
+</section><section id="add-extra-covariates" class="level3" data-number="1.1.3"><h3 data-number="1.1.3" class="anchored" data-anchor-id="add-extra-covariates">
+<span class="header-section-number">1.1.3</span> Add extra covariates</h3>
 <p><code>import_data_from_cellranger</code> and <code>input_data_from_parse()</code> compute the covariates <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_n_nonzero</code>, <code>response_n_umis</code>, <code>response_p_mito</code>, and <code>batch</code>. Users may wish to supply additional covariates (e.g., cell cycle or cell type) to <code>sceptre</code>. To do so, users can pass a data frame <code>extra_covariates</code> containing additional covariates to <code>import_data_from_cellranger</code> or <code>input_data_from_parse()</code>. Below, we simulate an additional covariate <code>cell_type</code> and pass this covariate as an argument to the data import function.</p>
 <div class="cell" data-hash="import-data_cache/html/unnamed-chunk-4_d5449c56441293caaa8d1d8b98233c97">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># simulate an extra covariate, namely cell type</span></span>
@@ -276,8 +282,8 @@ Attributes of the data:
     • 7 covariates (batch, cell_type, grna_n_nonzero, grna_n_umis, response_n_nonzero, response_n_umis, response_p_mito)</code></pre>
 </div>
 </div>
-</section></section><section id="import-data-from-a-collection-of-r-objects" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="import-data-from-a-collection-of-r-objects">
-<span class="header-section-number">2.2</span> Import data from a collection of R objects</h2>
+</section></section><section id="import-data-from-a-collection-of-r-objects" class="level2" data-number="1.2"><h2 data-number="1.2" class="anchored" data-anchor-id="import-data-from-a-collection-of-r-objects">
+<span class="header-section-number">1.2</span> Import data from a collection of R objects</h2>
 <p>Users also can import data into <code>sceptre</code> from a specified set of R objects. This data import strategy is most appropriate for users employing less standard data preprocessing pipelines to generate the response and gRNA count matrices. We use the high-MOI CRISPRi data as a working example. We can obtain these data in R matrix and data frame format as follows.</p>
 <div class="cell" data-hash="import-data_cache/html/unnamed-chunk-6_28faeca640c6351ca23f3aab119bde1f">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">highmoi_example_data</span><span class="op">)</span></span>
@@ -645,7 +651,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./set-analysis-parameters.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
