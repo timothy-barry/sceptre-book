@@ -171,28 +171,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
- <span class="menu-text">Appendices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
-<li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./acknowledgements.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+ <span class="menu-text">Glossary</span></a>
   </div>
-</li>
-      </ul>
 </li>
     </ul>
 </div>
@@ -316,7 +299,7 @@ Attributes of the data:
 <li><code>multiple_testing_alpha</code></li>
 <li><code>fit_parametric_curve</code></li>
 </ul>
-<p>The only required argument among these is <code>discovery_pairs</code>. We describe these arguments below.</p>
+<p>None of these parameters are required, as they all have sensible defaults. However, in most cases, users will want to specify at least <code>discovery_pairs</code>. We describe these arguments below.</p>
 <section id="positive-control-pairs" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="positive-control-pairs">
 <span class="header-section-number">2.1</span> Positive control pairs</h2>
 <p>Positive control pairs are target-response pairs for which we know (or have strong reason to believe) that there is a regulatory relationship between the target and the response. We can use positive control pairs to verify that <code>sceptre</code> (or any association testing method for that matter) is sensitive (i.e., capable of detecting true associations) on the dataset under analysis. We use the function <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> to construct the positive control pairs. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> takes as an argument a <code>sceptre_object</code> and returns a data frame with columns <code>grna_target</code> and <code>response_id</code>, where gRNA targets and response IDs with matching names are paired. We call <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> on the high-MOI CRISPRi dataset and the low-MOI CRISPRko dataset. In both cases the positive control set consists of transcription start sites paired to the gene regulated by those transcription start sites.</p>
@@ -380,7 +363,7 @@ Attributes of the data:
 <p>We then could supply <code>positive_control_pairs_highmoi_updated</code> instead of <code>positive_control_pairs_highmoi</code> to <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>.</p>
 </section><section id="discovery-pairs" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="discovery-pairs">
 <span class="header-section-number">2.2</span> Discovery pairs</h2>
-<p>Discovery pairs are target-response pairs whose association status we do not know but seek to learn. Unlike positive control and negative control pairs, which serve a mainly technical purpose, discovery pairs are of primary scientific interest. Discovery pairs must be supplied to <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>; all other arguments (aside from <code>sceptre_object</code>) are optional. <code>sceptre</code> provides two helper functions for constructing discovery pairs: <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>.</p>
+<p>Discovery pairs are target-response pairs whose association status we do not know but seek to learn. Unlike positive control and negative control pairs, which serve a mainly technical purpose, discovery pairs are of primary scientific interest. <code>sceptre</code> provides two helper functions for constructing discovery pairs: <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>.</p>
 <section id="construct-cis-pairs" class="level3" data-number="2.2.1"><h3 data-number="2.2.1" class="anchored" data-anchor-id="construct-cis-pairs">
 <span class="header-section-number">2.2.1</span> Construct <em>cis</em> pairs</h3>
 <p><code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> returns the set of target-response pairs for which the target and response are located on the same chromosome and in close physical proximity to one another. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> assumes that the columns <code>chr</code>, <code>start</code>, and <code>stop</code> are present within the <code>grna_target_data_frame</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> also assumes that the responses are genes as opposed to, say, proteins. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> is a useful pair constructor function for screens that aim to map noncoding regulatory elements (e.g., enhancers, silencers, or noncoding GWAS variants) to target genes in <em>cis</em>. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> takes several arguments: <code>sceptre_object</code> (required) <code>distance_threshold</code> (optional), <code>positive_control_pairs</code> (optional), and <code>ref_genome</code> (optional). Each target is paired to the set of genes within <code>distance_threshold</code> bases of that target. (The default value of <code>distance_threshold</code> is 500,000 bases, or half a megabase.) The <code>positive_control_pairs</code> data frame optionally can be passed to <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code>, in which case the positive control targets (i.e., the entries within the <code>grna_target</code> column of <code>positive_control_pairs</code>) are excluded from the <em>cis</em> pairs. One may want to exclude these from the discovery analysis if these targets are intended for positive control purposes only. Finally, <code>ref_genome</code> is a string indicating the reference genome that <code>chr</code>, <code>start</code>, and <code>stop</code> are defined with respect to. (The only reference genome currently available is “10X_GRCh38_2020,” which is the GRCh38 reference genome that has shipped with CellRanger since 2020.)</p>

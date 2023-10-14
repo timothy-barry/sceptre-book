@@ -1,4 +1,4 @@
-# The whole game {.unnumbered}
+# The whole game {#sec-whole_game .unnumbered}
 
 **`sceptre` is an R package that facilitates statistically rigorous, computationally efficient, and user-friendly single-cell CRISPR screen data analysis.** Users can install `sceptre` via the following command.
 
@@ -42,10 +42,13 @@ sceptre_object <- import_data_from_cellranger(
 
 # construct the grna-gene pairs to analyze
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object)
-discovery_pairs <- construct_cis_pairs(sceptre_object, positive_control_pairs)
+discovery_pairs <- construct_cis_pairs(
+  sceptre_object, 
+  positive_control_pairs = positive_control_pairs
+)
 
 # apply the pipeline functions to the sceptre_object in order
-sceptre_object <- sceptre_object |>
+sceptre_object <- sceptre_object |> # |> is R's base pipe, similar to %>%
   set_analysis_parameters(discovery_pairs, positive_control_pairs) |>
   run_calibration_check() |>
   run_power_check() |>
@@ -55,7 +58,45 @@ sceptre_object <- sceptre_object |>
 write_outputs_to_directory(sceptre_object, "~/sceptre_outputs")
 ```
 
-That's it. Note that `|>` is the base R pipe operator, equivalent in this context to the more familiar `%>%`. We describe each step of the pipeline in greater detail below.
+That's it. The directory `sceptre_outputs` now contains a variety of results and plots from the analysis, including the set of significant target-response pairs:
+
+```{r, echo=FALSE, message=FALSE, results = "hide"}
+# load the data, creating a sceptre_object
+directories <- paste0(
+  system.file("extdata", package = "sceptre"),
+  "/highmoi_example/gem_group_", 1:2
+)
+data(grna_target_data_frame_highmoi)
+sceptre_object <- import_data_from_cellranger(
+  directories = directories,
+  moi = "high",
+  grna_target_data_frame = grna_target_data_frame_highmoi
+)
+
+# construct the grna-gene pairs to analyze
+positive_control_pairs <- construct_positive_control_pairs(sceptre_object)
+discovery_pairs <- construct_cis_pairs(
+  sceptre_object, 
+  positive_control_pairs = positive_control_pairs
+)
+
+# apply the pipeline functions to the sceptre_object in order
+sceptre_object <- sceptre_object |> # |> is R's base pipe, similar to %>%
+  set_analysis_parameters(discovery_pairs, positive_control_pairs) |>
+  run_calibration_check(print_progress = FALSE, parallel = TRUE) |>
+  run_power_check(print_progress = FALSE, parallel = TRUE) |>
+  run_discovery_analysis(print_progress = FALSE, parallel = TRUE)
+```
+
+```{r, echo = FALSE}
+# print a subset of the discovery results
+sceptre_object |>
+  get_result("run_discovery_analysis") |>
+  dplyr::filter(significant) |>
+  dplyr::select(grna_target, response_id, p_value, log_2_fold_change)
+```
+
+We describe each step of the pipeline in greater detail below.
 
 ## 1. Import data {#sec-whole_game_import_data}
 

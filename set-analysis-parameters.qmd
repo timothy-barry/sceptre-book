@@ -66,7 +66,7 @@ We set the analysis parameters by calling the function `set_analysis_parameters(
 - `multiple_testing_alpha`
 - `fit_parametric_curve`
 
-The only required argument among these is `discovery_pairs`. We describe these arguments below.
+None of these parameters are required, as they all have sensible defaults. However, in most cases, users will want to specify at least `discovery_pairs`. We describe these arguments below.
 
 ## Positive control pairs
 
@@ -104,7 +104,7 @@ We then could supply `positive_control_pairs_highmoi_updated` instead of `positi
 
 ## Discovery pairs
 
-Discovery pairs are target-response pairs whose association status we do not know but seek to learn. Unlike positive control and negative control pairs, which serve a mainly technical purpose, discovery pairs are of primary scientific interest. Discovery pairs must be supplied to `set_analysis_parameters()`; all other arguments (aside from `sceptre_object`) are optional. `sceptre` provides two helper functions for constructing discovery pairs: `construct_cis_pairs()` and `construct_trans_pairs()`.
+Discovery pairs are target-response pairs whose association status we do not know but seek to learn. Unlike positive control and negative control pairs, which serve a mainly technical purpose, discovery pairs are of primary scientific interest. `sceptre` provides two helper functions for constructing discovery pairs: `construct_cis_pairs()` and `construct_trans_pairs()`.
 
 ### Construct *cis* pairs
 

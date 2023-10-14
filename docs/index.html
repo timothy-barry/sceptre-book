@@ -150,29 +150,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
- <span class="menu-text">Appendices</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./acknowledgements.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Acknowledgements</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+ <span class="menu-text">Glossary</span></a>
   </div>
 </li>
-      </ul>
-  </li>
     </ul>
     </div>
 </nav>
@@ -184,7 +167,8 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#welcome" id="toc-welcome" class="nav-link active" data-scroll-target="#welcome">Welcome</a></li>
-  <li><a href="#navigating-this-book" id="toc-navigating-this-book" class="nav-link" data-scroll-target="#navigating-this-book">Navigating this Book</a></li>
+  <li><a href="#navigating-this-book" id="toc-navigating-this-book" class="nav-link" data-scroll-target="#navigating-this-book">Navigating this book</a></li>
+  <li><a href="#acknowledgments" id="toc-acknowledgments" class="nav-link" data-scroll-target="#acknowledgments">Acknowledgments</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -215,8 +199,12 @@ ul.task-list li input[type="checkbox"] {
 <p><code>sceptre</code> is compatible with a broad range of single-cell CRISPR screen experimental designs. In particular, datasets can vary along the following axes: multiplicity of infection (low or high), genomic element targeted (gene or noncoding regulatory element), CRISPR modality (CRISPRko, CRISPRi, CRISPRa, or CRISPR prime or base editing), and molecular readout (gene expression, protein expression, or chromatin accessibility). This book uses two real datasets to illustrate use of <code>sceptre</code>: a high-MOI CRISPRi screen of noncoding regulatory elements and a low-MOI CRISPRko screen of gene transcription start sites.</p>
 </section>
 <section id="navigating-this-book" class="level1 unnumbered">
-<h1 class="unnumbered">Navigating this Book</h1>
-<p>Users should start by reading the <em>The whole game</em> (link below), which provides a high-level overview of <code>sceptre</code>. Users who wish to learn more about individual steps of the <code>sceptre</code> pipeline should read the subsequent chapters (i.e., <em>Import data</em> to <em>Run power check and discovery analysis</em>) in order.</p>
+<h1 class="unnumbered">Navigating this book</h1>
+<p>Users should start by reading <a href="./sceptre.html">The whole game</a>, which provides a high-level overview of <code>sceptre</code>. Users who wish to learn more about individual steps of the <code>sceptre</code> pipeline should read the subsequent chapters (i.e., <em>Import data</em> to <em>Run power check and discovery analysis</em>) in order. Finally, we recommend users consult the <a href="./glossary.html">Glossary</a> throughout to keep track of the terminology used in this book.</p>
+</section>
+<section id="acknowledgments" class="level1 unnumbered">
+<h1 class="unnumbered">Acknowledgments</h1>
+<p>We gratefully acknowledge Kathryn Roeder, John Morris, Kaishu Mason, Xuran Wang, and Ziang Niu for contributing to the research and development underlying sceptre. We additionally thank the many sceptre users who have provided valuable feedback on early versions of the package.</p>
 
 
 </section>

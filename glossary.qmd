@@ -1,10 +1,10 @@
-# Glossary {.appendix}
-
-We use the following key terms in this book.
+# Glossary {#sec-glossary .unnumbered}
 
 ## Assay design
 
-The following terms describe the design of a single-cell CRISPR screen assay.
+The following terms describe the design of pooled single-cell CRISPR screen assays, where the goal is to perturb a set of genomic targets and measure the effects of these perturbations on a set of molecular phenotypes.
+
+-  **Perturbation**: A change to the genome of a cell carried out by the CRISPR-Cas9 system or one of its variants. Common perturbations include CRISPRko (knockout via nuclease-active Cas9), CRISPRi (inactivation via dCas9 tethered to a repressive domain), CRISPRa (activation via dCas9 tethered to an activating domain).
 
 -   **Guide RNA (gRNA):** An RNA guiding the Cas9 (or one of its variants) to its target in order to perturb it.
 
@@ -14,15 +14,15 @@ The following terms describe the design of a single-cell CRISPR screen assay.
 
 -   **Non-targeting gRNA:** A gRNA whose barcode sequence either does not map anywhere in the genome or maps to a location whose perturbation is known to have no effect. Non-targeting gRNAs serve as negative controls.
 
--   **Response:** A molecular phenotype read out in the single-cell CRISPR screen, with which one is interested in associating CRISPR perturbations. Possible responses include gene expression, protein expression, and chromatin accessibility.
+-   **Response:** A molecular phenotype read out in the single-cell CRISPR screen, whose response to CRISPR perturbation is of interest. Possible responses include gene expression, protein expression, and chromatin accessibility.
 
--   **Multiplicity of infection (MOI):** The MOI of a screen can be categorized as low or high, and can also be quantified. A high-MOI (respectively, low-MOI) dataset is one in which the experimenter has aimed to insert multiple gRNAs (respectively, a single gRNA) into each cell. Quantitatively, the MOI of a screen is the average number of gRNAs delivered per cell. For example, an MOI of 0.5 means that on average each cell receives 0.5 gRNAs.
+-   **Multiplicity of infection (MOI):** The MOI of a screen can be categorized as low or high, and can also be quantified. A high-MOI (respectively, low-MOI) dataset is one in which the experimenter has aimed to insert multiple gRNAs (respectively, a single gRNA) into each cell. Quantitatively, the MOI of a screen is the average number of gRNAs delivered per cell. For example, an MOI of 10 means that on average each cell receives 10 gRNAs.
 
 ## Hypothesis construction
 
 The main statistical task in single-cell CRISPR screen analysis is to test hypotheses of the form: Does perturbing a target impact a response? We use the following terminology to describe the construction of such hypotheses.
 
--   **gRNA group:** Two or more gRNAs whose effects one wishes to study together. In particular, one wishes to test whether any gRNA in the group has an effect on a response of interest. Typically, gRNAs with the same target are grouped together.
+<!-- -   **gRNA group:** Two or more gRNAs whose effects one wishes to study together. In particular, one wishes to test whether any gRNA in the group has an effect on a response of interest. Typically, gRNAs with the same target are grouped together. -->
 
 -   **Target-response pair:** A pair consisting of a target and a response. For example, a target-response pair could be a specific enhancer and a specific gene. Each target-response pair corresponds to a hypothesis to be tested: Does perturbing the target impact the response?
 
@@ -36,42 +36,50 @@ The main statistical task in single-cell CRISPR screen analysis is to test hypot
 
 -   **Trans pair:** A target-response pair where the target and response are not necessarily located in close proximity or on the same chromosome as one another.
 
-## Statistical properties
+-   **Pairwise quality control:** A procedure for filtering out target-response pairs whose data are too sparse to be analyzed reliably. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.
 
--   **Calibration:** The extent to which the p-values returned by a statistical analysis method are uniformly distributed under the null hypothesis. A well-calibrated method will return p-values that, when processed by a multiple testing procedure, will result in a false discovery rate close to the nominal level.
+-   **Cellwise quality control:** A procedure for filtering out cells whose data suggest aberrations in the library preparation or sequencing processes. This common step in single-cell sequencing analyses (not just CRISPR screens) is based on metrics like the total number of UMIs detected in a cell and the percentage of UMIs mapping to mitochondrial genes.
 
--   **Power:** The ability of a statistical analysis method to detect true associations. For example, a method has high power if it can detect many of the true associations with high probability.
+## Statistical methodologies
+
+The following terms describe the statistical methodologies used in single-cell CRISPR screen analysis. Their main focus is to compare the responses of cells that have been perturbed with those that have not.
+
+-   **Treatment group:** The group of cells for which a given target has been perturbed.
+
+-   **Control group:** A group of cells for which a given target has not been perturbed, which serve as a point of comparison to the treatment group. The control group is typically either the *non-targeting set* or the *complement set*; see below.
+
+-   **Non-targeting set:** The set of cells to which only a non-targeting gRNA has been delivered. This is the most common control group for low-MOI screens.
+
+-   **Complement set:** The set of cells where a given target has not been perturbed (but where other targets may have been perturbed). This is the most common control group for high-MOI screens.
+
+-   **Covariate:** An unwanted source of variation that may affect (the measurement of) the response and/or the perturbations in a cell. Covariates can be *technical* (relating to the library preparation or sequencing processes) or *biological* (relating to the cell itself). Common technical covariates include the sequencing depth of a cell and the number of gRNAs inserted into a cell; common biological covariates include cell cycle stage and cell type. 
+
+-   **Formula object:** A formula object specifies the covariates and their transformations that should be used adjusted for in a statistical analysis method. An example of a formula object is 
+
+    ```{r, eval = FALSE}
+    ~ log(response_n_nonzero) + log(response_n_umis) + response_p_mito + batch
+    ```
+
+-   **Resampling:** A computer-based procedure for estimating the null distribution of a test statistic that circumvents the use of asymptotic approximations (which may not hold for sparse single-cell data). Resampling procedures include the *permutation test* and the *conditional randomization test* (see below).
+
+-   **Permutation test:** A resampling procedure for estimating the null distribution of a test statistic based on permuting the treatment and control labels of the cells and recomputing the test statistic.
+
+-   **Conditional randomization test:** A resampling procedure for estimating the null distribution of a test statistic based on randomly reassigning the treatment and control labels of the cells based on their covariate values.
+
+-   **Multiple testing procedure:** A procedure that inputs a list of $p$-values for a set of target-response pairs and outputs a subset of these pairs that are deemed to have a statistically significant relationship. The most common multiple testing procedure is the *Benjamini-Hochberg procedure*, which aims to control the *false discovery rate* (see below) at a prespecified level, such as 0.1.
+
+## Statistical properties and their assessment
+
+The following terms describe the statistical properties of an analysis method (whether `sceptre` or otherwise) and how they are assessed. These statistical properties are essential to making reliable conclusions based on single-cell CRISPR screen data.
+
+-   **False discovery rate (FDR):** The proportion of the statistically significant target-response pairs returned by a multiple testing procedure that are false positives. A high FDR indicates significant contamination by false positives, making the underlying statistical methodology unreliable.
+
+-   **Calibration:** The extent to which the p-values returned by a statistical analysis method are uniformly distributed under the null hypothesis. A well-calibrated method will return p-values that, when processed by a multiple testing procedure, will result in an FDR close to the desired level.
+
+-   **Power:** Otherwise known as sensitivity, power is the ability of a statistical analysis method to detect true associations. For example, a method has high power if it can detect many of the true associations with high probability.
 
 -   **Calibration check:** A procedure for assessing the calibration of a statistical analysis method. A calibration check typically proceeds by applying the method to a set of negative control pairs and then checking the extent to which the resulting p-values are uniformly distributed.
 
 -   **Power check:** A procedure for assessing the power of a statistical analysis method. A power check typically proceeds by applying the method to a set of positive control pairs and then checking the extent to which the resulting p-values are small.
 
--   **QQ plot:** A plot used to assess the calibration of a statistical analysis method. A QQ plot is a scatter plot of the p-values returned by the method against the quantiles of the uniform distribution. A well-calibrated method will produce a QQ plot that is close to the diagonal.
-
-## Statistical methodologies
-
--   **Multiple testing procedure:** A procedure for controlling the false discovery rate. A multiple testing procedure takes as input a list of p-values and outputs a list of adjusted p-values. The adjusted p-values are designed to control the false discovery rate at a specified level.
-
--   **False discovery rate:**
-
--   **Cellwise quality control:**
-
--   **Pairwise quality control:**
-
--   **Covariate:**
-
--   **Control group:**
-
--   **Treatment group:**
-
--   **Complement set:**
-
--   **Non-targeting set:**
-
--   **Resampling:**
-
--   **Formula object:**
-
--   **Permutation test:**
-
--   **Conditional randomization test:**
+-   **QQ plot:** A plot used to compare the set of $p$-values outputted by a method to the uniform distribution, which is the null distribution of a well-calibrated method. A QQ plot of the $p$-values returned by a method for a set of negative control pairs can therefore be used to check the method's calibration. Visually, a well-calibrated method will produce a QQ plot that is close to the diagonal.
