@@ -161,7 +161,7 @@ knitr::include_graphics("plot_calibration_highmoi_bad.png")
 
 The negative control p-values no longer lie along the diagonal line in the QQ plots; a handful of p-values in the tail of the distribution, for example, trends markedly above the diagonal. Moreover, there are five false discoveries. This is an example of mild miscalibration, per @tbl-calibration_quality.
 
-What should one do if `sceptre` exhibits miscalibration on a given dataset? 
+What should one do if `sceptre` exhibits miscalibration on a given dataset? If miscalibration is mild (per @tbl-calibration_quality), we recommend proceeding 
 
 
 ## Improving calibration
