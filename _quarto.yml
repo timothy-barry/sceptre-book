@@ -25,7 +25,6 @@ book:
     - run-calibration-check.qmd
     - run-power-check-and-discovery-analysis.qmd
   appendices:
-    - acknowledgements.qmd
     - glossary.qmd
 
 format:
