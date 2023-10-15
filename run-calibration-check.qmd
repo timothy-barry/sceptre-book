@@ -55,17 +55,20 @@ sceptre_object_highmoi <- sceptre_object_highmoi |>
   assign_grnas(parallel = TRUE) |> run_qc(p_mito_threshold = 0.075)
 ```
 
+
 We are now ready to run the calibration check.
 
 ## Calibration check methodology
 
 We begin by describing the methodology underlying the calibration check.
 
-### Differential expression paradigm
+### Differential expression paradigm {#sec-de_paradigm}
 
-The goal of the calibration check is to test for association between subsets of negative control gRNAs and responses. Suppose for simplicity that we are conducting a singleton analysis, i.e. suppose that we seek to test for association between an individual negative control gRNA and a response. The "treatment group" is the set of cells containing the given non-targeting gRNA, and the "control group" is the set of cells against which the treatment group is compared to carry out the test of association. The control group can be either the complement set or the NT cells. Within the context of the calibration check analysis, the complement set consists of the cells that do not contain the given non-targeting gRNA; the NT cells, on the other hand, consist of the cells that contain any non-targeting gRNA *excluding* the given non-targeting gRNA that we are testing for association against the response (see schematic below.) `sceptre` carries out the test of association by testing for differential expression of the response across the treatment and control groups, yielding a p-value.
+The goal of the calibration check is to test for association between subsets of negative control gRNAs and responses. Suppose for simplicity that we are conducting a singleton analysis, i.e. suppose that we seek to test for association between an individual negative control gRNA and a response. The "treatment group" is the set of cells containing the given non-targeting gRNA, and the "control group" is the set of cells against which the treatment group is compared to carry out the test of association. The control group can be either the complement set or the NT cells. Within the context of the calibration check analysis, the complement set consists of the cells that do not contain the given non-targeting gRNA; the NT cells, on the other hand, consist of the cells that contain any non-targeting gRNA *excluding* the given non-targeting gRNA that we are testing for association against the response (see @fig-control_vs_complement_undercover). `sceptre` carries out the test of association by testing for differential expression of the response across the treatment and control groups, yielding a p-value.
 
-```{r, out.width = "700px", fig.align="center", echo=FALSE, fig.cap="**Figure 1**: A schematic illustrating the differential expression paradigm of the calibration check analysis. The single-cell CRISPR screen experiment produces a pool of cells; in this example the cells contain targeting gRNAs and three non-targeting gRNAs (labeled NT$_1$, NT$_2$, and NT$_3$). Suppose that we seek to test for association between a given non-targeting gRNA (e.g., NT$_2$) and a response. First, we divide the cells into treatment and control groups, where the treatment group consists of the cells that contain NT$_2$, and the control group can be either the complement set or the NT cells. Within the context of the calibration check analysis, the complement set consists of all cells that do not contain NT$_2$; the NT cells, on the other hand, consist of cells that contain a non-targeting gRNA excluding NT$_2$. (Thus, in this example, the NT cells consist of cells that contain NT$_1$ or NT$_3$.) `sceptre` tests for differential expression of the given response across the treatment and control groups, yielding a p-value for the test of association bewteen the given non-targeting gRNA and the response."}
+```{r, out.width = "700px", fig.align="center", echo=FALSE}
+#| label: fig-control_vs_complement_undercover
+#| fig-cap: "A schematic illustrating the differential expression paradigm of the calibration check analysis. The single-cell CRISPR screen experiment produces a pool of cells; in this example the cells contain targeting gRNAs and three non-targeting gRNAs (labeled NT$_1$, NT$_2$, and NT$_3$). Suppose that we seek to test for association between a given non-targeting gRNA (e.g., NT$_2$) and a response. First, we divide the cells into treatment and control groups, where the treatment group consists of the cells that contain NT$_2$, and the control group can be either the complement set or the NT cells. Within the context of the calibration check analysis, the complement set consists of all cells that do not contain NT$_2$; the NT cells, on the other hand, consist of cells that contain a non-targeting gRNA excluding NT$_2$. (Thus, in this example, the NT cells consist of cells that contain NT$_1$ or NT$_3$.) `sceptre` tests for differential expression of the given response across the treatment and control groups, yielding a p-value for the test of association bewteen the given non-targeting gRNA and the response."
 knitr::include_graphics("control_vs_complement_undercover.png")
 ```
 
@@ -73,7 +76,8 @@ knitr::include_graphics("control_vs_complement_undercover.png")
 
 The calibration check involves forming a set of negative control target-response pairs and then testing these pairs for association to ensure control of the false discovery rate. `sceptre` automatically constructs the negative control pairs, and it does so in such a way that the negative control pairs are highly similar to the discovery pairs, the difference being that the negative control pairs are devoid of biological signal. `sceptre` builds the negative control pairs as follows. First, `sceptre` forms "negative control groups" by randomly grouping together distinct sets of negative control gRNAs. For example, in a screen containing nine negative control gRNAs (labeled NT~1~ *-* NT~9~), gRNAs NT~2~, NT~5~, and NT~7~ might be assigned randomly to one group, gRNAs NT~3~, NT~6~, and NT~9~ might be assigned randomly to another group, and so on. (See schematic below). The number of negative control gRNAs per group (by default) is set equal to the average number of gRNAs per discovery target. For example, in a screen in which each discovery target is targeted by three gRNAs, each negative control group is formed by randomly putting together three negative control gRNAs. The negative control gRNA groups can (and often do) overlap; for example, a given NT gRNA (e.g., NT~2~) could be a part of multiple negative control groups.
 
-```{r, out.width = "475px", fig.align="center", echo=FALSE, fig.cap="A schematic illustrating how the negative control target response pairs are constructed. First, negative control gRNA groups are formed by randomly assembling negative control gRNAs into groups of size one or more. Next, the negative control gRNA groups are randomly paired to responses. "}
+```{r, out.width = "475px", fig.align="center", echo=FALSE}
+#| fig-cap: "A schematic illustrating how the negative control target response pairs are constructed. First, negative control gRNA groups are formed by randomly assembling negative control gRNAs into groups of size one or more. Next, the negative control gRNA groups are randomly paired to responses."
 knitr::include_graphics("neg_control_pair_construction.png")
 ```
 
@@ -83,7 +87,7 @@ After forming the negative control targets, `sceptre` constructs the set of nega
 
 ### Analyzing the negative control pairs
 
-The calibration check entails testing for association between the negative control targets and the responses to which the negative control targets have been paired. If `grna_grouping_strategy` is set to `"singleton"`, the analysis proceeds as described in the section "Differential expression paradigm." If `grna_grouping_strategy` is set to `"union"` (the default), negative control gRNAs contained within a given negative control target are combined via the union operation; this combined gRNA is then tested for association against the responses as if it were a singleton gRNA. Consider again Figure 1 (section "Differential expression paradigm"). Suppose that NT~1~ and NT~2~ constitute a given negative control target, and suppose we seek to test for association between this negative control target and a given response. The "treatment group" would be the cells containing either NT~1~ or NT~2~. Meanwhile, the "complement set" would consist of cells that do *not* contain NT~1~ or NT~2~. Finally, the "NT cells" would consist of cells containing NT~3~.
+The calibration check entails testing for association between the negative control targets and the responses to which the negative control targets have been paired. If `grna_grouping_strategy` is set to `"singleton"`, the analysis proceeds as described in @sec-de_paradigm. If `grna_grouping_strategy` is set to `"union"` (the default), negative control gRNAs contained within a given negative control target are combined via the union operation; this combined gRNA is then tested for association against the responses as if it were a singleton gRNA. Consider again @fig-control_vs_complement_undercover. Suppose that NT~1~ and NT~2~ constitute a given negative control target, and suppose we seek to test for association between this negative control target and a given response. The "treatment group" in this case would be the cells containing either NT~1~ or NT~2~. Meanwhile, the "complement set" would consist of cells that do *not* contain NT~1~ or NT~2~. Finally, the "NT cells" would consist of cells containing NT~3~.
 
 ## Running the calibration check
 
@@ -135,7 +139,7 @@ The negative control p-values may demonstrate *miscalibration*, which is a devia
 
 `sceptre` could demonstrate miscalibration on a single-cell CRISPR screen dataset due to three main reasons: sparsity, the omission of relevant covariates, and model misspecification. Sparsity --- the presence of a large proportion of zeros in the response UMI count matrix --- can cause the skew-normal approximation to the distribution of the null test statistics to break down, resulting in miscalibrated p-values. Additionally, the omission of important covariates (such as batch or biological replicate) from the model or misspecification of the underlying negative binomial GLM (due, for example, to the presence of outlier cells) also can lead to miscalibration. Pairwise and cellwise QC (@sec-run_qc) provide the first line of defense against sparsity and model misspecification, respectively. Furthermore, the resampling methodology of `sceptre` protects against misspecification of the negative binomial GLM. In spite of these safeguards, `sceptre` may still exhibit miscalibration on some datasets.
 
-To illustrate miscalibration, we again run the calibration check on the high-MOI CRISPRi data, this time setting `formula_object` to `formula(~log(grna_n_umis))`, thereby excluding `batch`, `response_n_umis`, and other important covariates.
+To provide an example of miscalibration, we again run the calibration check on the high-MOI CRISPRi data, this time setting `formula_object` to `formula(~log(grna_n_umis))`, thereby excluding `batch`, `response_n_umis`, and other important covariates.
 
 ```{r, results='hide'}
 sceptre_object_highmoi <- sceptre_object_highmoi |>
@@ -163,7 +167,7 @@ knitr::include_graphics("plot_calibration_highmoi_bad.png")
 
 The negative control p-values no longer lie completely along the diagonal line in the QQ plots; a handful of p-values in the tail of the distribution, for example, trends markedly above the diagonal. Moreover, `sceptre` has made five false discoveries. This is an example of mild miscalibration, per @tbl-calibration_quality.
 
-What should one do in the event that `sceptre` exhibits miscalibration? If the miscalibration is mild (per @tbl-calibration_quality), we recommend proceeding to the next steps of the pipeline (i.e., the power check and discovery analysis). It may not possible to obtain perfect calibration (using `sceptre` or any other method) on a given dataset, as the dataset may pose fundamental challenges to calibration that are unresolvable. Moreover, it may not be *preferable* to obtain perfect calibration either, as a mild reduction in miscalibration sometimes can lead to a substantial loss of power. If the miscalibration is moderate to severe, we recommend attempting to alleviate the miscalibration using one or more of the strategies described below.
+What should one do in the event that `sceptre` exhibits miscalibration? If the miscalibration is mild, we recommend proceeding to the next steps of the pipeline (i.e., the power check and discovery analysis). We note that it may not possible to obtain perfect calibration (using `sceptre` or any other method) on a given dataset, as the dataset may pose fundamental challenges to calibration that are unresolvable. Moreover, it may not be *preferable* to obtain perfect calibration either, as a mild reduction in miscalibration sometimes leads to a substantial loss of power. If the miscalibration is moderate to severe, we recommend attempting to alleviate the miscalibration using one or more of the strategies described below.
 
 ## Improving calibration
 
@@ -196,12 +200,12 @@ There are several concrete steps that users can take to improve the calibration 
 
     ```{r, eval=FALSE}
     sceptre_object_highmoi <- sceptre_object_highmoi |>
-      run_qc(n_nonzero_trt_thresh = 10L,
-             n_nonzero_cntrl_thresh = 10L,
+      run_qc(n_nonzero_trt_thresh = 15L,
+             n_nonzero_cntrl_thresh = 15L,
              response_n_umis_range = c(0.05, 0.95))
     ```
 
-4.  **Change the resampling mechanism or the control group**. `sceptre` provides two options for the resampling mechanism (namely, `"permutations"` or `"crt"`; see @sec-set_analysis_parameters_resampling_mech) and two options for the control group (namely, `"complement_set"` or `"nt_cells"`; see @sec-set_analysis_parameters_control_group). (Note that `"nt_cells"` is available as an option only in low-MOI screens.) Switching the resampling mechanism and/or control group may improve calibration. Below, we set the resampling mechanism to `"crt"` and the control group to `"complement_set"` on the low-MOI CRISPRko data; these choices are the opposite of the defaults.
+4.  **Change the resampling mechanism or the control group**. `sceptre` provides two options for the resampling mechanism (namely, `"permutations"` or `"crt"`; see @sec-set_analysis_parameters_resampling_mech) and two options for the control group (namely, `"complement_set"` or `"nt_cells"`; see @sec-set_analysis_parameters_control_group). (Note that `"nt_cells"` is available as an option only in low-MOI screens.) Switching the resampling mechanism and/or the control group may improve calibration. Below, we set the resampling mechanism to `"crt"` and the control group to `"complement_set"` on the low-MOI CRISPRko data; these choices are the opposite of the defaults.
 
     ```{r, eval=FALSE}
     sceptre_object_lowmoi <- sceptre_object_lowmoi |>
@@ -212,7 +216,7 @@ There are several concrete steps that users can take to improve the calibration 
                              control_group = "complement_set")
     ```
 
-5.  **Test fewer pairs**. Obtaining good calibration becomes increasingly challenging as the number of target-response pairs in the discovery set grows. This is because the p-values must maintain a uniform distribution further and further into the tail of the distribution. A simple strategy to improve calibration is to reduce the number of target-response pairs by more aggressively filtering pairs for inclusion in the discovery set. For example, we could construct the discovery set for the high-MOI CRISPRi data by coupling each candidate enhancer to the set of genes within *one* megabase of that candidate enhancer (as opposed to *five* megabases, as we have done previously). This change reduces the number of pairs in the discovery set (before applying QC) from 610 to 353, which makes obtaining good calibration considerably easier.
+5.  **Test fewer pairs**. Obtaining good calibration becomes increasingly challenging as the number of target-response pairs in the discovery set grows. This is because the p-values must maintain uniformity further and further out into the tail of the distribution. A simple strategy to improve calibration is to reduce the number of target-response pairs by more selectively choosing pairs for inclusion in the discovery set. For example, we could construct the discovery set for the high-MOI CRISPRi data by coupling each candidate enhancer to the set of genes within *one* megabase of that candidate enhancer (as opposed to *five* megabases, as we have done previously). This change reduces the number of pairs in the discovery set (before applying QC) from 610 to 353, which makes obtaining good calibration considerably easier.
 
     ```{r, eval=FALSE}
     discovery_pairs <- construct_cis_pairs(sceptre_object_highmoi,
@@ -226,21 +230,26 @@ There are several concrete steps that users can take to improve the calibration 
 
     Users also could more aggressively prioritize pairs for inclusion in the discovery set by leveraging orthogonal information, such as (single-cell) ATAC-seq or ChIP-seq data.
 
-## The `output_amount` argument
+## The `output_amount` argument {#sec-run_calibration_check_output_amount}
 
-The function `run_calibration_check()` has an optional argument `output_amount`, which controls the amount of information that `run_calibration_check()` returns. `output_amount` can be set to `1`, `2`, or `3`, with `1` (the default) corresponding to the least information, `2` corresponding to an intermediate amount of information, and `3` corresponding to the most information. Setting `output_amount` to `2` causes several additional columns to be appended to the calibration check result data frame. To illustrate, we again run the calibration check on the low-MOI CRISPRko data, this time setting `output_amount` to 2.
+The function `run_calibration_check()` has the optional argument `output_amount`, which controls the amount of information that `run_calibration_check()` returns. `output_amount` can be set to `1`, `2`, or `3`, with `1` (the default) returning the least information, `2` returning an intermediate amount of information, and `3` returning the most information. Setting `output_amount` to `2` causes several additional columns to be appended to the calibration check result data frame. To illustrate, we again run the calibration check on the low-MOI CRISPRko data, this time setting `output_amount` to 2.
 
 ```{r,results='hide'}
 sceptre_object_lowmoi <- run_calibration_check(sceptre_object_lowmoi,
                                                parallel = TRUE,
                                                output_amount = 2)
+```
+
+```{r}
 get_result(sceptre_object = sceptre_object_lowmoi,
            analysis = "run_calibration_check") |> head()
 ```
 
-To explain what the additional columns represent, we provide some further details about how the `sceptre` methodology works. `sceptre` uses an adaptive resampling scheme to reduce compute. For a given target-response pair, `sceptre` first computes the observed z-score $z_\textrm{obs}$ and a small number $B_1$ of null z-scores (where $B_1 \approx 500$). The original z-score is compared to the null z-scores to compute a "stage 1" p-value $p_1$. If $p_1$ falls below some threshold (currently set to 0.02), then `sceptre` computes a large number $B_2$ of fresh null z-scores (where $B_2 \approx 5,000$). A skew-normal distribution is fit to the $B_2$ fresh null z-scores, and a "stage 2" p-value $p_2$ is computed by evaluating the tail probability of the fitted skew-normal distribution at the observed z-score. The goodness of fit of the skew-normal distribution is assessed. If the fit is poor, then `sceptre` computes a third set of $B_3$ null z-scores (where $B_3 \approx 25,000$), and a "stage 3" p-value is computed by comparing the original z-score to this third set of null z-scores.
+To explain what the additional columns represent, we must first provide further details about how the `sceptre` methodology works. `sceptre` uses an adaptive resampling scheme to reduce compute. For a given target-response pair, `sceptre` first computes the observed z-score $z_\textrm{obs}$ and a small number $B_1$ of null z-scores (where $B_1 \approx 500$). The original z-score is compared to the null z-scores to compute a "stage 1" p-value $p_1$. If $p_1$ falls below some threshold (set to 0.02), then `sceptre` computes a large number $B_2$ of fresh null z-scores (where $B_2 \approx 5,000$). A skew-normal distribution is fit to the $B_2$ fresh null z-scores, and a "stage 2" p-value $p_2$ is computed by evaluating the tail probability of the fitted skew-normal distribution at the observed z-score. The goodness of fit of the skew-normal distribution is assessed. If the fit is poor, then `sceptre` computes a third set of $B_3$ null z-scores (where $B_3 \approx 25,000$), and a "stage 3" p-value is computed by comparing the original z-score to this third set of null z-scores.
 
-The columns that are appended to the result data frame when `output_amount` is set to `2` are as follows: `z_orig`, `stage`, `xi`, `omega`, and `alpha`. `z_orig` is the original z-score. `stage` is the stage at which the p-value was computed, either 1, 2, or 3. And `xi`, `omega`, and `alpha` are the fitted values of the skew-normal distribution. (The latter three parameters are relevant only when `stage` is 2; when `stage` is 1 or 3, these parameters are set to `NA`.) Finally, we can set `output_amount` to `3`, which causes the null z-scores to be appended to the result data frame. The null z-scores are labeled `z_null_1`, `z_null_2`, `z_null_3`, etc.
+The columns appended to the result data frame when `output_amount` is set to `2` are as follows: `z_orig`, `stage`, `xi`, `omega`, and `alpha`. `z_orig` is the original z-score. `stage` is the stage at which the p-value was computed, either 1, 2, or 3. And `xi`, `omega`, and `alpha` are the fitted values of the skew-normal distribution. (The latter three parameters are relevant only when `stage` is 2; when `stage` is 1 or 3, these parameters are set to `NA`.)
+
+Finally, we can set `output_amount` to `3`, which causes the null z-scores to be appended to the result data frame. The null z-scores are labeled `z_null_1`, `z_null_2`, `z_null_3`, etc.
 
 ```{r, results='hide'}
 sceptre_object_lowmoi <- run_calibration_check(sceptre_object_lowmoi,

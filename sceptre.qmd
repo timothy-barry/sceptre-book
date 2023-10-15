@@ -273,7 +273,7 @@ The visualization consists of four panels, which we describe below.
 
 `sceptre` may not exhibit good calibration initially, which is OK. See @sec-run_calibration_check for more information about the calibration check analysis, including concrete strategies for improving calibration.
 
-## 6. Run power check (optional)
+## 6. Run power check (optional) {#sec-sceptre_run_power_check}
 
 The sixth step --- which is optional --- is to run the power check. The power check involves applying `sceptre` to analyze the positive control pairs. Given that the positive control pairs are known to contain signal, `sceptre` should produce significant (i.e., small) p-values on the positive control pairs. **The power check enables us to assess `sceptre`'s power (i.e., its ability to detect true associations) on the dataset under analysis.** We run the power check by calling the function `run_power_check()` on the `sceptre_object`.
 
@@ -297,7 +297,7 @@ knitr::include_graphics("power_check.png")
 
 Each point in the plot corresponds to a target-response pair, with positive control pairs in the left column and negative control pairs in the right column. The vertical axis indicates the p-value of a given pair; smaller (i.e., more significant) p-values are positioned higher along this axis (p-values truncated at $10^{-20}$ for visualization). The positive control p-values should be small, and in particular, smaller than the negative control p-values.
 
-## 7. Run discovery analysis
+## 7. Run discovery analysis {#sec-sceptre_run_discovery_analysis}
 
 The seventh and penultimate step is to run the discovery analysis. The discovery analysis entails applying `sceptre` to analyze the discovery pairs. We run the discovery analysis by calling the function `run_discovery_analysis()`.
 
