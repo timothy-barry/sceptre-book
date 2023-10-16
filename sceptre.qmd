@@ -21,7 +21,7 @@ devtools::install_github("katsevich-lab/sceptre")
 
 Users can load `sceptre` via a call to `library()`.
 
-```{r}
+```{r,results='hide'}
 library(sceptre)
 ```
 
