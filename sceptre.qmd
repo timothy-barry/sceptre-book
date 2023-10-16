@@ -374,7 +374,7 @@ The visualization consists of four panels.
 
 -   The bottom right panel is a text box displaying the number of discovery pairs called as significant.
 
-## 8. Write outputs to directory
+## 8. Write outputs to directory {#sec-sceptre_write_outputs_to_directory}
 
 The eighth and final step is to write the outputs of the analysis to a directory on disk. We call the function `write_outputs_to_directory()`, which takes as arguments a `sceptre_object` and `directory`; `directory` is a string indicating the location of the directory in which to write the results contained within the `sceptre_object`.
 

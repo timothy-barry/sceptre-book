@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-The next steps of the pipeline are to run the power check and the discovery analysis. The power check entails applying `sceptre` to analyze positive control pairs --- pairs for which we know there is an association between the target and the response --- to ensure that `sceptre` is capable of detecting true associations. The discovery analysis, meanwhile, involves applying `sceptre` to analyze discovery pairs, or target-response pairs whose association status we do not know but seek to learn. Identifying associations among the discovery pairs is the primary objective of the single-cell CRISPR screen analysis. We explicate both the power check and discovery analysis in this chapter given the similarity of these two steps.
+The next steps of the pipeline are to run the power check and the discovery analysis. The power check entails applying `sceptre` to analyze positive control pairs --- pairs for which we know there is an association between the target and the response --- to ensure that `sceptre` is capable of detecting true associations. The discovery analysis, meanwhile, involves applying `sceptre` to analyze discovery pairs, or target-response pairs whose association status we do not know but seek to learn. Identifying associations among the discovery pairs is the primary objective of the single-cell CRISPR screen analysis. We explicate both the power check and discovery analysis in this chapter given the similarity of these two analyses.
 
 ```{r, out.width = "650px", fig.align="center", echo = FALSE}
 knitr::include_graphics("pipeline_schematic_step_6_7.png")
@@ -119,9 +119,9 @@ discovery_result <- get_result(sceptre_object = sceptre_object_lowmoi,
 head(discovery_result)
 ```
 
-The data frame `discovery_result` contains the columns `response_id`, `grna_target`, `n_nonzero_trt`, `n_nonzero_cntrl`, `pass_qc`, `p_value`, `log_2_fold_change`, and `significant`; see @sec-run-calibration-check_running_the_calibration_check of *Run calibration check* for a description of these columns. The rows are ordered according to `p_value`. Pairs called as significant are stored in the top rows of the data frame; pairs not called as significant are stored in the middle rows; and pairs filtered out by pairwise QC are stored in the bottom rows. (The latter pairs have a value of `NA` in the `p_value`, `log_2_fold_change`, and `significant` columns.)
+The data frame `discovery_result` contains the columns `response_id`, `grna_target`, `n_nonzero_trt`, `n_nonzero_cntrl`, `pass_qc`, `p_value`, `log_2_fold_change`, and `significant`; see @sec-run-calibration-check_running_the_calibration_check of *Run calibration check* for a description of these columns. The rows are ordered according to `p_value`. Pairs called as significant are stored in the top rows of the data frame; pairs called as insignificant are stored in the middle rows; and pairs filtered out by pairwise QC are stored in the bottom rows. (The latter pairs have a value of `NA` in the `p_value`, `log_2_fold_change`, and `significant` columns.)
 
-The format of the result data frame changes when we use the "singleton" gRNA integration strategy instead of the default "union" strategy. To illustrate, we again analyze the low-MOI CRISPRko data, this time setting `grna_integration_strategy` to `"singleton"` in `set_analysis_parameters()`. We then call `assign_grnas()`, `run_qc()`, and `run_discovery_analysis()`.
+The format of the result data frame is slightly different when we use the "singleton" gRNA integration strategy rather than the default "union" strategy. To illustrate, we again analyze the low-MOI CRISPRko data, this time setting `grna_integration_strategy` to `"singleton"` in `set_analysis_parameters()`. We then call `assign_grnas()`, `run_qc()`, and `run_discovery_analysis()`.
 
 ```{r,results='hide'}
  sceptre_object_lowmoi <- sceptre_object_lowmoi |>
@@ -132,7 +132,7 @@ The format of the result data frame changes when we use the "singleton" gRNA int
   run_discovery_analysis(parallel = TRUE)
 ```
 
-The result data frame obtained via `get_result()` contains the additional column `grna_id`. Each row of this data frame corresponds to an individual *gRNA-response pair* (as opposed to *target-response pair*) that we have tested for association.
+The result data frame obtained via `get_result()` contains the additional column `grna_id`. Each row of this data frame corresponds to an individual *gRNA-response pair* (as opposed to *target-response pair*).
 
 ```{r}
 discovery_result <- get_result(sceptre_object = sceptre_object_lowmoi,
@@ -140,11 +140,16 @@ discovery_result <- get_result(sceptre_object = sceptre_object_lowmoi,
 head(discovery_result)
 ```
 
-We can filter on a given target-response pair to view the p-value for the test of association between the target and each individual gRNA targeting the target. For example, we subset the result data frame to filter for rows containing the response ID `"PSMB9"` and the gRNA target `"IFNGR2"`.
+We can filter for a given target to view the p-values of the individual gRNAs targeting that target. For example, we filter the result data frame for rows containing response ID "PSMB9" and gRNA target "IFNGR2," displaying the columns `response_id`, `grna_id`, `grna_target`, `p_value`, `significant`, and `n_nonzero_trt`.
 
 ```{r}
 discovery_result |>
   dplyr::filter(response_id == "PSMB9", grna_target == "IFNGR2") |>
-  dplyr::select(response_id, grna_id, grna_target, p_value, significant)
+  dplyr::select(response_id, grna_id, grna_target, p_value, significant, n_nonzero_trt)
 ```
 
+The individual gRNAs that target "IFNGR2" are "IFNGR2g1," "IFNGR2g2," IFNGR2g3," and "IFNGR2g4." All produce a significant association except "IFNGR2g4." The latter likely does not produce a significant association because the pair consisting of gRNA IFNGR2g4 and response PSMB9 has a smaller effective sample size than the other pairs (as quantified by `n_nonzero_trt`).
+
+## Writing the outputs to a directory
+
+We can write all outputs (i.e., results and plots) of an analysis to a directory on disk via the function `write_outputs_to_directory()`. See @sec-sceptre_write_outputs_to_directory of *The whole game* for a description of this function.
