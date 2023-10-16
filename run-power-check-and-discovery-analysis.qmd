@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-The next steps of the pipeline are to run the power check and the discovery analysis. The power check entails applying `sceptre` to analyze positive control pairs --- pairs for which we know there is an association between the target and the response --- to ensure that `sceptre` is capable of detecting true associations. The discovery analysis, meanwhile, involves applying `sceptre` to analyze discovery pairs, or target-response pairs whose association status we do not know but seek to learn. Identifying associations among the discovery pairs is the primary objective of the single-cell CRISPR screen analysis. We explicate both the power check and discovery analysis in this chapter given their similarity.
+The next steps of the pipeline are to run the power check and the discovery analysis. The power check entails applying `sceptre` to analyze positive control pairs --- pairs for which we know there is an association between the target and the response --- to ensure that `sceptre` is capable of detecting true associations. The discovery analysis, meanwhile, involves applying `sceptre` to analyze discovery pairs, or target-response pairs whose association status we do not know but seek to learn. Identifying associations among the discovery pairs is the primary objective of the single-cell CRISPR screen analysis. We explicate both the power check and discovery analysis in this chapter given the similarity of these two steps.
 
 ```{r, out.width = "650px", fig.align="center", echo = FALSE}
 knitr::include_graphics("pipeline_schematic_step_6_7.png")
@@ -65,7 +65,7 @@ We are now ready to run the power check and discovery analysis.
 
 ## Run power check
 
-We run the power check by calling the function `run_power_check()`, which takes the arguments `sceptre_object` (required),  `output_amount` (optional), `print_progress` (optional), and `parallel` (optional). `output_amount` controls the amount of information that `run_power_check()` returns; see @sec-run_calibration_check_output_amount of *Run calibration check* for more information about this argument. `print_progress` and `parallel` are logical values indicating whether to print progress updates and run the computation in parallel, respectively. We run the power check on the low-MOI CRISPRko data.
+We run the power check by calling the function `run_power_check()`, which takes the arguments `sceptre_object` (required), `output_amount` (optional), `print_progress` (optional), and `parallel` (optional). `output_amount` controls the amount of information that `run_power_check()` returns; see @sec-run_calibration_check_output_amount of *Run calibration check* for more information about this argument. `print_progress` and `parallel` are logical values indicating whether to print progress updates and run the computation in parallel, respectively. We run the power check on the low-MOI CRISPRko data.
 
 ```{r,results='hide'}
 sceptre_object_lowmoi <- run_power_check(sceptre_object = sceptre_object_lowmoi,
@@ -88,25 +88,37 @@ We described how to interpret this plot in @sec-sceptre_run_power_check of *The 
 
 ## Run discovery analysis
 
-We run the discovery analysis by calling the function `run_discovery_analysis()`, which takes the same arguments as `run_power_check()`. We run the discovery analysis on the low-MOI CRISPRko data. 
+We run the discovery analysis by calling the function `run_discovery_analysis()`, which takes the same arguments as `run_power_check()`. We illustrate this function on the low-MOI CRISPRko data.
 
 ```{r,results='hide'}
 sceptre_object_lowmoi <- run_discovery_analysis(sceptre_object = sceptre_object_lowmoi,
                                                 parallel = TRUE)
 ```
+
 We can visualize the outcome of the discovery analysis by calling `plot()` on the resulting `sceptre_object`.
 
 ```{r, eval=FALSE}
 plot(sceptre_object_lowmoi)
 ```
 
-```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap="Discovery results on the low-MOI CRISPRko data."}
+```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap="Discovery analysis results on the low-MOI CRISPRko data."}
 p <- plot(sceptre_object_lowmoi)
 ggplot2::ggsave(filename = "plot_discovery_analysis_lowmoi.png", plot = p, device = "png", scale = 1.1, width = 5, height = 4, dpi = 330)
 knitr::include_graphics("plot_discovery_analysis_lowmoi.png")
 ```
 
-We described how to interpret this plot in @sec-sceptre_run_discovery_analysis of *The whole game*. Briefly, the top two panels are QQ plots (on untransformed and transformed scales) of the negative control p-values and discovery p-values. The bottom left panel displays the p-value and log-2-fold-change of each discovery pair. Finally, the bottom right panel shows the number of discoveries made on the discovery set (after applying the multiplicity correction).
+We described how to interpret this plot in @sec-sceptre_run_discovery_analysis of *The whole game*. Briefly, the top left (resp. right) panel is a QQ plot of the negative control p-values and the discovery p-values plotted on an untransformed (resp., transformed) scale. The bottom left panel plots the p-value of each discovery pair against its log-2-fold-change. Finally, the bottom right panel displays the number of discoveries that `sceptre` makes on the discovery set (after applying the multiplicity correction).
 
 ## Inspecting the results
 
+We can obtain a data frame containing the results by calling `get_result()` on the `sceptre_object`,
+
+```{r}
+discovery_result <- get_result(sceptre_object = sceptre_object_lowmoi,
+                               analysis = "run_discovery_analysis")
+head(discovery_result)
+```
+
+```{r}
+
+```
