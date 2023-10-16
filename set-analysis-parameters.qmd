@@ -68,8 +68,6 @@ We set the analysis parameters by calling the function `set_analysis_parameters(
 
 Of these parameters, only `discovery_pairs` is required; the rest have sensible defaults. We describe these arguments below.
 
-None of these parameters are required, as they all have sensible defaults. However, in most cases, users will want to specify at least `discovery_pairs`. We describe these arguments below.
-
 ## Positive control pairs
 
 Positive control pairs are target-response pairs for which we know (or have strong reason to believe) that there is a regulatory relationship between the target and the response. We can use positive control pairs to verify that `sceptre` (or any association testing method for that matter) is sensitive (i.e., capable of detecting true associations) on the dataset under analysis. We use the function `construct_positive_control_pairs()` to construct the positive control pairs. `construct_positive_control_pairs()` takes as an argument a `sceptre_object` and returns a data frame with columns `grna_target` and `response_id`, where gRNA targets and response IDs with matching names are paired. We call `construct_positive_control_pairs()` on the high-MOI CRISPRi dataset and the low-MOI CRISPRko dataset. In both cases the positive control set consists of transcription start sites paired to the gene regulated by those transcription start sites.
