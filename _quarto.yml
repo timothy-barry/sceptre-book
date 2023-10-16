@@ -26,6 +26,7 @@ book:
     - run-power-check-and-discovery-analysis.qmd
   appendices:
     - glossary.qmd
+    - faq.qmd
     - multiple-analyses.qmd
 
 format:

@@ -1,6 +1,6 @@
-# Running multiple analyses
+# Running multiple analyses {#sec-multiple_analyses}
 
-In this chapter, we propose recommended strategies for carrying out multiple SCEPTRE analyses, such as
+In this chapter, we recommend strategies for carrying out multiple SCEPTRE analyses, such as
 
 -   running *cis* and *trans* analyses;
 
