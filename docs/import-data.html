@@ -229,7 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 </header><p>This chapter describes how to import single-cell CRISPR screen data into <code>sceptre</code>, which is the first step of the <code>sceptre</code> pipeline.</p>
-<div class="cell" data-layout-align="center" data-hash="import-data_cache/html/unnamed-chunk-1_1b7985bd8a056cb3bd559fab3e19cc48">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="pipeline_schematic_step_1.png" class="img-fluid figure-img" width="650"></p>
@@ -238,7 +238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Users either can import data directly from the output of an existing software package (e.g., 10X Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the <code>sceptre</code> package.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-2_b9e4d2ea6aadc99451b51f6ef9679bd2">
+<div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="import-data-from-an-existing-software-package" class="level2" data-number="1.1"><h2 data-number="1.1" class="anchored" data-anchor-id="import-data-from-an-existing-software-package">
@@ -247,7 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="import-from-10x-cell-ranger" class="level3" data-number="1.1.1"><h3 data-number="1.1.1" class="anchored" data-anchor-id="import-from-10x-cell-ranger">
 <span class="header-section-number">1.1.1</span> Import from 10X Cell Ranger</h3>
 <p><a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> of <em>The whole game</em> describes how to import data from 10X Cell Ranger. We include a minimal working example here.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-3_166b438f44fed96658c28aff892f39e3">
+<div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">directories</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"sceptre"</span><span class="op">)</span>,</span>
 <span>  <span class="st">"/highmoi_example/gem_group_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
@@ -264,7 +264,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="add-extra-covariates" class="level3" data-number="1.1.3"><h3 data-number="1.1.3" class="anchored" data-anchor-id="add-extra-covariates">
 <span class="header-section-number">1.1.3</span> Add extra covariates</h3>
 <p><code>import_data_from_cellranger</code> and <code>input_data_from_parse()</code> compute the covariates <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_n_nonzero</code>, <code>response_n_umis</code>, <code>response_p_mito</code>, and <code>batch</code>. Users may wish to supply additional covariates (e.g., cell cycle or cell type) to <code>sceptre</code>. To do so, users can pass a data frame <code>extra_covariates</code> containing additional covariates to <code>import_data_from_cellranger</code> or <code>input_data_from_parse()</code>. Below, we simulate an additional covariate <code>cell_type</code> and pass this covariate as an argument to the data import function.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-4_d5449c56441293caaa8d1d8b98233c97">
+<div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># simulate an extra covariate, namely cell type</span></span>
 <span><span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"type_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">45919</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -279,7 +279,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The additional covariate of <code>cell_type</code> is printed in the “covariates” field when we evaluate <code>sceptre_object</code> in the console.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-5_ad44022f685e71d42ffe930cd2684c3a">
+<div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
@@ -296,7 +296,7 @@ Attributes of the data:
 </section></section><section id="import-data-from-a-collection-of-r-objects" class="level2" data-number="1.2"><h2 data-number="1.2" class="anchored" data-anchor-id="import-data-from-a-collection-of-r-objects">
 <span class="header-section-number">1.2</span> Import data from a collection of R objects</h2>
 <p>Users also can import data into <code>sceptre</code> from a specified set of R objects. This data import strategy is most appropriate for users employing less standard data preprocessing pipelines to generate the response and gRNA count matrices. We use the high-MOI CRISPRi data as a working example. We can obtain these data in R matrix and data frame format as follows.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-6_28faeca640c6351ca23f3aab119bde1f">
+<div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">highmoi_example_data</span><span class="op">)</span></span>
 <span><span class="va">response_matrix</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>   <span class="co"># response matrix</span></span>
 <span><span class="va">grna_matrix</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>           <span class="co"># grna matrix</span></span>
@@ -305,7 +305,7 @@ Attributes of the data:
 <span><span class="va">grna_target_data_frame</span> <span class="op">&lt;-</span> <span class="va">grna_target_data_frame_highmoi</span>  <span class="co"># gRNA target data frame</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We call the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> to import the data from a collection of R objects. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> takes several arguments: <code>response_matrix</code>, <code>grna_matrix</code>, <code>grna_target_data_frame</code>, <code>moi</code>, <code>extra_covariates</code>, and <code>response_names</code>. The following figure summarizes the main inputs to this function.</p>
-<div class="cell" data-layout-align="center" data-hash="import-data_cache/html/unnamed-chunk-7_80283281bc360197ac8d5d29134a4db8">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="input_pieces.png" class="img-fluid figure-img" width="750"></p>
@@ -317,7 +317,7 @@ Attributes of the data:
 <ul>
 <li>
 <p><code>response_matrix</code> is the matrix of response UMI counts. The responses should be in the rows and the cells in the columns. The row names of the <code>response_matrix</code> should be the response IDs. The first ten rows and columns of the example <code>response_matrix</code> are as follows.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-8_f5d1690b161d435a1c81aaa3709921e1">
+<div class="cell">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">response_matrix</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>10 x 10 sparse Matrix of class "dgTMatrix"
@@ -337,7 +337,7 @@ ENSG00000162873 . .  . . .  . . .  . .</code></pre>
 </li>
 <li>
 <p><code>grna_matrix</code> is the matrix of gRNA UMI counts. The gRNAs should be in the rows and the cells in the columns. The row names of <code>grna_matrix</code> should be the gRNA IDs. The first ten rows and columns of the example <code>grna_matrix</code> are as follows.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-9_ffef9829c218b6b8c5faa48ab54b8dec">
+<div class="cell">
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_matrix</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>10 x 10 sparse Matrix of class "dgTMatrix"
@@ -358,7 +358,7 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 </li>
 <li>
 <p><code>grna_target_data_frame</code> is the data frame mapping each gRNA to its target. The <code>grna_target_data_frame</code> that we pass to <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> is exactly the same as the one that we pass to <code>import_data_from_cellranger</code>. See <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> of <em>The whole game</em> for more information about this argument.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-10_aed2b8f36068eb4811a5d01160fa9967">
+<div class="cell">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_target_data_frame</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">21</span><span class="op">:</span><span class="fl">24</span>, <span class="fl">80</span><span class="op">:</span><span class="fl">83</span><span class="op">)</span>,<span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        grna_id      grna_target   chr     start       end
@@ -379,13 +379,13 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 </li>
 <li>
 <p><code>moi</code> is a string specifying the MOI of the dataset, either “high” or “low”. This argument serves the same function as it does in <code>import_data_from_cellranger</code>. See <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> of <em>The whole game</em> for more information.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-11_63c321d3ba1df2c5efb3fb9eaba2a444">
+<div class="cell">
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">moi</span> <span class="op">&lt;-</span> <span class="st">"high"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </li>
 <li>
 <p><code>extra_covariates</code> (optional) is a data frame specifying cell-specific covariates beyond those that <code>sceptre</code> can compute. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> computes the covariates <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> does <em>not</em> compute <code>batch</code>, as <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> does not have access to batch information. Thus, <code>batch</code> — alongside any other relevant covariates, such as cell type — should be included in the <code>extra_covariates</code> data frame. <strong>Note:</strong> The rows of <code>extra_covariates</code> are assumed to be in the same order as the columns of <code>response_matrix</code> and <code>grna_matrix</code>. We recommend users add cell barcodes as row names of <code>extra_covariates</code>, in which case <code>sceptre</code> will check the consistency of cell ordering on their behalf.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-12_71ef36bd22d133eb8cc245c8cbdea239">
+<div class="cell">
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">extra_covariates</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">30001</span><span class="op">:</span><span class="fl">30003</span><span class="op">)</span>,,drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      batch
@@ -400,7 +400,7 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 </li>
 <li>
 <p><code>response_names</code> (optional) is a vector of human-readable response names. <code>response_names</code> is used to determine which of the responses (if any) are mitochondrial genes for the purpose of computing the <code>response_p_mito</code> covariate.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-13_7b00486dcdb3d792100bd6e4cdbcb257">
+<div class="cell">
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">response_names</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "NUCKS1"  "RBBP5"   "CDK18"   "RAB29"   "DSTYK"   "SLC41A1"</code></pre>
@@ -409,7 +409,7 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 </li>
 </ul>
 <p>We pass the arguments <code>response_matrix</code>, <code>grna_matrix</code>, <code>grna_target_data_frame</code>, <code>moi</code>, <code>extra_covariates</code>, and <code>response_names</code> to <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code>, which initializes a <code>sceptre_object</code>.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-14_9516d4efc8d970aa85a3eb5793a61b95">
+<div class="cell">
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
 <span>  response_matrix <span class="op">=</span> <span class="va">response_matrix</span>,</span>
 <span>  grna_matrix <span class="op">=</span> <span class="va">grna_matrix</span>,</span>

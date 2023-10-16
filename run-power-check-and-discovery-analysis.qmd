@@ -111,7 +111,7 @@ We described how to interpret this plot in @sec-sceptre_run_discovery_analysis o
 
 ## Inspecting the results
 
-We can obtain a data frame containing the results by calling `get_result()` on the `sceptre_object`,
+We can obtain a data frame containing the results by calling `get_result()` on the `sceptre_object`, setting the parameter `analysis` to the name of the function whose results we are querying. For example, we can obtain the discovery results as follows.
 
 ```{r}
 discovery_result <- get_result(sceptre_object = sceptre_object_lowmoi,
@@ -119,6 +119,6 @@ discovery_result <- get_result(sceptre_object = sceptre_object_lowmoi,
 head(discovery_result)
 ```
 
-```{r}
+The data frame `discovery_result` contains the columns `response_id`, `grna_target`, `n_nonzero_trt`, `n_nonzero_cntrl`, `pass_qc`, `p_value`, `log_2_fold_change`, and `significant`; see @sec-run-calibration-check_running_the_calibration_check of *Run calibration check* for a description of these columns. The rows are ordered according to `p_value`. Pairs called as significant are stored in the top rows of the data frame; pairs not called as significant are stored in the middle rows; and pairs filtered out by pairwise QC are stored in the bottom rows. (The latter pairs are assigned a value of `NA` in the `p_value`, `log_2_fold_change`, and `significant` columns.)
 
-```
+The format of the result data frame changes slightly when we use the "singleton" gRNA integration strategy instead of the default "union" strategy. To illustrate, we again run a discovery analysis on the low-MOI CRISPRko data, this time setting

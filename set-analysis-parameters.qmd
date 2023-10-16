@@ -58,7 +58,7 @@ We set the analysis parameters by calling the function `set_analysis_parameters(
 - `positive_control_pairs`
 - `discovery_pairs`
 - `side`
-- `grna_grouping_strategy`
+- `grna_integration_strategy`
 - `control_group`
 - `resampling_mechanism`
 - `formula_object`

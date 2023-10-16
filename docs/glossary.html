@@ -254,7 +254,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><strong>Covariate:</strong> An unwanted source of variation that may affect (the measurement of) the response and/or the perturbations in a cell. Covariates can be <em>technical</em> (relating to the library preparation or sequencing processes) or <em>biological</em> (relating to the cell itself). Common technical covariates include the sequencing depth of a cell and the number of gRNAs inserted into a cell; common biological covariates include cell cycle stage and cell type.</p></li>
 <li>
 <p><strong>Formula object:</strong> A formula object specifies the covariates and their transformations that should be used adjusted for in a statistical analysis method. An example of a formula object is</p>
-<div class="cell" data-hash="glossary_cache/html/unnamed-chunk-1_890968c7c659c2b87150e672bb06508d">
+<div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_umis</span><span class="op">)</span> <span class="op">+</span> <span class="va">response_p_mito</span> <span class="op">+</span> <span class="va">batch</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </li>

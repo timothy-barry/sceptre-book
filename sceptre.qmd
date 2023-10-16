@@ -188,7 +188,7 @@ The second step is to set the analysis parameters. The most important analysis p
     side <- "left"
     ```
 
-3.  **gRNA grouping strategy**. Typically, multiple gRNAs are designed to target a given genomic element. The parameter `grna_grouping_strategy` controls if and how gRNAs that target the same genomic element are grouped. The default option, `"union"`, combines gRNAs that target the same element into a single "grouped gRNA;" this "grouped gRNA" is tested for association against the responses to which the element is paired. `grna_grouping_strategy` also can be set to "singleton," in which case each gRNA targeting a given element is tested individually against the responses paired to that element. In our analysis we use the default "union" strategy.
+3.  **gRNA integration strategy**. Typically, multiple gRNAs are designed to target a given genomic element. The parameter `grna_integration_strategy` controls if and how gRNAs that target the same genomic element are integrated. The default option, `"union"`, combines gRNAs that target the same element into a single "grouped gRNA;" this "grouped gRNA" is tested for association against the responses to which the element is paired. `grna_integration_strategy` also can be set to "singleton," in which case each gRNA targeting a given element is tested individually against the responses paired to that element. In our analysis we use the default "union" strategy.
 
 Finally, we set the analysis parameters by calling the function `set_analysis_parameters()`, passing `sceptre_object`, `discovery_pairs`, `positive_control_pairs`, and `side` as arguments. Note that `sceptre_object` and `discovery_pairs` are the only required arguments to this function.
 
