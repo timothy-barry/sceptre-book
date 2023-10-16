@@ -1,8 +1,10 @@
----
-format:
-  html:
-    toc: true
----
+```{=html}
+<script>
+   if (new URLSearchParams(window.location.search).get('iframe') === 'true') {
+       document.body.setAttribute('data-iframe', 'true');
+   }
+</script>
+```
 
 # Frequently asked questions {#sec-faq}
 

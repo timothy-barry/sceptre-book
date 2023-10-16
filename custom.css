@@ -1,9 +1,4 @@
-/* By default, the sidebar is displayed */
-.sidebar {
-    display: block;
-}
-
-/* If the iframe parameter is present, hide the sidebar */
-body[data-iframe="true"] .sidebar {
+/* hide sidebar from iframe*/
+body[data-iframe="true"] #quarto-sidebar {
     display: none;
 }
