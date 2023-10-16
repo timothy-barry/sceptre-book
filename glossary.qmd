@@ -1,4 +1,4 @@
-# Glossary {#sec-glossary .unnumbered}
+# Glossary {#sec-glossary}
 
 ## Assay design
 

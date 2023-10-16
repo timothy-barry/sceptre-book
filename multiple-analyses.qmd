@@ -1,0 +1,7 @@
+# Running multiple analyses
+
+In this chapter, we propose recommended strategies for carrying out multiple SCEPTRE analyses, such as
+
+-   running *cis* and *trans* analyses;
+
+-   running analyses with gRNAs grouped based on target and with singleton gRNAs.

@@ -53,18 +53,18 @@ lowmoi_example_data$grna_target_data_frame[1:8,]
 
 Our goal in analyzing the CRISPRko dataset is to dissect gene regulatory networks by linking perturbations of genes to changes in the expression of other genes.
 
-We set the analysis parameters by calling the function `set_analysis_parameters()` on the `sceptre_object`. This function takes several arguments: 
+We set the analysis parameters by calling the function `set_analysis_parameters()` on the `sceptre_object`. This function takes several arguments:
 
-- `positive_control_pairs`
-- `discovery_pairs`
-- `side`
-- `grna_grouping_strategy`
-- `control_group`
-- `resampling_mechanism`
-- `formula_object`
-- `multiple_testing_method`
-- `multiple_testing_alpha`
-- `fit_parametric_curve`
+-   `positive_control_pairs`
+-   `discovery_pairs`
+-   `side`
+-   `grna_grouping_strategy`
+-   `control_group`
+-   `resampling_mechanism`
+-   `formula_object`
+-   `multiple_testing_method`
+-   `multiple_testing_alpha`
+-   `fit_parametric_curve`
 
 None of these parameters are required, as they all have sensible defaults. However, in most cases, users will want to specify at least `discovery_pairs`. We describe these arguments below.
 
@@ -193,7 +193,7 @@ The other available gRNA grouping strategy is `"singleton"`. The `"singleton"` s
 
 ## Control group {#sec-set_analysis_parameters_control_group}
 
-The primary goal of `sceptre` is to test for association between a given gRNA target and response. `control_group` is a parameter that controls the set of cells used to carry out the test of association. Suppose for simplicity that we are carrying out a singleton analysis, i.e. suppose that we are testing for association between an individual targeting gRNA and a response. We define the "treatment group" as the set of cells that contain the given targeting gRNA, and we define the "control group" as the set of cells against which the treatment group is compared to conduct the association test. There are two choices for the control group: the "complement set" and the "non-targeting (NT) cells." The complement set consists of the cells that *do not* contain the given targeting gRNA; the NT cells, by contrast, consist of the cells that contain a non-targeting gRNA. (See schematic below.) `sceptre` tests for association between the given targeting gRNA and the response by testing for differential expression of the response across the treatment group and the control group. Users can select the control group to use by passing either `"complement"` or `"nt_cells"` to `control_group`.
+The primary goal of `sceptre` is to test for association between a given gRNA target and response. `control_group` is a parameter related to the set of cells used to carry out this test of association. Suppose for simplicity that we are carrying out a singleton analysis, i.e. suppose that we are testing for association between an individual targeting gRNA and a response. We define the "treatment group" as the set of cells that contain the given targeting gRNA, and we define the "control group" as the set of cells against which the treatment group is compared to conduct the association test. There are two choices for the control group: the "complement set" and the "non-targeting (NT) cells." The complement set consists of the cells that *do not* contain the given targeting gRNA; the NT cells, by contrast, consist of the cells that contain a non-targeting gRNA. (See schematic below.) `sceptre` tests for association between the given targeting gRNA and the response by testing for differential expression of the response across the treatment group and the control group. Users can select the control group to use by passing either `"complement"` or `"nt_cells"` to `control_group`.
 
 ```{r, out.width = "760px", fig.align = "center", echo = FALSE, fig.cap = "A schematic illustrating the difference between the \"complement set\" and \"NT cells\" control groups. The single-cell CRISPR screen experiment produces a pool of cells containing both targeting and non-targeting gRNAs (top). Suppose that we seek to test for association between a given targeting gRNA (e.g., gRNA $T_2$) and a given response. We first divide the cells into two groups: the treatment group (i.e., the cells containing gRNA $T_2$) and the control group. The control group either can consist of the cells not containing gRNA $T_2$ (the \"complement set\") or the cells containing a non-targeting gRNA (the \"NT cells\"). `sceptre` tests for differential expression of the given response across the treatment and control groups, yielding a p-value for the test of association between the given targeting gRNA and the given response."}
 knitr::include_graphics("control_vs_complement.png")
@@ -218,7 +218,7 @@ Similarly, the low-MOI CRISPRko data contain the covariates `response_n_nonzero`
 
 ```{r, results='hide'}
 formula(~ log(response_n_nonzero) + log(response_n_umis) +
-          response_p_mito + batch)
+          response_p_mito + bio_rep)
 ```
 
 (The covariates `grna_n_nonzero` and `grna_n_umis` by default are not included in the formula object, as `grna_n_nonzero` and `grna_n_umis` typically do not contain substantial information in low MOI after quality control.)
@@ -227,7 +227,7 @@ Users can specify a custom formula by passing a formula object to the argument `
 
 ## Resampling mechanism {#sec-set_analysis_parameters_resampling_mech}
 
-The parameter `resampling_mechanism` controls the inferential procedure that `sceptre` uses to compute a p-value for a target-response pair. Suppose for simplicity that we are carrying out a singleton gRNA analysis. There are three pieces of information relevant to testing for association between a given gRNA and response: (1) the vector of UMI counts of the response; (2) the "gRNA indicator vector," where a given entry of the vector is set to "1" if the corresponding cell is part of the treatment group (i.e., it contains the gRNA) and "0" if it is part of the control group; and (3) the matrix of cell-specific covariates. First, `sceptre` regresses the response vector onto the gRNA indicator vector and covariate matrix via a negative binomial (NB) GLM. `sceptre` computes the z-score $z_\textrm{obs}$ corresponding to a test of the null hypothesis that the coefficient corresponding to the gRNA indicator vector in the fitted GLM is zero. Next, `sceptre` *resamples* the gRNA indicator vector *B* times, where *B* is some large integer (e.g., *B* = 5000). (We discuss exactly how the gRNA indicator vector is resampled below.) Finally, for each of the resampled gRNA indicator vectors, `sceptre` recomputes the z-score, producing *B* "null" z-scores $\tilde{z_1}, \dots, \tilde{z_B}$. The observed z-score $z_\textrm{obs}$ is compared to the null z-scores $\tilde{z_1}, \dots, \tilde{z_B}$ to compute a p-value.
+The parameter `resampling_mechanism` controls the inferential procedure that `sceptre` uses to compute a p-value for a target-response pair. Suppose for simplicity that we are carrying out a singleton gRNA analysis. There are three pieces of information relevant to testing for association between a given gRNA and response: (1) the vector of UMI counts of the response; (2) the "gRNA indicator vector," where a given entry of the vector is set to "1" if the corresponding cell is part of the treatment group (i.e., it contains the gRNA) and "0" if it is part of the control group; and (3) the matrix of cell-specific covariates. First, `sceptre` regresses the response vector onto the gRNA indicator vector and covariate matrix via a negative binomial (NB) GLM. `sceptre` computes the z-score $z_\textrm{obs}$ corresponding to a test of the null hypothesis that the coefficient corresponding to the gRNA indicator vector in the fitted GLM is zero. Next, `sceptre` *resamples* the gRNA indicator vector *B* times, where *B* is some large integer (e.g., *B* = 5000). (We discuss exactly how the gRNA indicator vector is resampled below.) Finally, for each of the resampled gRNA indicator vectors, `sceptre` recomputes the z-score, producing *B* "null" z-scores $\tilde z_1, \dots, \tilde z_B$. The observed z-score $z_\textrm{obs}$ is compared to the null z-scores $\tilde z_1, \dots, \tilde z_B$ to compute a p-value.
 
 ```{r, out.width = "650px", fig.align="center", echo = FALSE}
 knitr::include_graphics("sceptre_pt_1.png")
@@ -253,15 +253,15 @@ Resampling forms the foundation of statistical inference within the `sceptre` fr
 
 ## Fit parametric curve {#sec-set_analysis_parameters_parametric_curve}
 
-As described above, for a given gRNA-response pair, `sceptre` computes an "observed" z-score $z_\textrm{obs}$ and a set of "null" z-scores $\tilde{z_1}, \dots, \tilde{z_B}$ (regardless of whether `resampling_mechanism` is set to `permutations` or `crt`). By default, `sceptre` fits a parametric density (specifically, a skew-normal density) to the distribution of null z-scores and then computes a p-value by evaluating the tail probability of the fitted density at the observed z-score $z_\textrm{obs}$ (see figure below). The parametric density functionality can be deactivated by setting `fit_parametric_curve` to `FALSE` in `set_analysis_parameters()`, in which case a p-value is computed by directly comparing the observed z-score to the null z-scores.
+As described above, for a given gRNA-response pair, `sceptre` computes an "observed" z-score $z_\textrm{obs}$ and a set of "null" z-scores $\tilde z_1, \dots, \tilde z_B$ (regardless of whether `resampling_mechanism` is set to `permutations` or `crt`). By default, `sceptre` fits a parametric density (specifically, a skew-normal density) to the distribution of null z-scores and then computes a p-value by evaluating the tail probability of the fitted density at the observed z-score $z_\textrm{obs}$ (see figure below). The parametric density functionality can be deactivated by setting `fit_parametric_curve` to `FALSE` in `set_analysis_parameters()`, in which case a p-value is computed by directly comparing the observed z-score to the null z-scores.
 
 ```{r, out.width = "650px", fig.align="center", echo = FALSE}
 knitr::include_graphics("fit_parametric_curve.png")
 ```
 
-When `fit_parametric_curve` is set to `FALSE`, `sceptre` must compute a greater number of "null" test statistics to maintain p-value precision. Thus, setting `fit_parametric_curve` to `FALSE` increases compute (in some cases substantially). We recommend setting `fit_parametric_curve` to `FALSE` only when the negative control p-values exhibit miscalibration.
+When `fit_parametric_curve` is set to `FALSE`, `sceptre` must compute a greater number of "null" test statistics to maintain p-value precision. Thus, setting `fit_parametric_curve` to `FALSE` increases compute (in some cases substantially). We recommend setting `fit_parametric_curve` to `FALSE` only when the negative control p-values exhibit miscalibration (see @sec-improving_calibration).
 
-## Multiple testing method and multiple testing $\alpha$
+## Multiple testing method and multiple testing $\alpha$ {#sec-multiple_testing}
 
 After `sceptre` is deployed to analyze the discovery pairs and negative control pairs, the resulting p-values are subjected to a multiplicity adjustment. The adjusted p-values are thresholded to call each pair as "significant" or "not significant." The parameter `multiple_testing_method` controls the multiple testing method that is used to adjust the p-values. The default option is Benjamini-Hochberg (`"BH"`); other available methods can be viewed via a call to `p.adjust.methods`.
 

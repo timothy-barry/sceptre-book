@@ -189,7 +189,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Glossary</span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./multiple-analyses.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Running multiple analyses</span></span></a>
   </div>
 </li>
       </ul>
@@ -212,7 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
   <li><a href="#running-the-calibration-check" id="toc-running-the-calibration-check" class="nav-link" data-scroll-target="#running-the-calibration-check"><span class="header-section-number">5.2</span> Running the calibration check</a></li>
   <li><a href="#diagnosing-miscalibration" id="toc-diagnosing-miscalibration" class="nav-link" data-scroll-target="#diagnosing-miscalibration"><span class="header-section-number">5.3</span> Diagnosing miscalibration</a></li>
-  <li><a href="#improving-calibration" id="toc-improving-calibration" class="nav-link" data-scroll-target="#improving-calibration"><span class="header-section-number">5.4</span> Improving calibration</a></li>
+  <li><a href="#sec-improving_calibration" id="toc-sec-improving_calibration" class="nav-link" data-scroll-target="#sec-improving_calibration"><span class="header-section-number">5.4</span> Improving calibration</a></li>
   <li><a href="#sec-run_calibration_check_output_amount" id="toc-sec-run_calibration_check_output_amount" class="nav-link" data-scroll-target="#sec-run_calibration_check_output_amount"><span class="header-section-number">5.5</span> The <code>output_amount</code> argument</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/run-calibration-check.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -417,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The negative control p-values no longer lie completely along the diagonal line in the QQ plots; a handful of p-values in the tail of the distribution, for example, trends markedly above the diagonal. Moreover, <code>sceptre</code> has made five false discoveries. This is an example of mild miscalibration, per <a href="#tbl-calibration_quality">Table&nbsp;<span>5.1</span></a>.</p>
 <p>What should one do in the event that <code>sceptre</code> exhibits miscalibration? If the miscalibration is mild, we recommend proceeding to the next steps of the pipeline (i.e., the power check and discovery analysis). We note that it may not possible to obtain perfect calibration (using <code>sceptre</code> or any other method) on a given dataset, as the dataset may pose fundamental challenges to calibration that are unresolvable. Moreover, it may not be <em>preferable</em> to obtain perfect calibration either, as a mild reduction in miscalibration sometimes leads to a substantial loss of power. If the miscalibration is moderate to severe, we recommend attempting to alleviate the miscalibration using one or more of the strategies described below.</p>
-</section><section id="improving-calibration" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="improving-calibration">
+</section><section id="sec-improving_calibration" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="sec-improving_calibration">
 <span class="header-section-number">5.4</span> Improving calibration</h2>
 <p>There are several concrete steps that users can take to improve the calibration of <code>sceptre</code>. We list five of the most important strategies here, ordered roughly from most to least promising. These strategies need not be applied one-at-a-time and instead can be mixed and matched.</p>
 <ol type="1">
