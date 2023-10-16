@@ -1,6 +1,10 @@
 # The whole game {#sec-whole_game .unnumbered}
 
-**`sceptre` is an R package that facilitates statistically rigorous, computationally efficient, and user-friendly single-cell CRISPR screen data analysis.** Users can install `sceptre` via the following command.
+::: callout-note
+This chapter is self-contained, and first-time users can get started with `sceptre` by reading this chapter only.
+:::
+
+`sceptre` is an R package that facilitates statistically rigorous, computationally efficient, and user-friendly single-cell CRISPR screen data analysis. Users can install `sceptre` via the following command.
 
 ```{r, eval=FALSE}
 install.packages("devtools")

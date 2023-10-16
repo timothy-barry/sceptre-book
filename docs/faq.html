@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.3.450">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
-<title>Hands-On Single-Cell CRISPR Screen Analysis - Appendix A — Glossary</title>
+<title>Hands-On Single-Cell CRISPR Screen Analysis - Appendix B — Frequently asked questions</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -61,8 +61,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./faq.html" rel="next">
-<link href="./run-power-check-and-discovery-analysis.html" rel="prev">
+<link href="./multiple-analyses.html" rel="next">
+<link href="./glossary.html" rel="prev">
 <link href="./book_cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -100,7 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Glossary</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Appendices</a></li><li class="breadcrumb-item"><a href="./faq.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -188,13 +188,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./glossary.html" class="sidebar-item-text sidebar-link active">
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./faq.html" class="sidebar-item-text sidebar-link">
+  <a href="./faq.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
   </div>
 </li>
@@ -214,15 +214,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#assay-design" id="toc-assay-design" class="nav-link active" data-scroll-target="#assay-design"><span class="header-section-number">A.1</span> Assay design</a></li>
-  <li><a href="#hypothesis-construction" id="toc-hypothesis-construction" class="nav-link" data-scroll-target="#hypothesis-construction"><span class="header-section-number">A.2</span> Hypothesis construction</a></li>
-  <li><a href="#statistical-methodologies" id="toc-statistical-methodologies" class="nav-link" data-scroll-target="#statistical-methodologies"><span class="header-section-number">A.3</span> Statistical methodologies</a></li>
-  <li><a href="#statistical-properties-and-their-assessment" id="toc-statistical-properties-and-their-assessment" class="nav-link" data-scroll-target="#statistical-properties-and-their-assessment"><span class="header-section-number">A.4</span> Statistical properties and their assessment</a></li>
-  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/glossary.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<li><a href="#i-am-trying-to-install-sceptre-but-am-getting-an-error.-what-should-i-do" id="toc-i-am-trying-to-install-sceptre-but-am-getting-an-error.-what-should-i-do" class="nav-link active" data-scroll-target="#i-am-trying-to-install-sceptre-but-am-getting-an-error.-what-should-i-do"><span class="header-section-number">B.1</span> I am trying to install <code>sceptre</code> but am getting an error. What should I do?</a></li>
+  <li><a href="#my-negative-control-p-values-are-miscalibrated.-what-should-i-do" id="toc-my-negative-control-p-values-are-miscalibrated.-what-should-i-do" class="nav-link" data-scroll-target="#my-negative-control-p-values-are-miscalibrated.-what-should-i-do"><span class="header-section-number">B.2</span> My negative control p-values are miscalibrated. What should I do?</a></li>
+  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/faq.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title"><span id="sec-glossary" class="quarto-section-identifier">Appendix A — Glossary</span></h1>
+<h1 class="title"><span id="sec-faq" class="quarto-section-identifier">Appendix B — Frequently asked questions</span></h1>
 </div>
 
 
@@ -235,61 +233,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
-</header><section id="assay-design" class="level2" data-number="A.1"><h2 data-number="A.1" class="anchored" data-anchor-id="assay-design">
-<span class="header-section-number">A.1</span> Assay design</h2>
-<p>The following terms describe the design of pooled single-cell CRISPR screen assays, where the goal is to perturb a set of genomic targets and measure the effects of these perturbations on a set of molecular phenotypes.</p>
-<ul>
-<li><p><strong>Perturbation</strong>: A change to the genome of a cell carried out by the CRISPR-Cas9 system or one of its variants. Common perturbations include CRISPRko (knockout via nuclease-active Cas9), CRISPRi (inactivation via dCas9 tethered to a repressive domain), CRISPRa (activation via dCas9 tethered to an activating domain).</p></li>
-<li><p><strong>Guide RNA (gRNA):</strong> An RNA guiding the Cas9 (or one of its variants) to its target in order to perturb it.</p></li>
-<li><p><strong>Target:</strong> The genomic element targeted by a gRNA. Possible targets include gene transcription start sites and noncoding elements such as enhancers, silencers, and noncoding GWAS variants.</p></li>
-<li><p><strong>Targeting gRNA:</strong> A gRNA that is intended to perturb a genomic target.</p></li>
-<li><p><strong>Non-targeting gRNA:</strong> A gRNA whose barcode sequence either does not map anywhere in the genome or maps to a location whose perturbation is known to have no effect. Non-targeting gRNAs serve as negative controls.</p></li>
-<li><p><strong>Response:</strong> A molecular phenotype readout in the single-cell CRISPR screen, whose response to CRISPR perturbation is of interest. Possible responses include genes, proteins, and chromatin-derived features.</p></li>
-<li><p><strong>Multiplicity of infection (MOI):</strong> The MOI of a screen can be categorized as low or high and also can also be numerically quantified. A high-MOI (respectively, low-MOI) dataset is one in which the experimenter has aimed to insert multiple gRNAs (respectively, a single gRNA) into each cell. Quantitatively, the MOI of a screen is the average number of gRNAs delivered per cell. For example, an MOI of 10 means that on average each cell receives 10 gRNAs.</p></li>
-</ul></section><section id="hypothesis-construction" class="level2" data-number="A.2"><h2 data-number="A.2" class="anchored" data-anchor-id="hypothesis-construction">
-<span class="header-section-number">A.2</span> Hypothesis construction</h2>
-<p>The main statistical task in single-cell CRISPR screen analysis is to test hypotheses of the form: Does perturbing a target impact a response? We use the following terminology to describe the construction of such hypotheses.</p>
-<!-- -   **gRNA group:** Two or more gRNAs whose effects one wishes to study together. In particular, one wishes to test whether any gRNA in the group has an effect on a response of interest. Typically, gRNAs with the same target are grouped together. -->
-<ul>
-<li><p><strong>Target-response pair:</strong> A pair consisting of a target and a response. For example, a target-response pair could be a specific enhancer and a specific gene. Each target-response pair corresponds to a hypothesis to be tested: Does perturbing the target impact the response?</p></li>
-<li><p><strong>Negative control pair:</strong> A target-response pair in which the target is a non-targeting gRNA. Negative control pairs are used to assess the calibration of a statistical analysis method.</p></li>
-<li><p><strong>Positive control pair:</strong> A target-response pair in which the target is a targeting gRNA known to have an effect on the response. For example, a positive control pair may consist of a gRNA targeting a transcription start site coupled to the gene regulated by that transcription start site. Positive control pairs are used to assess the power of a statistical analysis method.</p></li>
-<li><p><strong>Discovery pair:</strong> A target-response pair in which the target is a targeting gRNA whose effect on the response is unknown. The main goal of a single-cell CRISPR screen is to search for new associations among discovery pairs.</p></li>
-<li><p><strong><em>Cis</em></strong> <strong>pair:</strong> A target-response pair in which the target and response are located in close proximity on the same chromosome. For example, a <em>cis</em> pair may consist of a gRNA targeting an enhancer and a gene whose transcription start site is located a few kilobases away.</p></li>
-<li><p><strong><em>Trans</em></strong> <strong>pair:</strong> A target-response pair for which the target and response are not necessarily located in close proximity or on the same chromosome as one another.</p></li>
-<li><p><strong>Pairwise quality control:</strong> A procedure for filtering out target-response pairs whose data are too sparse to be analyzed reliably. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.</p></li>
-<li><p><strong>Cellwise quality control:</strong> A procedure for filtering out cells whose data suggest aberrations in the library preparation or sequencing processes. This common step in single-cell sequencing analyses (not just CRISPR screens) is based on metrics like the total number of UMIs detected in a cell and the percentage of UMIs mapping to mitochondrial genes.</p></li>
-</ul></section><section id="statistical-methodologies" class="level2" data-number="A.3"><h2 data-number="A.3" class="anchored" data-anchor-id="statistical-methodologies">
-<span class="header-section-number">A.3</span> Statistical methodologies</h2>
-<p>The following terms describe the statistical methodologies used in single-cell CRISPR screen analysis. Their main focus is to compare the responses of cells that have been perturbed with those that have not.</p>
-<ul>
-<li><p><strong>Treatment group:</strong> The group of cells for which a given target has been perturbed.</p></li>
-<li><p><strong>Control group:</strong> A group of cells for which a given target has not been perturbed, which serve as a point of comparison to the treatment group. The control group is typically either the <em>non-targeting set</em> or the <em>complement set</em>; see below.</p></li>
-<li><p><strong>Non-targeting set:</strong> The set of cells to which only a non-targeting gRNA has been delivered. This is the most common control group for low-MOI screens.</p></li>
-<li><p><strong>Complement set:</strong> The set of cells for which a given target has not been perturbed (but for which other targets may have been perturbed). This is the most common control group for high-MOI screens.</p></li>
-<li><p><strong>Covariate:</strong> An unwanted source of variation that may affect (the measurement of) the response and/or the perturbations in a cell. Covariates can be <em>technical</em> (relating to the library preparation or sequencing processes) or <em>biological</em> (relating to the cell itself). Common technical covariates include the sequencing depth of a cell and the number of gRNAs inserted into a cell; common biological covariates include cell cycle stage and cell type.</p></li>
-<li>
-<p><strong>Formula object:</strong> A formula object specifies the covariates and their transformations that should be used adjusted for in a statistical analysis method. An example of a formula object is</p>
-<div class="cell" data-hash="glossary_cache/html/unnamed-chunk-1_890968c7c659c2b87150e672bb06508d">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_umis</span><span class="op">)</span> <span class="op">+</span> <span class="va">response_p_mito</span> <span class="op">+</span> <span class="va">batch</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</header><section id="i-am-trying-to-install-sceptre-but-am-getting-an-error.-what-should-i-do" class="level2" data-number="B.1"><h2 data-number="B.1" class="anchored" data-anchor-id="i-am-trying-to-install-sceptre-but-am-getting-an-error.-what-should-i-do">
+<span class="header-section-number">B.1</span> I am trying to install <code>sceptre</code> but am getting an error. What should I do?</h2>
+<p>The first thing to do is to remove any previous installations of <code>sceptre</code> and then try again. First, determine the directory on your computer in which R packages are stored by executing <code><a href="https://rdrr.io/r/base/libPaths.html">.libPaths()</a></code> in the R console.</p>
+<div class="cell" data-hash="faq_cache/html/unnamed-chunk-1_70f954a93bd3a2a67a7fb716614e405c">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html">.libPaths</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "/Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/library"</code></pre>
 </div>
-</li>
-<li><p><strong>Resampling:</strong> A computer-based procedure for estimating the null distribution of a test statistic that circumvents the use of asymptotic approximations (which may not hold for sparse single-cell data). Resampling procedures include the <em>permutation test</em> and the <em>conditional randomization test</em> (see below).</p></li>
-<li><p><strong>Permutation test:</strong> A resampling procedure for estimating the null distribution of a test statistic based on permuting the treatment and control labels of the cells and recomputing the test statistic.</p></li>
-<li><p><strong>Conditional randomization test:</strong> A resampling procedure for estimating the null distribution of a test statistic based on randomly reassigning the treatment and control labels of the cells based on their covariate values.</p></li>
-<li><p><strong>Multiple testing procedure:</strong> A procedure that inputs a list of p-values for a set of target-response pairs and outputs a subset of these pairs that are deemed to have a statistically significant relationship. The most common multiple testing procedure is the <em>Benjamini-Hochberg procedure</em>, which aims to control the <em>false discovery rate</em> (see below) at a prespecified level, such as 0.1.</p></li>
-<li><p><strong>Skew-normal distribution</strong>: A generalization of the Gaussian distribution that has three parameters: a mean parameter, a variance parameter, and a skew parameter. The skew parameter controls the extent to which the distribution is asymmetric relative to a Gaussian distribution.</p></li>
-</ul></section><section id="statistical-properties-and-their-assessment" class="level2" data-number="A.4"><h2 data-number="A.4" class="anchored" data-anchor-id="statistical-properties-and-their-assessment">
-<span class="header-section-number">A.4</span> Statistical properties and their assessment</h2>
-<p>The following terms describe the statistical properties of an analysis method (whether <code>sceptre</code> or otherwise) and how they are assessed. These statistical properties are essential to making reliable conclusions based on single-cell CRISPR screen data.</p>
-<ul>
-<li><p><strong>False discovery rate (FDR):</strong> The proportion of the statistically significant target-response pairs returned by a multiple testing procedure that are false positives. A high FDR indicates significant contamination by false positives, making the underlying statistical methodology unreliable.</p></li>
-<li><p><strong>Calibration:</strong> The extent to which the p-values returned by a statistical analysis method are uniformly distributed under the null hypothesis. A well-calibrated method will return p-values that, when processed by a multiple testing procedure, will result in an FDR close to the desired level.</p></li>
-<li><p><strong>Power:</strong> Otherwise known as sensitivity, power is the ability of a statistical analysis method to detect true associations. For example, a method has high power if it can detect many of the true associations with high probability.</p></li>
-<li><p><strong>Calibration check:</strong> A procedure for assessing the calibration of a statistical analysis method. A calibration check typically proceeds by applying the method to a set of negative control pairs and then checking the extent to which the resulting p-values are uniformly distributed.</p></li>
-<li><p><strong>Power check:</strong> A procedure for assessing the power of a statistical analysis method. A power check typically proceeds by applying the method to a set of positive control pairs and then checking the extent to which the resulting p-values are small.</p></li>
-<li><p><strong>QQ plot:</strong> A plot used to compare the set of p-values outputted by a method to the uniform distribution, which is the null distribution of a well-calibrated method. A QQ plot of the p-values returned by a method for a set of negative control pairs therefore can be used to check the method’s calibration. Visually, a well-calibrated method will produce a QQ plot that is close to the diagonal.</p></li>
-</ul>
+</div>
+<p>Next, within your terminal, <code>cd</code> to this directory and then execute <code>rm -rf sceptre</code>.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Terminal</strong></pre>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /Library/Frameworks/R.framework/Versions/4.2/Resources/library <span class="co"># change me!</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> sceptre</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, try to install <code>sceptre</code> again.</p>
+<p>If this does not work, try to delete and reinstall the dependencies of <code>sceptre</code>. <code>sceptre</code> has the following dependencies: <code>BH</code>, <code>cowplot</code>, <code>crayon</code>, <code>data.table</code>, <code>dplyr</code>, <code>ggplot2</code>, <code>Matrix</code>, <code>Rcpp</code>. Using the method described above, delete and reinstall each of these dependencies one-by-one.</p>
+</section><section id="my-negative-control-p-values-are-miscalibrated.-what-should-i-do" class="level2" data-number="B.2"><h2 data-number="B.2" class="anchored" data-anchor-id="my-negative-control-p-values-are-miscalibrated.-what-should-i-do">
+<span class="header-section-number">B.2</span> My negative control p-values are miscalibrated. What should I do?</h2>
+<p>Not to worry! First of all, the extent of the miscalibration may be mild enough not to cause significant issues with your analysis; see <a href="run-calibration-check.html#tbl-calibration_quality">Table&nbsp;<span>5.1</span></a> for assessing the severity of your miscalibration. If the miscalibration is moderate to severe, then see <a href="run-calibration-check.html#sec-improving_calibration"><span>Section&nbsp;5.4</span></a> for several helpful suggestions to improve your calibration.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
@@ -525,13 +490,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./run-power-check-and-discovery-analysis.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></span>
+      <a href="./glossary.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Glossary</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./faq.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./multiple-analyses.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Running multiple analyses</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
