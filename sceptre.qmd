@@ -1,3 +1,11 @@
+```{=html}
+<script>
+   if (new URLSearchParams(window.location.search).get('iframe') === 'true') {
+       document.body.setAttribute('data-iframe', 'true');
+   }
+</script>
+```
+
 # The whole game {#sec-whole_game .unnumbered}
 
 ::: callout-note
