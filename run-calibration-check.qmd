@@ -55,7 +55,6 @@ sceptre_object_highmoi <- sceptre_object_highmoi |>
   assign_grnas(parallel = TRUE) |> run_qc(p_mito_threshold = 0.075)
 ```
 
-
 We are now ready to run the calibration check.
 
 ## Calibration check methodology
@@ -169,7 +168,7 @@ The negative control p-values no longer lie completely along the diagonal line i
 
 What should one do in the event that `sceptre` exhibits miscalibration? If the miscalibration is mild, we recommend proceeding to the next steps of the pipeline (i.e., the power check and discovery analysis). We note that it may not possible to obtain perfect calibration (using `sceptre` or any other method) on a given dataset, as the dataset may pose fundamental challenges to calibration that are unresolvable. Moreover, it may not be *preferable* to obtain perfect calibration either, as a mild reduction in miscalibration sometimes leads to a substantial loss of power. If the miscalibration is moderate to severe, we recommend attempting to alleviate the miscalibration using one or more of the strategies described below.
 
-## Improving calibration
+## Improving calibration {#sec-improving_calibration}
 
 There are several concrete steps that users can take to improve the calibration of `sceptre`. We list five of the most important strategies here, ordered roughly from most to least promising. These strategies need not be applied one-at-a-time and instead can be mixed and matched.
 
@@ -258,7 +257,7 @@ sceptre_object_lowmoi <- run_calibration_check(sceptre_object_lowmoi,
 calibration_result <- get_result(sceptre_object = sceptre_object_lowmoi,
                                  analysis = "run_calibration_check")
 ```
+
 ```{r}
 calibration_result[1,] |> colnames() |> head(20)
 ```
-
