@@ -173,9 +173,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./run-power-check-and-discovery-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Glossary</span></a>
   </div>
+</li>
+      </ul>
 </li>
     </ul>
 </div>
@@ -190,8 +207,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sec-sceptre_assign_grnas" id="toc-sec-sceptre_assign_grnas" class="nav-link" data-scroll-target="#sec-sceptre_assign_grnas">3. Assign gRNAs to cells (optional)</a></li>
   <li><a href="#sec-sceptre_qc" id="toc-sec-sceptre_qc" class="nav-link" data-scroll-target="#sec-sceptre_qc">4. Run quality control (optional)</a></li>
   <li><a href="#sec-sceptre_calibration_check" id="toc-sec-sceptre_calibration_check" class="nav-link" data-scroll-target="#sec-sceptre_calibration_check">5. Run calibration check</a></li>
-  <li><a href="#run-power-check-optional" id="toc-run-power-check-optional" class="nav-link" data-scroll-target="#run-power-check-optional">6. Run power check (optional)</a></li>
-  <li><a href="#run-discovery-analysis" id="toc-run-discovery-analysis" class="nav-link" data-scroll-target="#run-discovery-analysis">7. Run discovery analysis</a></li>
+  <li><a href="#sec-sceptre_run_power_check" id="toc-sec-sceptre_run_power_check" class="nav-link" data-scroll-target="#sec-sceptre_run_power_check">6. Run power check (optional)</a></li>
+  <li><a href="#sec-sceptre_run_discovery_analysis" id="toc-sec-sceptre_run_discovery_analysis" class="nav-link" data-scroll-target="#sec-sceptre_run_discovery_analysis">7. Run discovery analysis</a></li>
   <li><a href="#write-outputs-to-directory" id="toc-write-outputs-to-directory" class="nav-link" data-scroll-target="#write-outputs-to-directory">8. Write outputs to directory</a></li>
   <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading">Further reading</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/sceptre.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
@@ -501,7 +518,7 @@ Attributes of the data:
 <li><p>Finally, the bottom right panel is a text box displaying (i) the number of false discoveries that <code>sceptre</code> has made on the negative control data and (ii) the mean estimated log-fold change. The number of false discoveries should be a small integer like zero, one, two, or three, with zero being ideal. The mean estimated log-fold change, meanwhile, should be a numeric value close to zero; a number in the range [-0.1, 0.1] is adequate.</p></li>
 </ul>
 <p><code>sceptre</code> may not exhibit good calibration initially, which is OK. See <a href="run-calibration-check.html"><span>Chapter&nbsp;5</span></a> for more information about the calibration check analysis, including concrete strategies for improving calibration.</p>
-</section><section id="run-power-check-optional" class="level2"><h2 class="anchored" data-anchor-id="run-power-check-optional">6. Run power check (optional)</h2>
+</section><section id="sec-sceptre_run_power_check" class="level2"><h2 class="anchored" data-anchor-id="sec-sceptre_run_power_check">6. Run power check (optional)</h2>
 <p>The sixth step — which is optional — is to run the power check. The power check involves applying <code>sceptre</code> to analyze the positive control pairs. Given that the positive control pairs are known to contain signal, <code>sceptre</code> should produce significant (i.e., small) p-values on the positive control pairs. <strong>The power check enables us to assess <code>sceptre</code>’s power (i.e., its ability to detect true associations) on the dataset under analysis.</strong> We run the power check by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code> on the <code>sceptre_object</code>.</p>
 <div class="cell" data-hash="sceptre_cache/html/unnamed-chunk-29_296c6a224318631af4238851fce8e398">
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check</a></span><span class="op">(</span><span class="va">sceptre_object</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -520,7 +537,7 @@ Attributes of the data:
 </div>
 </div>
 <p>Each point in the plot corresponds to a target-response pair, with positive control pairs in the left column and negative control pairs in the right column. The vertical axis indicates the p-value of a given pair; smaller (i.e., more significant) p-values are positioned higher along this axis (p-values truncated at <span class="math inline">\(10^{-20}\)</span> for visualization). The positive control p-values should be small, and in particular, smaller than the negative control p-values.</p>
-</section><section id="run-discovery-analysis" class="level2"><h2 class="anchored" data-anchor-id="run-discovery-analysis">7. Run discovery analysis</h2>
+</section><section id="sec-sceptre_run_discovery_analysis" class="level2"><h2 class="anchored" data-anchor-id="sec-sceptre_run_discovery_analysis">7. Run discovery analysis</h2>
 <p>The seventh and penultimate step is to run the discovery analysis. The discovery analysis entails applying <code>sceptre</code> to analyze the discovery pairs. We run the discovery analysis by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis()</a></code>.</p>
 <div class="cell" data-hash="sceptre_cache/html/unnamed-chunk-32_5c753f19cb37abf99216240bc400ff68">
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span><span class="va">sceptre_object</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>

@@ -23,6 +23,8 @@ book:
     - assign-grnas.qmd
     - run-qc.qmd
     - run-calibration-check.qmd
+    - run-power-check-and-discovery-analysis.qmd
+  appendices:
     - glossary.qmd
 
 format:
