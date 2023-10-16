@@ -329,7 +329,6 @@ Attributes of the data:
 <li><code>fit_parametric_curve</code></li>
 </ul>
 <p>Of these parameters, only <code>discovery_pairs</code> is required; the rest have sensible defaults. We describe these arguments below.</p>
-<p>None of these parameters are required, as they all have sensible defaults. However, in most cases, users will want to specify at least <code>discovery_pairs</code>. We describe these arguments below.</p>
 <section id="positive-control-pairs" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="positive-control-pairs">
 <span class="header-section-number">2.1</span> Positive control pairs</h2>
 <p>Positive control pairs are target-response pairs for which we know (or have strong reason to believe) that there is a regulatory relationship between the target and the response. We can use positive control pairs to verify that <code>sceptre</code> (or any association testing method for that matter) is sensitive (i.e., capable of detecting true associations) on the dataset under analysis. We use the function <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> to construct the positive control pairs. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> takes as an argument a <code>sceptre_object</code> and returns a data frame with columns <code>grna_target</code> and <code>response_id</code>, where gRNA targets and response IDs with matching names are paired. We call <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> on the high-MOI CRISPRi dataset and the low-MOI CRISPRko dataset. In both cases the positive control set consists of transcription start sites paired to the gene regulated by those transcription start sites.</p>
@@ -460,7 +459,7 @@ Attributes of the data:
 6 candidate_enh_14 ENSG00000069275</code></pre>
 </div>
 </div>
-<p>Some users may wish to run both <em>cis</em> and <em>trans</em> analyses on their data. We recommend that such users carry out the <code>sceptre</code> pipeline twice: once using a <em>cis</em> discovery set and once using a <em>trans</em> discovery set. See <a href="multiple-analyses.html"><span>Appendix&nbsp;C</span></a> for recommendations for carrying out multiple SCEPTRE analyses.</p>
+<p>Some users may wish to run both <em>cis</em> and <em>trans</em> analyses on their data. We recommend that such users carry out the <code>sceptre</code> pipeline twice: once using a <em>cis</em> discovery set and once using a <em>trans</em> discovery set. See <span class="quarto-unresolved-ref">?sec-multiple_analyses</span> for recommendations for carrying out multiple SCEPTRE analyses.</p>
 </section><section id="reducing-the-multiplicity-burden" class="level3" data-number="2.2.3"><h3 data-number="2.2.3" class="anchored" data-anchor-id="reducing-the-multiplicity-burden">
 <span class="header-section-number">2.2.3</span> Reducing the multiplicity burden</h3>
 <p><code>sceptre</code> computes a p-value for each target-response pair in the discovery set. These p-values are subjected to a multiple testing correction procedure (by default, the Benjamini-Hochberg method) to produce a discovery set that controls some notion of aggregate type-I error (by default, the false discovery rate). See <a href="#sec-multiple_testing"><span>Section&nbsp;2.9</span></a> for more details on multiple testing. The more pairs are tested, the more stringest this multiplicity correction is. Therefore, including a large number of uninteresting or “null” pairs (i.e., pairs for which there is no relationship between the target and response) in the discovery set causes the power of the multiple testing correction procedure to decrease, resulting in fewer discoveries. If possible, it is good to restrict one’s attention to pairs that are promising or scientifically interesting a priori.</p>
@@ -675,7 +674,7 @@ Analysis parameters:
     • N nonzero treatment cells threshold: not specified
     • N nonzero control cells threshold: not specified
     • Resampling mechanism: conditional resampling
-    • gRNA grouping strategy: union
+    • gRNA integration strategy: union
     • Formula object: log(response_n_nonzero) + log(response_n_umis) + log(grna_n_nonzero) + log(grna_n_umis) + batch</code></pre>
 </div>
 </div>

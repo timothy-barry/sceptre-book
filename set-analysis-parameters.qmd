@@ -53,22 +53,20 @@ lowmoi_example_data$grna_target_data_frame[1:8,]
 
 Our goal in analyzing the CRISPRko dataset is to dissect gene regulatory networks by linking perturbations of genes to changes in the expression of other genes.
 
-We set the analysis parameters by calling the function `set_analysis_parameters()` on the `sceptre_object`. This function takes several arguments:
+We set the analysis parameters by calling the function `set_analysis_parameters()` on the `sceptre_object`. This function takes several arguments: 
 
--   `positive_control_pairs`
--   `discovery_pairs`
--   `side`
--   `grna_integration_strategy`
--   `control_group`
--   `resampling_mechanism`
--   `formula_object`
--   `multiple_testing_method`
--   `multiple_testing_alpha`
--   `fit_parametric_curve`
+- `positive_control_pairs`
+- `discovery_pairs`
+- `side`
+- `grna_integration_strategy`
+- `control_group`
+- `resampling_mechanism`
+- `formula_object`
+- `multiple_testing_method`
+- `multiple_testing_alpha`
+- `fit_parametric_curve`
 
 Of these parameters, only `discovery_pairs` is required; the rest have sensible defaults. We describe these arguments below.
-
-None of these parameters are required, as they all have sensible defaults. However, in most cases, users will want to specify at least `discovery_pairs`. We describe these arguments below.
 
 ## Positive control pairs
 
