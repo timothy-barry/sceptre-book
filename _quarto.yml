@@ -34,6 +34,8 @@ format:
     theme: cosmo
     code-link: true
     author-meta: "Timothy Barry, Eugene Katsevich"
+    after_body: "iframeHandler.js"
+    css: custom.css
 
 execute:
   cache: true
