@@ -19,19 +19,25 @@ We use the high-MOI CRISPRi and low-MOI CRISPRko data as running examples. We ca
 ```{r}
 # low-MOI CRISPRko data setup
 # 1. import data
-sceptre_object_lowmoi <- import_data(response_matrix = lowmoi_example_data$response_matrix,
-                                     grna_matrix = lowmoi_example_data$grna_matrix,
-                                     extra_covariates = lowmoi_example_data$extra_covariates,
-                                     grna_target_data_frame = lowmoi_example_data$grna_target_data_frame,
-                                     moi = "low")
+sceptre_object_lowmoi <- import_data(
+  response_matrix = lowmoi_example_data$response_matrix,
+  grna_matrix = lowmoi_example_data$grna_matrix,
+  extra_covariates = lowmoi_example_data$extra_covariates,
+  grna_target_data_frame = lowmoi_example_data$grna_target_data_frame,
+  moi = "low"
+)
 
 # 2. set analysis parameters
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object_lowmoi)
-discovery_pairs <- construct_trans_pairs(sceptre_object = sceptre_object_lowmoi,
-                                         positive_control_pairs = positive_control_pairs)
-sceptre_object_lowmoi <- set_analysis_parameters(sceptre_object = sceptre_object_lowmoi,
-                                                 discovery_pairs = discovery_pairs,
-                                                 positive_control_pairs = positive_control_pairs)
+discovery_pairs <- construct_trans_pairs(
+  sceptre_object = sceptre_object_lowmoi,
+  positive_control_pairs = positive_control_pairs
+)
+sceptre_object_lowmoi <- set_analysis_parameters(
+  sceptre_object = sceptre_object_lowmoi,
+  discovery_pairs = discovery_pairs,
+  positive_control_pairs = positive_control_pairs
+)
 ```
 
 We do the same for the high-MOI CRISPRi data, creating `sceptre_object_highmoi`.
@@ -39,32 +45,39 @@ We do the same for the high-MOI CRISPRi data, creating `sceptre_object_highmoi`.
 ```{r}
 # high-MOI CRISPRi setup
 # 1. import data
-sceptre_object_highmoi <- import_data(response_matrix = highmoi_example_data$response_matrix,
-                                      grna_matrix = highmoi_example_data$grna_matrix,
-                                      grna_target_data_frame = grna_target_data_frame_highmoi,
-                                      moi = "high",
-                                      extra_covariates = highmoi_example_data$extra_covariates,
-                                      response_names = highmoi_example_data$gene_names)
+sceptre_object_highmoi <- import_data(
+  response_matrix = highmoi_example_data$response_matrix,
+  grna_matrix = highmoi_example_data$grna_matrix,
+  grna_target_data_frame = grna_target_data_frame_highmoi,
+  moi = "high",
+  extra_covariates = highmoi_example_data$extra_covariates,
+  response_names = highmoi_example_data$gene_names
+)
 # 2. set analysis parameters
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object_highmoi)
 discovery_pairs <- construct_cis_pairs(sceptre_object_highmoi,
-                                       positive_control_pairs = positive_control_pairs,
-                                       distance_threshold = 5e6)
-sceptre_object_highmoi <- set_analysis_parameters(sceptre_object = sceptre_object_highmoi,
-                                                  discovery_pairs = discovery_pairs,
-                                                  positive_control_pairs = positive_control_pairs,
-                                                  side = "left")
+  positive_control_pairs = positive_control_pairs,
+  distance_threshold = 5e6
+)
+sceptre_object_highmoi <- set_analysis_parameters(
+  sceptre_object = sceptre_object_highmoi,
+  discovery_pairs = discovery_pairs,
+  positive_control_pairs = positive_control_pairs,
+  side = "left"
+)
 ```
 
 We are now ready to carry out the gRNA assignment step on both datasets.
 
 ## Visualize the gRNA count distributions
 
-A helpful first step in assigning gRNAs to cells is to visualize the gRNA UMI count distributions. As discussed in @sec-sceptre_assign_grnas of *The whole game*, we can use the function `plot_grna_count_distributions()` to plot the empirical UMI count distribution of one or more gRNAs. `plot_grna_count_distributions()` takes several arguments: `sceptre_object` (required), `n_grnas_to_plot` (optional), `grnas_to_plot` (optional), and `threshold` (optional). `n_grnas_to_plot` is an integer specifying the number of randomly-selected gRNAs to plot. `grnas_to_plot` is a character vector specifying (by name) one or more specific gRNAs to plot. Finally, `threshold` is an integer specifying the location at which to draw a dotted vertical line. We call  `plot_grna_count_distributions()` on the low-MOI CRISPRko data, plotting nine random gRNAs.
+A helpful first step in assigning gRNAs to cells is to visualize the gRNA UMI count distributions. As discussed in @sec-sceptre_assign_grnas of *The whole game*, we can use the function `plot_grna_count_distributions()` to plot the empirical UMI count distribution of one or more gRNAs. `plot_grna_count_distributions()` takes several arguments: `sceptre_object` (required), `n_grnas_to_plot` (optional), `grnas_to_plot` (optional), and `threshold` (optional). `n_grnas_to_plot` is an integer specifying the number of randomly-selected gRNAs to plot. `grnas_to_plot` is a character vector specifying (by name) one or more specific gRNAs to plot. Finally, `threshold` is an integer specifying the location at which to draw a dotted vertical line. We call `plot_grna_count_distributions()` on the low-MOI CRISPRko data, plotting nine random gRNAs.
 
 ```{r, eval=FALSE}
-plot_grna_count_distributions(sceptre_object = sceptre_object_lowmoi,
-                              n_grnas_to_plot = 9)
+plot_grna_count_distributions(
+  sceptre_object = sceptre_object_lowmoi,
+  n_grnas_to_plot = 9
+)
 ```
 
 ```{r, out.width = "750px", fig.align="center", echo = FALSE, fig.cap=c("Histograms of the gRNA count distributions for the low-MOI CRISPRko data.")}
@@ -88,20 +101,24 @@ We use the mixture assignment method to assign gRNAs to cells on both the high-M
 
 ```{r,results='hide'}
 # high-MOI CRISPRi data
-sceptre_object_highmoi_mixture <- assign_grnas(sceptre_object = sceptre_object_highmoi,
-                                               method = "mixture", parallel = TRUE)
+sceptre_object_highmoi_mixture <- assign_grnas(
+  sceptre_object = sceptre_object_highmoi,
+  method = "mixture", parallel = TRUE
+)
 ```
 
 ```{r,results='hide'}
 # low-MOI CRISPRko data
-sceptre_object_lowmoi_mixture <- assign_grnas(sceptre_object = sceptre_object_lowmoi,
-                                              method = "mixture", parallel = TRUE)
+sceptre_object_lowmoi_mixture <- assign_grnas(
+  sceptre_object = sceptre_object_lowmoi,
+  method = "mixture", parallel = TRUE
+)
 ```
 
 We can pass optional, method-specific parameters to `assign_grnas()` to control precisely how the assignment method is deployed. The relevant parameters for the mixture method include `formula_object`, `n_em_rep`, `n_nonzero_cells_cutoff`, `backup_threshold`, and `probability_threshold`. `formula_object` is a formula object that specifies how `sceptre` is to adjust for the cell-specific covariates in the latent-variable gRNA count model. The default formula object is constructed by summing over all covariates and then log-transforming the count-based covariates. It is sometimes helpful to exclude covariates from the formula object so as to improve the speed of the gRNA assignment step. For example, we define a reduced formula object `formula_object_reduced` that includes only `grna_n_nonzero` and `grna_n_umis`, the two most important covariates for assigning gRNAs to cells.
 
 ```{r,results='hide'}
-formula_object_reduced <- formula(~log(grna_n_nonzero) + log(grna_n_umis))
+formula_object_reduced <- formula(~ log(grna_n_nonzero) + log(grna_n_umis))
 ```
 
 `n_em_rep` is the number of times to run the EM algorithm using random starting estimates (default: `n_em_rep = 5`). Setting `n_em_rep` to a larger integer can improve the accuracy of the gRNA assignments at the cost of increasing compute. `n_nonzero_cells_cutoff` is the minimum number of cells that must exhibit nonzero expression of the gRNA to attempt fitting a mixture model to the gRNA count distribution (default: `n_nonzero_cells_cutoff = 10`). If the gRNA is expressed in fewer than `n_nonzero_cells_cutoff` cells, the gRNA instead is assigned to cells via the thresholding method, where the threshold used is `backup_threshold` (default: `backup_threshold = 5`). (See below for a detailed discussion of the thresholding method.) Finally, cells whose estimated probability of having received a gRNA exceeds `probability_threshold` are called as containing the gRNA (default: `probability_threshold = 0.8`). In practice `probability_threshold` typically does not impact the results considerably.
@@ -109,9 +126,11 @@ formula_object_reduced <- formula(~log(grna_n_nonzero) + log(grna_n_umis))
 To illustrate use of these method-specific parameters, we again call `assign_grnas()` to assign gRNAs to cells on the high-MOI CRISPRi data, this time setting `formula_object` to `formula_object_reduced`.
 
 ```{r,results='hide'}
-sceptre_object_highmoi_mixture <- assign_grnas(sceptre_object = sceptre_object_highmoi,
-                                               formula_object = formula_object_reduced,
-                                               parallel = TRUE)
+sceptre_object_highmoi_mixture <- assign_grnas(
+  sceptre_object = sceptre_object_highmoi,
+  formula_object = formula_object_reduced,
+  parallel = TRUE
+)
 ```
 
 ### Maximum method
@@ -130,19 +149,25 @@ The third method for assigning gRNAs to cells is the `"thresholding"` method; th
 
 ```{r,results='hide'}
 # high-MOI CRISPRi data
-sceptre_object_highmoi_thresholding <- assign_grnas(sceptre_object = sceptre_object_highmoi,
-                                                    method = "thresholding")
+sceptre_object_highmoi_thresholding <- assign_grnas(
+  sceptre_object = sceptre_object_highmoi,
+  method = "thresholding"
+)
 # low-MOI CRISPRko data
-sceptre_object_lowmoi_thresholding <- assign_grnas(sceptre_object = sceptre_object_lowmoi,
-                                                   method = "thresholding")
+sceptre_object_lowmoi_thresholding <- assign_grnas(
+  sceptre_object = sceptre_object_lowmoi,
+  method = "thresholding"
+)
 ```
 
 The thresholding method allows for one optional argument, namely the integer threshold `threshold`. An important special case is to set `threshold` to `1`, which causes any gRNA expressed in a given cell to be assigned to that cell. We assign gRNAs to cells on the CRISPRi data using a threshold of 1 below.
 
 ```{r}
-sceptre_object_highmoi_thresholding <- assign_grnas(sceptre_object = sceptre_object_highmoi,
-                                                    method = "thresholding",
-                                                    threshold = 1)
+sceptre_object_highmoi_thresholding <- assign_grnas(
+  sceptre_object = sceptre_object_highmoi,
+  method = "thresholding",
+  threshold = 1
+)
 ```
 
 Note that setting `threshold` to `1` causes background contamination to be ignored.
@@ -152,7 +177,6 @@ Note that setting `threshold` to `1` causes background contamination to be ignor
 We can call `plot()` on the `sceptre_object` to render a plot summarizing the outcome of the gRNA-to-cell assignment step. `plot()` takes the arguments `sceptre_object` (required) `n_grnas_to_plot` (optional), `grnas_to_plot` (optional), and `return_indiv_plots` (optional). `n_grnas_to_plot` is the number of (randomly-selected) gRNAs to plot; `grnas_to_plot` is a vector of names of one or more gRNAs to plot; and `return_indiv_plots` is a logical value indicating whether to return the constituent panels of the plot individually (`TRUE`) or combined into a single figure (`FALSE`; default).
 
 We visualize the outcome of the gRNA-to-cell assignment step on the low-MOI CRISPRko data based on the maximum assignment strategy. We specifically plot the gRNAs "IFNGR2g2", "STAT1g2", and "STAT5Ag4". (These gRNAs were selected arbitrarily for the purpose of illustrating the `grnas_to_plot` argument.)
-
 
 ```{r,eval=FALSE}
 grnas_to_plot <- c("IFNGR2g2", "STAT1g2", "STAT5Ag4")

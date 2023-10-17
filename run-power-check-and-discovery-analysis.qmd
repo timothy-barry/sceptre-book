@@ -1,8 +1,4 @@
----
-title: "Run power check and discovery analysis"
-format: html
-editor: visual
----
+# Run power check and discovery analysis
 
 The next steps of the pipeline are to run the power check and the discovery analysis. The power check entails applying `sceptre` to analyze positive control pairs --- pairs for which we know there is an association between the target and the response --- to ensure that `sceptre` is capable of detecting true associations. The discovery analysis, meanwhile, involves applying `sceptre` to analyze discovery pairs, or target-response pairs whose association status we do not know but seek to learn. Identifying associations among the discovery pairs is the primary objective of the single-cell CRISPR screen analysis. We explicate both the power check and discovery analysis in this chapter given the similarity of these two analyses.
 
@@ -21,43 +17,56 @@ We initialize `sceptre_object`s corresponding to the high-MOI CRISPRi data and l
 ```{r,results='hide'}
 # low-MOI CRISPRko data
 # 1. import data
-sceptre_object_lowmoi <- import_data(response_matrix = lowmoi_example_data$response_matrix,
-                                     grna_matrix = lowmoi_example_data$grna_matrix,
-                                     extra_covariates = lowmoi_example_data$extra_covariates,
-                                     grna_target_data_frame = lowmoi_example_data$grna_target_data_frame,
-                                     moi = "low")
+sceptre_object_lowmoi <- import_data(
+  response_matrix = lowmoi_example_data$response_matrix,
+  grna_matrix = lowmoi_example_data$grna_matrix,
+  extra_covariates = lowmoi_example_data$extra_covariates,
+  grna_target_data_frame = lowmoi_example_data$grna_target_data_frame,
+  moi = "low"
+)
 positive_control_pairs_lowmoi <- construct_positive_control_pairs(sceptre_object_lowmoi)
-discovery_pairs_lowmoi <- construct_trans_pairs(sceptre_object = sceptre_object_lowmoi,
-                                                positive_control_pairs = positive_control_pairs_lowmoi)
+discovery_pairs_lowmoi <- construct_trans_pairs(
+  sceptre_object = sceptre_object_lowmoi,
+  positive_control_pairs = positive_control_pairs_lowmoi
+)
 
 # 2-5. set analysis parameters, assign gRNAs, run qc, run calibration check
 sceptre_object_lowmoi <- sceptre_object_lowmoi |>
-  set_analysis_parameters(discovery_pairs = discovery_pairs_lowmoi,
-                          positive_control_pairs = positive_control_pairs_lowmoi) |>
-  assign_grnas() |> run_qc(p_mito_threshold = 0.075) |>
+  set_analysis_parameters(
+    discovery_pairs = discovery_pairs_lowmoi,
+    positive_control_pairs = positive_control_pairs_lowmoi
+  ) |>
+  assign_grnas() |>
+  run_qc(p_mito_threshold = 0.075) |>
   run_calibration_check(parallel = TRUE)
 ```
 
 ```{r, results='hide'}
 # high-MOI CRISPRi data
 # 1. import data
-sceptre_object_highmoi <- import_data(response_matrix = highmoi_example_data$response_matrix,
-                                      grna_matrix = highmoi_example_data$grna_matrix,
-                                      grna_target_data_frame = grna_target_data_frame_highmoi,
-                                      moi = "high",
-                                      extra_covariates = highmoi_example_data$extra_covariates,
-                                      response_names = highmoi_example_data$gene_names)
+sceptre_object_highmoi <- import_data(
+  response_matrix = highmoi_example_data$response_matrix,
+  grna_matrix = highmoi_example_data$grna_matrix,
+  grna_target_data_frame = grna_target_data_frame_highmoi,
+  moi = "high",
+  extra_covariates = highmoi_example_data$extra_covariates,
+  response_names = highmoi_example_data$gene_names
+)
 positive_control_pairs_highmoi <- construct_positive_control_pairs(sceptre_object_highmoi)
 discovery_pairs_highmoi <- construct_cis_pairs(sceptre_object_highmoi,
-                                               positive_control_pairs = positive_control_pairs_highmoi,
-                                               distance_threshold = 5e6)
+  positive_control_pairs = positive_control_pairs_highmoi,
+  distance_threshold = 5e6
+)
 
 # 2-4. set analysis parameters, assign gRNAs, run qc, run calibration check
 sceptre_object_highmoi <- sceptre_object_highmoi |>
-  set_analysis_parameters(discovery_pairs = discovery_pairs_highmoi,
-                          positive_control_pairs = positive_control_pairs_highmoi,
-                          side = "left") |>
-  assign_grnas(parallel = TRUE) |> run_qc(p_mito_threshold = 0.075) |>
+  set_analysis_parameters(
+    discovery_pairs = discovery_pairs_highmoi,
+    positive_control_pairs = positive_control_pairs_highmoi,
+    side = "left"
+  ) |>
+  assign_grnas(parallel = TRUE) |>
+  run_qc(p_mito_threshold = 0.075) |>
   run_calibration_check(parallel = TRUE)
 ```
 
@@ -68,8 +77,10 @@ We are now ready to run the power check and discovery analysis.
 We run the power check by calling the function `run_power_check()`, which takes the arguments `sceptre_object` (required), `output_amount` (optional), `print_progress` (optional), and `parallel` (optional). `output_amount` controls the amount of information that `run_power_check()` returns; see @sec-run_calibration_check_output_amount of *Run calibration check* for more information about this argument. `print_progress` and `parallel` are logical values indicating whether to print progress updates and run the computation in parallel, respectively. We run the power check on the low-MOI CRISPRko data.
 
 ```{r,results='hide'}
-sceptre_object_lowmoi <- run_power_check(sceptre_object = sceptre_object_lowmoi,
-                                         parallel = TRUE)
+sceptre_object_lowmoi <- run_power_check(
+  sceptre_object = sceptre_object_lowmoi,
+  parallel = TRUE
+)
 ```
 
 We call `plot()` on the resulting `sceptre_object` to visualize the outcome of the power check.
@@ -91,8 +102,10 @@ We described how to interpret this plot in @sec-sceptre_run_power_check of *The 
 We run the discovery analysis by calling the function `run_discovery_analysis()`, which takes the same arguments as `run_power_check()`. We illustrate this function on the low-MOI CRISPRko data.
 
 ```{r,results='hide'}
-sceptre_object_lowmoi <- run_discovery_analysis(sceptre_object = sceptre_object_lowmoi,
-                                                parallel = TRUE)
+sceptre_object_lowmoi <- run_discovery_analysis(
+  sceptre_object = sceptre_object_lowmoi,
+  parallel = TRUE
+)
 ```
 
 We can visualize the outcome of the discovery analysis by calling `plot()` on the resulting `sceptre_object`.
@@ -114,8 +127,10 @@ We described how to interpret this plot in @sec-sceptre_run_discovery_analysis o
 We can obtain a data frame containing the results by calling `get_result()` on the `sceptre_object`, setting the parameter `analysis` to the name of the function whose results we are querying. For example, we can obtain the discovery results as follows.
 
 ```{r}
-discovery_result <- get_result(sceptre_object = sceptre_object_lowmoi,
-                               analysis = "run_discovery_analysis")
+discovery_result <- get_result(
+  sceptre_object = sceptre_object_lowmoi,
+  analysis = "run_discovery_analysis"
+)
 head(discovery_result)
 ```
 
@@ -124,19 +139,24 @@ The data frame `discovery_result` contains the columns `response_id`, `grna_targ
 The format of the result data frame is slightly different when we use the "singleton" gRNA integration strategy rather than the default "union" strategy. To illustrate, we again analyze the low-MOI CRISPRko data, this time setting `grna_integration_strategy` to `"singleton"` in `set_analysis_parameters()`. We then call `assign_grnas()`, `run_qc()`, and `run_discovery_analysis()`.
 
 ```{r,results='hide'}
- sceptre_object_lowmoi <- sceptre_object_lowmoi |>
-  set_analysis_parameters(discovery_pairs = discovery_pairs_lowmoi,
-                          positive_control_pairs = positive_control_pairs_lowmoi,
-                          grna_integration_strategy = "singleton") |>
-  assign_grnas() |> run_qc(p_mito_threshold = 0.075) |>
+sceptre_object_lowmoi <- sceptre_object_lowmoi |>
+  set_analysis_parameters(
+    discovery_pairs = discovery_pairs_lowmoi,
+    positive_control_pairs = positive_control_pairs_lowmoi,
+    grna_integration_strategy = "singleton"
+  ) |>
+  assign_grnas() |>
+  run_qc(p_mito_threshold = 0.075) |>
   run_discovery_analysis(parallel = TRUE)
 ```
 
 The result data frame obtained via `get_result()` contains the additional column `grna_id`. Each row of this data frame corresponds to an individual *gRNA-response pair* (as opposed to *target-response pair*).
 
 ```{r}
-discovery_result <- get_result(sceptre_object = sceptre_object_lowmoi,
-                               analysis = "run_discovery_analysis")
+discovery_result <- get_result(
+  sceptre_object = sceptre_object_lowmoi,
+  analysis = "run_discovery_analysis"
+)
 head(discovery_result)
 ```
 

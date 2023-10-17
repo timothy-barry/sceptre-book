@@ -251,54 +251,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We initialize <code>sceptre_object</code>s corresponding to the high-MOI CRISPRi data and low-MOI CRISPRko data. We call all pipeline functions that precede <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis()</a></code> (namely, <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code>) on both datasets.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-3_557bfb54115aed79aca34080cdcc4114">
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-3_423d7490847b4783cee8ea6a354234f5">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># low-MOI CRISPRko data</span></span>
 <span><span class="co"># 1. import data</span></span>
-<span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span>response_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
-<span>                                     grna_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>,</span>
-<span>                                     extra_covariates <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span>,</span>
-<span>                                     grna_target_data_frame <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_target_data_frame</span>,</span>
-<span>                                     moi <span class="op">=</span> <span class="st">"low"</span><span class="op">)</span></span>
+<span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
+<span>  response_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
+<span>  grna_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>,</span>
+<span>  extra_covariates <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span>,</span>
+<span>  grna_target_data_frame <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_target_data_frame</span>,</span>
+<span>  moi <span class="op">=</span> <span class="st">"low"</span></span>
+<span><span class="op">)</span></span>
 <span><span class="va">positive_control_pairs_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span>
-<span><span class="va">discovery_pairs_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
-<span>                                                positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_lowmoi</span><span class="op">)</span></span>
+<span><span class="va">discovery_pairs_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
+<span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_lowmoi</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 2-5. set analysis parameters, assign gRNAs, run qc, run calibration check</span></span>
 <span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_lowmoi</span>,</span>
-<span>                          positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_lowmoi</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
+<span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_lowmoi</span>,</span>
+<span>    positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_lowmoi</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-4_c0532f33387836db7e770aa4e9f86817">
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-4_d759c86d2ec3db8683c4ea51a7bc987b">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
 <span><span class="co"># 1. import data</span></span>
-<span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span>response_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
-<span>                                      grna_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>,</span>
-<span>                                      grna_target_data_frame <span class="op">=</span> <span class="va">grna_target_data_frame_highmoi</span>,</span>
-<span>                                      moi <span class="op">=</span> <span class="st">"high"</span>,</span>
-<span>                                      extra_covariates <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span>,</span>
-<span>                                      response_names <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">gene_names</span><span class="op">)</span></span>
+<span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
+<span>  response_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
+<span>  grna_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>,</span>
+<span>  grna_target_data_frame <span class="op">=</span> <span class="va">grna_target_data_frame_highmoi</span>,</span>
+<span>  moi <span class="op">=</span> <span class="st">"high"</span>,</span>
+<span>  extra_covariates <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span>,</span>
+<span>  response_names <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">gene_names</span></span>
+<span><span class="op">)</span></span>
 <span><span class="va">positive_control_pairs_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span><span class="op">)</span></span>
 <span><span class="va">discovery_pairs_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span>,</span>
-<span>                                               positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_highmoi</span>,</span>
-<span>                                               distance_threshold <span class="op">=</span> <span class="fl">5e6</span><span class="op">)</span></span>
+<span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_highmoi</span>,</span>
+<span>  distance_threshold <span class="op">=</span> <span class="fl">5e6</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 2-4. set analysis parameters, assign gRNAs, run qc, run calibration check</span></span>
 <span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_highmoi</span>,</span>
-<span>                          positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_highmoi</span>,</span>
-<span>                          side <span class="op">=</span> <span class="st">"left"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
+<span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_highmoi</span>,</span>
+<span>    positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_highmoi</span>,</span>
+<span>    side <span class="op">=</span> <span class="st">"left"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We are now ready to run the power check and discovery analysis.</p>
 <section id="run-power-check" class="level2" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="run-power-check">
 <span class="header-section-number">6.1</span> Run power check</h2>
 <p>We run the power check by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code>, which takes the arguments <code>sceptre_object</code> (required), <code>output_amount</code> (optional), <code>print_progress</code> (optional), and <code>parallel</code> (optional). <code>output_amount</code> controls the amount of information that <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code> returns; see <a href="run-calibration-check.html#sec-run_calibration_check_output_amount"><span>Section&nbsp;5.5</span></a> of <em>Run calibration check</em> for more information about this argument. <code>print_progress</code> and <code>parallel</code> are logical values indicating whether to print progress updates and run the computation in parallel, respectively. We run the power check on the low-MOI CRISPRko data.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-5_0d0a50250ed7a90964487d9d3b857d3c">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
-<span>                                         parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-5_cbfc2fd20980ff23fcf8851c20c6bcea">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We call <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the resulting <code>sceptre_object</code> to visualize the outcome of the power check.</p>
 <div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-6_4c8fa425598f11bfe7274e17a12c986d">
@@ -316,9 +331,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="run-discovery-analysis" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="run-discovery-analysis">
 <span class="header-section-number">6.2</span> Run discovery analysis</h2>
 <p>We run the discovery analysis by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis()</a></code>, which takes the same arguments as <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code>. We illustrate this function on the low-MOI CRISPRko data.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-8_01c2cdc8b1cc2ba2f4464a78e9e4f569">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
-<span>                                                parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-8_c8d3f8e07fe3f62ccc526527d0bf48d6">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
+<span>  parallel <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can visualize the outcome of the discovery analysis by calling <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the resulting <code>sceptre_object</code>.</p>
 <div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-9_029c77236a002a0c772da6ef99045e76">
@@ -336,9 +353,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="inspecting-the-results" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="inspecting-the-results">
 <span class="header-section-number">6.3</span> Inspecting the results</h2>
 <p>We can obtain a data frame containing the results by calling <code><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result()</a></code> on the <code>sceptre_object</code>, setting the parameter <code>analysis</code> to the name of the function whose results we are querying. For example, we can obtain the discovery results as follows.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-11_1bff13a12c18ea9249d3b7eda590ad3d">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
-<span>                               analysis <span class="op">=</span> <span class="st">"run_discovery_analysis"</span><span class="op">)</span></span>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-11_3b12a2ddfb7f9c1d08c2867930fa3edb">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
+<span>  analysis <span class="op">=</span> <span class="st">"run_discovery_analysis"</span></span>
+<span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">discovery_result</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   response_id grna_target n_nonzero_trt n_nonzero_cntrl pass_qc       p_value
@@ -359,18 +378,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The data frame <code>discovery_result</code> contains the columns <code>response_id</code>, <code>grna_target</code>, <code>n_nonzero_trt</code>, <code>n_nonzero_cntrl</code>, <code>pass_qc</code>, <code>p_value</code>, <code>log_2_fold_change</code>, and <code>significant</code>; see <a href="run-calibration-check.html#sec-run-calibration-check_running_the_calibration_check"><span>Section&nbsp;5.2</span></a> of <em>Run calibration check</em> for a description of these columns. The rows are ordered according to <code>p_value</code>. Pairs called as significant are stored in the top rows of the data frame; pairs called as insignificant are stored in the middle rows; and pairs filtered out by pairwise QC are stored in the bottom rows. (The latter pairs have a value of <code>NA</code> in the <code>p_value</code>, <code>log_2_fold_change</code>, and <code>significant</code> columns.)</p>
 <p>The format of the result data frame is slightly different when we use the “singleton” gRNA integration strategy rather than the default “union” strategy. To illustrate, we again analyze the low-MOI CRISPRko data, this time setting <code>grna_integration_strategy</code> to <code>"singleton"</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>. We then call <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis()</a></code>.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-12_f34a7e318c6176b7def168f0543e8b44">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span> <span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_lowmoi</span>,</span>
-<span>                          positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_lowmoi</span>,</span>
-<span>                          grna_integration_strategy <span class="op">=</span> <span class="st">"singleton"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-12_cb46831105be370eed195a2d8c8b6acd">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
+<span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_lowmoi</span>,</span>
+<span>    positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_lowmoi</span>,</span>
+<span>    grna_integration_strategy <span class="op">=</span> <span class="st">"singleton"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The result data frame obtained via <code><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result()</a></code> contains the additional column <code>grna_id</code>. Each row of this data frame corresponds to an individual <em>gRNA-response pair</em> (as opposed to <em>target-response pair</em>).</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-13_074d14d6596b3073f53d6fbe30cee9cd">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
-<span>                               analysis <span class="op">=</span> <span class="st">"run_discovery_analysis"</span><span class="op">)</span></span>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-13_d486f6bc74c3c4c1e19428891a100ead">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
+<span>  analysis <span class="op">=</span> <span class="st">"run_discovery_analysis"</span></span>
+<span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">discovery_result</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   response_id  grna_id grna_target n_nonzero_trt n_nonzero_cntrl pass_qc

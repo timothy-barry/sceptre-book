@@ -17,41 +17,52 @@ We initialize `sceptre_object`s corresponding to the high-MOI CRISPRi and low-MO
 ```{r}
 # low-MOI CRISPRko data
 # 1. import data
-sceptre_object_lowmoi <- import_data(response_matrix = lowmoi_example_data$response_matrix,
-                                     grna_matrix = lowmoi_example_data$grna_matrix,
-                                     extra_covariates = lowmoi_example_data$extra_covariates,
-                                     grna_target_data_frame = lowmoi_example_data$grna_target_data_frame,
-                                     moi = "low")
+sceptre_object_lowmoi <- import_data(
+  response_matrix = lowmoi_example_data$response_matrix,
+  grna_matrix = lowmoi_example_data$grna_matrix,
+  extra_covariates = lowmoi_example_data$extra_covariates,
+  grna_target_data_frame = lowmoi_example_data$grna_target_data_frame,
+  moi = "low"
+)
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object_lowmoi)
-discovery_pairs <- construct_trans_pairs(sceptre_object = sceptre_object_lowmoi,
-                                         positive_control_pairs = positive_control_pairs)
+discovery_pairs <- construct_trans_pairs(
+  sceptre_object = sceptre_object_lowmoi,
+  positive_control_pairs = positive_control_pairs
+)
 
 # 2-3. set analysis parameters, assign gRNAs
 sceptre_object_lowmoi <- sceptre_object_lowmoi |>
-  set_analysis_parameters(discovery_pairs = discovery_pairs,
-                          positive_control_pairs = positive_control_pairs) |>
+  set_analysis_parameters(
+    discovery_pairs = discovery_pairs,
+    positive_control_pairs = positive_control_pairs
+  ) |>
   assign_grnas()
 ```
 
 ```{r, results='hide'}
 # high-MOI CRISPRi data
 # 1. import data
-sceptre_object_highmoi <- import_data(response_matrix = highmoi_example_data$response_matrix,
-                                      grna_matrix = highmoi_example_data$grna_matrix,
-                                      grna_target_data_frame = grna_target_data_frame_highmoi,
-                                      moi = "high",
-                                      extra_covariates = highmoi_example_data$extra_covariates,
-                                      response_names = highmoi_example_data$gene_names)
+sceptre_object_highmoi <- import_data(
+  response_matrix = highmoi_example_data$response_matrix,
+  grna_matrix = highmoi_example_data$grna_matrix,
+  grna_target_data_frame = grna_target_data_frame_highmoi,
+  moi = "high",
+  extra_covariates = highmoi_example_data$extra_covariates,
+  response_names = highmoi_example_data$gene_names
+)
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object_highmoi)
 discovery_pairs <- construct_cis_pairs(sceptre_object_highmoi,
-                                       positive_control_pairs = positive_control_pairs,
-                                       distance_threshold = 5e6)
+  positive_control_pairs = positive_control_pairs,
+  distance_threshold = 5e6
+)
 
 # 2-3. set analysis parameters, assign gRNAs
 sceptre_object_highmoi <- sceptre_object_highmoi |>
-  set_analysis_parameters(discovery_pairs = discovery_pairs,
-                          positive_control_pairs = positive_control_pairs,
-                          side = "left") |>
+  set_analysis_parameters(
+    discovery_pairs = discovery_pairs,
+    positive_control_pairs = positive_control_pairs,
+    side = "left"
+  ) |>
   assign_grnas(parallel = TRUE)
 ```
 
@@ -110,10 +121,14 @@ knitr::include_graphics("pairwise_qc_schematic.png")
 We call `run_qc()` on `sceptre_object_highmoi` and `sceptre_object_lowmoi` to run QC on the high-MOI CRISPRi and low-MOI CRISPRko data. In both cases we set `p_mito_threshold` to `0.075` but otherwise fall back on the default parameter values.
 
 ```{r}
-sceptre_object_highmoi <- run_qc(sceptre_object = sceptre_object_highmoi,
-                                 p_mito_threshold = 0.075)
-sceptre_object_lowmoi <- run_qc(sceptre_object = sceptre_object_lowmoi,
-                                 p_mito_threshold = 0.075)
+sceptre_object_highmoi <- run_qc(
+  sceptre_object = sceptre_object_highmoi,
+  p_mito_threshold = 0.075
+)
+sceptre_object_lowmoi <- run_qc(
+  sceptre_object = sceptre_object_lowmoi,
+  p_mito_threshold = 0.075
+)
 ```
 
 We can call the function `plot()` on the resulting `sceptre_object` to render a visualization of the outcome of the QC step. We call `plot()` on `sceptre_object_lowmoi` as an example.

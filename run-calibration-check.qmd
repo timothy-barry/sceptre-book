@@ -17,42 +17,55 @@ We initialize `sceptre_object`s corresponding to the low-MOI CRISPRko data and h
 ```{r}
 # low-MOI CRISPRko data
 # 1. import data
-sceptre_object_lowmoi <- import_data(response_matrix = lowmoi_example_data$response_matrix,
-                                     grna_matrix = lowmoi_example_data$grna_matrix,
-                                     extra_covariates = lowmoi_example_data$extra_covariates,
-                                     grna_target_data_frame = lowmoi_example_data$grna_target_data_frame,
-                                     moi = "low")
+sceptre_object_lowmoi <- import_data(
+  response_matrix = lowmoi_example_data$response_matrix,
+  grna_matrix = lowmoi_example_data$grna_matrix,
+  extra_covariates = lowmoi_example_data$extra_covariates,
+  grna_target_data_frame = lowmoi_example_data$grna_target_data_frame,
+  moi = "low"
+)
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object_lowmoi)
-discovery_pairs <- construct_trans_pairs(sceptre_object = sceptre_object_lowmoi,
-                                         positive_control_pairs = positive_control_pairs)
+discovery_pairs <- construct_trans_pairs(
+  sceptre_object = sceptre_object_lowmoi,
+  positive_control_pairs = positive_control_pairs
+)
 
 # 2-4. set analysis parameters, assign gRNAs, run qc
 sceptre_object_lowmoi <- sceptre_object_lowmoi |>
-  set_analysis_parameters(discovery_pairs = discovery_pairs,
-                          positive_control_pairs = positive_control_pairs) |>
-  assign_grnas() |> run_qc(p_mito_threshold = 0.075)
+  set_analysis_parameters(
+    discovery_pairs = discovery_pairs,
+    positive_control_pairs = positive_control_pairs
+  ) |>
+  assign_grnas() |>
+  run_qc(p_mito_threshold = 0.075)
 ```
 
 ```{r, results='hide'}
 # high-MOI CRISPRi data
 # 1. import data
-sceptre_object_highmoi <- import_data(response_matrix = highmoi_example_data$response_matrix,
-                                      grna_matrix = highmoi_example_data$grna_matrix,
-                                      grna_target_data_frame = grna_target_data_frame_highmoi,
-                                      moi = "high",
-                                      extra_covariates = highmoi_example_data$extra_covariates,
-                                      response_names = highmoi_example_data$gene_names)
+sceptre_object_highmoi <- import_data(
+  response_matrix = highmoi_example_data$response_matrix,
+  grna_matrix = highmoi_example_data$grna_matrix,
+  grna_target_data_frame = grna_target_data_frame_highmoi,
+  moi = "high",
+  extra_covariates = highmoi_example_data$extra_covariates,
+  response_names = highmoi_example_data$gene_names
+)
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object_highmoi)
 discovery_pairs <- construct_cis_pairs(sceptre_object_highmoi,
-                                       positive_control_pairs = positive_control_pairs,
-                                       distance_threshold = 5e6)
+  positive_control_pairs = positive_control_pairs,
+  distance_threshold = 5e6
+)
 
 # 2-4. set analysis parameters, assign gRNAs, run qc
 sceptre_object_highmoi <- sceptre_object_highmoi |>
-  set_analysis_parameters(discovery_pairs = discovery_pairs,
-                          positive_control_pairs = positive_control_pairs,
-                          side = "left") |>
-  assign_grnas(parallel = TRUE) |> run_qc(p_mito_threshold = 0.075)
+  set_analysis_parameters(
+    discovery_pairs = discovery_pairs,
+    positive_control_pairs = positive_control_pairs,
+    side = "left"
+  ) |>
+  assign_grnas(parallel = TRUE) |>
+  run_qc(p_mito_threshold = 0.075)
 ```
 
 We are now ready to run the calibration check.
@@ -94,9 +107,11 @@ We carry out the calibration check by calling the function `run_calibration_chec
 
 ```{r, results='hide'}
 sceptre_object_highmoi <- run_calibration_check(sceptre_object_highmoi,
-                                                parallel = TRUE)
+  parallel = TRUE
+)
 sceptre_object_lowmoi <- run_calibration_check(sceptre_object_lowmoi,
-                                               parallel = TRUE)
+  parallel = TRUE
+)
 ```
 
 We can plot the outcome of the calibration check by calling `plot()` on the resulting `sceptre_object`. We plot the outcome of the calibration check on the low-MOI CRISPRko data.
@@ -116,8 +131,10 @@ We described @sec-sceptre_calibration_check of *The whole game* how to interpret
 We can obtain a data frame containing the results by calling `get_result` on the `sceptre_object`, setting `analysis` to `"run_calibration_check"`.
 
 ```{r}
-calibration_result <- get_result(sceptre_object = sceptre_object_lowmoi,
-                                 analysis = "run_calibration_check")
+calibration_result <- get_result(
+  sceptre_object = sceptre_object_lowmoi,
+  analysis = "run_calibration_check"
+)
 head(calibration_result)
 ```
 
@@ -142,14 +159,17 @@ To provide an example of miscalibration, we again run the calibration check on t
 
 ```{r, results='hide'}
 sceptre_object_highmoi <- sceptre_object_highmoi |>
-  set_analysis_parameters(discovery_pairs = discovery_pairs,
-                          positive_control_pairs = positive_control_pairs,
-                          side = "left",
-                          formula_object = formula(~log(grna_n_umis))) |>
+  set_analysis_parameters(
+    discovery_pairs = discovery_pairs,
+    positive_control_pairs = positive_control_pairs,
+    side = "left",
+    formula_object = formula(~ log(grna_n_umis))
+  ) |> assign_grnas(parallel = TRUE) |>
   run_qc()
 
 sceptre_object_highmoi <- run_calibration_check(sceptre_object_highmoi,
-                                                parallel = TRUE)
+  parallel = TRUE
+)
 ```
 
 We create a plot to visualize the outcome of the calibration check analysis.
@@ -175,22 +195,26 @@ There are several concrete steps that users can take to improve the calibration 
 1.  **Deactivate the parametric curve fitting functionality**. `sceptre` by default computes the p-value for a given target-response pair by fitting a parametric curve (specifically, a skew-normal density) to the distribution of null test statistics and then evaluating the tail probability of the fitted curve at the observed test statistic. (See @sec-set_analysis_parameters_parametric_curve.) If the parametric curve provides a poor fit to the distribution of the null test statistics, the resulting p-value can be miscalibrated. Users can deactivate the parametric curve fitting functionality of `sceptre` and instead return an exact p-value by setting `fit_parametric_curve` to `FALSE` in `set_analysis_parameters()`, as follows.
 
     ```{r, eval=FALSE}
-    sceptre_object_highmoi <- sceptre_object_highmoi |>
-      set_analysis_parameters(discovery_pairs = discovery_pairs,
-                              positive_control_pairs = positive_control_pairs,
-                              side = "left",
-                              fit_parametric_curve = FALSE) # fit_parametric_curve set to FALSE
+sceptre_object_highmoi <- sceptre_object_highmoi |>
+  set_analysis_parameters(
+    discovery_pairs = discovery_pairs,
+    positive_control_pairs = positive_control_pairs,
+    side = "left",
+    fit_parametric_curve = FALSE # fit_parametric_curve set to FALSE
+  )
     ```
 
     The calibration check, power check, and discovery analyses all run more slowly when `fit_parametric_curve` is set to `FALSE`, as `sceptre` must compute a greater number of null test statistics to preserve adequate precision of the p-values. Thus, setting `fit_parametric_curve` to `FALSE` may not be a feasible strategy for users seeking to test a large number (e.g., 10,000+) of pairs. Users should consider using the permutation test (`resampling_mechaism = "permutations"`) rather than the conditional randomization test (`resampling_mechanism = "crt"`) when setting `fit_parametric_curve` to `FALSE` to improve speed.
 
     ```{r, eval=FALSE}
-    sceptre_object_highmoi <- sceptre_object_highmoi |>
-      set_analysis_parameters(discovery_pairs = discovery_pairs,
-                              positive_control_pairs = positive_control_pairs,
-                              side = "left",
-                              fit_parametric_curve = FALSE, # slows down the code
-                              resampling_mechanism = "permutations") # speeds up the code
+sceptre_object_highmoi <- sceptre_object_highmoi |>
+  set_analysis_parameters(
+    discovery_pairs = discovery_pairs,
+    positive_control_pairs = positive_control_pairs,
+    side = "left",
+    fit_parametric_curve = FALSE, # slows down the code
+    resampling_mechanism = "permutations" # speeds up the code
+  )
     ```
 
 2.  **Add additional covariates**. `sceptre` may be miscalibrated because important covariates are missing. Users should consider whether any additional covariates are relevant and, if so, add these covariates to the `sceptre_object` via `import_data()` or `import_data_from_cellranger()`. For example, cell type should be included as a covariate if the data contain multiple cell types. Batch, biological replicate, and cell cycle also may be relevant. (`sceptre` does not currently provide functionality for imputing cell type or cycle.)
@@ -198,33 +222,40 @@ There are several concrete steps that users can take to improve the calibration 
 3.  **Tighten the QC thresholds**. Users can tighten the cellwise and pairwise QC thresholds to remove outlier cells and target-response pairs with a low effective sample size, respectively, thereby ameliorating challenges to calibration due to sparsity and model misspecification. Below, we increase `n_nonzero_trt_thresh` and `n_nonzero_cntrl_thresh` to 15; the default value for these parameters is 10. We additionally set `response_n_umis_range` to `c(0.05, 0.95)`, which clips the `response_n_umis` distribution at the fifth and ninety-fifth percentiles (as opposed the the first and ninety-ninth percentiles, which is the default).
 
     ```{r, eval=FALSE}
-    sceptre_object_highmoi <- sceptre_object_highmoi |>
-      run_qc(n_nonzero_trt_thresh = 15L,
-             n_nonzero_cntrl_thresh = 15L,
-             response_n_umis_range = c(0.05, 0.95))
+sceptre_object_highmoi <- sceptre_object_highmoi |>
+  run_qc(
+    n_nonzero_trt_thresh = 15L,
+    n_nonzero_cntrl_thresh = 15L,
+    response_n_umis_range = c(0.05, 0.95)
+  )
     ```
 
 4.  **Change the resampling mechanism or the control group**. `sceptre` provides two options for the resampling mechanism (namely, `"permutations"` or `"crt"`; see @sec-set_analysis_parameters_resampling_mech) and two options for the control group (namely, `"complement_set"` or `"nt_cells"`; see @sec-set-analysis-parameters_control_group). (Note that `"nt_cells"` is available as an option only in low-MOI screens.) Switching the resampling mechanism and/or the control group may improve calibration. Below, we set the resampling mechanism to `"crt"` and the control group to `"complement_set"` on the low-MOI CRISPRko data; these choices are the opposite of the defaults.
 
     ```{r, eval=FALSE}
-    sceptre_object_lowmoi <- sceptre_object_lowmoi |>
-     set_analysis_parameters(sceptre_object = sceptre_object_lowmoi,
-                             discovery_pairs = discovery_pairs_lowmoi,
-                             positive_control_pairs = positive_control_pairs_lowmoi,
-                             resampling_mechanism = "crt",
-                             control_group = "complement_set")
+sceptre_object_lowmoi <- sceptre_object_lowmoi |>
+  set_analysis_parameters(
+    sceptre_object = sceptre_object_lowmoi,
+    discovery_pairs = discovery_pairs_lowmoi,
+    positive_control_pairs = positive_control_pairs_lowmoi,
+    resampling_mechanism = "crt",
+    control_group = "complement_set"
+  )
     ```
 
 5.  **Test fewer pairs**. Obtaining good calibration becomes increasingly challenging as the number of target-response pairs in the discovery set grows. This is because the p-values must maintain uniformity further and further out into the tail of the distribution. A simple strategy to improve calibration is to reduce the number of target-response pairs by more selectively choosing pairs for inclusion in the discovery set. For example, we could construct the discovery set for the high-MOI CRISPRi data by coupling each candidate enhancer to the set of genes within *one* megabase of that candidate enhancer (as opposed to *five* megabases, as we have done previously). This change reduces the number of pairs in the discovery set (before applying QC) from 610 to 353, which makes obtaining good calibration considerably easier.
 
     ```{r, eval=FALSE}
-    discovery_pairs <- construct_cis_pairs(sceptre_object_highmoi,
-                                           positive_control_pairs = positive_control_pairs,
-                                           distance_threshold = 1e6) # previous value: 5e6
-    sceptre_object_highmoi <- sceptre_object_highmoi |>
-      set_analysis_parameters(discovery_pairs = discovery_pairs,
-                              positive_control_pairs = positive_control_pairs,
-                              side = "left") 
+discovery_pairs <- construct_cis_pairs(sceptre_object_highmoi,
+  positive_control_pairs = positive_control_pairs,
+  distance_threshold = 1e6 # previous value: 5e6
+)
+sceptre_object_highmoi <- sceptre_object_highmoi |>
+  set_analysis_parameters(
+    discovery_pairs = discovery_pairs,
+    positive_control_pairs = positive_control_pairs,
+    side = "left"
+  )
     ```
 
     Users also could more aggressively prioritize pairs for inclusion in the discovery set by leveraging orthogonal information, such as (single-cell) ATAC-seq or ChIP-seq data.
@@ -235,13 +266,16 @@ The function `run_calibration_check()` has the optional argument `output_amount`
 
 ```{r,results='hide'}
 sceptre_object_lowmoi <- run_calibration_check(sceptre_object_lowmoi,
-                                               parallel = TRUE,
-                                               output_amount = 2)
+  parallel = TRUE,
+  output_amount = 2
+)
 ```
 
 ```{r}
-get_result(sceptre_object = sceptre_object_lowmoi,
-           analysis = "run_calibration_check") |> head()
+get_result(
+  sceptre_object = sceptre_object_lowmoi,
+  analysis = "run_calibration_check"
+) |> head()
 ```
 
 To explain what the additional columns represent, we must first provide further details about how the `sceptre` methodology works. `sceptre` uses an adaptive resampling scheme to reduce compute. For a given target-response pair, `sceptre` first computes the observed z-score $z_\textrm{obs}$ and a small number $B_1$ of null z-scores (where $B_1 \approx 500$). The original z-score is compared to the null z-scores to compute a "stage 1" p-value $p_1$. If $p_1$ falls below some threshold (set to 0.02), then `sceptre` computes a large number $B_2$ of fresh null z-scores (where $B_2 \approx 5,000$). A skew-normal distribution is fit to the $B_2$ fresh null z-scores, and a "stage 2" p-value $p_2$ is computed by evaluating the tail probability of the fitted skew-normal distribution at the observed z-score. The goodness of fit of the skew-normal distribution is assessed. If the fit is poor, then `sceptre` computes a third set of $B_3$ null z-scores (where $B_3 \approx 25,000$), and a "stage 3" p-value is computed by comparing the original z-score to this third set of null z-scores.
@@ -252,12 +286,17 @@ Finally, we can set `output_amount` to `3`, which causes the null z-scores to be
 
 ```{r, results='hide'}
 sceptre_object_lowmoi <- run_calibration_check(sceptre_object_lowmoi,
-                                               parallel = TRUE,
-                                               output_amount = 3)
-calibration_result <- get_result(sceptre_object = sceptre_object_lowmoi,
-                                 analysis = "run_calibration_check")
+  parallel = TRUE,
+  output_amount = 3
+)
+calibration_result <- get_result(
+  sceptre_object = sceptre_object_lowmoi,
+  analysis = "run_calibration_check"
+)
 ```
 
 ```{r}
-calibration_result[1,] |> colnames() |> head(20)
+calibration_result[1, ] |>
+  colnames() |>
+  head(20)
 ```
