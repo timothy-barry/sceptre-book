@@ -70,7 +70,7 @@ sceptre_object <- sceptre_object |> # |> is R's base pipe, similar to %>%
 write_outputs_to_directory(sceptre_object, "~/sceptre_outputs")
 ```
 
-That's it. The directory `sceptre_outputs` now contains a variety of results and plots from the analysis, including the set of significant target-response pairs from among the discovery pairs:
+That's it. The directory `sceptre_outputs` now contains a variety of results and plots from the analysis, including the set of significant gRNA-gene pairs:
 
 ```{r, echo=FALSE, message=FALSE, results = "hide"}
 # load the data, creating a sceptre_object
@@ -172,7 +172,7 @@ The second step is to set the analysis parameters. The most important analysis p
 
 1.  **Discovery pairs and positive control pairs**. The primary goal of `sceptre` is to determine whether perturbation of a gRNA target (such as an enhancer) leads to a change in expression of a response (such as gene). We use the term *target-response pair* to refer to a given gRNA target and response that we seek to test for association (upon perturbation of the gRNA target). A *discovery target-response pair* is a target-response pair whose association status we do not know but would like to learn. For example, in an experiment in which we aim to link putative enhancers to genes, the discovery target-response pairs might consist of the set of putative enhancers and genes in close physical proximity to one another.
 
-    A *positive control* (resp., *negative control*) *target-response pair* is a target-response pair for which we know that there *is* (resp., is *not*) a relationship between the target and the response. Positive control target-response pairs often are formed by coupling a transcription start site to the gene known to be regulated by that transcription start site. Negative control target-response pairs, meanwhile, typically are constructed by pairing negative control gRNAs to one or more responses. (We defer a detailed discussion of negative control pairs to a later section of this vignette.) Discovery pairs are of primary scientific interest, while positive control and negative control pairs serve a mainly technial purpose, helping us verify that the biological assay and statistical methodology are in working order.
+    A *positive control* (resp., *negative control*) *target-response pair* is a target-response pair for which we know that there *is* (resp., is *not*) a relationship between the target and the response. Positive control target-response pairs often are formed by coupling a transcription start site to the gene known to be regulated by that transcription start site. Negative control target-response pairs, meanwhile, typically are constructed by pairing negative control gRNAs to one or more responses. (We defer a detailed discussion of negative control pairs to a later section of this chapter.) Discovery pairs are of primary scientific interest, while positive control and negative control pairs serve a mainly technial purpose, helping us verify that the biological assay and statistical methodology are in working order.
 
     `sceptre` offers several helper functions to facilitate the construction of positive control and discovery pairs. The function `construct_positive_control_pairs()` takes as argument a `sceptre_object` and outputs the set of positive control pairs formed by matching gRNA targets (as contained in the `grna_target_data_frame`) to response IDs. Positive control pairs are optional and need not be computed.
 
@@ -192,7 +192,7 @@ The second step is to set the analysis parameters. The most important analysis p
     discovery_pairs[c(1:4, 101:104),]
     ```
 
-    `construct_trans_pairs()` constructs the entire set of possible target-response pairs. See the Set Analysis Parameters vignette (`vignette("set-analysis-parameters")`) for more information about these functions.
+    `construct_trans_pairs()` constructs the entire set of possible target-response pairs. See @sec-set-analysis-parameters_construct_cis_pairs and @sec-set-analysis-parameters_construct_trans_pairs of *Set analysis parameters* for more information about these functions.
 
 2.  **Sidedness**. The parameter `side` controls whether to run a left-tailed (`"left"`), right-tailed (`"right"`), or two-tailed (`"both"`; default) test. A left-tailed (resp., right-tailed) test is appropriate when testing for a decrease (resp., increase) in expression; a two-tailed test, by contrast, is appropriate when testing for an increase *or* decrease in expression. A left-tailed test is the most appropriate choice for a CRISPRi screen of enhancers, and so we set `side` to `"left"`.
 

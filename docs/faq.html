@@ -214,8 +214,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#i-am-trying-to-install-sceptre-but-am-getting-an-error.-what-should-i-do" id="toc-i-am-trying-to-install-sceptre-but-am-getting-an-error.-what-should-i-do" class="nav-link active" data-scroll-target="#i-am-trying-to-install-sceptre-but-am-getting-an-error.-what-should-i-do"><span class="header-section-number">B.1</span> I am trying to install <code>sceptre</code> but am getting an error. What should I do?</a></li>
+<li><a href="#i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do" id="toc-i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do" class="nav-link active" data-scroll-target="#i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do"><span class="header-section-number">B.1</span> I am trying to install <code>sceptre</code>, but I am getting an error. What should I do?</a></li>
   <li><a href="#my-negative-control-p-values-are-miscalibrated.-what-should-i-do" id="toc-my-negative-control-p-values-are-miscalibrated.-what-should-i-do" class="nav-link" data-scroll-target="#my-negative-control-p-values-are-miscalibrated.-what-should-i-do"><span class="header-section-number">B.2</span> My negative control p-values are miscalibrated. What should I do?</a></li>
+  <li><a href="#how-many-negative-control-grnas-do-i-need" id="toc-how-many-negative-control-grnas-do-i-need" class="nav-link" data-scroll-target="#how-many-negative-control-grnas-do-i-need"><span class="header-section-number">B.3</span> How many negative control gRNAs do I need?</a></li>
+  <li><a href="#i-want-to-run-both-a-cis-and-a-trans-analysis.-how-should-i-do-this" id="toc-i-want-to-run-both-a-cis-and-a-trans-analysis.-how-should-i-do-this" class="nav-link" data-scroll-target="#i-want-to-run-both-a-cis-and-a-trans-analysis.-how-should-i-do-this"><span class="header-section-number">B.4</span> I want to run both a <em>cis</em> and a <em>trans</em> analysis. How should I do this?</a></li>
+  <li><a href="#i-want-to-run-both-a-singleton-analysis-in-which-grnas-targeting-the-same-site-are-analyzed-individually-and-a-grouped-analysis-in-which-grnas-targeting-the-same-site-are-combined.-how-should-i-do-this" id="toc-i-want-to-run-both-a-singleton-analysis-in-which-grnas-targeting-the-same-site-are-analyzed-individually-and-a-grouped-analysis-in-which-grnas-targeting-the-same-site-are-combined.-how-should-i-do-this" class="nav-link" data-scroll-target="#i-want-to-run-both-a-singleton-analysis-in-which-grnas-targeting-the-same-site-are-analyzed-individually-and-a-grouped-analysis-in-which-grnas-targeting-the-same-site-are-combined.-how-should-i-do-this"><span class="header-section-number">B.5</span> I want to run both a singleton analysis (in which gRNAs targeting the same site are analyzed individually) and a grouped analysis (in which gRNAs targeting the same site are “combined”). How should I do this?</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/faq.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
@@ -237,13 +240,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    if (new URLSearchParams(window.location.search).get('iframe') === 'true') {
        document.body.setAttribute('data-iframe', 'true');
    }
-</script><section id="i-am-trying-to-install-sceptre-but-am-getting-an-error.-what-should-i-do" class="level2" data-number="B.1"><h2 data-number="B.1" class="anchored" data-anchor-id="i-am-trying-to-install-sceptre-but-am-getting-an-error.-what-should-i-do">
-<span class="header-section-number">B.1</span> I am trying to install <code>sceptre</code> but am getting an error. What should I do?</h2>
+</script><section id="i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do" class="level2" data-number="B.1"><h2 data-number="B.1" class="anchored" data-anchor-id="i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do">
+<span class="header-section-number">B.1</span> I am trying to install <code>sceptre</code>, but I am getting an error. What should I do?</h2>
 <p>The first thing to do is to remove any previous installations of <code>sceptre</code> and then try again. First, determine the directory on your computer in which R packages are stored by executing <code><a href="https://rdrr.io/r/base/libPaths.html">.libPaths()</a></code> in the R console.</p>
 <div class="cell" data-hash="faq_cache/html/unnamed-chunk-1_70f954a93bd3a2a67a7fb716614e405c">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html">.libPaths</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "/Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/library"</code></pre>
+<pre><code>[1] "/Library/Frameworks/R.framework/Versions/4.2/Resources/library"</code></pre>
 </div>
 </div>
 <p>Next, within your terminal, <code>cd</code> to this directory and then execute <code>rm -rf sceptre</code>.</p>
@@ -258,7 +261,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>If this does not work, try to delete and reinstall the dependencies of <code>sceptre</code>. <code>sceptre</code> has the following dependencies: <code>BH</code>, <code>cowplot</code>, <code>crayon</code>, <code>data.table</code>, <code>dplyr</code>, <code>ggplot2</code>, <code>Matrix</code>, <code>Rcpp</code>. Using the method described above, delete and reinstall each of these dependencies one-by-one.</p>
 </section><section id="my-negative-control-p-values-are-miscalibrated.-what-should-i-do" class="level2" data-number="B.2"><h2 data-number="B.2" class="anchored" data-anchor-id="my-negative-control-p-values-are-miscalibrated.-what-should-i-do">
 <span class="header-section-number">B.2</span> My negative control p-values are miscalibrated. What should I do?</h2>
-<p>Not to worry! First of all, the extent of the miscalibration may be mild enough not to cause significant issues with your analysis; see <a href="run-calibration-check.html#tbl-calibration_quality">Table&nbsp;<span>5.1</span></a> for assessing the severity of your miscalibration. If the miscalibration is moderate to severe, then see <a href="run-calibration-check.html#sec-improving_calibration"><span>Section&nbsp;5.4</span></a> for several helpful suggestions to improve your calibration.</p>
+<p>Not to worry! First of all, the extent of the miscalibration may be mild enough not to cause significant issues with your analysis; see <a href="run-calibration-check.html#tbl-calibration_quality">Table&nbsp;<span>5.1</span></a> for assessing the severity of your miscalibration. If the miscalibration is moderate to severe, then see <a href="run-calibration-check.html#sec-improving_calibration"><span>Section&nbsp;5.4</span></a> for several suggestions to improve calibration.</p>
+</section><section id="how-many-negative-control-grnas-do-i-need" class="level2" data-number="B.3"><h2 data-number="B.3" class="anchored" data-anchor-id="how-many-negative-control-grnas-do-i-need">
+<span class="header-section-number">B.3</span> How many negative control gRNAs do I need?</h2>
+<p>The table below summarizes the minimum number of negative control gRNAs required to run an analysis as a function of the control group (either NT cells or complement set) and analysis type (either calibration check, discovery analysis, or power check). Recall that the default control group for low-MOI screens is the set of NT cells, while the default control group for high-MOI screens is the complement set.</p>
+<table class="table">
+<caption>Minimum number of negative control gRNAs required to run an analysis as a function of the control group (vertical axis) and analysis type (horizontal axis).</caption>
+<colgroup>
+<col style="width: 25%">
+<col style="width: 24%">
+<col style="width: 50%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th>Calibration check</th>
+<th><strong>Discovery analysis or power check</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><strong>NT cells</strong></td>
+<td>2</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><strong>Complement set</strong></td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>In general having more negative control gRNAs is better. We recommend including at least ten to fifteen negative control gRNAs in the assay for the best chance of obtaining high-quality results.</p>
+</section><section id="i-want-to-run-both-a-cis-and-a-trans-analysis.-how-should-i-do-this" class="level2" data-number="B.4"><h2 data-number="B.4" class="anchored" data-anchor-id="i-want-to-run-both-a-cis-and-a-trans-analysis.-how-should-i-do-this">
+<span class="header-section-number">B.4</span> I want to run both a <em>cis</em> and a <em>trans</em> analysis. How should I do this?</h2>
+<p>See <a href="multiple-analyses.html"><span>Appendix&nbsp;C</span></a> for guidelines on running multiple analyses on a single dataset.</p>
+</section><section id="i-want-to-run-both-a-singleton-analysis-in-which-grnas-targeting-the-same-site-are-analyzed-individually-and-a-grouped-analysis-in-which-grnas-targeting-the-same-site-are-combined.-how-should-i-do-this" class="level2" data-number="B.5"><h2 data-number="B.5" class="anchored" data-anchor-id="i-want-to-run-both-a-singleton-analysis-in-which-grnas-targeting-the-same-site-are-analyzed-individually-and-a-grouped-analysis-in-which-grnas-targeting-the-same-site-are-combined.-how-should-i-do-this">
+<span class="header-section-number">B.5</span> I want to run both a singleton analysis (in which gRNAs targeting the same site are analyzed individually) and a grouped analysis (in which gRNAs targeting the same site are “combined”). How should I do this?</h2>
+<p>See <a href="multiple-analyses.html"><span>Appendix&nbsp;C</span></a> for guidelines on running multiple analyses on a single dataset.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">

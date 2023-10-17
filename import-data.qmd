@@ -38,7 +38,7 @@ A function to import data from the Parse program is coming soon.
 
 ### Add extra covariates
 
-`import_data_from_cellranger` and `input_data_from_parse()` compute the covariates `grna_n_nonzero`, `grna_n_umis`, `response_n_nonzero`, `response_n_umis`, `response_p_mito`, and `batch`. Users may wish to supply additional covariates (e.g., cell cycle or cell type) to `sceptre`. To do so, users can pass a data frame `extra_covariates` containing additional covariates to `import_data_from_cellranger` or `input_data_from_parse()`. Below, we simulate an additional covariate `cell_type` and pass this covariate as an argument to the data import function.
+`import_data_from_cellranger()` and `input_data_from_parse()` compute the covariates `grna_n_nonzero`, `grna_n_umis`, `response_n_nonzero`, `response_n_umis`, `response_p_mito`, and `batch`. Users may wish to supply additional covariates (e.g., cell cycle or cell type) to `sceptre`. To do so, users can pass a data frame `extra_covariates` containing additional covariates to `import_data_from_cellranger()` or `input_data_from_parse()`. Below, we simulate an additional covariate `cell_type` and pass this covariate as an argument to the data import function.
 
 ```{r,results='hide'}
 # simulate an extra covariate, namely cell type
@@ -94,7 +94,7 @@ We describe the inputs below.
     grna_matrix[1:10,1:10]
     ```
 
-    `response_matrix` and `grna_matrix` should be stored in one of the following formats: `matrix`, `dgTMatrix`, `dgCMatrix`, or `dgRMatrix`. **Note:** The columns of `response_matrix` and `grna_matrix` are assumed to correspond to the same ordering of cells. Please make sure to preserve the consistency of column ordering. We recommend users add cell barcodes as column names for `response_matrix` and `grna_matrix`, in which case `sceptre` will check the consistency of cell ordering on their behalf.
+    `response_matrix` and `grna_matrix` should be stored in one of the following formats: `matrix`, `dgTMatrix`, `dgCMatrix`, or `dgRMatrix`. Note that the columns of `response_matrix` and `grna_matrix` are assumed to correspond to the same ordering of cells. Users should make sure to preserve the consistency of column ordering. We recommend that users add cell barcodes as column names for `response_matrix` and `grna_matrix`, in which case `sceptre` checks the consistency of cell ordering.
 
 -   `grna_target_data_frame` is the data frame mapping each gRNA to its target. The `grna_target_data_frame` that we pass to `import_data()` is exactly the same as the one that we pass to `import_data_from_cellranger`. See @sec-whole_game_import_data of *The whole game* for more information about this argument.
 

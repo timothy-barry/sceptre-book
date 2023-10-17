@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.3.450">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
-
 <title>Hands-On Single-Cell CRISPR Screen Analysis - Appendix C — Running multiple analyses</title>
 <style>
 code{white-space: pre-wrap;}
@@ -21,8 +18,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
-
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -41,8 +71,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -61,18 +90,12 @@ ul.task-list li input[type="checkbox"] {
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-
-
-<link rel="stylesheet" href="custom.css">
+}</script><link rel="stylesheet" href="custom.css">
 </head>
-
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
@@ -83,13 +106,9 @@ ul.task-list li input[type="checkbox"] {
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
@@ -109,7 +128,7 @@ ul.task-list li input[type="checkbox"] {
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Welcome</span></a>
@@ -165,8 +184,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
@@ -185,20 +204,21 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </li>
       </ul>
-  </li>
+</li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#running-cis-and-trans-analyses" id="toc-running-cis-and-trans-analyses" class="nav-link active" data-scroll-target="#running-cis-and-trans-analyses"><span class="header-section-number">C.1</span> Running <em>cis</em> and <em>trans</em> analyses</a></li>
+  <li><a href="#running-singleton-and-grouped-analyses" id="toc-running-singleton-and-grouped-analyses" class="nav-link" data-scroll-target="#running-singleton-and-grouped-analyses"><span class="header-section-number">C.2</span> Running singleton and grouped analyses</a></li>
+  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/multiple-analyses.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title"><span id="sec-multiple_analyses" class="quarto-section-identifier">Appendix C — Running multiple analyses</span></h1>
 </div>
 
@@ -212,18 +232,114 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
-</header>
-
-<p>In this chapter, we recommend strategies for carrying out multiple SCEPTRE analyses, such as</p>
+</header><p>In this chapter we recommend strategies for carrying out multiple <code>sceptre</code> analyses on a single dataset, such as</p>
 <ul>
 <li><p>running <em>cis</em> and <em>trans</em> analyses;</p></li>
 <li><p>running analyses with gRNAs grouped based on target and with singleton gRNAs.</p></li>
 </ul>
+<p>We begin by loading the <code>sceptre</code> package.</p>
+<div class="cell" data-hash="multiple-analyses_cache/html/unnamed-chunk-1_cd8f19c9fd371c2a85e9bee834cd07eb">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="running-cis-and-trans-analyses" class="level2" data-number="C.1"><h2 data-number="C.1" class="anchored" data-anchor-id="running-cis-and-trans-analyses">
+<span class="header-section-number">C.1</span> Running <em>cis</em> and <em>trans</em> analyses</h2>
+<p>Some users may wish to run both a <em>cis</em> analysis and a <em>trans</em> analysis. We recommend that such users apply the <code>sceptre</code> pipeline twice: once to analyze the <em>cis</em> pairs and once to analyze the <em>trans</em> pairs. We illustrate this approach on the high-MOI CRISPRi data; we begin by creating a <code>sceptre_object</code> to represent these data.</p>
+<div class="cell" data-hash="multiple-analyses_cache/html/unnamed-chunk-2_0ad898b23983624bac8dbbd753d07622">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
+<span>  response_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
+<span>  grna_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>,</span>
+<span>  grna_target_data_frame <span class="op">=</span> <span class="va">grna_target_data_frame_highmoi</span>,</span>
+<span>  moi <span class="op">=</span> <span class="st">"high"</span>,</span>
+<span>  extra_covariates <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span>,</span>
+<span>  response_names <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">gene_names</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>First, we carry out an analysis of the <em>cis</em> pairs, storing the results in the directory <code>"~/sceptre_results_cis"</code>.</p>
+<div class="cell" data-hash="multiple-analyses_cache/html/unnamed-chunk-3_fb9e2b37db5608eb2ce8f8d2ab7513bd">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># positive control pairs</span></span>
+<span><span class="va">positive_control_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># cis pairs</span></span>
+<span><span class="va">discovery_pairs_cis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
+<span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
+<span>  distance_threshold <span class="op">=</span> <span class="fl">5e6</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># run cis analysis</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="va">sceptre_object</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
+<span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_cis</span>,</span>
+<span>    positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
+<span>    side <span class="op">=</span> <span class="st">"left"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># write outputs</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/write_outputs_to_directory.html">write_outputs_to_directory</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
+<span>  directory <span class="op">=</span> <span class="st">"~/sceptre_results_cis"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, we carry out an analysis of the <em>trans</em> pairs, storing the results in <code>"~/sceptre_results_trans"</code>.</p>
+<div class="cell" data-hash="multiple-analyses_cache/html/unnamed-chunk-4_5ab0fcb62280da37dc7e7ca4de2d2501">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># trans pairs</span></span>
+<span><span class="va">discovery_pairs_trans</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
+<span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
+<span>  exclude_positive_control_targets <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># run trans analysis</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="va">sceptre_object</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
+<span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_trans</span>,</span>
+<span>    positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
+<span>    side <span class="op">=</span> <span class="st">"both"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># write outputs</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/write_outputs_to_directory.html">write_outputs_to_directory</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
+<span>  directory <span class="op">=</span> <span class="st">"~/sceptre_results_trans"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that we update the <code>sceptre_object</code> with the output of the <em>cis</em> analysis. We then use the same <code>sceptre_object</code> to carry out the <em>trans</em> analysis. Under the hood <code>sceptre</code> stores (or “caches”) intermediate computations carried out as part of the <em>cis</em> analysis inside the <code>sceptre_object</code>. These intermediate computations are then recycled to carry out the <em>trans</em> analysis, thereby reducing compute.</p>
+</section><section id="running-singleton-and-grouped-analyses" class="level2" data-number="C.2"><h2 data-number="C.2" class="anchored" data-anchor-id="running-singleton-and-grouped-analyses">
+<span class="header-section-number">C.2</span> Running singleton and grouped analyses</h2>
+<p>Another common analysis paradigm is to run both a grouped analysis (in which gRNAs targeting the same site are integrated or “combined”) and a singleton analysis (in which gRNAs targeting the same site are analyzed individually). We carried out a grouped analysis of the <em>cis</em> pairs on the high-MOI CRISPRi data above. Below, we conduct a singleton analysis on the same set of pairs, storing the result in <code>"~/sceptre_results_cis_singleton"</code>. We operate on the same <code>sceptre_object</code> so as to exploit caching.</p>
+<div class="cell" data-hash="multiple-analyses_cache/html/unnamed-chunk-5_514fc07c252ed27222ab707f891b09a5">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># singleton cis analysis</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="va">sceptre_object</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
+<span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_cis</span>,</span>
+<span>    positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
+<span>    side <span class="op">=</span> <span class="st">"left"</span>,</span>
+<span>    grna_integration_strategy <span class="op">=</span> <span class="st">"singleton"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># write outputs</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/write_outputs_to_directory.html">write_outputs_to_directory</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
+<span>  directory <span class="op">=</span> <span class="st">"~/sceptre_results_cis_singleton"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In summary, to carry out multiple analyses on the same dataset, users should apply the <code>sceptre</code> pipeline multiple times, reusing the underlying <code>sceptre_object</code> to exploit caching and reduce compute.</p>
 
 
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -455,9 +571,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./faq.html" class="pagination-link">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span>
       </a>          
@@ -466,16 +580,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">Hands-On Single-Cell CRISPR Screen Analysis was written by Timothy Barry and Eugene Katsevich</div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/multiple-analyses.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></div>
+    </div>
     <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
   </div>
 </footer>
-
 
 
 </body></html>

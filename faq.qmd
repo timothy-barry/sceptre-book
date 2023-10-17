@@ -5,10 +5,9 @@
    }
 </script>
 ```
-
 # Frequently asked questions {#sec-faq}
 
-##  I am trying to install `sceptre` but am getting an error. What should I do?
+## I am trying to install `sceptre`, but I am getting an error. What should I do?
 
 The first thing to do is to remove any previous installations of `sceptre` and then try again. First, determine the directory on your computer in which R packages are stored by executing `.libPaths()` in the R console.
 
@@ -18,7 +17,7 @@ The first thing to do is to remove any previous installations of `sceptre` and t
 
 Next, within your terminal, `cd` to this directory and then execute `rm -rf sceptre`.
 
-```{.bash filename="Terminal"}
+``` {.bash filename="Terminal"}
 cd /Library/Frameworks/R.framework/Versions/4.2/Resources/library # change me!
 rm -rf sceptre
 ```
@@ -27,6 +26,27 @@ Now, try to install `sceptre` again.
 
 If this does not work, try to delete and reinstall the dependencies of `sceptre`. `sceptre` has the following dependencies: `BH`, `cowplot`, `crayon`, `data.table`, `dplyr`, `ggplot2`, `Matrix`, `Rcpp`. Using the method described above, delete and reinstall each of these dependencies one-by-one.
 
-##  My negative control p-values are miscalibrated. What should I do?
+## My negative control p-values are miscalibrated. What should I do?
 
-Not to worry! First of all, the extent of the miscalibration may be mild enough not to cause significant issues with your analysis; see @tbl-calibration_quality for assessing the severity of your miscalibration. If the miscalibration is moderate to severe, then see @sec-improving_calibration for several helpful suggestions to improve your calibration.
+Not to worry! First of all, the extent of the miscalibration may be mild enough not to cause significant issues with your analysis; see @tbl-calibration_quality for assessing the severity of your miscalibration. If the miscalibration is moderate to severe, then see @sec-improving_calibration for several suggestions to improve calibration.
+
+## How many negative control gRNAs do I need?
+
+The table below summarizes the minimum number of negative control gRNAs required to run an analysis as a function of the control group (either NT cells or complement set) and analysis type (either calibration check, discovery analysis, or power check). Recall that the default control group for low-MOI screens is the set of NT cells, while the default control group for high-MOI screens is the complement set.
+
+|                    | Calibration check | **Discovery analysis or power check** |
+|--------------------|-------------------|---------------------------------------|
+| **NT cells**       | 2                 | 1                                     |
+| **Complement set** | 0                 | 0                                     |
+
+: Minimum number of negative control gRNAs required to run an analysis as a function of the control group (vertical axis) and analysis type (horizontal axis).
+
+In general having more negative control gRNAs is better. We recommend including at least ten to fifteen negative control gRNAs in the assay for the best chance of obtaining high-quality results.
+
+## I want to run both a *cis* and a *trans* analysis. How should I do this?
+
+See @sec-multiple_analyses for guidelines on running multiple analyses on a single dataset.
+
+## I want to run both a singleton analysis (in which gRNAs targeting the same site are analyzed individually) and a grouped analysis (in which gRNAs targeting the same site are "combined"). How should I do this?
+
+See @sec-multiple_analyses for guidelines on running multiple analyses on a single dataset.

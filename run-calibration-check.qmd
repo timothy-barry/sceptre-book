@@ -204,7 +204,7 @@ There are several concrete steps that users can take to improve the calibration 
              response_n_umis_range = c(0.05, 0.95))
     ```
 
-4.  **Change the resampling mechanism or the control group**. `sceptre` provides two options for the resampling mechanism (namely, `"permutations"` or `"crt"`; see @sec-set_analysis_parameters_resampling_mech) and two options for the control group (namely, `"complement_set"` or `"nt_cells"`; see @sec-set_analysis_parameters_control_group). (Note that `"nt_cells"` is available as an option only in low-MOI screens.) Switching the resampling mechanism and/or the control group may improve calibration. Below, we set the resampling mechanism to `"crt"` and the control group to `"complement_set"` on the low-MOI CRISPRko data; these choices are the opposite of the defaults.
+4.  **Change the resampling mechanism or the control group**. `sceptre` provides two options for the resampling mechanism (namely, `"permutations"` or `"crt"`; see @sec-set_analysis_parameters_resampling_mech) and two options for the control group (namely, `"complement_set"` or `"nt_cells"`; see @sec-set-analysis-parameters_control_group). (Note that `"nt_cells"` is available as an option only in low-MOI screens.) Switching the resampling mechanism and/or the control group may improve calibration. Below, we set the resampling mechanism to `"crt"` and the control group to `"complement_set"` on the low-MOI CRISPRko data; these choices are the opposite of the defaults.
 
     ```{r, eval=FALSE}
     sceptre_object_lowmoi <- sceptre_object_lowmoi |>
