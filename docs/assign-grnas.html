@@ -279,7 +279,7 @@ div.csl-indent {
 <section id="initialize-the-crispri-and-crisprko-sceptre_objects" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="initialize-the-crispri-and-crisprko-sceptre_objects">
 <span class="header-section-number">3.1</span> Initialize the CRISPRi and CRISPRko <code>sceptre_object</code>s</h2>
 <p>We use the high-MOI CRISPRi and low-MOI CRISPRko data as running examples. We call <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code> on the low-MOI CRISPRko data to initialize a <code>sceptre_object</code> called <code>sceptre_object_lowmoi</code>.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-3_01a4cd6912b55aff027d4ec39c7ac7ae">
+<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-3_fda38985c068adf84a43c618391fb80e">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># low-MOI CRISPRko data setup</span></span>
 <span><span class="co"># 1. import data</span></span>
 <span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
@@ -294,7 +294,8 @@ div.csl-indent {
 <span><span class="va">positive_control_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span>
 <span><span class="va">discovery_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
-<span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span></span>
+<span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
+<span>  pairs_to_exclude <span class="op">=</span> <span class="st">"pc_pairs"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>

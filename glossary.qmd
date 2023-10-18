@@ -66,9 +66,9 @@ The following terms describe the statistical methodologies used in single-cell C
 
 -   **Conditional randomization test:** A resampling procedure for estimating the null distribution of a test statistic based on randomly reassigning the treatment and control labels of the cells based on their covariate values.
 
--   **Multiple testing procedure:** A procedure that inputs a list of p-values for a set of target-response pairs and outputs a subset of these pairs that are deemed to have a statistically significant relationship. The most common multiple testing procedure is the *Benjamini-Hochberg procedure*, which aims to control the *false discovery rate* (see below) at a prespecified level, such as 0.1.
-
 -   **Skew-normal distribution**: A generalization of the Gaussian distribution that has three parameters: a mean parameter, a variance parameter, and a skew parameter. The skew parameter controls the extent to which the distribution is asymmetric relative to a Gaussian distribution.
+
+-   **Multiple testing procedure:** A procedure that inputs a list of p-values for a set of target-response pairs and outputs a subset of these pairs that are deemed to have a statistically significant relationship. The most common multiple testing procedure is the *Benjamini-Hochberg procedure*, which aims to control the *false discovery rate* (see below) at a prespecified level, such as 0.1.
 
 ## Statistical properties and their assessment
 
