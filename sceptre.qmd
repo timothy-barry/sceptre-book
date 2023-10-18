@@ -413,3 +413,5 @@ head(result)
 ## Further reading
 
 Each step of the pipeline has its own dedicated chapter. We encourage interested users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with @sec-import_data.
+
+Also see complete worked examples for the low-MOI CRISPRko and high-MOI CRISPRi data by calling `?sceptre` in the console.
