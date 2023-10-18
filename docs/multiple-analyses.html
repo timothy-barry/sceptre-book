@@ -255,7 +255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>First, we carry out an analysis of the <em>cis</em> pairs, storing the results in the directory <code>"~/sceptre_results_cis"</code>.</p>
-<div class="cell" data-hash="multiple-analyses_cache/html/unnamed-chunk-3_fb9e2b37db5608eb2ce8f8d2ab7513bd">
+<div class="cell" data-hash="multiple-analyses_cache/html/unnamed-chunk-3_143c8c911d68a88eb176145d2c9515d3">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># positive control pairs</span></span>
 <span><span class="va">positive_control_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span>
 <span></span>
@@ -285,12 +285,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, we carry out an analysis of the <em>trans</em> pairs, storing the results in <code>"~/sceptre_results_trans"</code>.</p>
-<div class="cell" data-hash="multiple-analyses_cache/html/unnamed-chunk-4_5ab0fcb62280da37dc7e7ca4de2d2501">
+<div class="cell" data-hash="multiple-analyses_cache/html/unnamed-chunk-4_ba14ed6a8f116b08b685d289da5d8af0">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># trans pairs</span></span>
 <span><span class="va">discovery_pairs_trans</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
 <span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
-<span>  exclude_positive_control_targets <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  pairs_to_exclude <span class="op">=</span> <span class="st">"pairs_containing_pc_targets"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co"># run trans analysis</span></span>
 <span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="va">sceptre_object</span> <span class="op">|&gt;</span></span>

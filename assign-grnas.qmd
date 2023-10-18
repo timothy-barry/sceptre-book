@@ -31,7 +31,8 @@ sceptre_object_lowmoi <- import_data(
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object_lowmoi)
 discovery_pairs <- construct_trans_pairs(
   sceptre_object = sceptre_object_lowmoi,
-  positive_control_pairs = positive_control_pairs
+  positive_control_pairs = positive_control_pairs,
+  pairs_to_exclude = "pc_pairs"
 )
 sceptre_object_lowmoi <- set_analysis_parameters(
   sceptre_object = sceptre_object_lowmoi,

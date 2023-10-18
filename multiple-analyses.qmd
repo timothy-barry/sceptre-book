@@ -30,7 +30,6 @@ sceptre_object <- import_data(
 First, we carry out an analysis of the *cis* pairs, storing the results in the directory `"~/sceptre_results_cis"`.
 
 ```{r,results='hide'}
-
 # positive control pairs
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object)
 
@@ -67,7 +66,7 @@ Next, we carry out an analysis of the *trans* pairs, storing the results in `"~/
 discovery_pairs_trans <- construct_trans_pairs(
   sceptre_object = sceptre_object,
   positive_control_pairs = positive_control_pairs,
-  exclude_positive_control_targets = TRUE
+  pairs_to_exclude = "pairs_containing_pc_targets"
 )
 # run trans analysis
 sceptre_object <- sceptre_object |>
