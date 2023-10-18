@@ -1,8 +1,2 @@
-base
-methods
 conflicted
-datasets
-utils
-grDevices
-graphics
-stats
+sceptre

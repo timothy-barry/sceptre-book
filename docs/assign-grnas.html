@@ -52,7 +52,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -109,16 +128,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/timothy-barry/sceptre-book" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
-  <div class="quarto-reader-toggle-btn">
-  <i class="bi"></i>
-  </div>
-</a>
 </div>
     </div>
       </div>
@@ -200,8 +216,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multiple-analyses.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Running multiple analyses</span></span></a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
       </ul>
@@ -221,11 +237,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
 <li><a href="#mixture-method" id="toc-mixture-method" class="nav-link" data-scroll-target="#mixture-method"><span class="header-section-number">3.3.1</span> Mixture method</a></li>
   <li><a href="#maximum-method" id="toc-maximum-method" class="nav-link" data-scroll-target="#maximum-method"><span class="header-section-number">3.3.2</span> Maximum method</a></li>
-  <li><a href="#thresholding-method" id="toc-thresholding-method" class="nav-link" data-scroll-target="#thresholding-method"><span class="header-section-number">3.3.3</span> Thresholding method</a></li>
+  <li><a href="#sec-thresholding_method" id="toc-sec-thresholding_method" class="nav-link" data-scroll-target="#sec-thresholding_method"><span class="header-section-number">3.3.3</span> Thresholding method</a></li>
   </ul>
 </li>
   <li><a href="#plotting-and-printing-the-outcome-of-the-grna-to-cell-assignment-step" id="toc-plotting-and-printing-the-outcome-of-the-grna-to-cell-assignment-step" class="nav-link" data-scroll-target="#plotting-and-printing-the-outcome-of-the-grna-to-cell-assignment-step"><span class="header-section-number">3.4</span> Plotting and printing the outcome of the gRNA-to-cell assignment step</a></li>
-  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/assign-grnas.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+  </ul></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
@@ -242,7 +258,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
-</header><p>The third step of the pipeline is to assign gRNAs to cells. This step entails using the gRNA UMI counts to determine which cells contain which gRNAs. <code>sceptre</code> provides three gRNA-to-cell assignment methods: the “mixture model method,” the “maximum method,” and “the thresholding method.”</p>
+</header><p>The third step of the pipeline is to assign gRNAs to cells. This step entails using the gRNA UMI counts to determine which cells contain which gRNAs. <code>sceptre</code> provides three gRNA-to-cell assignment methods:</p>
+<ul>
+<li><p>the mixture model method;</p></li>
+<li><p>the maximum method;</p></li>
+<li><p>the thresholding method.</p></li>
+</ul>
 <div class="cell" data-layout-align="center" data-hash="assign-grnas_cache/html/unnamed-chunk-1_17314e5c36dcb5cff883200737884897">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -309,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We are now ready to carry out the gRNA assignment step on both datasets.</p>
 </section><section id="visualize-the-grna-count-distributions" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="visualize-the-grna-count-distributions">
 <span class="header-section-number">3.2</span> Visualize the gRNA count distributions</h2>
-<p>A helpful first step in assigning gRNAs to cells is to visualize the gRNA UMI count distributions. As discussed in <a href="sceptre.html#sec-sceptre_assign_grnas"><span>Section&nbsp;3</span></a> of <em>The whole game</em>, we can use the function <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> to plot the empirical UMI count distribution of one or more gRNAs. <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> takes several arguments: <code>sceptre_object</code> (required), <code>n_grnas_to_plot</code> (optional), <code>grnas_to_plot</code> (optional), and <code>threshold</code> (optional). <code>n_grnas_to_plot</code> is an integer specifying the number of randomly-selected gRNAs to plot. <code>grnas_to_plot</code> is a character vector specifying (by name) one or more specific gRNAs to plot. Finally, <code>threshold</code> is an integer specifying the location at which to draw a dotted vertical line. We call <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> on the low-MOI CRISPRko data, plotting nine random gRNAs.</p>
+<p>A helpful first step in assigning gRNAs to cells is to visualize the gRNA UMI count distributions. As discussed in <a href="sceptre.html#sec-sceptre_assign_grnas"><span>Section&nbsp;3</span></a> of <em>The whole game</em>, we can use the function <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> to plot the empirical UMI count distribution of one or more gRNAs. <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> takes several arguments: <code>sceptre_object</code> (required), <code>n_grnas_to_plot</code> (optional), <code>grnas_to_plot</code> (optional), and <code>threshold</code> (optional). <code>n_grnas_to_plot</code> is an integer specifying the number of randomly selected gRNAs to plot. <code>grnas_to_plot</code> is a character vector specifying (by name) one or more specific gRNAs to plot. Finally, <code>threshold</code> is an integer specifying the location at which to draw a dotted vertical line. We call <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> on the low-MOI CRISPRko data, plotting nine random gRNAs.</p>
 <div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-5_f897477c72ecc018c0dd79cb1bc23793">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
@@ -330,7 +351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We assign gRNAs to cells to cells by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code> takes the arguments <code>sceptre_object</code> (required), <code>method</code> (optional), <code>print_progress</code> (optional), and <code>parallel</code> (optional). <code>method</code> is the gRNA assignment method and should be set to <code>"mixture"</code>, <code>"maximum"</code>, or <code>"thresholding"</code>. <code>print_progress</code> (default <code>TRUE</code>) and <code>parallel</code> (default <code>FALSE</code>) are logical values specifying whether to print progress updates and run the function in parallel, respectively. Note that parallel computation is not yet configured for Windows; thus, Windows users either should omit the <code>parallel</code> argument or set <code>parallel</code> to <code>FALSE</code>. Below, we describe the three gRNA assignment strategies in detail.</p>
 <section id="mixture-method" class="level3" data-number="3.3.1"><h3 data-number="3.3.1" class="anchored" data-anchor-id="mixture-method">
 <span class="header-section-number">3.3.1</span> Mixture method</h3>
-<p>The first gRNA assignment strategy is the <code>"mixture"</code> method, which involves assigning gRNAs to cells using a mixture model. The mixture method is the default method for high-MOI screens and is an optional method for low-MOI screens. The method works as follows. First, we fit a latent variable Poisson GLM to the data, regressing the gRNA UMI count vector onto the (latent) gRNA indicator vector and cell-specific covariate matrix. (A given entry of the gRNA indicator vector is defined to be “1” if the gRNA is present in the corresponding cell and “0” otherwise.) We fit the latent variable Poisson GLM using a novel variant of the EM algorithm. The fitted model yields the probability that each cell contains the gRNA; we threshold these probabilities to assign the gRNA to cells. An advantage of the GLM-based mixture modeling approach is that it accounts for cell-specific covariates, such as sequencing depth and batch. For example, cells that are sequenced deeply (and have a large value for <code>grna_n_umis</code> or <code>response_n_umis</code>) generally exhibit higher levels of ambient background contamination; <code>sceptre</code> controls for heterogeneity across cells due to sequencing depth and other factors.</p>
+<p>The first gRNA assignment strategy is the <code>"mixture"</code> method, which involves assigning gRNAs to cells using a mixture model <span class="citation" data-cites="barry2022c">(<a href="references.html#ref-barry2022c" role="doc-biblioref">Barry, Roeder, and Katsevich 2022</a>)</span>. The mixture method is the default method for high-MOI screens and is an optional method for low-MOI screens. The method works as follows. First, we fit a latent variable Poisson GLM to the data, regressing the gRNA UMI count vector onto the (latent) gRNA indicator vector and cell-specific covariate matrix. (A given entry of the gRNA indicator vector is defined to be “1” if the gRNA is present in the corresponding cell and “0” otherwise.) We fit the latent variable Poisson GLM using a novel variant of the EM algorithm. The fitted model yields the probability that each cell contains the gRNA; we threshold these probabilities to assign the gRNA to cells. An advantage of the GLM-based mixture modeling approach is that it accounts for cell-specific covariates, such as sequencing depth and batch. For example, cells that are sequenced deeply (and have a large value for <code>grna_n_umis</code> or <code>response_n_umis</code>) generally exhibit higher levels of ambient background contamination; <code>sceptre</code> controls for heterogeneity across cells due to sequencing depth and other factors.</p>
 <p>We use the mixture assignment method to assign gRNAs to cells on both the high-MOI CRISPRi data and low-MOI CRISPRko data, saving the resulting outputs as <code>sceptre_object_lowmoi_mixture</code> and <code>sceptre_object_highmoi_mixture</code>, respectively.</p>
 <div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-7_f8cd095fc34b3b6082fa17f4b48299dd">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
@@ -350,7 +371,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-9_d353783626b599e2624a010e5cff147b">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">formula_object_reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">grna_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">grna_n_umis</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>n_em_rep</code> is the number of times to run the EM algorithm using random starting estimates (default: <code>n_em_rep = 5</code>). Setting <code>n_em_rep</code> to a larger integer can improve the accuracy of the gRNA assignments at the cost of increasing compute. <code>n_nonzero_cells_cutoff</code> is the minimum number of cells that must exhibit nonzero expression of the gRNA to attempt fitting a mixture model to the gRNA count distribution (default: <code>n_nonzero_cells_cutoff = 10</code>). If the gRNA is expressed in fewer than <code>n_nonzero_cells_cutoff</code> cells, the gRNA instead is assigned to cells via the thresholding method, where the threshold used is <code>backup_threshold</code> (default: <code>backup_threshold = 5</code>). (See below for a detailed discussion of the thresholding method.) Finally, cells whose estimated probability of having received a gRNA exceeds <code>probability_threshold</code> are called as containing the gRNA (default: <code>probability_threshold = 0.8</code>). In practice <code>probability_threshold</code> typically does not impact the results considerably.</p>
+<p><code>n_em_rep</code> is the number of times to run the EM algorithm using random starting estimates (default: <code>n_em_rep = 5</code>). Setting <code>n_em_rep</code> to a larger integer can improve the accuracy of the gRNA assignments at the cost of increasing compute. <code>n_nonzero_cells_cutoff</code> is the minimum number of cells that must exhibit nonzero expression of the gRNA to attempt fitting a mixture model to the gRNA count distribution (default: <code>n_nonzero_cells_cutoff = 10</code>). If the gRNA is expressed in fewer than <code>n_nonzero_cells_cutoff</code> cells, the gRNA instead is assigned to cells via the thresholding method, where the threshold used is <code>backup_threshold</code> (default: <code>backup_threshold = 5</code>). (See <a href="#sec-thresholding_method"><span>Section&nbsp;3.3.3</span></a> for a detailed discussion of the thresholding method.) Finally, cells whose estimated probability of having received a gRNA exceeds <code>probability_threshold</code> are called as containing the gRNA (default: <code>probability_threshold = 0.8</code>). In practice <code>probability_threshold</code> typically does not impact the results considerably.</p>
 <p>To illustrate use of these method-specific parameters, we again call <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code> to assign gRNAs to cells on the high-MOI CRISPRi data, this time setting <code>formula_object</code> to <code>formula_object_reduced</code>.</p>
 <div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-10_ffa3009a0d0a0cd7ea0cae2d3ab31b1a">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi_mixture</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span></span>
@@ -362,11 +383,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="maximum-method" class="level3" data-number="3.3.2"><h3 data-number="3.3.2" class="anchored" data-anchor-id="maximum-method">
 <span class="header-section-number">3.3.2</span> Maximum method</h3>
 <p>The second gRNA assignment strategy is the <code>"maximum"</code> method. The maximum method is the default assignment method for low-MOI screens and is not available as an option for high-MOI screens. The maximum method assigns the gRNA that accounts for the greatest number of UMIs in a given cell to that cell. We apply the maximum method to the low-MOI CRISPRko data below.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-11_e8e1591a234ba6d61fbf6880d2dc44b7">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi_maximum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span>, method <span class="op">=</span> <span class="st">"maximum"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-11_5435bb50635f507882ffc12a8ff1046f">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi_maximum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>, </span>
+<span>  method <span class="op">=</span> <span class="st">"maximum"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The maximum method allows for one optional argument: <code>umi_fraction_threshold</code> (default: <code>umi_fraction_threshold = 0.8</code>). Cells for which the maximally expressed gRNA constitutes fewer than <code>umi_fraction_threshold</code> of the UMIs in that cell are flagged as containing multiple gRNAs. (Cells containing multiple gRNAs are removed as part of low-MOI quality control step, as discussed later). For example, if the maximally expressed gRNA in a given cell makes up 0.64 (or 64<span class="math inline">\(\%\)</span>) of the UMIs in that cell, then that cell is flagged as containing multiple gRNAs and is removed during quality control (assuming that <code>umi_fraction_threshold = 0.8</code>).</p>
-</section><section id="thresholding-method" class="level3" data-number="3.3.3"><h3 data-number="3.3.3" class="anchored" data-anchor-id="thresholding-method">
+<p>The maximum method allows for one optional argument: <code>umi_fraction_threshold</code> (default: <code>umi_fraction_threshold = 0.8</code>). Cells for which the maximally expressed gRNA constitutes fewer than <code>umi_fraction_threshold</code> of the UMIs in that cell are flagged as containing multiple gRNAs. (Cells containing multiple gRNAs are removed as part of low-MOI quality control step, as discussed in <a href="run-qc.html"><span>Chapter&nbsp;4</span></a>). For example, if the maximally expressed gRNA in a given cell makes up 0.64 (or 64<span class="math inline">\(\%\)</span>) of the UMIs in that cell, then that cell is flagged as containing multiple gRNAs and is removed during quality control (assuming that <code>umi_fraction_threshold = 0.8</code>).</p>
+</section><section id="sec-thresholding_method" class="level3" data-number="3.3.3"><h3 data-number="3.3.3" class="anchored" data-anchor-id="sec-thresholding_method">
 <span class="header-section-number">3.3.3</span> Thresholding method</h3>
 <p>The third method for assigning gRNAs to cells is the <code>"thresholding"</code> method; this method is available in both low- and high-MOI settings. The thresholding method assigns a gRNA to a cell if the UMI count of the gRNA in the cell is greater than or equal to some integer threshold (by default 5). We apply the <code>"thresholding"</code> method to both CRISPRi and CRISPRko datasets as follows.</p>
 <div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-12_bfb15721e3c60c907b6bf452ab03437c">
@@ -392,7 +416,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Note that setting <code>threshold</code> to <code>1</code> causes background contamination to be ignored.</p>
 </section></section><section id="plotting-and-printing-the-outcome-of-the-grna-to-cell-assignment-step" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="plotting-and-printing-the-outcome-of-the-grna-to-cell-assignment-step">
 <span class="header-section-number">3.4</span> Plotting and printing the outcome of the gRNA-to-cell assignment step</h2>
-<p>We can call <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the <code>sceptre_object</code> to render a plot summarizing the outcome of the gRNA-to-cell assignment step. <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> takes the arguments <code>sceptre_object</code> (required) <code>n_grnas_to_plot</code> (optional), <code>grnas_to_plot</code> (optional), and <code>return_indiv_plots</code> (optional). <code>n_grnas_to_plot</code> is the number of (randomly-selected) gRNAs to plot; <code>grnas_to_plot</code> is a vector of names of one or more gRNAs to plot; and <code>return_indiv_plots</code> is a logical value indicating whether to return the constituent panels of the plot individually (<code>TRUE</code>) or combined into a single figure (<code>FALSE</code>; default).</p>
+<p>We can call <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the <code>sceptre_object</code> to render a plot summarizing the outcome of the gRNA-to-cell assignment step. <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> takes the arguments <code>sceptre_object</code> (required) <code>n_grnas_to_plot</code> (optional), <code>grnas_to_plot</code> (optional), and <code>return_indiv_plots</code> (optional). <code>n_grnas_to_plot</code> is the number of (randomly selected) gRNAs to plot; <code>grnas_to_plot</code> is a vector of names of one or more gRNAs to plot; and <code>return_indiv_plots</code> is a logical value indicating whether to return the constituent panels of the plot individually (<code>TRUE</code>) or combined into a single figure (<code>FALSE</code>; default).</p>
 <p>We visualize the outcome of the gRNA-to-cell assignment step on the low-MOI CRISPRko data based on the maximum assignment strategy. We specifically plot the gRNAs “IFNGR2g2”, “STAT1g2”, and “STAT5Ag4”. (These gRNAs were selected arbitrarily for the purpose of illustrating the <code>grnas_to_plot</code> argument.)</p>
 <div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-14_a85ff7573b498fa3903274463b346413">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grnas_to_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IFNGR2g2"</span>, <span class="st">"STAT1g2"</span>, <span class="st">"STAT5Ag4"</span><span class="op">)</span></span>
@@ -424,8 +448,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi_mixture</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on <code>sceptre_object_lowmoi</code> to print a summary tracking the progress of the analysis. The field “gRNA-to-cell assignment information” presents information about the gRNA assignment step, including the selected assignment method, the mean number of cells per gRNA, and the mean number of gRNAs per cell.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-19_ece84b00d28e4a0c389c341ce9c3ad72">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi_mixture</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-19_f120e7ed2e26cccd8970a70ee0f8cc98">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
 
@@ -465,6 +489,11 @@ gRNA-to-cell assignment information:
 </div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-barry2022c" class="csl-entry" role="listitem">
+Barry, Timothy, Kathryn Roeder, and Eugene Katsevich. 2022. <span>“<span class="nocase">Exponential family measurement error models for single-cell CRISPR screens</span>.”</span> <em>arXiv</em>.
+</div>
+</div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

@@ -52,7 +52,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -109,16 +128,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/timothy-barry/sceptre-book" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
-  <div class="quarto-reader-toggle-btn">
-  <i class="bi"></i>
-  </div>
-</a>
 </div>
     </div>
       </div>
@@ -200,8 +216,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multiple-analyses.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Running multiple analyses</span></span></a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
       </ul>
@@ -223,7 +239,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul>
 </li>
   <li><a href="#run-qc" id="toc-run-qc" class="nav-link" data-scroll-target="#run-qc"><span class="header-section-number">4.3</span> Run QC</a></li>
-  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/run-qc.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+  </ul></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
@@ -240,7 +256,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
-</header><p>The fourth step of the pipeline is to run quality control (QC).</p>
+</header><p>The fourth step of the pipeline is to run quality control (QC). We apply QC both at the level of the cell (a common step in most single-cell analyses) and at the level of the target-response pair (specific to single-cell CRISPR screens).</p>
+<ul>
+<li><p><strong>Cellwise QC</strong> involves filtering cells on the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. In low-MOI we additionally remove cells that contain multiple gRNAs.</p></li>
+<li><p><strong>Pairwise QC</strong> involves filtering out target-response pairs whose data are too sparse to be analyzed reliably <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref">Barry, Roeder, and Katsevich 2023</a>)</span>. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.</p></li>
+</ul>
 <div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-1_3f7faa931c2d7a004b670a0fddec360d">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -304,7 +324,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We are now ready to run QC. We apply QC both at the level of the cell and at the level of the target-response pair. Cellwise QC involves filtering cells on the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. In low-MOI we additionally remove cells that contain multiple gRNAs. Pairwise QC involves removing pairs for which there are insufficiently many cells or there is insufficiently high expression of the response.</p>
+<p>We are now ready to run QC.</p>
 <section id="plot-the-cell-specific-covariates" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="plot-the-cell-specific-covariates">
 <span class="header-section-number">4.1</span> Plot the cell-specific covariates</h2>
 <p>A helpful initial step in applying QC is to visualize the distribution of the cell-specific covariates. To this end we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code>, which creates a histogram of the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, and (if applicable) <code>response_p_mito</code>. Cellwise QC removes cells that lie in the extreme right tail of the <code>response_p_mito</code> distribution or that lie in the extreme left <em>or</em> right tail of the <code>response_n_nonzero</code> or <code>response_n_umis</code> distribution. To help guide the selection of QC thresholds, <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code> plots candidate QC thresholds as vertical lines on the histograms. The optional arguments <code>response_n_nonzero_range</code>, <code>response_n_umis_range</code>, and <code>p_mito_threshold</code> control the location of these candidate QC thresholds. <code>response_n_nonzero_range</code> (resp., <code>response_n_umis_range</code>) is a length-two vector of quantiles (default: <code>c(0.01, 0.99)</code>) indicating the location at which to draw candidate QC thresholds on the <code>response_n_nonzero</code> (resp., <code>response_n_umis</code>) histogram. Next, <code>p_mito_threshold</code> is a single numeric value in the interval [0,1] specifying the location at which to draw a candidate QC threshold on the <code>response_p_mito</code> plot. We call <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code> on the high-MOI CRISPRi <code>sceptre_object</code> (i.e., <code>sceptre_object_highmoi</code>), setting <code>p_mito_threshold</code> to <code>0.075</code>.</p>
@@ -338,10 +358,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We apply QC to a <code>sceptre_object</code> by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code> takes the arguments <code>sceptre_object</code>, <code>response_n_umis_range</code>, <code>response_n_nonzero_range</code>, <code>p_mito_threshold</code>, <code>additional_cells_to_remove</code>, <code>n_nonzero_trt_thresh</code>, and <code>n_nonzero_cntrl_thresh</code>. The only required argument among these is <code>sceptre_object</code>; the rest are set to reasonable defaults.</p>
 <section id="cellwise-qc-parameters" class="level3" data-number="4.2.1"><h3 data-number="4.2.1" class="anchored" data-anchor-id="cellwise-qc-parameters">
 <span class="header-section-number">4.2.1</span> Cellwise QC parameters</h3>
-<p>The parameters <code>response_n_umis_range</code>, <code>response_n_nonzero_range</code>, <code>p_mito_threshold</code>, and <code>additional_cells_to_remove</code> control cellwise QC. <code>response_n_umis_range</code> (resp., <code>response_n_nonzero_range</code>) is a length-two vector of quantiles (default <code>c(0.01, 0.99)</code>); cells whose <code>response_n_umis</code> (resp., <code>response_n_nonzero</code>) quantile falls outside this range are excluded. Next, <code>p_mito_threshold</code> is a number in the interval [0,1]; cells whose value for <code>response_p_mito</code> falls above this threshold likewise are excluded. (Note that <code>p_mito_threshold</code> is not a quantile but rather an absolute number). Finally, <code>additional_cells_to_remove</code> is an integer vector specifying the (1-based) indices of additional cells to remove. Cells flagged by <code>additional_cells_to_remove</code> are removed before applying any other cellwise QC filer.</p>
+<p>The parameters <code>response_n_umis_range</code>, <code>response_n_nonzero_range</code>, <code>p_mito_threshold</code>, and <code>additional_cells_to_remove</code> control cellwise QC. <code>response_n_umis_range</code> (resp., <code>response_n_nonzero_range</code>) is a length-two vector of quantiles (default <code>c(0.01, 0.99)</code>); cells whose <code>response_n_umis</code> (resp., <code>response_n_nonzero</code>) quantile falls outside this range are excluded. Next, <code>p_mito_threshold</code> is a number in the interval [0,1]; cells whose value for <code>response_p_mito</code> falls above this threshold likewise are excluded. (Note that <code>p_mito_threshold</code> is not a quantile but rather an absolute number). Finally, <code>additional_cells_to_remove</code> is an integer vector specifying the (1-based) indices of additional cells to remove. Cells flagged by <code>additional_cells_to_remove</code> are removed before applying any other cellwise QC filter.</p>
 </section><section id="pairwise-qc-parameters" class="level3" data-number="4.2.2"><h3 data-number="4.2.2" class="anchored" data-anchor-id="pairwise-qc-parameters">
 <span class="header-section-number">4.2.2</span> Pairwise QC parameters</h3>
-<p>The parameters <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl_thresh</code> control pairwise QC (i.e., QC at the level of the target-response pair). Recall that for a given target-response pair, we divide the cells into treatment and control groups. The treatment group consists of the cells that contain a gRNA targeting the given target, and the control group consists of the cells against which the treatment cells are compared. (The control group can be either the complement set or NT cells; this choice is governed by the <code>control_group</code> parameter.) We define the “number of nonzero treatment cells” (resp., the “number of nonzero control cells”) as the number of cells in the treatment group (resp., control group) that contain nonzero expression of the response. (We sometimes use the shorthand <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> to refer to the number of nonzero treatment cells and control cells, respectively.) <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> are reasonable metrics of pair quality, with higher quality pairs exhibiting larger values for <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>. The schematic below illustrates the definition of <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>.</p>
+<p>The parameters <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl_thresh</code> control pairwise QC (i.e., QC at the level of the target-response pair). Recall from <a href="set-analysis-parameters.html#sec-set-analysis-parameters_control_group"><span>Section&nbsp;2.5</span></a> that for a given target-response pair, we divide the cells into treatment and control groups. The treatment group consists of the cells that contain a gRNA targeting the given target, and the control group consists of the cells against which the treatment cells are compared. (The control group can be either the complement set or NT cells; this choice is governed by the <code>control_group</code> parameter.) We define the “number of nonzero treatment cells” (resp., the “number of nonzero control cells”) as the number of cells in the treatment group (resp., control group) that contain nonzero expression of the response. (We sometimes use the shorthand <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> to refer to the number of nonzero treatment cells and control cells, respectively.) <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> are reasonable metrics of pair quality, with higher-quality pairs exhibiting larger values for <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>. The schematic below illustrates the definitions of <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>.</p>
 <div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-9_6bd485d266cbeef57e59fb6c19227909">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -377,7 +397,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>We described in <a href="sceptre.html#sec-sceptre_qc"><span>Section&nbsp;4</span></a> of <em>The whole game</em> how to interpret this figure. The top panel displays the percentage of cells removed (vertical axis) as a result of applying the different cellwise QC filters (horizontal axis). For example, over 20<span class="math inline">\(\%\)</span> of cells were removed because they contain multiple gRNAs, and about 2<span class="math inline">\(\%\)</span> of cells were removed because they exhibit extremely high or extremely values for <code>response_n_nonzero</code>. Note that the “multiple gRNAs” filter in general is applied only to low-MOI data. Next, the bottom panel plots the set of discovery target-response pairs, where the vertical (resp., horizontal) position of a given pair indicates its <code>n_nonzero_cntrl</code> (resp., <code>n_nonzero_trt</code>) value. Pairs with a sufficiently large value for <code>n_nonzero_cntrl</code> <em>and</em> <code>n_nonzero_trt</code> (colored in green) pass pairwise QC; all other pairs are removed.</p>
-<p>Finally, we call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on <code>sceptre_object_lowmoi</code> to print a summary of the status of the analysis. The summary contains information about cellwise and pairwise QC; see the first entry under the “Attributes of the data” field and the second two entries under the “Analysis parameters” field.</p>
+<p>Finally, we call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on <code>sceptre_object_lowmoi</code> to print a summary of the analysis status. The summary contains information about cellwise and pairwise QC; see the first entry under the “Attributes of the data” field and the second two entries under the “Analysis parameters” field.</p>
 <div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-13_2c5c092c3a11e8dabba89f5f6ae7f19a">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -417,9 +437,14 @@ gRNA-to-cell assignment information:
     • Mean N gRNAs per cell (MOI): not computed when using "maximum" assignment method</code></pre>
 </div>
 </div>
-<p>Users may wonder why <code>sceptre</code> does not implement response-wise QC (e.g., filtering out lowly expressed responses). The reason is that pairwise QC is in some sense stronger than response-wise QC. Suppose for example that a given response exhibits zero expression across cells. Target-response pairs containing this response will have an <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> value of zero and thus be filtered out, in effect filtering out the response as well.</p>
+<p>Users may wonder why <code>sceptre</code> does not implement response-wise QC (e.g., filtering out lowly expressed responses). The reason is that pairwise QC is in some sense stronger than response-wise QC. Suppose for example that a given response exhibits zero expression across cells. Target-response pairs containing this response will have <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> values of zero and thus be filtered out, in effect filtering out the response as well.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-barry2023" class="csl-entry" role="listitem">
+Barry, Timothy, Kathryn Roeder, and Eugene Katsevich. 2023. <span>“<span class="nocase">Robust differential expression testing for single-cell CRISPR screens</span>.”</span> <em>bioRxiv</em>.
+</div>
+</div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

@@ -4,7 +4,7 @@ project:
 
 book:
   title: "Hands-On Single-Cell CRISPR Screen Analysis"
-  reader-mode: true
+  reader-mode: false
   page-footer:
     left: |
       Hands-On Single-Cell CRISPR Screen Analysis was written by Timothy Barry and Eugene Katsevich
@@ -14,7 +14,9 @@ book:
   favicon: book_cover.png
   repo-url: https://github.com/timothy-barry/sceptre-book
   repo-branch: main
-  repo-actions: [edit, issue]
+  sidebar:
+    logo: hex.jpg
+    logo-href: https://katsevich-lab.github.io/sceptre/
   chapters:
     - index.qmd
     - sceptre.qmd
@@ -27,7 +29,9 @@ book:
   appendices:
     - glossary.qmd
     - faq.qmd
-    - multiple-analyses.qmd
+    - references.qmd
+
+bibliography: references.bib
 
 format:
   html:

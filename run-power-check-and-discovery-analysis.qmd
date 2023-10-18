@@ -6,10 +6,15 @@ The next steps of the pipeline are to run the power check and the discovery anal
 knitr::include_graphics("pipeline_schematic_step_6_7.png")
 ```
 
-We load the `sceptre` package.
+We load the `sceptre` and `dplyr` packages.
 
 ```{r,results='hide'}
 library(sceptre)
+library(dplyr)
+```
+
+```{r, echo = FALSE, results = 'hide', message=FALSE}
+conflicted::conflicts_prefer(dplyr::filter)
 ```
 
 We initialize `sceptre_object`s corresponding to the high-MOI CRISPRi data and low-MOI CRISPRko data. We call all pipeline functions that precede `run_power_check()` and `run_discovery_analysis()` (namely, `import_data()`, `set_analysis_parameters()`, `assign_grnas()`, `run_qc()`, and `run_calibration_check()`) on both datasets.
@@ -24,7 +29,9 @@ sceptre_object_lowmoi <- import_data(
   grna_target_data_frame = lowmoi_example_data$grna_target_data_frame,
   moi = "low"
 )
-positive_control_pairs_lowmoi <- construct_positive_control_pairs(sceptre_object_lowmoi)
+positive_control_pairs_lowmoi <- construct_positive_control_pairs(
+  sceptre_object = sceptre_object_lowmoi
+)
 discovery_pairs_lowmoi <- construct_trans_pairs(
   sceptre_object = sceptre_object_lowmoi,
   positive_control_pairs = positive_control_pairs_lowmoi
@@ -52,7 +59,8 @@ sceptre_object_highmoi <- import_data(
   extra_covariates = highmoi_example_data$extra_covariates,
   response_names = highmoi_example_data$gene_names
 )
-positive_control_pairs_highmoi <- construct_positive_control_pairs(sceptre_object_highmoi)
+positive_control_pairs_highmoi <- construct_positive_control_pairs(
+  sceptre_object = sceptre_object_highmoi)
 discovery_pairs_highmoi <- construct_cis_pairs(sceptre_object_highmoi,
   positive_control_pairs = positive_control_pairs_highmoi,
   distance_threshold = 5e6
@@ -89,9 +97,9 @@ We call `plot()` on the resulting `sceptre_object` to visualize the outcome of t
 plot(sceptre_object_lowmoi)
 ```
 
-```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap="Power check results on the low-MOI CRISPRko data."}
+```{r, out.width = "500px", fig.align="center", echo = FALSE, fig.cap="Power check results on the low-MOI CRISPRko data."}
 p <- plot(sceptre_object_lowmoi)
-ggplot2::ggsave(filename = "plot_power_check_lowmoi.png", plot = p, device = "png", scale = 1.1, width = 5, height = 4, dpi = 330)
+ggplot2::ggsave(filename = "plot_power_check_lowmoi.png", plot = p, device = "png", scale = 1.1, width = 4, height = 3, dpi = 330)
 knitr::include_graphics("plot_power_check_lowmoi.png")
 ```
 
@@ -164,8 +172,8 @@ We can filter for a given target to view the p-values of the individual gRNAs ta
 
 ```{r}
 discovery_result |>
-  dplyr::filter(response_id == "PSMB9", grna_target == "IFNGR2") |>
-  dplyr::select(response_id, grna_id, grna_target, p_value, significant, n_nonzero_trt)
+  filter(response_id == "PSMB9", grna_target == "IFNGR2") |>
+  select(response_id, grna_id, grna_target, p_value, significant, n_nonzero_trt)
 ```
 
 The individual gRNAs that target "IFNGR2" are "IFNGR2g1," "IFNGR2g2," IFNGR2g3," and "IFNGR2g4." All produce a significant association except "IFNGR2g4." The latter likely does not produce a significant association because the pair consisting of gRNA IFNGR2g4 and response PSMB9 has a smaller effective sample size than the other pairs (as quantified by `n_nonzero_trt`).

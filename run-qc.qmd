@@ -1,6 +1,10 @@
 # Run quality control {#sec-run_qc}
 
-The fourth step of the pipeline is to run quality control (QC).
+The fourth step of the pipeline is to run quality control (QC). We apply QC both at the level of the cell (a common step in most single-cell analyses) and at the level of the target-response pair (specific to single-cell CRISPR screens).
+
+-   **Cellwise QC** involves filtering cells on the covariates `response_n_nonzero`, `response_n_umis`, and `response_p_mito`. In low-MOI we additionally remove cells that contain multiple gRNAs.
+
+-   **Pairwise QC** involves filtering out target-response pairs whose data are too sparse to be analyzed reliably [@barry2023]. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.
 
 ```{r, out.width = "650px", fig.align="center", echo = FALSE}
 knitr::include_graphics("pipeline_schematic_step_4.png")
@@ -66,7 +70,7 @@ sceptre_object_highmoi <- sceptre_object_highmoi |>
   assign_grnas(parallel = TRUE)
 ```
 
-We are now ready to run QC. We apply QC both at the level of the cell and at the level of the target-response pair. Cellwise QC involves filtering cells on the covariates `response_n_nonzero`, `response_n_umis`, and `response_p_mito`. In low-MOI we additionally remove cells that contain multiple gRNAs. Pairwise QC involves removing pairs for which there are insufficiently many cells or there is insufficiently high expression of the response.
+We are now ready to run QC.
 
 ## Plot the cell-specific covariates
 
@@ -104,11 +108,11 @@ We apply QC to a `sceptre_object` by calling the function `run_qc()`. `run_qc()`
 
 ### Cellwise QC parameters
 
-The parameters `response_n_umis_range`, `response_n_nonzero_range`, `p_mito_threshold`, and `additional_cells_to_remove` control cellwise QC. `response_n_umis_range` (resp., `response_n_nonzero_range`) is a length-two vector of quantiles (default `c(0.01, 0.99)`); cells whose `response_n_umis` (resp., `response_n_nonzero`) quantile falls outside this range are excluded. Next, `p_mito_threshold` is a number in the interval \[0,1\]; cells whose value for `response_p_mito` falls above this threshold likewise are excluded. (Note that `p_mito_threshold` is not a quantile but rather an absolute number). Finally, `additional_cells_to_remove` is an integer vector specifying the (1-based) indices of additional cells to remove. Cells flagged by `additional_cells_to_remove` are removed before applying any other cellwise QC filer.
+The parameters `response_n_umis_range`, `response_n_nonzero_range`, `p_mito_threshold`, and `additional_cells_to_remove` control cellwise QC. `response_n_umis_range` (resp., `response_n_nonzero_range`) is a length-two vector of quantiles (default `c(0.01, 0.99)`); cells whose `response_n_umis` (resp., `response_n_nonzero`) quantile falls outside this range are excluded. Next, `p_mito_threshold` is a number in the interval \[0,1\]; cells whose value for `response_p_mito` falls above this threshold likewise are excluded. (Note that `p_mito_threshold` is not a quantile but rather an absolute number). Finally, `additional_cells_to_remove` is an integer vector specifying the (1-based) indices of additional cells to remove. Cells flagged by `additional_cells_to_remove` are removed before applying any other cellwise QC filter.
 
 ### Pairwise QC parameters
 
-The parameters `n_nonzero_trt_thresh` and `n_nonzero_cntrl_thresh` control pairwise QC (i.e., QC at the level of the target-response pair). Recall that for a given target-response pair, we divide the cells into treatment and control groups. The treatment group consists of the cells that contain a gRNA targeting the given target, and the control group consists of the cells against which the treatment cells are compared. (The control group can be either the complement set or NT cells; this choice is governed by the `control_group` parameter.) We define the "number of nonzero treatment cells" (resp., the "number of nonzero control cells") as the number of cells in the treatment group (resp., control group) that contain nonzero expression of the response. (We sometimes use the shorthand `n_nonzero_trt` and `n_nonzero_cntrl` to refer to the number of nonzero treatment cells and control cells, respectively.) `n_nonzero_trt` and `n_nonzero_cntrl` are reasonable metrics of pair quality, with higher quality pairs exhibiting larger values for `n_nonzero_trt` and `n_nonzero_cntrl`. The schematic below illustrates the definition of `n_nonzero_trt` and `n_nonzero_cntrl`.
+The parameters `n_nonzero_trt_thresh` and `n_nonzero_cntrl_thresh` control pairwise QC (i.e., QC at the level of the target-response pair). Recall from @sec-set-analysis-parameters_control_group that for a given target-response pair, we divide the cells into treatment and control groups. The treatment group consists of the cells that contain a gRNA targeting the given target, and the control group consists of the cells against which the treatment cells are compared. (The control group can be either the complement set or NT cells; this choice is governed by the `control_group` parameter.) We define the "number of nonzero treatment cells" (resp., the "number of nonzero control cells") as the number of cells in the treatment group (resp., control group) that contain nonzero expression of the response. (We sometimes use the shorthand `n_nonzero_trt` and `n_nonzero_cntrl` to refer to the number of nonzero treatment cells and control cells, respectively.) `n_nonzero_trt` and `n_nonzero_cntrl` are reasonable metrics of pair quality, with higher-quality pairs exhibiting larger values for `n_nonzero_trt` and `n_nonzero_cntrl`. The schematic below illustrates the definitions of `n_nonzero_trt` and `n_nonzero_cntrl`.
 
 ```{r, out.width = "550px", fig.align="center", echo = FALSE, fig.cap=c("Definition of `n_nonzero_trt` and `n_nonzero_cntrl`. Each square represents a cell, and the integer within a square represents the UMI count of the response in the corresponding cell. Some cells belong to the treatment group (blue), and others belong to the control group (red). `n_nonzero_trt` (resp., `n_nonzero_cntrl`) is the number of cells in the treatment group (resp., control group) with nonzero expression of the response.")}
 knitr::include_graphics("pairwise_qc_schematic.png")
@@ -145,10 +149,10 @@ knitr::include_graphics("plot_qc_lowmoi.png")
 
 We described in @sec-sceptre_qc of *The whole game* how to interpret this figure. The top panel displays the percentage of cells removed (vertical axis) as a result of applying the different cellwise QC filters (horizontal axis). For example, over 20$\%$ of cells were removed because they contain multiple gRNAs, and about 2$\%$ of cells were removed because they exhibit extremely high or extremely values for `response_n_nonzero`. Note that the "multiple gRNAs" filter in general is applied only to low-MOI data. Next, the bottom panel plots the set of discovery target-response pairs, where the vertical (resp., horizontal) position of a given pair indicates its `n_nonzero_cntrl` (resp., `n_nonzero_trt`) value. Pairs with a sufficiently large value for `n_nonzero_cntrl` *and* `n_nonzero_trt` (colored in green) pass pairwise QC; all other pairs are removed.
 
-Finally, we call `print()` on `sceptre_object_lowmoi` to print a summary of the status of the analysis. The summary contains information about cellwise and pairwise QC; see the first entry under the "Attributes of the data" field and the second two entries under the "Analysis parameters" field.
+Finally, we call `print()` on `sceptre_object_lowmoi` to print a summary of the analysis status. The summary contains information about cellwise and pairwise QC; see the first entry under the "Attributes of the data" field and the second two entries under the "Analysis parameters" field.
 
 ```{r}
 print(sceptre_object_lowmoi)
 ```
 
-Users may wonder why `sceptre` does not implement response-wise QC (e.g., filtering out lowly expressed responses). The reason is that pairwise QC is in some sense stronger than response-wise QC. Suppose for example that a given response exhibits zero expression across cells. Target-response pairs containing this response will have an `n_nonzero_trt` and `n_nonzero_cntrl` value of zero and thus be filtered out, in effect filtering out the response as well.
+Users may wonder why `sceptre` does not implement response-wise QC (e.g., filtering out lowly expressed responses). The reason is that pairwise QC is in some sense stronger than response-wise QC. Suppose for example that a given response exhibits zero expression across cells. Target-response pairs containing this response will have `n_nonzero_trt` and `n_nonzero_cntrl` values of zero and thus be filtered out, in effect filtering out the response as well.

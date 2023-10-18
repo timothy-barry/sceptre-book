@@ -1,0 +1,9 @@
+---
+csl: nature-no-et-al.csl
+citeproc: true
+---
+
+# References {#sec-references}
+
+::: {#refs}
+:::

@@ -52,7 +52,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -109,16 +128,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="./index.html" class="sidebar-logo-link">
+      <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/timothy-barry/sceptre-book" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
-  <div class="quarto-reader-toggle-btn">
-  <i class="bi"></i>
-  </div>
-</a>
 </div>
     </div>
       </div>
@@ -200,8 +216,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./multiple-analyses.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Running multiple analyses</span></span></a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
       </ul>
@@ -223,7 +239,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sec-sceptre_run_discovery_analysis" id="toc-sec-sceptre_run_discovery_analysis" class="nav-link" data-scroll-target="#sec-sceptre_run_discovery_analysis">7. Run discovery analysis</a></li>
   <li><a href="#sec-sceptre_write_outputs_to_directory" id="toc-sec-sceptre_write_outputs_to_directory" class="nav-link" data-scroll-target="#sec-sceptre_write_outputs_to_directory">8. Write outputs to directory</a></li>
   <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading">Further reading</a></li>
-  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/timothy-barry/sceptre-book/edit/main/sceptre.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/timothy-barry/sceptre-book/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+  </ul></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
@@ -275,7 +291,7 @@ Note
 </div>
 </div>
 </div>
-<p>This chapter illustrates application of <code>sceptre</code> to a CRISPRi screen of candidate enhancers in K562 cells (Gasperini et al, 2019). The goal of the analysis is to confidently link enhancers to genes by testing for changes in gene expression in response to the CRISPR perturbations of the candidate enhancers.</p>
+<p>This chapter illustrates application of <code>sceptre</code> to a CRISPRi screen of candidate enhancers in K562 cells <span class="citation" data-cites="gasperini2019">(<a href="references.html#ref-gasperini2019" role="doc-biblioref">Gasperini et al. 2019</a>)</span>. The goal of the analysis is to confidently link enhancers to genes by testing for changes in gene expression in response to the CRISPR perturbations of the candidate enhancers.</p>
 <p>Using <code>sceptre</code> is simple; carrying out an entire analysis requires only a few lines of code. Below, we provide a minimal working example of applying <code>sceptre</code> to analyze the example data. First, we load the example data into R via the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code>, which creates a <code>sceptre_object</code>, an object-based representation of the single-cell CRISPR screen data. Next, we specify the gRNA-gene pairs that we seek to test for association. Then, we call the pipeline functions on the <code>sceptre_object</code> in order. Finally, we write the outputs to the directory <code>~/sceptre_outputs</code>.</p>
 <div class="cell" data-hash="sceptre_cache/html/unnamed-chunk-5_1c4bfd1ebfa7fd0de662470fd7602637">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># load the data, creating a sceptre_object</span></span>
@@ -637,6 +653,11 @@ Attributes of the data:
 <p>Each step of the pipeline has its own dedicated chapter. We encourage interested users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with <a href="import-data.html"><span>Chapter&nbsp;1</span></a>.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-gasperini2019" class="csl-entry" role="listitem">
+Gasperini, Molly, Andrew J. Hill, José L. McFaline-Figueroa, Beth Martin, Seungsoo Kim, Melissa D. Zhang, Dana Jackson, et al. 2019. <span>“<span class="nocase">A Genome-wide Framework for Mapping Gene Regulation via Cellular Genetic Screens</span>.”</span> <em>Cell</em> 176 (1): 377–90.
+</div>
+</div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
