@@ -12,7 +12,7 @@ book:
       This book was built with <a href="https://quarto.org/">Quarto</a>.
   cover-image: book_cover.png
   favicon: book_cover.png
-  repo-url: https://github.com/timothy-barry/sceptre-book
+  repo-url: https://katsevich-lab.github.io/sceptre/
   repo-branch: main
   sidebar:
     logo: hex.jpg

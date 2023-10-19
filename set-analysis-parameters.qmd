@@ -1,6 +1,6 @@
 # Set analysis parameters {#sec-set_analysis_parameters}
 
-This chapter explicates the "set analysis parameters" step of the `sceptre` pipeline. The purpose of this step is to select the parameters that govern how the statistical analysis is to be carried out. The statistical procedures underlying `sceptre` are presented in @barry2021 and @barry2023.
+This chapter explicates the "set analysis parameters" step of the `sceptre` pipeline. The purpose of this step is to select the parameters that govern how the statistical analysis is to be carried out.
 
 ```{r, out.width = "650px", fig.align="center", echo = FALSE}
 knitr::include_graphics("pipeline_schematic_step_2.png")
@@ -27,7 +27,7 @@ sceptre_object_highmoi <- import_data(
 )
 ```
 
-We additionally examine an example low-MOI CRISPRko screen of gene transcription start sites in immune cells [@papalexi2021]. We initialize a `sceptre_object` called `sceptre_object_lowmoi` to store this latter dataset.
+We additionally examine an example low-MOI CRISPRko screen of gene transcription start sites in immune cells (Papalexi et al, 2021). We initialize a `sceptre_object` called `sceptre_object_lowmoi` to store this latter dataset.
 
 ```{r}
 sceptre_object_lowmoi <- import_data(
@@ -108,9 +108,17 @@ Discovery pairs are target-response pairs whose association status we do not kno
 
 ### Construct *cis* pairs {#sec-set-analysis-parameters_construct_cis_pairs}
 
-`construct_cis_pairs()` returns the set of target-response pairs for which the target and response are located on the same chromosome and in close physical proximity to one another. `construct_cis_pairs()` assumes that the columns `chr`, `start`, and `stop` are present within the `grna_target_data_frame`. `construct_cis_pairs()` also assumes that the responses are genes as opposed to, say, proteins. `construct_cis_pairs()` is a useful pair constructor function for screens that aim to map noncoding regulatory elements (e.g., enhancers, silencers, or noncoding GWAS variants) to target genes in *cis*. `construct_cis_pairs()` takes several arguments: `sceptre_object` (required) `distance_threshold` (optional), `positive_control_pairs` (optional), and `ref_genome` (optional). Each target is paired to the set of genes within `distance_threshold` bases of that target. (The default value of `distance_threshold` is 500,000 bases, or half a megabase.) The `positive_control_pairs` data frame optionally can be passed to `construct_cis_pairs()`, in which case the positive control targets (i.e., the entries within the `grna_target` column of `positive_control_pairs`) are excluded from the *cis* pairs. One may want to exclude these from the discovery analysis if these targets are intended for positive control purposes only. Finally, `ref_genome` is a string indicating the reference genome that `chr`, `start`, and `stop` are defined with respect to. (The only reference genome currently available is "10X_GRCh38_2020," which is the GRCh38 reference genome that has shipped with CellRanger since 2020.)
+`construct_cis_pairs()` returns the set of target-response pairs for which the target and response are located on the same chromosome and in close physical proximity to one another. `construct_cis_pairs()` is a useful pair constructor function for screens that aim to map noncoding regulatory elements (e.g., enhancers or noncoding GWAS variants) to target genes or proteins in *cis*. `construct_cis_pairs()` assumes that the columns `chr`, `start`, and `stop` are present in the `grna_target_data_frame`, giving the chromosome, start position, and end position of the region that each gRNA targets. `construct_cis_pairs()` takes several arguments: `sceptre_object` (required) `distance_threshold` (optional), `positive_control_pairs` (optional), and `response_position_data_frame` (optional). By default, `construct_cis_pairs()` pairs each gRNA target to the set of responses on the same chromosome as that target and within `distance_threshold` bases of that target. (The default value of `distance_threshold` is 500,000 bases, or half a megabase.)The `positive_control_pairs` data frame optionally can be passed to `construct_cis_pairs()`, in which case the positive control targets (i.e., the entries within the `grna_target` column of `positive_control_pairs`) are excluded from the *cis* pairs. One may want to exclude these from the discovery analysis if these targets are intended for positive control purposes only.
 
-We use `construct_cis_pairs()` to construct the discovery pairs for the high-MOI CRISPRi dataset. We set `distance_threshold` to `5e6` (i.e., 5 megabases) so as to increase the number of pairs in the discovery set for illustration purposes.
+Finally, `response_position_data_frame` is an optional data frame containing the columns `response_id`, `chr`, and `position`, where `chr` and `position` give the genomic coordinate of each `response_id`. The default value of `response_position_data_frame` is `gene_position_data_frame_grch38`, which is a data frame that ships with `sceptre` that contains the genomic coordinate of the transcription start site of all genes in the human genome. We print several rows of `gene_position_data_frame_grch38` below.
+
+```{r}
+gene_position_data_frame_grch38[c(1:4, 8001:8004),]
+```
+
+`gene_position_data_frame_grch38` was derived from the GrCh38 (hg19) reference genome, which is the reference genome that all versions of `cellranger count` released since 2021 have used for alignment. Users can pass their own `response_position_data_frame` to `construct_cis_pairs()` if the `gene_position_data_frame_grch38` data frame included within `sceptre` is inadequate for their analysis. For example, some users may wish to map enhancers to proteins in *cis*. Such users could construct the discovery set by coupling each enhancer to the set of proteins whose corresponding gene is in close physical proximity to that enhancer. In such an analysis `response_position_data_frame` would be a data frame mapping each protein to the chromosomal position of the transcription start site of its corresponding gene. Note that `response_position_data_frame` and the `chr`, `start`, and `stop` columns of the `grna_target_data_frame` should be defined with respect to the same reference genome, as `construct_cis_pairs()` proceeds by intersecting `response_position_data_frame` with `grna_target_data_frame`.
+
+We use `construct_cis_pairs()` to construct the discovery pairs for the high-MOI CRISPRi dataset. We set `distance_threshold` to `5e6` (i.e., 5 megabases) so as to increase the number of pairs in the discovery set for illustration purposes. 
 
 ```{r}
 discovery_pairs_highmoi <- construct_cis_pairs(
@@ -161,23 +169,23 @@ Some users may wish to run both *cis* and *trans* analyses on their data. We rec
 
 ### Reducing the multiplicity burden
 
-`sceptre` computes a p-value for each target-response pair in the discovery set. These p-values are subjected to a multiple testing correction procedure (by default, the Benjamini-Hochberg method) to produce a discovery set that controls some notion of aggregate type-I error (by default, the false discovery rate). See @sec-multiple_testing for more details on multiple testing. The more pairs are tested, the more stringest this multiplicity correction is. Therefore, including a large number of uninteresting or "null" pairs (i.e., pairs for which there is no relationship between the target and response) in the discovery set causes the power of the multiple testing correction procedure to decrease, resulting in fewer discoveries. If possible, it is good to restrict one's attention to pairs that are promising or scientifically interesting a priori.
+`sceptre` computes a p-value for each target-response pair in the discovery set. These p-values are subjected to a multiple testing correction procedure (by default, the Benjamini-Hochberg method) to produce a discovery set that controls some notion of aggregate type-I error (by default, the false discovery rate). See @sec-multiple_testing for more details on multiple testing. The more pairs that are tested, the more stringest this multiplicity correction is. Therefore, including a large number of uninteresting or "null" pairs (i.e., pairs for which there is no relationship between the target and response) in the discovery set causes the power of the multiple testing correction procedure to decrease, resulting in fewer discoveries. If possible, it is good to restrict one's attention to pairs that are promising or scientifically interesting a priori.
 
 ## Side
 
 `sceptre` can run left-tailed, right-tailed, and two-tailed tests of association. Left-tailed tests assess a *decrease* in expression, right-tailed tests assess an *increase* in expression, and two-tailed tests assess an increase *or* decrease in expression. The parameter `side` controls the sidedness of the test and can take values `"left"`, `"right"`, or `"both"`. (`"both"` indicates a two-tailed test.) Two-tailed tests typically are the best choice for *trans* analyses, as the direction of *trans* relationships generally is uncertain. For *cis* analyses, on the other hand, the sidedness of the test should be chosen on the basis of the type of genomic element targeted and the CRISPR perturbation modality. The following table summarizes whether a left- or right-tailed test is appropriate for a *cis* analysis as a function of these variables.
 
-+----------------+---------------------+------------------------+--------------+
-| Target element | CRISPR modality     | Testing for            | Sidedness    |
-+================+=====================+========================+==============+
-| Enhancer       | CRISPRi or CRISPRko | Decrease in expression | Left         |
-+----------------+---------------------+------------------------+--------------+
-| Enhancer       | CRISPRa             | Increase in expression | Right        |
-+----------------+---------------------+------------------------+--------------+
-| Silencer       | CRISPRi or CRISPRko | Increase in expression | Right        |
-+----------------+---------------------+------------------------+--------------+
-| Silencer       | CRISPRa             | Decrease in expression | Left         |
-+----------------+---------------------+------------------------+--------------+
++----------------+---------------------+------------------------+---------------+
+| Target element | CRISPR modality     | Testing for            | Sidedness     |
++================+=====================+========================+===============+
+| Enhancer       | CRISPRi or CRISPRko | Decrease in expression | Left          |
++----------------+---------------------+------------------------+---------------+
+| Enhancer       | CRISPRa             | Increase in expression | Right         |
++----------------+---------------------+------------------------+---------------+
+| Silencer       | CRISPRi or CRISPRko | Increase in expression | Right         |
++----------------+---------------------+------------------------+---------------+
+| Silencer       | CRISPRa             | Decrease in expression | Left          |
++----------------+---------------------+------------------------+---------------+
 
 : Recommended sidedness of the test as a function of target element and CRISPR modality for *cis* analyses.
 

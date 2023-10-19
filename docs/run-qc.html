@@ -134,7 +134,7 @@ div.csl-indent {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/timothy-barry/sceptre-book" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://katsevich-lab.github.io/sceptre/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
 </div>
     </div>
       </div>
@@ -259,7 +259,7 @@ div.csl-indent {
 </header><p>The fourth step of the pipeline is to run quality control (QC). We apply QC both at the level of the cell (a common step in most single-cell analyses) and at the level of the target-response pair (specific to single-cell CRISPR screens).</p>
 <ul>
 <li><p><strong>Cellwise QC</strong> involves filtering cells on the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. In low-MOI we additionally remove cells that contain multiple gRNAs.</p></li>
-<li><p><strong>Pairwise QC</strong> involves filtering out target-response pairs whose data are too sparse to be analyzed reliably <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref">Barry, Roeder, and Katsevich 2023</a>)</span>. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.</p></li>
+<li><p><strong>Pairwise QC</strong> involves filtering out target-response pairs whose data are too sparse to be analyzed reliably <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref">Barry et al. 2023</a>)</span>. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.</p></li>
 </ul>
 <div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-1_3f7faa931c2d7a004b670a0fddec360d">
 <div class="cell-output-display">
@@ -443,7 +443,7 @@ gRNA-to-cell assignment information:
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-barry2023" class="csl-entry" role="listitem">
-Barry, Timothy, Kathryn Roeder, and Eugene Katsevich. 2023. <span>“<span class="nocase">Robust differential expression testing for single-cell CRISPR screens</span>.”</span> <em>bioRxiv</em>.
+Barry, Timothy, Kaishu Mason, Kathryn Roeder, and Eugene Katsevich. 2023. <span>“<span class="nocase">Robust differential expression testing for single-cell CRISPR screens</span>.”</span> <em>bioRxiv</em>.
 </div>
 </div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
