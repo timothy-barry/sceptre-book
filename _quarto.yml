@@ -7,7 +7,7 @@ book:
   reader-mode: false
   page-footer:
     left: |
-      Hands-On Single-Cell CRISPR Screen Analysis was written by Timothy Barry and Eugene Katsevich
+      Hands-On Single-Cell CRISPR Screen Analysis
     right: |
       This book was built with <a href="https://quarto.org/">Quarto</a>.
   cover-image: book_cover.png
