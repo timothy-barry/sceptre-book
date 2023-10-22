@@ -304,3 +304,11 @@ calibration_result[1, ] |>
   colnames() |>
   head(20)
 ```
+
+Finally, we can call `print()` on the updated `sceptre_object` to print a summary of the status of the analysis.
+
+```{r}
+print(sceptre_object_lowmoi)
+```
+
+The the first two entries under the field "Summary of results" provide information about the outcome of the calibration check.

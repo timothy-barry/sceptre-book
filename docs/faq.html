@@ -228,13 +228,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
 <li><a href="#i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do" id="toc-i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do"><span class="header-section-number">B.1</span> I am trying to install <code>sceptre</code>, but I am getting an error. What should I do?</a></li>
-  <li><a href="#my-negative-control-p-values-are-miscalibrated.-what-should-i-do" id="toc-my-negative-control-p-values-are-miscalibrated.-what-should-i-do"><span class="header-section-number">B.2</span> My negative control p-values are miscalibrated. What should I do?</a></li>
-  <li><a href="#how-many-negative-control-grnas-do-i-need" id="toc-how-many-negative-control-grnas-do-i-need"><span class="header-section-number">B.3</span> How many negative control gRNAs do I need?</a></li>
+  <li><a href="#how-can-i-install-a-previous-version-of-sceptre" id="toc-how-can-i-install-a-previous-version-of-sceptre"><span class="header-section-number">B.2</span> How can I install a previous version of <code>sceptre</code>?</a></li>
+  <li><a href="#my-negative-control-p-values-are-miscalibrated.-what-should-i-do" id="toc-my-negative-control-p-values-are-miscalibrated.-what-should-i-do"><span class="header-section-number">B.3</span> My negative control p-values are miscalibrated. What should I do?</a></li>
+  <li><a href="#how-many-negative-control-grnas-do-i-need" id="toc-how-many-negative-control-grnas-do-i-need"><span class="header-section-number">B.4</span> How many negative control gRNAs do I need?</a></li>
   <li>
-<a href="#sec-multiple_analyses" id="toc-sec-multiple_analyses"><span class="header-section-number">B.4</span> How should I run multiple <code>sceptre</code> analyses?</a>
+<a href="#sec-multiple_analyses" id="toc-sec-multiple_analyses"><span class="header-section-number">B.5</span> How should I run multiple <code>sceptre</code> analyses?</a>
   <ul>
-<li><a href="#running-cis-and-trans-analyses" id="toc-running-cis-and-trans-analyses"><span class="header-section-number">B.4.1</span> Running <em>cis</em> and <em>trans</em> analyses</a></li>
-  <li><a href="#running-singleton-and-grouped-analyses" id="toc-running-singleton-and-grouped-analyses"><span class="header-section-number">B.4.2</span> Running singleton and grouped analyses</a></li>
+<li><a href="#running-cis-and-trans-analyses" id="toc-running-cis-and-trans-analyses"><span class="header-section-number">B.5.1</span> Running <em>cis</em> and <em>trans</em> analyses</a></li>
+  <li><a href="#running-singleton-and-grouped-analyses" id="toc-running-singleton-and-grouped-analyses"><span class="header-section-number">B.5.2</span> Running singleton and grouped analyses</a></li>
   </ul>
 </li>
   </ul></nav><script>
@@ -260,18 +261,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Now, try to install <code>sceptre</code> again.</p>
 <p>If this does not work, try to delete and reinstall the dependencies of <code>sceptre</code>. <code>sceptre</code> has the following dependencies: <code>BH</code>, <code>cowplot</code>, <code>crayon</code>, <code>data.table</code>, <code>dplyr</code>, <code>ggplot2</code>, <code>Matrix</code>, <code>Rcpp</code>. Using the method described above, delete and reinstall each of these dependencies one-by-one.</p>
-</section><section id="my-negative-control-p-values-are-miscalibrated.-what-should-i-do" class="level2" data-number="B.2"><h2 data-number="B.2" class="anchored" data-anchor-id="my-negative-control-p-values-are-miscalibrated.-what-should-i-do">
-<span class="header-section-number">B.2</span> My negative control p-values are miscalibrated. What should I do?</h2>
+</section><section id="how-can-i-install-a-previous-version-of-sceptre" class="level2" data-number="B.2"><h2 data-number="B.2" class="anchored" data-anchor-id="how-can-i-install-a-previous-version-of-sceptre">
+<span class="header-section-number">B.2</span> How can I install a previous version of <code>sceptre</code>?</h2>
+<p>See the instructions <a href="https://katsevich-lab.github.io/sceptre/articles/install.html">here</a>.</p>
+</section><section id="my-negative-control-p-values-are-miscalibrated.-what-should-i-do" class="level2" data-number="B.3"><h2 data-number="B.3" class="anchored" data-anchor-id="my-negative-control-p-values-are-miscalibrated.-what-should-i-do">
+<span class="header-section-number">B.3</span> My negative control p-values are miscalibrated. What should I do?</h2>
 <p>Not to worry! First of all, the extent of the miscalibration may be mild enough not to cause significant issues with your analysis; see <a href="run-calibration-check.html#tbl-calibration_quality">Table&nbsp;<span>5.1</span></a> for assessing the severity of your miscalibration. If the miscalibration is moderate to severe, then see <a href="run-calibration-check.html#sec-improving_calibration"><span>Section&nbsp;5.4</span></a> for several suggestions to improve calibration.</p>
-</section><section id="how-many-negative-control-grnas-do-i-need" class="level2" data-number="B.3"><h2 data-number="B.3" class="anchored" data-anchor-id="how-many-negative-control-grnas-do-i-need">
-<span class="header-section-number">B.3</span> How many negative control gRNAs do I need?</h2>
+</section><section id="how-many-negative-control-grnas-do-i-need" class="level2" data-number="B.4"><h2 data-number="B.4" class="anchored" data-anchor-id="how-many-negative-control-grnas-do-i-need">
+<span class="header-section-number">B.4</span> How many negative control gRNAs do I need?</h2>
 <p>The table below summarizes the minimum number of negative control gRNAs required to run an analysis as a function of the control group (either NT cells or complement set) and analysis type (either calibration check, discovery analysis, or power check). Recall that the default control group for low-MOI screens is the set of NT cells, while the default control group for high-MOI screens is the complement set.</p>
 <table class="table">
 <caption>Minimum number of negative control gRNAs required to run an analysis as a function of the control group (vertical axis) and analysis type (horizontal axis).</caption>
 <colgroup>
 <col style="width: 26%">
-<col style="width: 25%">
-<col style="width: 48%">
+<col style="width: 26%">
+<col style="width: 47%">
 </colgroup>
 <thead><tr class="header">
 <th></th>
@@ -292,8 +296,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>In general having more negative control gRNAs is better. We recommend including at least ten to fifteen negative control gRNAs in the assay for the best chance of obtaining high-quality results.</p>
-</section><section id="sec-multiple_analyses" class="level2" data-number="B.4"><h2 data-number="B.4" class="anchored" data-anchor-id="sec-multiple_analyses">
-<span class="header-section-number">B.4</span> How should I run multiple <code>sceptre</code> analyses?</h2>
+</section><section id="sec-multiple_analyses" class="level2" data-number="B.5"><h2 data-number="B.5" class="anchored" data-anchor-id="sec-multiple_analyses">
+<span class="header-section-number">B.5</span> How should I run multiple <code>sceptre</code> analyses?</h2>
 <p>Sometimes users wish to carry out multiple <code>sceptre</code> analyses on a single dataset, such as</p>
 <ul>
 <li><p>running <em>cis</em> and <em>trans</em> analyses;</p></li>
@@ -303,8 +307,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-hash="faq_cache/html/unnamed-chunk-2_e5060bf467cae2abd6023fefc5cf610a">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="running-cis-and-trans-analyses" class="level3" data-number="B.4.1"><h3 data-number="B.4.1" class="anchored" data-anchor-id="running-cis-and-trans-analyses">
-<span class="header-section-number">B.4.1</span> Running <em>cis</em> and <em>trans</em> analyses</h3>
+<section id="running-cis-and-trans-analyses" class="level3" data-number="B.5.1"><h3 data-number="B.5.1" class="anchored" data-anchor-id="running-cis-and-trans-analyses">
+<span class="header-section-number">B.5.1</span> Running <em>cis</em> and <em>trans</em> analyses</h3>
 <p>Some users may wish to run both a <em>cis</em> analysis and a <em>trans</em> analysis. We recommend that such users apply the <code>sceptre</code> pipeline twice: once to analyze the <em>cis</em> pairs and once to analyze the <em>trans</em> pairs. We illustrate this approach on the high-MOI CRISPRi data; we begin by creating a <code>sceptre_object</code> to represent these data.</p>
 <div class="cell" data-hash="faq_cache/html/unnamed-chunk-3_8632c7a724abdfda55b237bfa13c0f53">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
@@ -374,8 +378,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Note that we update the <code>sceptre_object</code> with the output of the <em>cis</em> analysis. We then use the same <code>sceptre_object</code> to carry out the <em>trans</em> analysis. Under the hood <code>sceptre</code> stores (or “caches”) intermediate computations carried out as part of the <em>cis</em> analysis inside the <code>sceptre_object</code>. These intermediate computations are then recycled to carry out the <em>trans</em> analysis, thereby reducing compute.</p>
-</section><section id="running-singleton-and-grouped-analyses" class="level3" data-number="B.4.2"><h3 data-number="B.4.2" class="anchored" data-anchor-id="running-singleton-and-grouped-analyses">
-<span class="header-section-number">B.4.2</span> Running singleton and grouped analyses</h3>
+</section><section id="running-singleton-and-grouped-analyses" class="level3" data-number="B.5.2"><h3 data-number="B.5.2" class="anchored" data-anchor-id="running-singleton-and-grouped-analyses">
+<span class="header-section-number">B.5.2</span> Running singleton and grouped analyses</h3>
 <p>Another common analysis paradigm is to run both a grouped analysis (in which gRNAs targeting the same site are integrated or “combined”) and a singleton analysis (in which gRNAs targeting the same site are analyzed individually). We carried out a grouped analysis of the <em>cis</em> pairs on the high-MOI CRISPRi data above. Below, we conduct a singleton analysis on the same set of pairs, storing the result in <code>"~/sceptre_results_cis_singleton"</code>. We operate on the same <code>sceptre_object</code> so as to exploit caching.</p>
 <div class="cell" data-hash="faq_cache/html/unnamed-chunk-6_c21346de3e61ce4100b178290b3db418">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># singleton cis analysis</span></span>

@@ -148,7 +148,7 @@ The data frame `discovery_result` contains the columns `response_id`, `grna_targ
 The format of the result data frame is slightly different when we use the "singleton" gRNA integration strategy rather than the default "union" strategy. To illustrate, we again analyze the low-MOI CRISPRko data, this time setting `grna_integration_strategy` to `"singleton"` in `set_analysis_parameters()`. We then call `assign_grnas()`, `run_qc()`, and `run_discovery_analysis()`.
 
 ```{r,results='hide'}
-sceptre_object_lowmoi <- sceptre_object_lowmoi |>
+sceptre_object_lowmoi_singleton <- sceptre_object_lowmoi |>
   set_analysis_parameters(
     discovery_pairs = discovery_pairs_lowmoi,
     positive_control_pairs = positive_control_pairs_lowmoi,
@@ -163,7 +163,7 @@ The result data frame obtained via `get_result()` contains the additional column
 
 ```{r}
 discovery_result <- get_result(
-  sceptre_object = sceptre_object_lowmoi,
+  sceptre_object = sceptre_object_lowmoi_singleton,
   analysis = "run_discovery_analysis"
 )
 head(discovery_result)
@@ -178,6 +178,14 @@ discovery_result |>
 ```
 
 The individual gRNAs that target "IFNGR2" are "IFNGR2g1," "IFNGR2g2," IFNGR2g3," and "IFNGR2g4." All produce a significant association except "IFNGR2g4." The latter likely does not produce a significant association because the pair consisting of gRNA IFNGR2g4 and response PSMB9 has a smaller effective sample size than the other pairs (as quantified by `n_nonzero_trt`).
+
+We additionally can call `print()` on the updated `sceptre_object` to print information about the status of the analysis to the console.
+
+```{r}
+print(sceptre_object_lowmoi)
+```
+
+The third and fourth entries under the field "Summary of results" provide information about the power check and discovery analysis, respectively.
 
 ## Writing the outputs to a directory
 

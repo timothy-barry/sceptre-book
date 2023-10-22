@@ -30,6 +30,10 @@ Now, try to install `sceptre` again.
 
 If this does not work, try to delete and reinstall the dependencies of `sceptre`. `sceptre` has the following dependencies: `BH`, `cowplot`, `crayon`, `data.table`, `dplyr`, `ggplot2`, `Matrix`, `Rcpp`. Using the method described above, delete and reinstall each of these dependencies one-by-one.
 
+## How can I install a previous version of `sceptre`?
+
+See the instructions [here](https://katsevich-lab.github.io/sceptre/articles/install.html).
+
 ## My negative control p-values are miscalibrated. What should I do?
 
 Not to worry! First of all, the extent of the miscalibration may be mild enough not to cause significant issues with your analysis; see @tbl-calibration_quality for assessing the severity of your miscalibration. If the miscalibration is moderate to severe, then see @sec-improving_calibration for several suggestions to improve calibration.
@@ -39,7 +43,7 @@ Not to worry! First of all, the extent of the miscalibration may be mild enough 
 The table below summarizes the minimum number of negative control gRNAs required to run an analysis as a function of the control group (either NT cells or complement set) and analysis type (either calibration check, discovery analysis, or power check). Recall that the default control group for low-MOI screens is the set of NT cells, while the default control group for high-MOI screens is the complement set.
 
 |                    | Calibration check | **Discovery analysis or power check** |
-|-------------------|------------------|-----------------------------------|
+|-------------------|-------------------|-----------------------------------|
 | **NT cells**       | 2                 | 1                                     |
 | **Complement set** | 0                 | 0                                     |
 
@@ -61,7 +65,7 @@ Here we demonstrate how to do this efficiently. We begin by loading the `sceptre
 library(sceptre)
 ```
 
-### Running *cis* and *trans* analyses 
+### Running *cis* and *trans* analyses
 
 Some users may wish to run both a *cis* analysis and a *trans* analysis. We recommend that such users apply the `sceptre` pipeline twice: once to analyze the *cis* pairs and once to analyze the *trans* pairs. We illustrate this approach on the high-MOI CRISPRi data; we begin by creating a `sceptre_object` to represent these data.
 
