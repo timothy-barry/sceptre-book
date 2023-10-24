@@ -8,12 +8,12 @@ knitr::include_graphics("pipeline_schematic_step_6_7.png")
 
 We load the `sceptre` and `dplyr` packages.
 
-```{r,results='hide'}
+```{r,message = FALSE}
 library(sceptre)
 library(dplyr)
 ```
 
-```{r, echo = FALSE, results = 'hide', message=FALSE}
+```{r, echo = FALSE, message=FALSE}
 conflicted::conflicts_prefer(dplyr::filter)
 ```
 

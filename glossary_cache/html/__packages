@@ -1,9 +1,6 @@
 base
 methods
-<<<<<<< HEAD
 conflicted
-=======
->>>>>>> 45d6baeea57a63eaddc09da2ee8f033f5a3737c7
 datasets
 utils
 grDevices

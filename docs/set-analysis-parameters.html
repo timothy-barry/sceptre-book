@@ -274,7 +274,7 @@ div.csl-indent {
 </div>
 </div>
 <p>We begin by loading the <code>sceptre</code> package.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-2_5f524d8494c5faf5460a0760f264a0ec">
+<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-2_a8d2d342d1a909a0661f305061e2ebd3">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Throughout, we examine two example datasets. First, we examine the example high-MOI CRISPRi screen of candidate enhancers in K562 cells. This is the example dataset that we used in <em>The whole game</em> and in <a href="import-data.html"><span>Chapter&nbsp;1</span></a>. We initialize a <code>sceptre_object</code> called <code>sceptre_object_highmoi</code> to represent these data.</p>
@@ -416,15 +416,15 @@ Attributes of the data:
 <div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-10_5d8edeec7ac04280873b6f9efd53d487">
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gene_position_data_frame_grch38</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">8001</span><span class="op">:</span><span class="fl">8004</span><span class="op">)</span>,<span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         response_id   chr position
-1    ENSG00000243485  chr1    29554
-2    ENSG00000237613  chr1    36081
-3    ENSG00000186092  chr1    65419
-4    ENSG00000239945  chr1    91105
-8001 ENSG00000127328 chr12 69738681
-8002 ENSG00000166268 chr12 69825227
-8003 ENSG00000257241 chr12 69947081
-8004 ENSG00000257139 chr12 70180338</code></pre>
+<pre><code>       response_id   chr position
+1: ENSG00000243485  chr1    29554
+2: ENSG00000237613  chr1    36081
+3: ENSG00000186092  chr1    65419
+4: ENSG00000239945  chr1    91105
+5: ENSG00000127328 chr12 69738681
+6: ENSG00000166268 chr12 69825227
+7: ENSG00000257241 chr12 69947081
+8: ENSG00000257139 chr12 70180338</code></pre>
 </div>
 </div>
 <p><code>gene_position_data_frame_grch38</code> was derived from the GrCh38 (hg19) reference genome, which is the reference genome that all versions of <code>cellranger count</code> released since 2021 have used for alignment. Users can pass their own <code>response_position_data_frame</code> to <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> if the <code>gene_position_data_frame_grch38</code> data frame included within <code>sceptre</code> is inadequate for their analysis. For example, some users may wish to map enhancers to proteins in <em>cis</em>. Such users could construct the discovery set by coupling each enhancer to the set of proteins whose corresponding gene is in close physical proximity to that enhancer. In such an analysis <code>response_position_data_frame</code> would be a data frame mapping each protein to the chromosomal position of the transcription start site of its corresponding gene. Note that <code>response_position_data_frame</code> and the <code>chr</code>, <code>start</code>, and <code>stop</code> columns of the <code>grna_target_data_frame</code> should be defined with respect to the same reference genome, as <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> proceeds by intersecting <code>response_position_data_frame</code> with <code>grna_target_data_frame</code>.</p>

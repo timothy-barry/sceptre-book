@@ -12,7 +12,7 @@ knitr::include_graphics("pipeline_schematic_step_4.png")
 
 We begin by loading the `sceptre` package.
 
-```{r,results='hide'}
+```{r,message = FALSE}
 library(sceptre)
 ```
 

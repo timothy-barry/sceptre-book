@@ -306,12 +306,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Here we demonstrate how to do this efficiently. We begin by loading the <code>sceptre</code> package.</p>
 <div class="cell" data-hash="faq_cache/html/unnamed-chunk-2_e5060bf467cae2abd6023fefc5cf610a">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Welcome to sceptre.
+Submit issues on the sceptre website: github.com/Katsevich-Lab/sceptre
+Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
+</div>
 </div>
 <section id="running-cis-and-trans-analyses" class="level3" data-number="B.5.1"><h3 data-number="B.5.1" class="anchored" data-anchor-id="running-cis-and-trans-analyses">
 <span class="header-section-number">B.5.1</span> Running <em>cis</em> and <em>trans</em> analyses</h3>
 <p>Some users may wish to run both a <em>cis</em> analysis and a <em>trans</em> analysis. We recommend that such users apply the <code>sceptre</code> pipeline twice: once to analyze the <em>cis</em> pairs and once to analyze the <em>trans</em> pairs. We illustrate this approach on the high-MOI CRISPRi data; we begin by creating a <code>sceptre_object</code> to represent these data.</p>
 <div class="cell" data-hash="faq_cache/html/unnamed-chunk-3_8632c7a724abdfda55b237bfa13c0f53">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
 <span>  response_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
 <span>  grna_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>,</span>
 <span>  grna_target_data_frame <span class="op">=</span> <span class="va">grna_target_data_frame_highmoi</span>,</span>
@@ -322,7 +327,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>First, we carry out an analysis of the <em>cis</em> pairs, storing the results in the directory <code>"~/sceptre_results_cis"</code>.</p>
 <div class="cell" data-hash="faq_cache/html/unnamed-chunk-4_a34814b2eaa806588713a8d10b0b8fda">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># positive control pairs</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># positive control pairs</span></span>
 <span><span class="va">positive_control_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># cis pairs</span></span>
@@ -352,7 +357,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Next, we carry out an analysis of the <em>trans</em> pairs, storing the results in <code>"~/sceptre_results_trans"</code>.</p>
 <div class="cell" data-hash="faq_cache/html/unnamed-chunk-5_f4e9a36e62bd55535cd0ab5c6ba39ccc">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># trans pairs</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># trans pairs</span></span>
 <span><span class="va">discovery_pairs_trans</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
 <span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
@@ -382,7 +387,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="header-section-number">B.5.2</span> Running singleton and grouped analyses</h3>
 <p>Another common analysis paradigm is to run both a grouped analysis (in which gRNAs targeting the same site are integrated or “combined”) and a singleton analysis (in which gRNAs targeting the same site are analyzed individually). We carried out a grouped analysis of the <em>cis</em> pairs on the high-MOI CRISPRi data above. Below, we conduct a singleton analysis on the same set of pairs, storing the result in <code>"~/sceptre_results_cis_singleton"</code>. We operate on the same <code>sceptre_object</code> so as to exploit caching.</p>
 <div class="cell" data-hash="faq_cache/html/unnamed-chunk-6_c21346de3e61ce4100b178290b3db418">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># singleton cis analysis</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># singleton cis analysis</span></span>
 <span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="va">sceptre_object</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
 <span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_cis</span>,</span>

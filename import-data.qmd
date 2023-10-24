@@ -8,7 +8,7 @@ knitr::include_graphics("pipeline_schematic_step_1.png")
 
 Users either can import data directly from the output of an existing software package (e.g., 10X Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the `sceptre` package.
 
-```{r,results='hide'}
+```{r,message = FALSE}
 library(sceptre)
 ```
 
@@ -32,9 +32,11 @@ sceptre_object <- import_data_from_cellranger(
 )
 ```
 
-### Import from the Parse program
+### Import from the Parse program (experimental)
 
-A function to import data from the Parse program is coming soon.
+Users also can import data from the output of the Parse CRISPR Detect platform via the function `import_data_from_parse()`. `import_data_from_parse()` takes the arguments `gene_mat_fp`, `grna_mat_fp`, `all_genes_fp`, `all_grnas_fp`, `moi`, `grna_target_data_frame`, and `extra_covariates`. (Only the latter argument is optional; all others are required.) `gene_mat_fp` (resp., `grna_mat_fp`) is a file path to the `.mtx` file storing the gene (resp., gRNA) expression data. Next, `all_genes_fp` is a file path to the `all_genes.csv` file. `all_genes.csv` is assumed to have columns "gene_id," "gene_name," and "genome;" the first two columns are assumed to give the ID and human readable name, respectively, of each gene, and the last column (indicating the genome to which each gene belongs) is ignored. Additionally, `all_grnas_fp` is a file path to the `all_grnas.csv` file. `all_grnas.csv` is assumed to contain columns "gene_id," "gene_name," and "genome." The column "gene_name" is assumed to give the ID of each gRNA; the remaining two columns are ignored. Furthermore, `moi` is a string indicating the MOI of the dataset and can take values `"low"` or `"high"`. Finally, `extra_covariates` is an optional data frame of extra covariates to pass to `sceptre` (see below). It is assumed that the data are stored in a single set of files (as opposed to multiple sets of files corresponding to, e.g., different samples).
+
+`import_data_from_parse()` is an experimental function, and the API of this function is subject to change. We expect the API of `import_data_from_parse()` to solidify as we learn more about the Parse CRISPR detect platform and the structure of the Parse program output. Furthermore, given that the Parse platform is fairly young, we anticipate that the format of the output of the Parse program itself might change.
 
 ### Add extra covariates
 
