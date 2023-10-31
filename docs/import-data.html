@@ -220,6 +220,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul>
 </li>
   <li><a href="#import-data-from-a-collection-of-r-objects" id="toc-import-data-from-a-collection-of-r-objects" class="nav-link" data-scroll-target="#import-data-from-a-collection-of-r-objects"><span class="header-section-number">1.2</span> Import data from a collection of R objects</a></li>
+  <li><a href="#accessing-the-fields-of-a-sceptre_object" id="toc-accessing-the-fields-of-a-sceptre_object" class="nav-link" data-scroll-target="#accessing-the-fields-of-a-sceptre_object"><span class="header-section-number">1.3</span> Accessing the fields of a <code>sceptre_object</code></a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -429,6 +430,10 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 <span>  response_names <span class="op">=</span> <span class="va">response_names</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section><section id="accessing-the-fields-of-a-sceptre_object" class="level2" data-number="1.3"><h2 data-number="1.3" class="anchored" data-anchor-id="accessing-the-fields-of-a-sceptre_object">
+<span class="header-section-number">1.3</span> Accessing the fields of a <code>sceptre_object</code>
+</h2>
+<p>A <code>sceptre_object</code> is an <a href="http://adv-r.had.co.nz/S4.html">S4 object</a>. Like all S4 objects, a <code>sceptre_object</code> contains data, both raw data inputted by the user and processed data that <code>sceptre</code> generates by operating on the raw data. The data stored within a <code>sceptre_object</code> can be accessed via the <code>@</code> operator (e.g., <code>sceptre_object@foo</code>). <strong>We recommend against accessing the data stored within a <code>sceptre_object</code> in this way</strong>. Instead, users should interact with a <code>sceptre_object</code> via the <a href="https://katsevich-lab.github.io/sceptre/reference/index.html">functions exported by the package</a>.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">

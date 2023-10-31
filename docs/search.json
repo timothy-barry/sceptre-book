@@ -334,5 +334,12 @@
     "title": "Appendix C — References",
     "section": "",
     "text": "Barry, Timothy, Kaishu Mason, Kathryn Roeder, and Eugene Katsevich.\n2023. “Robust differential expression testing\nfor single-cell CRISPR screens.” bioRxiv.\n\n\nBarry, Timothy, Kathryn Roeder, and Eugene Katsevich. 2022. “Exponential family measurement error models for\nsingle-cell CRISPR screens.” arXiv.\n\n\nBarry, Timothy, Xuran Wang, John A. Morris, Kathryn Roeder, and Eugene\nKatsevich. 2021. “SCEPTRE improves\ncalibration and sensitivity in single-cell CRISPR screen\nanalysis.” Genome Biology 22 (1): 1–19.\n\n\nGasperini, Molly, Andrew J. Hill, José L. McFaline-Figueroa, Beth\nMartin, Seungsoo Kim, Melissa D. Zhang, Dana Jackson, et al. 2019.\n“A Genome-wide Framework for Mapping Gene\nRegulation via Cellular Genetic Screens.” Cell\n176 (1): 377–90.\n\n\nPapalexi, Efthymia, Eleni Mimitou, Andrew W. Butler, Samantha Foster,\nBernadette Bracken, William M. Mauck III, Hans-Hermann Wessels, Bertrand\nZ. Yeung, Peter Smibert, and Rahul Satija. 2021. “Characterizing the molecular regulation of inhibitory\nimmune checkpoints with multi-modal single-cell screens.”\nNature Genetics 53 (3): 322–31."
+  },
+  {
+    "objectID": "import-data.html#accessing-the-fields-of-a-sceptre_object",
+    "href": "import-data.html#accessing-the-fields-of-a-sceptre_object",
+    "title": "1  Import data",
+    "section": "\n1.3 Accessing the fields of a sceptre_object\n",
+    "text": "1.3 Accessing the fields of a sceptre_object\n\nA sceptre_object is an S4 object. Like all S4 objects, a sceptre_object contains data, both raw data inputted by the user and processed data that sceptre generates by operating on the raw data. The data stored within a sceptre_object can be accessed via the @ operator (e.g., sceptre_object@foo). We recommend against accessing the data stored within a sceptre_object in this way. Instead, users should interact with a sceptre_object via the functions exported by the package."
   }
 ]

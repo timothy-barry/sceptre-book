@@ -134,3 +134,7 @@ sceptre_object <- import_data(
   response_names = response_names
 )
 ```
+
+## Accessing the fields of a `sceptre_object`
+
+A `sceptre_object` is an [S4 object](http://adv-r.had.co.nz/S4.html). Like all S4 objects, a `sceptre_object` contains data, both raw data inputted by the user and processed data that `sceptre` generates by operating on the raw data. The data stored within a `sceptre_object` can be accessed via the `@` operator (e.g., `sceptre_object@foo`). **We recommend against accessing the data stored within a `sceptre_object` in this way**. Instead, users should interact with a `sceptre_object` via the [functions exported by the package](https://katsevich-lab.github.io/sceptre/reference/index.html). Unfortunately, we are unable
