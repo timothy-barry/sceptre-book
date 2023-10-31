@@ -20,12 +20,20 @@ book:
   chapters:
     - index.qmd
     - sceptre.qmd
-    - import-data.qmd
-    - set-analysis-parameters.qmd
-    - assign-grnas.qmd
-    - run-qc.qmd
-    - run-calibration-check.qmd
-    - run-power-check-and-discovery-analysis.qmd
+
+    - part: Hands-on data analysis
+      chapters:
+        - import-data.qmd
+        - set-analysis-parameters.qmd
+        - assign-grnas.qmd
+        - run-qc.qmd
+        - run-calibration-check.qmd
+        - run-power-check-and-discovery-analysis.qmd
+
+    - part: Concepts and methods
+      chapters:
+        - methods.qmd
+
   appendices:
     - glossary.qmd
     - faq.qmd
