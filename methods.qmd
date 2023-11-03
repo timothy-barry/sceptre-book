@@ -1,9 +1,177 @@
----
-title: "Methods"
-format: html
-editor: visual
----
+## Overview of methods {#sec-methods_overview}
 
-## Methods
+There are several statistical tasks involved in analyzing single-cell CRISPR screen data, including assigning gRNAs to cells, testing for association between gRNAs and the expression of responses (such as genes), and integrating information across gRNAs that target the same site (and that potentially exhibit variable effectiveness). This chapter provides an overview of the statistical methods that `sceptre` employs to carry out these analysis tasks. The methods described in this and subsequent chapters were introduced and validated on real data in @barry2021, @barry2022c, and @barry2023.
 
-The methods section.
+## Notation
+
+We begin by introducing some notation that we use throughout the chapter. Let $\mathbb{N} = \{1, 2, \dots\}$ denote the set of positive integers. For a given single-cell CRISPR screen dataset, let $d\in\mathbb{N}$ denote the number of responses, $r\in\mathbb{N}$ the number of gRNAs, and $n\in\mathbb{N}$ the number of cells in the dataset. Next, let $Y\in \mathbb{N}^{d \times n}$ be the matrix of response UMI counts, where responses are in the rows and cells in the columns. A given entry $y_{ij}$ of $Y$ indicates the number of UMIs from response $i$ sequenced in cell $j$. Similarly, let $G \in \mathbb{N}^{r \times n}$ be the matrix of gRNA UMI counts; a given entry $g_{ij}$ of $G$ indicates the number of UMIs from gRNA $i$ sequenced in cell $j$. Finally, let $Z \in \mathbb{N}^{n\times p}$ be the matrix of cell-specific covariates, which can include variables such as `response_n_umis`, `response_n_nonzero`, `grna_n_umis`, `grna_n_nonzero`, `response_p_mito`, `batch`, and cell type.
+
+## Assigning gRNAs to cells
+
+The first statistical task is to assign gRNAs to cells. The gRNA assignment task involves leveraging the gRNA count matrix $G$ (and possibly the covariate matrix $Z$) to impute the (unobserved) binary matrix $X \in \{0,1\}^{r \times n}$ of gRNA presences and absences, where a given entry $x_{ij}$ of $X$ is defined to be $1$ (resp., $0$) if gRNA $i$ is present (resp., absent) in cell $j$. `sceptre` implements three gRNA assignment strategies: the thresholding method, maximum method, and the mixture method. All three methods account for background contamination, the phenomenon by which gRNA reads sometimes map to cells that do not contain the corresponding gRNA. (See @sec-sceptre_assign_grnas of the introductory chapter for an example of background contamination.) We describe each method in greater depth here.
+
+### Thresholding and maximum methods
+
+The thresholding method assigns a gRNA to a cell if the UMI count of the gRNA in the cell exceeds some integer threshold $c \in \mathbb{N}$. Formally, the thresholding method sets $x_{ij}$ to $1$ if $g_{ij} \geq c$ and to $0$ if $g_{ij} < c$. The default value for $c$ is 5 (as proposed in @gasperini2019 and further validated by @barry2022c). An important special case is to set $c$ to $1$, which corresponds to the "naive" (but occasionally useful) strategy of assigning any gRNA expressed in a given cell to that cell (and ignoring background contamination). The thresholding method is available in both low- and high-MOI settings in `sceptre`.
+
+The maximum method assigns the gRNA exhibiting the greatest UMI count in a given cell to that cell. Formally, consider a given cell $j$; the UMI count of gRNA $i$ in cell $j$ is $g_{ij}$. Let $i^* \in \{1, \dots, r\}$ be the index such that $$ g_{i^*j} = \max_{i \in \{1, \dots, r\}}{g_{ij}}.$$ (If multiple indices satisfy this criterion, select $i^*$ among these arbitrarily.) We assign gRNA $i^*$ to cell $j$, i.e. we set $x_{i^*j}$ to $1$ and $x_{ij}$ to $0$ for $i \neq i^*$. In carrying out the maximum assignment step, `sceptre` also flags cells that likely contain multiple gRNAs. Let $u \in [0,1]$ be a user-specified threshold (default value $0.8$). Suppose that the gRNA assigned to cell $j$ constitutes fewer than $u$ of the UMIs in that cell. In other words, suppose that
+
+$$
+ \frac{g_{i^*j}}{\sum_{i=1}^{r} g_{ij}} < u.
+$$
+
+Then cell $j$ is flagged as containing multiple gRNAs and is removed as part of the QC step. (Note that if multiple gRNAs are tied for most highly expressed in a given cell, and if $u > 0.5$, then that cell is flagged as containing multiple gRNAs, per the above rule.) The maximum method is available only in the low-MOI setting in `sceptre`.
+
+### Mixture method
+
+The mixture method assigns gRNAs to cells using a latent variable generalized linear model (GLM). Consider a given gRNA $i$. Let $g_j$ be the UMI count of gRNA $i$ in cell $j$, and let $x_j$ be the (unobserved) variable indicating whether gRNA $i$ is present ($x_j = 1$) or absent ($x_j = 0$) in cell $j$. (We drop the $i$ subscript for notational compactness.) Additionally, let $z_j$ be the vector of cell-specific covariates in cell $j$. (We assume that the count-based covariates, such as `grna_n_nonzero` and `grna_n_umis`, have been log-transformed, which `sceptre` does by default.) We model the gRNA UMI counts using a latent variable Poisson GLM:
+
+$$
+\begin{cases}
+g_j | \mu_j \sim \textrm{Pois}(\mu_j) \\
+\log(\mu_j | x_j, z_j) = \beta_0 + \gamma x_j + \beta^T z_j \\
+x_j \sim \textrm{Bernoulli}(\pi).
+\end{cases}
+$$ {#eq-latent-variable-glm}
+
+Here, $\mu_j$ is the mean expression level of gRNA $i$ in cell $j$ (given the covariates); $\beta_0$, $\gamma$, and $\beta \in \mathbb{R}^d$ are the (unknown) regression coefficients; and $\pi \in [0,1]$ is the (unknown) probability that gRNA $i$ is present in a given cell. We fit the model @eq-latent-variable-glm using an EM algorithm, producing estimates $\hat{\beta}_0$, $\hat{\gamma}$, $\hat{\beta}$, and $\hat{\pi}$ for the model coefficients $\beta_0$, $\gamma$, $\beta$, and $\pi$. Using these estimates, we can compute the probability $T_{ij} := \mathbb{P}(x_{ij} = 1)$ that a given cell $j$ contains gRNA $i$. (The probabilities $T_{i1}, \dots, T_{in}$ are sometimes called "posterior probabilities.") Finally, we threshold the posterior probabilities at some threshold $u$ (default value 0.8) to assign gRNA $i$ to the cells, i.e. we set $x_{ij} = 1$ if $T_{ij} > u$ and $x_{ij} = 0$ if $T_{ij} \leq u$. An advantage of the Poisson GLM framework is that it enables us to account for cell-specific covariates, such as the number of gRNA UMIs sequenced in a given cell (i.e., `grna_n_umis`).
+
+Formulating the model @eq-latent-variable-glm is fairly straightforward; fitting the model to data in a fast and numerically stable way is more challenging. `sceptre` leverages a novel variant of the EM algorithm for this purpose, which we describe below.
+
+**Approximating the model @eq-latent-variable-glm with a simpler model.** We begin by approximating the latent variable model @eq-latent-variable-glm with a simpler latent variable model that is faster to estimate. First, we obtain accurate estimates for the parameters $\beta_0$ and $\beta$ by exploiting the fact that the gRNA is present in only a small fraction (typically $< 2\%$) of cells. Let $f(g_j; \mu_j)$ denote the probability mass function of the Poisson distribution with mean $\mu_j$ evaluated at $g_j$, i.e.,
+
+$$
+f(g_j; \mu_j) = \frac{\mu_j^{g_j} e^{-\mu_j}}{g_j!}.
+$$Conditioning on the covariates (i.e., treating $x_j$ and $z_j$ as fixed), we can express the log-likelihood of the GLM in @eq-latent-variable-glm as follows:\
+$$
+\begin{multline}
+L(\beta_0, \gamma, \beta^T) = \sum_{j=1}^n \log \left[ f(g_j;\mu_j )\right] = \sum_{j=1}^n \log \left[ f(g_j; \exp(\beta_0 + \gamma x_j + \beta^T z_j)) \right] \\ = \underbrace{\sum_{j:x_j = 1} \log \left[ f(g_j; \exp(\beta_0 + \gamma + \beta^T z_j)) \right]}_{\textrm{few terms}} + \underbrace{\sum_{j: x_j = 0} \log \left[ f(g_j; \exp(\beta_0 + \beta^T z_j)) \right]}_\textrm{many terms} \\ \approx \sum_{j=1}^n \log \left[ f(g_j; \exp(\beta_0 + \beta^T z_j)) \right].
+\end{multline}
+$$
+
+In other words, the gRNA indicator $x_j$ is equal to zero in the large majority of cells, and so we can approximate the GLM in @eq-latent-variable-glm with the GLM that results from excluding $x_j$ from the model:
+
+$$
+\begin{cases}
+g_j | \mu_j \sim \textrm{Pois} (\mu_j) \\
+\log(\mu_j | z_j) = \beta_0 + \beta^T z_j.
+\end{cases}
+$$ {#eq-simplified_glm}
+
+We can fit the GLM @eq-simplified_glm using the standard procedure for fitting GLMs (e.g., in R), as every variable in this GLM is observed. Doing so yields estimates $\hat{\beta}_0$ and $\hat{\beta}$ for $\beta_0$ and $\beta$, respectively. Assuming that $\hat{\beta_0} \approx \beta_0$ and $\hat{\beta} \approx \beta$ (which holds for large $n$ and small $\pi$), we can write
+
+$$\gamma x_j + \beta_0 x_j + \beta z_j \approx \gamma x_j + \hat{\beta}_0 + \hat{\beta} z_j = \gamma x_i + o_j,$$where we have set $o_j$ to $\hat{\beta}_0 + \hat{\beta}z_j$, i.e. the $j$th fitted value (on the scale of the linear component) of the GLM @eq-simplified_glm. Finally, we propose a simplified model for expression of the gRNA:
+
+$$\begin{cases}
+g_j | \mu_j \sim \textrm{Pois}(\mu_j) \\
+\log(\mu_j | x_j) = \gamma x_j + o_j \\
+x_j \sim \textrm{Bernoulli}(\pi).
+\end{cases}
+$$ {#eq-simplified_glm_2}
+
+Here, the $o_j$s are offset terms in the GLM. Notice that the GLM in @eq-simplified_glm_2 does not include covariates or an intercept term; rather, all information about the covariates and the baseline expression level of the gRNA has been "encoded" into the offsets $o_1, \dots, o_n$. In summary we (i) estimated $\beta_0$ and $\beta$ using the GLM @eq-simplified_glm and then (ii) replaced $\beta_0$ and $\beta$ in @eq-latent-variable-glm with their corresponding estimates, yielding the model @eq-simplified_glm_2. The model @eq-simplified_glm_2 is a good approximation to @eq-latent-variable-glm in the sense that the maximum likelihood estimates for $\gamma$ and $\pi$ in @eq-simplified_glm_2 are close to the corresponding estimates for these parameters in @eq-latent-variable-glm when $n$ is large and $\pi$ is small (as is the case on most single-cell CRISPR screen datasets). We turn our attention to estimating the model @eq-simplified_glm_2, treating the offset terms $o_1, \dots, o_n$ known as fixed.
+
+**EM algorithm**. We derive an EM algorithm to estimate the model @eq-simplified_glm_2. Let $\theta = (\gamma, \pi)$ denote the unknown model parameters. Let $G_j$ be a random variable that represents the UMI count of the gRNA in the $j$th cell, and let $g_j$ be the realized value of this random variable. (Similarly, let $x_j$ be the realized value of the random variable $X_j$.) We begin by writing down the complete-data likelihood $l$ of this model, which is the likelihood that would result if $x_1, \dots, x_n$ *had* been observed.
+
+$$
+\begin{multline*}
+l(\theta) = \prod_{j=1}^n \mathbb{P}(G_j = g_j, X_j = x_j) = \prod_{j=1}^n\mathbb{P}(G_j = g_j | X_j = x_j) \mathbb{P}(X_j = x_j) \\ = \prod_{j=1}^n f(g_j; \exp( \gamma x_j + o_j))\left[\pi^{x_i} (1-\pi)^{1-x_i} \right].
+\end{multline*}
+$$
+
+We obtain the complete-data log-likelihood $L$ by taking the log of $l$:
+
+$$
+L(\theta) = \log(l(\theta)) = \sum_{j=1}^n \log\left[ f(g_j; \exp(\gamma x_j + o_j)\right] + \sum_{j=1}^n x_j \log(\pi) + (1-x_j)(1-\pi).
+$$
+
+We derive the E and M steps for the EM algorithm in this model.
+
+[E step]{.underline}: The E step entails computing the membership probability of each cell (i.e., the probability that each cell contains the gRNA) given the current parameter estimates and the gRNA counts. Let $\theta^{(t)} = (\gamma^{(t)}, \pi^{(t)})$ be the parameter estimate for $\theta$ at the $t$th iteration of the algorithm. Let $[\mu_j(k)]^{(t)}$ be the mean gRNA UMI count in the $j$th cell at the $t$th iteration of the algorithm that results from setting $x_j$ to $k \in \{0,1\}$, i.e.,
+
+$$
+[\mu_j(k)]^{(t)} = \exp( \gamma^{(t)} \cdot k + o_j ).
+$$
+
+The membership probability of the $j$th cell at the $t$th iteration of the algorithm $T^{(t)}_j$ is
+
+$$
+\begin{multline*}
+T^{(t)}_j := \mathbb{P}(X_j = 1 | G_j = g_j, \theta^{(t)}) = \frac{\mathbb{P}(G_j = g_j | X_j = 1, \theta^{(t)})\mathbb{P}(X_j = 1 | \theta^{(t)})}{ \sum_{k=0}^1 \mathbb{P}(G_j = g_j | X_j = k, \theta^{(t)}) \mathbb{P}(X_j = k | \theta^{(t)})} \\ = \left(\frac{\mathbb{P}(G_j = g_j | X_j = 0, \theta^{(t)}) \mathbb{P}(X_j = 0)}{\mathbb{P}( G_j = g_j | X_j = 1, \theta^{(t)}) \mathbb{P}(X_j = 1)} +1\right)^{-1} = \left(\frac{f(g_j; [\mu_j(0)]^{(t)})(1-\pi)}{f(g_j; [\mu_j(1)]^{(t)})\pi} + 1 \right)^{-1} \\ = \left(\exp(q_j^{(t)}) + 1 \right)^{-1},
+\end{multline*}
+$$ where we define $$q_j^{(t)} := \log\left( \frac{f(g_j; [\mu_j(0)]^{(t)})(1-\pi)}{f(g_j; [\mu_j(1)]^{(t)})\pi} \right).$$
+
+Plugging in the Poisson probability mass function for $f$, we can express $q_j^{(t)}$ is follows.
+
+$$
+\begin{multline*}
+q_j^{(t)} := \log(1-\pi) - \log(\pi) + g_j \left(\log([\mu_j(0)]^{(t)}) - \log([\mu_j(1)]^{(t)}) \right) \\ + [\mu_j(1)]^{(t)} - [\mu_j(0)]^{(t)}.
+\end{multline*}
+$$ {#eq-q_j_expression}
+
+This expression @eq-q_j_expression for $q_j^{(t)}$ is numerically stable and fast to evaluate. In summary we compute $T^{(t)}_j$ by computing $q^{(t)}_j$ (using the expression above) and then computing $T^{(t)}_j = \exp(q_j^{(t)} + 1)^{-1}.$
+
+[M step]{.underline}: The M-step involves maximizing the so-called "Q function," the function that results from taking the expectation of the complete-data log-likelihood with respect to the $X_j$s while conditioning on the $G_j$s and the current parameter estimates $\theta^{(t)}$. Formally, the "Q function" $Q(\theta | \theta^{(t)})$ is defined as $Q(\theta|\theta^{(t)}) = \mathbb{E}_{X_1, \dots, X_n}[L(\theta) | G = g, \theta^{(t)}]$. Given the log-likelihood and membership probabilities, the Q function is
+
+$$
+\begin{multline*}
+Q(\theta|\theta^{(t)}) = \sum_{j=1}^n T^{(t)}_j \log(\pi) + \sum_{j=1}^n (1 - T_j^{(t)})\log(1-\pi) \\ + \sum_{j=1}^n T_j^{(t)} \log \left[ f\left(g_j; \exp[\gamma + o_j] \right) \right] + \sum_{j=1}^n (1 - T^{(t)}_j) \log \left[f(g_j; \exp(o_j) \right].
+\end{multline*}
+$$ {#eq-q_function}
+
+The goal of the M step to identify the parameter $\theta = (\pi, \gamma)$ that maximizes @eq-q_function. The first two terms of @eq-q_function are a function of $\pi$, and the last two terms are a function of $\gamma$. Thus, we can optimize these sets of terms separately.
+
+To find the maximizer in $\pi$, we differentiate the first two terms of @eq-q_function with respect to $\pi$, yielding
+
+$$
+\frac{\sum_{j=1}^n T_j^{(t)}}{\pi} - \frac{\sum_{j=1}^n (1 - T_j^{(t)})}{1 - \pi}.
+$$ {#eq-m_step_0}
+
+Setting @eq-m_step_0 to zero and solving for $\pi$ produces the maximizer $\pi^{(t+1)}$:
+
+$$ \pi^{(t+1)} = (1/n) \sum_{j=1}^n T_j^{(t)}.$$
+
+We turn our attention to the last two terms of @eq-q_function. The final term is not a function of $\gamma$ and thus can be ignored. We rewrite the penultimate term as follows:
+
+$$
+\begin{multline*}
+\sum_{j=1}^n T^{(t)}_j \log\left[ f(g_j; \exp[\gamma + o_j])\right] \\ = \sum_{j=1}^n T^{(t)}_j \log\left[ \frac{\exp(\gamma + o_j)^{g_j} \exp(-\exp[\gamma + o_j])}{g_j!} \right] \\ = 
+\sum_{j=1}^n T_j^{(t)}\left[ g_j(\gamma + o_j) - \exp(\gamma + o_j) - \log(g_j!) \right].
+\end{multline*}
+$$ {#eq-m_step_1}
+
+The derivative of @eq-m_step_1 is
+
+$$
+\begin{multline*}
+\sum_{j=1}^n T^{(t)}_j g_j - T^{(t)}_j \exp(\gamma + o_j) = \sum_{j=1}^n T^{(t)}_j g_j - \exp(\gamma) \sum_{j=1}^n T_j^{(t)} \exp(o_j).
+\end{multline*}
+$$ {#eq-m_step_2}
+
+Finally, setting @eq-m_step_2 to zero and solving for $\gamma$ yields the maximizer
+
+$$
+\gamma^{(t+1)} = \log\left(\frac{\sum_{j=1}^n T^{(t)}_j y_j }{\sum_{j=1}^n T^{(t)}_j e^{o_j} }\right).
+$$
+
+[Convergence]{.underline}: The incomplete-data likelihood (which we obtain by integrating the complete-data likelihood with respect to the $x_j$s) is
+
+$$
+l_\textrm{incomplete}(\theta) = \prod_{j=1}^n f(g_j; \gamma + o_j) \pi + f(g_j; o_j)(1-\pi).
+$$
+
+The incomplete-data log-likelihood is
+
+$$
+L_\textrm{incomplete}(\theta) = \sum_{j=1}^n \log\left[ f(g_j; \gamma + o_j) \pi + f(g_j; o_j)(1-\pi) \right].
+$$
+
+Note that the incomplete-data log-likelihood --- in contrast to the complete-data log-likelihood --- is computable. We iterate between E and M steps until $L_\textrm{incomplete}$ converges. We declare that the sequence of estimates $\theta^{(0)}, \theta^{(1)}, \theta^{(2)}, \dots$ has converged when
+
+$$
+\frac{|L(\theta^{(t+1)}) - L(\theta^{(t)})|}{ \min\left\{ |L(\theta^{(t+1)})|, | L(\theta^{(t)}) | \right\}} < \epsilon
+$$
+
+for some $\epsilon > 0$ (by default $\epsilon = 0.5 \cdot 10^{-4}$). We set the final parameter estimates $\hat{\pi}$ and $\hat{\gamma}$ to $\pi^{(t+1)}$ and $\gamma^{(t+1)}$. Additionally, we use the final membership probabilities $T^{(t+1)}_1, \dots, T^{(t+1)}_n$ to assign the gRNA to cells.
+
+**The full algorithm**.

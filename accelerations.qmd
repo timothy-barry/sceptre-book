@@ -1,0 +1,3 @@
+## Statistical and computational accelerations {#sec-accelerations}
+
+We expect some of these techniques to be useful in applications beyond single-cell CRISPR screens.

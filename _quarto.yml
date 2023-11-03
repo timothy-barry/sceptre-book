@@ -30,9 +30,12 @@ book:
         - run-calibration-check.qmd
         - run-power-check-and-discovery-analysis.qmd
 
-    - part: Concepts and methods
+    - part: methods-and-theory.qmd
       chapters:
         - methods.qmd
+        - accelerations.qmd
+        - theory.qmd
+        - experimental-design.qmd
 
   appendices:
     - glossary.qmd

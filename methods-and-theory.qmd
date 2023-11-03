@@ -1,0 +1,23 @@
+## Part II: Methods and Algorithms
+
+This part of the book discusses the methods and algorithms that undergird `sceptre`. It also explores several theoretical issues related to the conditions under which these methods can be expected to work well in practice.
+
+-   @sec-methods_overview provides an overview of the statistical methods that underlie `sceptre`.
+
+-   @sec-accelerations describes the various statistical and computational accelerations that help make `sceptre` fast.
+
+-   @sec-theory explores several theoretical issues, including the precise conditions under which differential expression testing methods --- including `sceptre`, negative binomial regression, and the Wilcoxon test --- can be expected to control the rate of false positives on a single-cell CRISPR screen dataset.
+
+-   @sec-experimental_design provides recommendations on experimental design for single-cell CRISPR screens.
+
+Bonferroni adjustment: Suppose that $p_1, \dots, p_k$ are superuniform, i.e. $\mathbb{P}(p_i \leq \alpha) \leq \alpha$ for all $i \in \{1, \dots, k\}$ and all $\alpha \in [0,1]$. Then $k \cdot \min\{p_1, \dots, p_k\}$ also is superuniform.
+
+Proof:
+
+$$
+\begin{multline}
+\mathbb{P}( k \cdot \min\{p_1, \dots, p_k\} \leq \alpha) = \mathbb{P}( \min\{p_1, \dots, p_k\} \leq \alpha/k )\\ = \mathbb{P}\left( p_1 \leq \alpha/k \textrm{ or } p_2 \leq \alpha / k \textrm{ or } \dots \textrm{ or } p_k \leq \alpha /k  \right) \\ \leq \sum_{i=1}^k \mathbb{P}(p_i \leq \alpha/k) \leq \sum_{i=1}^k \alpha/k = \alpha.
+\end{multline}
+$$
+
+The penultimate inequality follows from the union bound, and the final inequality follows from the superuniformity of $p_i$. $\square$
