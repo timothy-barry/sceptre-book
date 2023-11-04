@@ -64,8 +64,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="custom.css">
 </head>
@@ -268,14 +266,6 @@ ul.task-list li input[type="checkbox"] {
 <li><p><a href="theory.html"><span>Chapter&nbsp;9</span></a> explores several theoretical issues, including the precise conditions under which differential expression testing methods — including <code>sceptre</code>, negative binomial regression, and the Wilcoxon test — can be expected to control the rate of false positives on a single-cell CRISPR screen dataset.</p></li>
 <li><p><a href="experimental-design.html"><span>Chapter&nbsp;10</span></a> provides recommendations on experimental design for single-cell CRISPR screens.</p></li>
 </ul>
-<p>Bonferroni adjustment: Suppose that <span class="math inline">\(p_1, \dots, p_k\)</span> are superuniform, i.e.&nbsp;<span class="math inline">\(\mathbb{P}(p_i \leq \alpha) \leq \alpha\)</span> for all <span class="math inline">\(i \in \{1, \dots, k\}\)</span> and all <span class="math inline">\(\alpha \in [0,1]\)</span>. Then <span class="math inline">\(k \cdot \min\{p_1, \dots, p_k\}\)</span> also is superuniform.</p>
-<p>Proof:</p>
-<p><span class="math display">\[
-\begin{multline}
-\mathbb{P}( k \cdot \min\{p_1, \dots, p_k\} \leq \alpha) = \mathbb{P}( \min\{p_1, \dots, p_k\} \leq \alpha/k )\\ = \mathbb{P}\left( p_1 \leq \alpha/k \textrm{ or } p_2 \leq \alpha / k \textrm{ or } \dots \textrm{ or } p_k \leq \alpha /k  \right) \\ \leq \sum_{i=1}^k \mathbb{P}(p_i \leq \alpha/k) \leq \sum_{i=1}^k \alpha/k = \alpha.
-\end{multline}
-\]</span></p>
-<p>The penultimate inequality follows from the union bound, and the final inequality follows from the superuniformity of <span class="math inline">\(p_i\)</span>. <span class="math inline">\(\square\)</span></p>
 
 
 
