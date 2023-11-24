@@ -1,6 +1,6 @@
 ## Overview of methods {#sec-methods_overview}
 
-There are several statistical tasks involved in analyzing single-cell CRISPR screen data, including assigning gRNAs to cells, testing for association between gRNAs and the expression of responses (such as genes), and integrating information across gRNAs that target the same site (and that potentially exhibit variable effectiveness). This chapter provides an overview of the statistical methods that `sceptre` employs to carry out these analysis tasks. The methods described in this and subsequent chapters were introduced and validated on real data in @barry2021, @barry2022c, and @barry2023.
+There are several statistical tasks involved in analyzing single-cell CRISPR screen data, including assigning gRNAs to cells, testing for association between gRNAs and the expression of responses (such as genes), and integrating information across gRNAs that target the same site (and that potentially exhibit variable effectiveness). This chapter provides an overview of the statistical methods that `sceptre` employs to carry out these analysis tasks. The methods described in this and subsequent chapters were introduced and stress-tested on real data across three papers: @barry2021, @barry2022c, and @barry2023.
 
 ## Notation
 
@@ -12,9 +12,9 @@ The first statistical task involved in single-cell CRISPR screen analysis is to 
 
 ### Thresholding and maximum methods
 
-The thresholding method assigns a gRNA to a cell if the UMI count of the gRNA in the cell exceeds some integer threshold $c \in \mathbb{N}$. Formally, the thresholding method sets $x_{ij}$ to $1$ if $g_{ij} \geq c$ and to $0$ if $g_{ij} < c$. The default value for $c$ is 5 (as proposed in @gasperini2019 and further validated by @barry2022c). An important special case is to set $c$ to $1$, which corresponds to the "naive" (but occasionally useful) strategy of assigning any gRNA expressed in a given cell to that cell (and ignoring background contamination). The thresholding method is available in both low- and high-MOI settings in `sceptre`.
+The thresholding method assigns a gRNA to a cell if the UMI count of the gRNA in the cell exceeds some integer threshold $c \in \mathbb{N}$. Formally, the thresholding method sets $x_{ij}$ to $1$ if $g_{ij} \geq c$ and to $0$ if $g_{ij} < c$. The default value for $c$ is 5 (as proposed in @gasperini2019 and further validated by @barry2022c). An important special case involves setting $c$ to $1$, which implements the "naive" (but occasionally useful) strategy of assigning any gRNA expressed in a given cell to that cell (and thus ignoring background contamination). The thresholding method is available in both low- and high-MOI settings in `sceptre`.
 
-The maximum method assigns the gRNA exhibiting the greatest UMI count in a given cell to that cell. Formally, consider a given cell $j$; the UMI count of gRNA $i$ in cell $j$ is $g_{ij}$. Let $i^* \in \{1, \dots, r\}$ be the index such that $$ g_{i^*j} = \max_{i \in \{1, \dots, r\}}{g_{ij}}.$$ (If multiple indices satisfy this criterion, select $i^*$ among these arbitrarily.) We assign gRNA $i^*$ to cell $j$, i.e. we set $x_{i^*j}$ to $1$ and $x_{ij}$ to $0$ for $i \neq i^*$. In carrying out the maximum assignment step, `sceptre` also flags cells that likely contain multiple gRNAs. Let $u \in [0,1]$ be a user-specified threshold (default value $0.8$). Suppose that the gRNA assigned to cell $j$ constitutes fewer than $u$ of the UMIs in that cell. In other words, suppose that
+The maximum method assigns the gRNA that exhibits the greatest UMI count in a given cell to that cell. Formally, consider a given cell $j$; the UMI count of gRNA $i$ in cell $j$ is $g_{ij}$. Let $i^* \in \{1, \dots, r\}$ be the index such that $$ g_{i^*j} = \max_{i \in \{1, \dots, r\}}{g_{ij}}.$$ (If multiple indices satisfy this criterion, select $i^*$ among these arbitrarily.) We assign gRNA $i^*$ to cell $j$, i.e. we set $x_{i^*j}$ to $1$ and $x_{ij}$ to $0$ for $i \neq i^*$. In carrying out the maximum assignment step, `sceptre` also flags cells that likely contain multiple gRNAs. Let $u \in [0,1]$ be a user-specified threshold (default value $0.8$). Suppose that the gRNA assigned to cell $j$ constitutes fewer than $u$ of the UMIs in that cell. In other words, suppose that
 
 $$
  \frac{g_{i^*j}}{\sum_{i=1}^{r} g_{ij}} < u.
@@ -24,7 +24,7 @@ Then cell $j$ is flagged as containing multiple gRNAs and is removed as part of 
 
 ### Mixture method
 
-The mixture method assigns gRNAs to cells using a latent variable generalized linear model (GLM). Consider a given gRNA $i$. Let $g_j$ be the UMI count of gRNA $i$ in cell $j$, and let $x_j$ be the (unobserved) variable indicating whether gRNA $i$ is present ($x_j = 1$) or absent ($x_j = 0$) in cell $j$. (We drop the $i$ subscript for notational compactness.) Additionally, let $z_j$ be the vector of cell-specific covariates in cell $j.$ (We assume that the count-based covariates, such as `grna_n_nonzero` and `grna_n_umis`, have been log-transformed, which `sceptre` does by default.) We model the gRNA UMI counts using a latent variable Poisson GLM:
+The mixture method assigns gRNAs to cells using a latent variable generalized linear model (GLM). Consider a given gRNA $i$. Let $g_j$ be the UMI count of gRNA $i$ in cell $j$, and let $x_j$ be the (unobserved) variable indicating whether gRNA $i$ is present ($x_j = 1$) or absent ($x_j = 0$) in cell $j$. (We drop the $i$ subscript for notational compactness.) Additionally, let $z_j$ be the vector of cell-specific covariates in cell $j.$ (We assume that the count-based covariates, such as `grna_n_nonzero` and `grna_n_umis`, have been log-transformed.) We model the gRNA UMI counts using a latent variable Poisson GLM:
 
 $$
 \begin{cases}
@@ -34,11 +34,9 @@ x_j \sim \textrm{Bernoulli}(\pi).
 \end{cases}
 $$ {#eq-latent-variable-glm}
 
-Here, $\mu_j$ is the mean expression level of gRNA $i$ in cell $j$ (given the covariates); $\beta_0$, $\gamma$, and $\beta \in \mathbb{R}^d$ are the (unknown) regression coefficients; and $\pi \in [0,1]$ is the (unknown) probability that gRNA $i$ is present in a given cell. We fit the model @eq-latent-variable-glm using an EM algorithm, producing estimates $\hat{\beta}_0$, $\hat{\gamma}$, $\hat{\beta}$, and $\hat{\pi}$ for the model coefficients $\beta_0$, $\gamma$, $\beta$, and $\pi$. Using these estimates, we can compute the probability $T_{ij} := \mathbb{P}(x_{ij} = 1)$ that a given cell $j$ contains gRNA $i$. (The probabilities $T_{i1}, \dots, T_{in}$ are sometimes called "posterior probabilities.") Finally, we threshold the posterior probabilities at some threshold $u$ (default value 0.8) to assign gRNA $i$ to the cells, i.e. we set $x_{ij} = 1$ if $T_{ij} > u$ and $x_{ij} = 0$ if $T_{ij} \leq u$. An advantage of the Poisson GLM framework is that it enables us to account for cell-specific covariates that might affect the level of background contamination, such as the number of gRNA UMIs sequenced in a given cell (i.e., `grna_n_umis`). The mixture method is available in both low- and high-MOI settings in `sceptre`.
+Here, $\mu_j$ is the mean expression level of gRNA $i$ in cell $j$ (given the covariates); $\beta_0$, $\gamma$, and $\beta \in \mathbb{R}^d$ are the (unknown) regression coefficients; and $\pi \in [0,1]$ is the (unknown) probability that gRNA $i$ is present in a given cell. We fit the model @eq-latent-variable-glm using an EM algorithm, producing estimates $\hat{\beta}_0$, $\hat{\gamma}$, $\hat{\beta}$, and $\hat{\pi}$ for the model coefficients $\beta_0$, $\gamma$, $\beta$, and $\pi$. Using these estimates, we can compute the probability $T_{ij} := \mathbb{P}(x_{ij} = 1)$ that a given cell $j$ contains gRNA $i$. (The probabilities $T_{i1}, \dots, T_{in}$ are sometimes called "posterior probabilities.") Finally, we threshold the posterior probabilities at some threshold $u$ (default value 0.8) to assign gRNA $i$ to the cells, i.e. we set $x_{ij} = 1$ if $T_{ij} > u$ and $x_{ij} = 0$ if $T_{ij} \leq u$. An advantage of the Poisson GLM framework is that it enables us to account for cell-specific covariates that might affect the level of background contamination, such as the number of gRNA UMIs sequenced in a given cell (i.e., `grna_n_umis`). Formulating the model @eq-latent-variable-glm is fairly straightforward; fitting the model to data in a fast and numerically stable way is more challenging. `sceptre` leverages a novel variant of the EM algorithm for this purpose, which we describe below.
 
-Formulating the model @eq-latent-variable-glm is fairly straightforward; fitting the model to data in a fast and numerically stable way is more challenging. `sceptre` leverages a novel variant of the EM algorithm for this purpose, which we describe below.
-
-Approximating the model @eq-latent-variable-glm with a simpler model. We begin by approximating the latent variable model @eq-latent-variable-glm with a simpler latent variable model that is easier to estimate. First, we obtain accurate estimates for the parameters $\beta_0$ and $\beta$ by exploiting the fact that the gRNA is present in only a small fraction (typically $< 2\%$) of cells. Let $f(g_j; \mu_j)$ denote the probability mass function of the Poisson distribution with mean $\mu_j$ evaluated at $g_j$, i.e.,
+**Approximating the model @eq-latent-variable-glm with a simpler model**. We begin by approximating the latent variable model @eq-latent-variable-glm with a simpler latent variable model that is easier to estimate. First, we obtain accurate estimates for the parameters $\beta_0$ and $\beta$ by exploiting the fact that the gRNA is present in only a small fraction (typically $< 2\%$) of cells. Let $f(g_j; \mu_j)$ denote the probability mass function of the Poisson distribution with mean $\mu_j$ evaluated at $g_j$, i.e.,
 
 $$
 f(g_j; \mu_j) = \frac{\mu_j^{g_j} e^{-\mu_j}}{g_j!}.
@@ -58,7 +56,7 @@ g_j | \mu_j \sim \textrm{Pois} (\mu_j) \\
 \end{cases}
 $$ {#eq-simplified_glm}
 
-We can fit the GLM @eq-simplified_glm using the standard procedure for fitting GLMs (e.g., in R), as the covariates in this GLM are observed. Doing so yields estimates $\hat{\beta}_0$ and $\hat{\beta}$ for $\beta_0$ and $\beta$, respectively. Assuming that $\hat{\beta_0} \approx \beta_0$ and $\hat{\beta} \approx \beta$ (which holds for large $n$ and small $\pi$), we can write
+We can fit the GLM @eq-simplified_glm using standard maximum likelihood estimation, as all the covariates in this GLM are observed. Doing so yields estimates $\hat{\beta}_0$ and $\hat{\beta}$ for $\beta_0$ and $\beta$, respectively. Assuming that $\hat{\beta_0} \approx \beta_0$ and $\hat{\beta} \approx \beta$ (which holds for large $n$ and small $\pi$), we can write
 
 $$\gamma x_j + \beta_0 x_j + \beta z_j \approx \gamma x_j + \hat{\beta}_0 + \hat{\beta} z_j = \gamma x_i + o_j,$$where we have set $o_j$ to $\hat{\beta}_0 + \hat{\beta}z_j$, i.e. the $j$th fitted value (on the scale of the linear component) of the GLM @eq-simplified_glm. Finally, we propose a simplified model for expression of the gRNA:
 
@@ -71,7 +69,7 @@ $$ {#eq-simplified_glm_2}
 
 Here, the $o_j$s are offset terms in the GLM. Notice that the GLM in @eq-simplified_glm_2 does not include covariates or an intercept term; rather, all information about the covariates and the baseline expression level of the gRNA has been "encoded" into the offsets $o_1, \dots, o_n$. In summary we (i) estimated $\beta_0$ and $\beta$ using the GLM @eq-simplified_glm and then (ii) replaced $\beta_0$ and $\beta$ in @eq-latent-variable-glm with their corresponding estimates, yielding the model @eq-simplified_glm_2. The model @eq-simplified_glm_2 is a good approximation to @eq-latent-variable-glm in the sense that the maximum likelihood estimates for $\gamma$ and $\pi$ in @eq-simplified_glm_2 are close to the corresponding estimates for these parameters in @eq-latent-variable-glm when $n$ is large and $\pi$ is small (as is the case on most single-cell CRISPR screen datasets). We turn our attention to estimating the model @eq-simplified_glm_2, treating the offset terms $o_1, \dots, o_n$ as known and fixed.
 
-EM algorithm. We derive an EM algorithm to estimate the model @eq-simplified_glm_2. Let $\theta = (\gamma, \pi)$ denote the unknown model parameters. Let $G_j$ be a random variable that represents the UMI count of the gRNA in the $j$th cell, and let $g_j$ be the realized value of this random variable. (Similarly, let $x_j$ be the realized value of the random variable $X_j$.) We begin by writing down the complete-data likelihood $l$ of this model, which is the likelihood that would result if $x_1, \dots, x_n$ *had* been observed.
+**EM algorithm**. We derive an EM algorithm to estimate the model @eq-simplified_glm_2. Let $\theta = (\gamma, \pi)$ denote the unknown model parameters. Let $G_j$ be a random variable that represents the UMI count of the gRNA in the $j$th cell, and let $g_j$ be the realized value of this random variable. (Similarly, let $x_j$ be the realized value of the random variable $X_j$.) We begin by writing down the complete-data likelihood $l$ of this model, which is the likelihood that would result if $x_1, \dots, x_n$ *had* been observed.
 
 $$
 \begin{multline*}
@@ -176,13 +174,13 @@ $$
 
 for some $\epsilon > 0$ (by default $\epsilon = 0.5 \cdot 10^{-4}$). We set the final parameter estimates $\hat{\pi}$ and $\hat{\gamma}$ to $\pi^{(t+1)}$ and $\gamma^{(t+1)}$. Additionally, we use the final membership probabilities $T^{(t+1)}_1, \dots, T^{(t+1)}_n$ to assign the gRNA to cells.
 
-As is standard, we run the EM algorithm several times over random starting estimates for $\pi$ and $\gamma$ to improve chances of converging to the global maximizer of the incomplete-data likelihood. We take the run whose estimates yield the greatest incomplete-data log-likelihood as the final run.
+As is standard, we run the EM algorithm several times over random starting estimates for $\pi$ and $\gamma$ to improve chances of converging to the global maximizer of the incomplete-data likelihood. We use the run whose estimates yield the greatest incomplete-data log-likelihood to assign gRNAs to cells.
 
 ## Treatment group and control group
 
-To test for association between a given gRNA (or gRNA target) and a response, `sceptre` divides the cells into two groups: the "treatment group" and the "control group." `sceptre` tests for differential expression of the response across these two groups of cells, yielding a p-value for the test of association. The definitions of treatment group and control group are somewhat subtle and depend on the analysis parameters of gRNA integration strategy (i.e., union, singleton, or Bonferroni), and control group (i.e., complement set or NT cells), analysis type (i.e., discovery analysis or calibration check). (See @sec-set_analysis_parameters for a discussion of these parameters.) This section aims to carefully define "treatment group" and "control group," in particular as a function of the aforementioned factors.
+To test for association between a given gRNA (or gRNA target) and a response, `sceptre` divides the cells into two groups: the "treatment group" and the "control group." `sceptre` tests for differential expression of the response across these two groups of cells, yielding a p-value for the test of association between the gRNA and response. Determining the cells that constitute the treatment group and control group is somewhat subtle and depends on the analysis parameters of gRNA integration strategy (i.e., union, singleton, or Bonferroni), control group (i.e., complement set or NT cells), and analysis type (i.e., discovery analysis or calibration check). (See @sec-set_analysis_parameters for a discussion of these parameters.) This section aims to carefully define "treatment group" and "control group," in particular as a function of the aforementioned analysis parameters.
 
-We first introduce some notation. Let $\mathcal{S} =\{1, \dots, n\}$ denote the set of cells. Let $X \in \{0,1\}^{r \times n}$ denote the matrix of imputed gRNA presences and absences (as determined in the gRNA assignment step; @sec-methods_assign_grnas). For $i \in \{1, \dots, r\}$, let $G_i$ denote the set of cells that gRNA $i$ has infected, i.e. $G_i := \{ j: x_{ij} = 1 \}.$ Let $\mathcal{N} \subset \{1, \dots, r\}$ denote the set of non-targeting gRNAs, and let $\mathcal{T} = \{1,\dots,r\} \setminus \mathcal{N}$ denote the set of targeting gRNAs. (Typically, $\mathcal{T}$ consists of both discovery gRNAs and positive control gRNAs.) Note that in low MOI, after applying quality control, each cell contains a single gRNA, implying that the sets $G_1, \dots, G_r$ are disjoint, i.e.
+We first introduce some notation. Let $\mathcal{S} =\{1, \dots, n\}$ denote the entire set of cells. Let $X \in \{0,1\}^{r \times n}$ denote the matrix of imputed gRNA presences and absences (as determined in the gRNA assignment step; @sec-methods_assign_grnas). Index the gRNAs by $\{1, \dots, r\}$. For $i \in \{1, \dots, r\}$, let $G_i$ denote the set of cells that gRNA $i$ has infected, i.e. $G_i := \{ j: x_{ij} = 1 \}.$ Let $\mathcal{N} \subset \{1, \dots, r\}$ denote the set of non-targeting gRNAs, and let $\mathcal{T} = \{1,\dots,r\} \setminus \mathcal{N}$ denote the set of targeting gRNAs. (Typically, $\mathcal{T}$ consists of both discovery gRNAs and positive control gRNAs.) Note that in low MOI, after applying quality control, each cell contains a single gRNA, implying that the sets $G_1, \dots, G_r$ are disjoint, i.e.
 
 $$
 \bigcap_{i=1}^r G_i = \emptyset.
@@ -190,7 +188,7 @@ $$
 
 We proceed by taking cases on gRNA integration strategy, first considering the union integration strategy and then considering the singleton and Bonferroni integration strategies.
 
-**Union gRNA integration strategy.** We first consider the "union" gRNA integration strategy. The union integration strategy involves combining multiple distinct gRNAs into a single "combined" gRNA and then testing this combined gRNA against responses as if it were a singleton gRNA. Suppose that we are running a discovery analysis, and let $\mathcal{I} \subset \mathcal{T}$ be a given set of gRNAs that target the same site. The table below defines the treatment group, the complement set control group, and the NT cells control group relative to $\mathcal{I}$.
+**Union gRNA integration strategy.** We first consider the "union" gRNA integration strategy. The union integration strategy involves combining multiple gRNAs into a single "combined" gRNA and then testing this combined gRNA against responses as if it were a singleton gRNA. Suppose that we are running a discovery analysis, and let $\mathcal{I} \subset \mathcal{T}$ be a given set of gRNAs that targets the same site. The table below defines the treatment group, the complement set control group, and the NT cells control group relative to $\mathcal{I}$.
 
 |                                |                                                      |                                |
 |:------------------:|:-------------------------:|:------------------------:|
@@ -199,7 +197,7 @@ We proceed by taking cases on gRNA integration strategy, first considering the u
 
 : Union gRNA integration strategy, discovery analysis.
 
-Next, suppose that we are running a calibration check analysis (again using the union gRNA integration strategy). Let $\mathcal{L} \subset \mathcal{N}$ be a set of non-targeting gRNAs that have been combined into a "negative control" gRNA target. (By default, $|\mathcal{L}| = |\mathcal{I}|$, i.e., the discovery target and negative control target contain the same number of gRNAs.) The treatment group, complement set control group, and NT cells control group are defined relative to $\mathcal{L}$ as follows.
+Next, suppose that we are running a calibration check analysis (again using the union gRNA integration strategy). Let $\mathcal{L} \subset \mathcal{N}$ be a set of non-targeting gRNAs that has been randomly combined into a "negative control" gRNA target. (By default, $|\mathcal{L}| = |\mathcal{I}|$, i.e., the discovery target and negative control target contain the same number of gRNAs.) The treatment group, complement set control group, and NT cells control group are defined relative to $\mathcal{L}$ as follows.
 
 |                                |                                                      |                                                        |
 |:------------------:|:-------------------------:|:------------------------:|
@@ -226,11 +224,13 @@ Finally, suppose that we are running a calibration check using the singleton or 
 
 : Singleton/Bonferroni gRNA integration strategy, calibration check.
 
-Note that the Bonferroni gRNA integration strategy combines p-values across gRNAs that target the same site into a single "target-wide" p-value via a Bonferroni correction (discussed below). Note also that the complement set is available as a control group in both low- and high-MOI settings, while the NT cells are available as a control group only in the low-MOI setting.
+Note that the Bonferroni gRNA integration strategy combines p-values across gRNAs that target the same site into a single "target-wide" p-value via a Bonferroni correction. Note also that the complement set is available as a control group in both low- and high-MOI settings, while the NT cells are available as a control group only in the low-MOI setting.
 
 ## Differential expression testing and estimation
 
-## Integrating information across (possibly variably effective) gRNAs
+We explicate the differential expression testing and estimation paradigm of `sceptre`. First, we introduce some notation. Consider a given target-response pair. Suppose that there are $n$ cells across the treatment and control groups for this pair.
+
+## Integrating information across (variably effective) gRNAs
 
 Suppose that gRNAs $1, \dots, k$ target the same site. Testing each of these gRNAs individually against a given response yields p-values $p_1, \dots, p_k$.
 
@@ -244,4 +244,4 @@ $$
 \end{multline}
 $$
 
-The penultimate inequality follows from the union bound, and the final inequality follows from the superuniformity of $p_i$. $\square$
+The penultimate inequality follows from the union bound, while the final inequality follows from the superuniformity of $p_i$. $\square$
