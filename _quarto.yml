@@ -26,6 +26,7 @@ book:
     - run-qc.qmd
     - run-calibration-check.qmd
     - run-power-check-and-discovery-analysis.qmd
+    - at-scale.qmd
   appendices:
     - glossary.qmd
     - faq.qmd

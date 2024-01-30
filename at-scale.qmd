@@ -1,0 +1,154 @@
+# `sceptre` at scale (beta) {#at-scale}
+
+This chapter describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. We begin by installing `ondisc`, a companion R package to `sceptre`. `ondisc` provides facilities for out-of-core and distributed computing on large-scale single-cell CRISPR screen data.
+
+```{r, eval=FALSE}
+devtools::install_github("timothy-barry/ondisc")
+```
+
+Users can leverage `sceptre` and `ondisc` to analyze their data in one of two ways. First, users can analyze their data *out-of-core* on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of perturbation-gene pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the `sceptre` Nextflow pipeline. This solution is most appropriate when the data are big *and* a large number of pairs is to be analyzed.
+
+The schematic below illustrates the sequence of steps involved in leveraging `sceptre` and `ondisc` to analyze a large-scale single-cell CRIPSR screen dataset. The first three steps are the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline. First, one imports the data into an `ondisc`-backed `sceptre_object`, which is a kind of `sceptre_object` in which the response and gRNA count matrices are stored on-disk rather than in memory. Second, one (optionally) explores the data in the R console, and third, one sets the analysis parameters of the `sceptre_object`. If one seeks to analyze the data entirely within the R console, then one proceeds in the manner as described in @sec-import_data --- @sec-sceptre_write_outputs_to_directory of *The whole game*, calling the standard pipeline functions (i.e., `assign_grnas()`, `run_qc()`, etc.) on the `ondisc`-backed `sceptre_object` one-by-one. If, on the other hand, one seeks to analyze the data via the Nextflow pipeline, then one writes the updated `sceptre_object` to disk and then invokes the Nextflow pipeline on the command line.
+
+```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap=c("A schematic illustrating the at-scale module of `sceptre`. Users first import their data into an `ondisc`-backed `sceptre_object`. The `ondisc`-backed `sceptre_object` stores the response and gRNA expression matrices on disk (as opposed to in memory). Users can analyze their data in the R console using the standard pipeline functions or on the command line using the Nextflow pipeline.")}
+knitr::include_graphics("nf_pipeline.png")
+```
+
+`ondisc` is an R package for large-scale computing on single-cell data, with a special focus on single-cell CRISPR screen analysis. `ondisc` implements several novel algorithms and data structures for efficiently manipulating and querying large single-cell expression matrices. `ondisc` is a lightweight layer of abstraction on top of the popular [HDF5](https://www.hdfgroup.org/solutions/hdf5/) database system. Expression matrices within `ondisc` are stored on-disk in the custom `.odm` file format, which is an HDF5 file with special structure. `ondisc` enables fast, out-of-core access to the rows of a feature-by-cell expression matrix. (Thus, loading the expression vector of a given feature into memory is fast.) This chapter keeps information about `ondisc` to a minimum; interested readers can learn more about `ondisc` by consulting XXX.
+
+We use the high-MOI CRISPRi data that ship with `sceptre` as a running example of the large-scale functionality of `sceptre`. We note that example high-MOI CRISPRi data are fairly small; typically, we would leverage the at-scale module of `sceptre` when the data are large (e.g., \>10 gigabytes). We begin by loading the `sceptre` package.
+
+```{r,message = FALSE,results = "hide"}
+library(sceptre)
+```
+
+# 1. Import data into an `ondisc`-backed `sceptre` object
+
+The first step is to import the data into an `ondisc`-backed `sceptre` object. To this end, we call the function `import_data_from_cellranger()`, setting the argument `use_ondisc` to `TRUE`. Additionally, we set `directory_to_write` to a string indicating the directory in which to write the backing `.odm` files that will contain the gene and gRNA expression matrices. In our example we set `directory_to_write` to `"/tmp/sceptre_example"`. Finally, we set `moi` to the MOI of the dataset, `grna_target_data_frame` to the gRNA target data frame, and `directories` to the set of directories outputted by one or more calls to `cellranger count`. (The latter three arguments were described detail in @sec-whole_game_import_data of *The whole game*.)
+
+```{r, echo=FALSE}
+fs <- list.files(directory_to_write, full.names = TRUE)
+
+```
+
+```{r,message = FALSE,results = "hide"}
+# set the arguments to the import function
+directories <- paste0(
+  system.file("extdata", package = "sceptre"),
+  "/highmoi_example/gem_group_", 1:2
+)
+data(grna_target_data_frame_highmoi)
+directory_to_write <- "/tmp/sceptre_example"
+
+# call `import_data_from_cellranger()`
+sceptre_object <- import_data_from_cellranger(
+  directories = directories,
+  moi = "high",
+  grna_target_data_frame = grna_target_data_frame_highmoi,
+  use_ondisc = TRUE,
+  directory_to_write = directory_to_write
+)
+```
+
+```{r, echo=FALSE,results="hide"}
+sceptre_object_2 <- import_data_from_cellranger(
+  directories = directories,
+  moi = "high",
+  grna_target_data_frame = grna_target_data_frame_highmoi
+)
+```
+
+`import_data_from_cellranger()` (with `use_ondisc` set to `TRUE`) converts the input `.mtx` files into `.odm` files, with one `.odm` file generated per modality. The `.odm` files contain the same information as the `.mtx` files but stored in a more efficient format. Additionally, `import_data_from_cellranger()` computes the cell-specific covariates (e.g., `response_n_umis`, `response_p_mito`, `batch`, etc.). Importantly, `import_data_from_cellranger()` requires only a few gigabytes of memory, even when the input data are tens of gigabytes in size.
+
+Calling `list.files()` on `directory_to_write` shows that two files have been created in `directory_to_write`: `gene.odm`, the gene expression matrix, and `grna.odm`, the gRNA expression matrix.
+
+```{r}
+list.files(directory_to_write)
+```
+
+# 2. Explore the data (optional)
+
+The next step --- which is optional but helpful --- is to explore the data within the R console. There are three relevant functions in this context: `get_cell_covariates()`, `get_response_matrix()`, and `get_grna_matrix()`. `get_cell_covariates()` returns the cell-specific covariates that were computed as part of the data import step, as below.
+
+```{r}
+cell_covariates <- get_cell_covariates(sceptre_object)
+head(cell_covariates)
+```
+
+Next, `get_response_matrix()` and `get_grna_matrix()` return the response and gRNA matrix, respectively. We call `get_response_matrix()` here.
+
+```{r}
+response_matrix <- get_response_matrix(sceptre_object)
+```
+
+`response_matrix` is an object of class `odm`, which is a sparse, integer-valued matrix backed by an `.odm` file. Evaluating `response_matrix` in the console prints the number of features and cells contained within the matrix, as well as the file path to the backing `.odm` file.
+
+```{r}
+response_matrix
+```
+
+`odm` objects support many of the key operators that standard R matrices support. For example, one can obtain the feature IDs of an `odm` object by calling `rownames()`.
+
+```{r}
+response_ids <- rownames(response_matrix)
+head(response_ids)
+```
+
+Additionally, one can use the bracket operator (i.e, `[, ]`) to load a given row of the expression matrix into memory. For example, `response_matrix["ENSG00000069275",]` loads the expression vector corresponding to the gene "ENSG00000069275" into memory.
+
+```{r}
+expression_vector <- response_matrix["ENSG00000069275",]
+head(expression_vector)
+```
+
+`odm` objects take up very little space, as the expression data are stored on disk rather than in memory. For example, `response_matrix` takes up less than 40 kilobytes (or 0.04 megabytes) of memory.
+
+```{r}
+object.size(response_matrix) |> format(units = "Kb")
+```
+
+Users can learn more about `odm` objects by reading Appendix XXX.
+
+# 3. Set the analysis parameters
+
+The third step is to set the analysis parameters. (This step is optional when using the Nextflow pipeline, as users instead can set the analysis parameters on the command line.) We proceed more or less exactly as described in @sec-whole_game_set_analysis_parameters of *The whole game*. First, we construct the positive control and discovery pairs using the functions `construct_positive_control_pairs()` and `construct_cis_pairs()`, respectively.
+
+```{r}
+# positive control pairs
+positive_control_pairs <- construct_positive_control_pairs(sceptre_object)
+# discovery pairs
+discovery_pairs <- construct_cis_pairs(
+  sceptre_object,
+  positive_control_pairs = positive_control_pairs,
+  distance_threshold = 5e6
+)
+```
+
+Next, we set the analysis parameters via a call to `set_analysis_parameters()`. Note that we set `resampling_mechanism` to `"permutations"` (as opposed to the default `"crt"`; see @sec-set_analysis_parameters_resampling_mech of *Set analysis parameters*). `"permutations"` currently is the only option available for `resampling_mechanism` when using an `ondisc`-backed `sceptre_object`.
+
+```{r}
+sceptre_object <- set_analysis_parameters(
+  sceptre_object = sceptre_object,
+  discovery_pairs = discovery_pairs,
+  positive_control_pairs = positive_control_pairs,
+  side = "left",
+  resampling_mechanism = "permutations"
+)
+```
+
+If one plans to invoke the Nextflow pipeline, one next writes the `sceptre_object` to a file called (for example) `"sceptre_object.rds"` in the directory `directory_to_write`. One can accomplish this via a call to the function `write_ondisc_backed_sceptre_object()`.
+
+```{r}
+write_ondisc_backed_sceptre_object(
+  sceptre_object = sceptre_object,
+  sceptre_object_fp = paste0(directory_to_write, "/sceptre_object.rds")
+)
+```
+
+`directory_to_write` now contains three files:
+
+```{r}
+list.files(directory_to_write)
+```
+
+# 4. Call the Nextflow pipeline
