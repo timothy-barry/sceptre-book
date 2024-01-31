@@ -8,39 +8,44 @@ devtools::install_github("timothy-barry/ondisc")
 
 Users can leverage `sceptre` and `ondisc` to analyze their data in one of two ways. First, users can analyze their data *out-of-core* on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of perturbation-gene pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the `sceptre` Nextflow pipeline. This solution is most appropriate when the data are big *and* a large number of pairs is to be analyzed.
 
-The schematic below illustrates the sequence of steps involved in leveraging `sceptre` and `ondisc` to analyze a large-scale single-cell CRIPSR screen dataset. The first three steps are the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline. First, one imports the data into an `ondisc`-backed `sceptre_object`, which is a kind of `sceptre_object` in which the response and gRNA count matrices are stored on-disk rather than in memory. Second, one (optionally) explores the data in the R console, and third, one sets the analysis parameters of the `sceptre_object`. If one seeks to analyze the data entirely within the R console, then one proceeds in the manner as described in @sec-import_data --- @sec-sceptre_write_outputs_to_directory of *The whole game*, calling the standard pipeline functions (i.e., `assign_grnas()`, `run_qc()`, etc.) on the `ondisc`-backed `sceptre_object` one-by-one. If, on the other hand, one seeks to analyze the data via the Nextflow pipeline, then one writes the updated `sceptre_object` to disk and then invokes the Nextflow pipeline on the command line.
+The schematic below illustrates these two at-scale interfaces. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: import the data into an `ondisc`-backed `sceptre_object`, which is a kind of `sceptre_object` in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in @sec-import_data --- @sec-sceptre_write_outputs_to_directory of *The whole game*, calling the standard pipeline functions (i.e., `assign_grnas()`, `run_qc()`, etc.) on the `ondisc`-backed `sceptre_object` one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved sequence of steps. This chapter focuses on the Nextflow interface, although we include some discussion of the simpler R console interface at the end.
 
-```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap=c("A schematic illustrating the at-scale module of `sceptre`. Users first import their data into an `ondisc`-backed `sceptre_object`. The `ondisc`-backed `sceptre_object` stores the response and gRNA expression matrices on disk (as opposed to in memory). Users can analyze their data in the R console using the standard pipeline functions or on the command line using the Nextflow pipeline.")}
-knitr::include_graphics("nf_pipeline.png")
+```{r, out.width = "750px", fig.align="center", echo = FALSE, fig.cap=c("The two at-scale interfaces to `sceptre`. Users can analyze their data in the R console using the standard pipeline functions or on the command line using the Nextflow pipeline. In both cases users first import their data into an `ondisc`-backed `sceptre_object`, which is a kind of `sceptre_object` that stores the response and gRNA expression matrices on disk (as opposed to in memory).")}
+knitr::include_graphics("at_scale_schematic.png")
 ```
 
-`ondisc` is an R package for large-scale computing on single-cell data, with a special focus on single-cell CRISPR screen analysis. `ondisc` implements several novel algorithms and data structures for efficiently manipulating and querying large single-cell expression matrices. `ondisc` is a lightweight layer of abstraction on top of the popular [HDF5](https://www.hdfgroup.org/solutions/hdf5/) database system. Expression matrices within `ondisc` are stored on-disk in the custom `.odm` file format, which is an HDF5 file with special structure. `ondisc` enables fast, out-of-core access to the rows of a feature-by-cell expression matrix. (Thus, loading the expression vector of a given feature into memory is fast.) This chapter keeps information about `ondisc` to a minimum; interested readers can learn more about `ondisc` by consulting XXX.
+`ondisc` is an R package for large-scale computing on single-cell data, with a special focus on single-cell CRISPR screen analysis. `ondisc` implements several novel algorithms and data structures for efficiently manipulating and querying large single-cell expression matrices. `ondisc` is implemented as a lightweight layer of abstraction on top of the popular [HDF5](https://www.hdfgroup.org/solutions/hdf5/) database system. Expression matrices within `ondisc` are stored on-disk in the custom `.odm` file format, which is an HDF5 file with special structure. `ondisc` enables fast, out-of-core access to the rows of a feature-by-cell expression matrix. (Thus, loading the expression vector of a given feature into memory is fast.) This chapter keeps discussion about `ondisc` to a minimum; interested readers can learn more about `ondisc` by reading XXX.
 
-We use the high-MOI CRISPRi data that ship with `sceptre` as a running example of the large-scale functionality of `sceptre`. We note that example high-MOI CRISPRi data are fairly small; typically, we would leverage the at-scale module of `sceptre` when the data are large (e.g., \>10 gigabytes). We begin by loading the `sceptre` package.
+We use the high-MOI CRISPRi data that ship with `sceptre` as a running example in this chapter. We note that the example high-MOI CRISPRi data are fairly small; typically, we would leverage the at-scale interface of `sceptre` when the data are large (e.g., \>10 gigabytes). We describe each step of the Nextflow-based pipeline in a separate section below. The title of each section indicates in parentheses whether the step is to be carried out on a local machine ("local machine") or on a cluster ("cluster"). By "local machine," we mean a laptop or a desktop, and by "cluster," we mean a computing cluster or a cloud.
+
+We begin by loading the `sceptre` package.
 
 ```{r,message = FALSE,results = "hide"}
 library(sceptre)
 ```
 
-# 1. Import data into an `ondisc`-backed `sceptre` object
+# 1. Import data into an `ondisc`-backed `sceptre` object (local machine)
 
-The first step is to import the data into an `ondisc`-backed `sceptre` object. To this end, we call the function `import_data_from_cellranger()`, setting the argument `use_ondisc` to `TRUE`. Additionally, we set `directory_to_write` to a string indicating the directory in which to write the backing `.odm` files that will contain the gene and gRNA expression matrices. In our example we set `directory_to_write` to `"/tmp/sceptre_example"`. Finally, we set `moi` to the MOI of the dataset, `grna_target_data_frame` to the gRNA target data frame, and `directories` to the set of directories outputted by one or more calls to `cellranger count`. (The latter three arguments were described detail in @sec-whole_game_import_data of *The whole game*.)
-
-```{r, echo=FALSE}
-fs <- list.files(directory_to_write, full.names = TRUE)
-
-```
+The first step is to import the data into an `ondisc`-backed `sceptre` object. To this end, we call the function `import_data_from_cellranger()`, setting the argument `use_ondisc` to `TRUE`. Additionally, we set `directory_to_write` to a string indicating the directory in which to write the backing `.odm` files that will contain the gene and gRNA expression matrices. In the example below we set `directory_to_write` to `"/tmp/sceptre_example"`. Finally, we set `moi` to the MOI of the dataset, `grna_target_data_frame` to the gRNA target data frame, and `directories` to the set of directories outputted by one or more calls to `cellranger count`. (The latter three arguments were described detail in @sec-whole_game_import_data of *The whole game*.)
 
 ```{r,message = FALSE,results = "hide"}
-# set the arguments to the import function
+# set the arguments to be passed to the import function
 directories <- paste0(
   system.file("extdata", package = "sceptre"),
   "/highmoi_example/gem_group_", 1:2
 )
 data(grna_target_data_frame_highmoi)
 directory_to_write <- "/tmp/sceptre_example"
+```
 
-# call `import_data_from_cellranger()`
+```{r,echo=FALSE, results="hide"}
+fs <- list.files(directory_to_write, full.names = TRUE)
+for (f in fs) file.remove(f)
+```
+
+Next, we call `import_data_from_cellranger()`, passing the arguments set in the above code block.
+
+```{r,message = FALSE,results = "hide"}
 sceptre_object <- import_data_from_cellranger(
   directories = directories,
   moi = "high",
@@ -58,30 +63,30 @@ sceptre_object_2 <- import_data_from_cellranger(
 )
 ```
 
-`import_data_from_cellranger()` (with `use_ondisc` set to `TRUE`) converts the input `.mtx` files into `.odm` files, with one `.odm` file generated per modality. The `.odm` files contain the same information as the `.mtx` files but stored in a more efficient format. Additionally, `import_data_from_cellranger()` computes the cell-specific covariates (e.g., `response_n_umis`, `response_p_mito`, `batch`, etc.). Importantly, `import_data_from_cellranger()` requires only a few gigabytes of memory, even when the input data are tens of gigabytes in size.
+`import_data_from_cellranger()` (with `use_ondisc` set to `TRUE`) converts the input `.mtx` files into `.odm` files, with one `.odm` file generated per modality. The `.odm` files contain the same information as the `.mtx` files but stored in a more efficient format. Additionally, `import_data_from_cellranger()` computes the cell-specific covariates (e.g., `response_n_umis`, `response_p_mito`, `batch`, etc.). Importantly, `import_data_from_cellranger()` typically requires only a few gigabytes of memory, even when the input data are tens of gigabytes in size.
 
 Calling `list.files()` on `directory_to_write` shows that two files have been created in `directory_to_write`: `gene.odm`, the gene expression matrix, and `grna.odm`, the gRNA expression matrix.
 
 ```{r}
-list.files(directory_to_write)
+list.files(directory_to_write, full.names = TRUE)
 ```
 
-# 2. Explore the data (optional)
+# 2. Explore the data (local machine)
 
-The next step --- which is optional but helpful --- is to explore the data within the R console. There are three relevant functions in this context: `get_cell_covariates()`, `get_response_matrix()`, and `get_grna_matrix()`. `get_cell_covariates()` returns the cell-specific covariates that were computed as part of the data import step, as below.
+The next step --- which is optional but helpful --- is to explore the data within the R console. Data exploration is especially useful when the data cannot easily be loaded into memory. There are three relevant functions in this context: `get_cell_covariates()`, `get_response_matrix()`, and `get_grna_matrix()`. `get_cell_covariates()` returns the cell-specific covariates that were computed as part of the data import step.
 
 ```{r}
 cell_covariates <- get_cell_covariates(sceptre_object)
 head(cell_covariates)
 ```
 
-Next, `get_response_matrix()` and `get_grna_matrix()` return the response and gRNA matrix, respectively. We call `get_response_matrix()` here.
+Next, `get_response_matrix()` and `get_grna_matrix()` return the response and gRNA matrix, respectively. We call `get_response_matrix()` below.
 
 ```{r}
 response_matrix <- get_response_matrix(sceptre_object)
 ```
 
-`response_matrix` is an object of class `odm`, which is a sparse, integer-valued matrix backed by an `.odm` file. Evaluating `response_matrix` in the console prints the number of features and cells contained within the matrix, as well as the file path to the backing `.odm` file.
+`response_matrix` is an object of class `odm`, which is an integer-valued expression matrix backed by an `.odm` file. Evaluating `response_matrix` in the console prints the number of features and cells contained within the matrix, as well as the file path to the backing `.odm` file.
 
 ```{r}
 response_matrix
@@ -101,7 +106,7 @@ expression_vector <- response_matrix["ENSG00000069275",]
 head(expression_vector)
 ```
 
-`odm` objects take up very little space, as the expression data are stored on disk rather than in memory. For example, `response_matrix` takes up less than 40 kilobytes (or 0.04 megabytes) of memory.
+`odm` objects take up very little space, as the expression data are stored on disk rather than in memory. For example, `response_matrix` takes up only 40 kilobytes (or 0.04 megabytes) of memory.
 
 ```{r}
 object.size(response_matrix) |> format(units = "Kb")
@@ -109,22 +114,24 @@ object.size(response_matrix) |> format(units = "Kb")
 
 Users can learn more about `odm` objects by reading Appendix XXX.
 
-# 3. Set the analysis parameters
+# 3. Set the analysis parameters (local machine)
 
-The third step is to set the analysis parameters. (This step is optional when using the Nextflow pipeline, as users instead can set the analysis parameters on the command line.) We proceed more or less exactly as described in @sec-whole_game_set_analysis_parameters of *The whole game*. First, we construct the positive control and discovery pairs using the functions `construct_positive_control_pairs()` and `construct_cis_pairs()`, respectively.
+The third step is to set the analysis parameters. We proceed more or less exactly as described in @sec-whole_game_set_analysis_parameters of *The whole game*. In this example we seek to conduct a *trans* analysis of the high-MOI CRISPRi data. We construct the positive control and discovery pairs using the functions `construct_positive_control_pairs()` and `construct_trans_pairs()`, respectively.
 
-```{r}
+```{r, results="hide"}
 # positive control pairs
-positive_control_pairs <- construct_positive_control_pairs(sceptre_object)
+positive_control_pairs <- construct_positive_control_pairs(
+  sceptre_object = sceptre_object
+)
 # discovery pairs
-discovery_pairs <- construct_cis_pairs(
-  sceptre_object,
+discovery_pairs <- construct_trans_pairs(
+  sceptre_object = sceptre_object,
   positive_control_pairs = positive_control_pairs,
-  distance_threshold = 5e6
+  pairs_to_exclude = "pairs_containing_pc_targets"
 )
 ```
 
-Next, we set the analysis parameters via a call to `set_analysis_parameters()`. Note that we set `resampling_mechanism` to `"permutations"` (as opposed to the default `"crt"`; see @sec-set_analysis_parameters_resampling_mech of *Set analysis parameters*). `"permutations"` currently is the only option available for `resampling_mechanism` when using an `ondisc`-backed `sceptre_object`.
+Next, we set the analysis parameters via a call to `set_analysis_parameters()`. Note that we set `resampling_mechanism` to `"permutations"` (as opposed to the default `"crt"`; see @sec-set_analysis_parameters_resampling_mech of *Set analysis parameters*). `"permutations"` currently is the only option available for `resampling_mechanism` for `ondisc`-backed `sceptre_object`s.
 
 ```{r}
 sceptre_object <- set_analysis_parameters(
@@ -136,19 +143,91 @@ sceptre_object <- set_analysis_parameters(
 )
 ```
 
-If one plans to invoke the Nextflow pipeline, one next writes the `sceptre_object` to a file called (for example) `"sceptre_object.rds"` in the directory `directory_to_write`. One can accomplish this via a call to the function `write_ondisc_backed_sceptre_object()`.
+This step is optional; we instead can specify the analysis parameters as arguments to the Nextflow pipeline on the command line. However, we find that it is generally easier to specify the analysis parameters within the R console via a call to `set_analysis_parameters()`.
+
+# 4. Write the `ondisc`-backed `sceptre_object` to disk (local machine)
+
+The next step is to write the `ondisc`-backed `sceptre_object` to disk. To this end, we call the function `write_ondisc_backed_sceptre_object()`, passing `sceptre_object` and `sceptre_object_fp` as arguments; the latter is a string specifying the (fully-qualified) name of the file in which to write the `sceptre_object`. We set `sceptre_object_fp` to `paste0(directory_to_write, "/sceptre_object.rds")`, although `sceptre_object_fp` can be set to any valid file path.
 
 ```{r}
+sceptre_object_fp <- paste0(directory_to_write, "/sceptre_object.rds")
 write_ondisc_backed_sceptre_object(
   sceptre_object = sceptre_object,
-  sceptre_object_fp = paste0(directory_to_write, "/sceptre_object.rds")
+  sceptre_object_fp = sceptre_object_fp
 )
 ```
 
-`directory_to_write` now contains three files:
+`directory_to_write` now contains three files: `gene.odm`, `grna.odm`, and `sceptre_object.rds`.
 
 ```{r}
-list.files(directory_to_write)
+list.files(directory_to_write, full.names = TRUE)
 ```
 
-# 4. Call the Nextflow pipeline
+# 4. Call the trial Nextflow pipeline (local machine)
+
+Next, we invoke the Nextflow pipeline on our local machine to analyze a small subset of the data. This small-scale analysis --- which we call a "trial" analysis --- helps us verify that the pipeline and data are in working order. A Nextflow launch script for the example high-MOI data is as follows.
+
+``` bash
+#!/bin/bash
+# Limit NF driver to 4 GB memory
+export NXF_OPTS="-Xms500M -Xmx4G"
+
+##########################
+# REQUIRED INPUT ARGUMENTS
+##########################
+example_dir="/tmp/sceptre_example/"
+# sceptre object
+sceptre_object_fp=$example_dir"sceptre_object.rds"
+# response ODM
+response_odm_fp=$example_dir"gene.odm"
+# grna ODM
+grna_odm_fp=$example_dir"grna.odm"
+
+###################
+# OUTPUT DIRECTORY:
+##################
+output_directory=$example_dir"/pipeline_outputs"
+
+#################
+# Invoke pipeline
+#################
+nextflow run timothy-barry/sceptre-pipeline -r main -resume \
+ --sceptre_object_fp $sceptre_object_fp \
+ --response_odm_fp $response_odm_fp \
+ --grna_odm_fp $grna_odm_fp \
+ --output_directory $output_directory \
+ --grna_assignment_method "mixture" \
+ --pair_pod_size "30" \
+ --grna_pod_size "10" \
+ --trial "true"
+```
+
+We will describe this launch script in detail shortly. For the time being, we note that the `--trial "true"` line tells Nextflow to run the trial pipeline as opposed to the full-scale pipeline. Users can copy and paste the above script into a file called `launch_script.sh`. Alternately, users can access `launch_script.sh` by git cloning the `sceptre-pipeline` directory and then changing directories into the `examples` subdirectory, as follows.
+
+``` terminal
+git clone git@github.com:timothy-barry/sceptre-pipeline.git
+cd sceptre-pipeline/examples
+```
+
+One can run the pipeline by calling `bash` on `launch_script.sh`:
+
+```         
+bash launch_script.sh
+# alternately: ./launch_script.sh
+```
+
+If the pipeline runs correctly, the terminal output looks something like the following.
+
+```{r, out.width = "750px", fig.align="center", echo = FALSE, fig.cap=c("Nextflow output for the trial pipeline on a local machine.")}
+knitr::include_graphics("nf_output.png")
+```
+
+The outputs of the pipeline are stored in `/tmp/sceptre_example/pipeline_outputs`. Calling `list.files` on this directory shows that the directory contains all of the standard `sceptre` outputs, including the analysis summary text file (`analysis_summary.txt`), the plots (e.g., `plot_assign_grnas.png`, etc.), and the results files (e.g., `results_run_discovery_analysis.rds`, etc.). To explore the results in more detail, one can `cd` to the pipeline output directory: `cd /tmp/sceptre_example/pipeline_outputs`. Mac users can view the output directory in the Finder via Finder -\> Go -\> Go to folder -\> "tmp/sceptre_example" -\> enter.
+
+```{r}
+list.files("/tmp/sceptre_example/pipeline_outputs")
+```
+
+An inspection of `analysis_summary.txt` indicates that 97 negative control pairs and 97 discovery pairs were analyzed. The trial Nextflow pipeline randomly samples 100 pairs from the discovery set, 100 pairs from the negative control set, and 100 pairs from the positive control set and subjects these pairs to analysis. (Some of the pairs may be filtered out by pairwise QC. Moreover, if any of the sets contains fewer than 100 pairs, then the entire set is analyzed.) As the trial pipeline ran without issue, we can proceed to the next step.
+
+# 5. Push the data to the cluster
