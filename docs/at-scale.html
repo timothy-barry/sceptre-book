@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.3.450">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
-<title>Hands-On Single-Cell CRISPR Screen Analysis - 7&nbsp; sceptre at scale (beta)</title>
+<title>Hands-On Single-Cell CRISPR Screen Analysis - 7&nbsp; sceptre at scale</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -100,7 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">`sceptre` at scale (beta)</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html">Part II. At-scale sceptre</a></li><li class="breadcrumb-item"><a href="./at-scale.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">`sceptre` at scale</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -138,57 +138,83 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">The whole game</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./import-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./set-analysis-parameters.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./assign-grnas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./run-qc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./run-calibration-check.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./run-power-check-and-discovery-analysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./at-scale.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><code>sceptre</code> at scale (beta)</span></span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
- <span class="menu-text">Appendices</span></a>
+ <span class="menu-text">Part I. Introduction to sceptre</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./import-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./set-analysis-parameters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./assign-grnas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./run-qc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./run-calibration-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./run-power-check-and-discovery-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Part II. At-scale sceptre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./at-scale.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><code>sceptre</code> at scale</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Part III. Methods and algorithms</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
@@ -224,11 +250,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#call-the-trial-nextflow-pipeline-local-machine" id="toc-call-the-trial-nextflow-pipeline-local-machine" class="nav-link" data-scroll-target="#call-the-trial-nextflow-pipeline-local-machine"><span class="header-section-number">7.5</span> Call the trial Nextflow pipeline (local machine)</a></li>
   <li><a href="#sec-push_data_to_cluster" id="toc-sec-push_data_to_cluster" class="nav-link" data-scroll-target="#sec-push_data_to_cluster"><span class="header-section-number">7.6</span> Push the data to the cluster</a></li>
   <li><a href="#call-the-trial-pipeline-cluster" id="toc-call-the-trial-pipeline-cluster" class="nav-link" data-scroll-target="#call-the-trial-pipeline-cluster"><span class="header-section-number">7.7</span> Call the trial pipeline (cluster)</a></li>
+  <li><a href="#call-the-full-pipeline-cluster" id="toc-call-the-full-pipeline-cluster" class="nav-link" data-scroll-target="#call-the-full-pipeline-cluster"><span class="header-section-number">7.8</span> Call the full pipeline (cluster)</a></li>
   </ul></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title"><span id="at-scale" class="quarto-section-identifier"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><code>sceptre</code> at scale (beta)</span></span></h1>
+<h1 class="title"><span id="at-scale" class="quarto-section-identifier"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title"><code>sceptre</code> at scale</span></span></h1>
 </div>
 
 
@@ -241,7 +268,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
-</header><p>This chapter describes how to apply <code>sceptre</code> to analyze large-scale single-cell CRISPR screen data. We begin by installing <code>ondisc</code>, a companion R package to <code>sceptre</code>. <code>ondisc</code> provides facilities for out-of-core and distributed computing on large-scale single-cell CRISPR screen data.</p>
+</header><div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Part II of this book describes how to apply <code>sceptre</code> to analyze large-scale single-cell CRISPR screen data. This part is slightly more advanced than Part I. Ideally, readers will have intermediate bioinformatics experience, including familiarity with basic linux commands and facility with submitting and monitoring jobs on a cluster. Knowledge of Nextflow (or some similar workflow management tool) is helpful not required.</p>
+</div>
+</div>
+<p>This chapter describes how to apply <code>sceptre</code> to analyze large-scale single-cell CRISPR screen data. We begin by installing <code>ondisc</code>, a companion R package to <code>sceptre</code>. <code>ondisc</code> provides facilities for out-of-core and distributed computing on large-scale single-cell CRISPR screen data.</p>
 <div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-1_bfeeb769e257a427e78e3c310b6adfeb">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -498,7 +538,7 @@ scp -r ~/sceptre_data username@cluster_address:~/</code></pre>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span> <span class="co"># ondisc</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-<p>The function <code><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">read_ondisc_backed_sceptre_object()</a></code> loads an <code>ondisc</code>-backed <code>sceptre_object</code>, taking <code>sceptre_object_fp</code> (i.e., the file path to <code>sceptre_object.rds</code>), <code>response_odm_file_fp</code> (i.e., the file path to the response <code>.odm</code> file), and <code>grna_odm_file_fp</code> (i.e., the file path to the gRNA <code>.odm</code> file) as arguments. We explore the <code>sceptre_object</code> to verify that it works as expected on the cluster.</p>
+<p>The function <code><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">read_ondisc_backed_sceptre_object()</a></code> loads an <code>ondisc</code>-backed <code>sceptre_object</code>, taking <code>sceptre_object_fp</code> (i.e., the file path to <code>sceptre_object.rds</code>), <code>response_odm_file_fp</code> (i.e., the file path to the response <code>.odm</code> file), and <code>grna_odm_file_fp</code> (i.e., the file path to the gRNA <code>.odm</code> file) as arguments. We briefly explore the <code>sceptre_object</code> to verify that looks the same on the cluster as on the local machine.</p>
 <div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-22_3763d8077ff3311ca2d581e6d15a29ec">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
@@ -593,7 +633,66 @@ cd sceptre-pipeline/examples</code></pre>
 <pre class="terminal"><code>sbatch launch_script.sh</code></pre>
 </div>
 <p>Note that we are able to launch the pipeline using essentially the same command on our local machine as on the cluster. This is one of the advantages of Nextflow: it provides a layer of abstraction between the logic of the pipeline and the execution environment. Thus, we can develop (or debug, etc.) a pipeline on our local machine and then run it at scale on the cluster without modification.</p>
-<p>The pipeline outputs are written to the directory <code>~/sceptre_outputs</code>. Again, all of the standard <code>sceptre</code> outputs — e.g., <code>analysis_summary.txt</code>, <code>results_run_discovery_analysis.rds</code>, etc. — are contained within this directory. In fact, the <code>~/sceptre_outputs</code> directory on the cluster should match exactly the <code>~/sceptre_outputs</code> directory on the local machine.</p>
+<p>The pipeline outputs are written to the directory <code>~/sceptre_outputs</code>. Again, all of the standard <code>sceptre</code> outputs — e.g., <code>analysis_summary.txt</code>, <code>results_run_discovery_analysis.rds</code>, etc. — are contained within this directory. In fact, the <code>~/sceptre_outputs</code> directory on the cluster should match exactly the <code>~/sceptre_outputs</code> directory on the local machine. We can view <code>analysis_summary.txt</code>, for example, by calling <code>cat</code> on this file:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal, cluster</strong></pre>
+</div>
+<pre class="terminal"><code>cat analysis_summary.txt</code></pre>
+</div>
+</section><section id="call-the-full-pipeline-cluster" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="call-the-full-pipeline-cluster">
+<span class="header-section-number">7.8</span> Call the full pipeline (cluster)</h2>
+<p>The final step is to run the full pipeline on the cluster. To this end, we modify <code>launch_script.sh</code>, removing the <code>--trial</code> flag from the last line of the script. We can do this on the cluster by calling <code>nano launch_script.sh</code>, deleting the <code>--trial</code> flag, and saving the updated script. <code>launch_script.sh</code> now should look as follows.</p>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-24_b03c47ccaf023478ecc47f072a076dda">
+<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co"># REQUIRED INPUT ARGUMENTS</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="va">data_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_data/"</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sceptre object</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="va">sceptre_object_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"sceptre_object.rds"</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="co"># response ODM</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a><span class="va">response_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"gene.odm"</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a><span class="co"># grna ODM</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a><span class="va">grna_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"grna.odm"</span></span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a><span class="co">###################</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTPUT DIRECTORY:</span></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a><span class="co">##################</span></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a><span class="va">output_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_outputs"</span></span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke pipeline</span></span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run timothy-barry/sceptre-pipeline <span class="at">-r</span> main <span class="at">-resume</span> <span class="dt">\</span></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a> <span class="at">--sceptre_object_fp</span> <span class="va">$sceptre_object_fp</span> <span class="dt">\</span></span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_odm_fp</span> <span class="va">$response_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_odm_fp</span> <span class="va">$grna_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a> <span class="at">--output_directory</span> <span class="va">$output_directory</span> <span class="dt">\</span></span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_assignment_method</span> <span class="st">"mixture"</span> <span class="dt">\</span></span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a> <span class="at">--pair_pod_size</span> <span class="st">"30"</span> <span class="dt">\</span></span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_pod_size</span> <span class="st">"10"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Finally, we can launch the full pipeline by calling <code>qsub</code> (or <code>sbatch</code>, depending on the scheduler) on <code>launch_script.sh</code>:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal, cluster</strong></pre>
+</div>
+<pre class="terminal"><code>qsub launch_script.sh
+# or sbatch launch_script.sh</code></pre>
+</div>
+<p>The outputs are written to <code>~/sceptre_outputs</code>, having overwritten the previous outputs. We can download the outputs onto our local machine as follows.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal, local</strong></pre>
+</div>
+<pre class="terminal"><code>scp -r username@cluster_address:~/sceptre_outputs ~/</code></pre>
+</div>
+<p>Again, “username” and “cluster_address” should be replaced by one’s username and cluster address, respectively. An exploration of <code>~/sceptre_outputs</code> shows that we have successfully carried out a <em>trans</em> analysis of the example high-MOI CRISPRi data.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">

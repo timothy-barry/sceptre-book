@@ -1,4 +1,8 @@
-# `sceptre` at scale (beta) {#at-scale}
+# `sceptre` at scale {#at-scale}
+
+::: callout-tip
+Part II of this book describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. This part is slightly more advanced than Part I. Ideally, readers will have intermediate bioinformatics experience, including familiarity with basic linux commands and facility with submitting and monitoring jobs on a cluster. Knowledge of Nextflow (or some similar workflow management tool) is helpful not required.
+:::
 
 This chapter describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. We begin by installing `ondisc`, a companion R package to `sceptre`. `ondisc` provides facilities for out-of-core and distributed computing on large-scale single-cell CRISPR screen data.
 
@@ -244,7 +248,7 @@ devtools::install_github("katsevich-lab/sceptre") # sceptre
 devtools::install_github("timothy-barry/ondisc") # ondisc
 ```
 
-The function `read_ondisc_backed_sceptre_object()` loads an `ondisc`-backed `sceptre_object`, taking `sceptre_object_fp` (i.e., the file path to `sceptre_object.rds`), `response_odm_file_fp` (i.e., the file path to the response `.odm` file), and `grna_odm_file_fp` (i.e., the file path to the gRNA `.odm` file) as arguments. We explore the `sceptre_object` to verify that it works as expected on the cluster.
+The function `read_ondisc_backed_sceptre_object()` loads an `ondisc`-backed `sceptre_object`, taking `sceptre_object_fp` (i.e., the file path to `sceptre_object.rds`), `response_odm_file_fp` (i.e., the file path to the response `.odm` file), and `grna_odm_file_fp` (i.e., the file path to the gRNA `.odm` file) as arguments. We briefly explore the `sceptre_object` to verify that looks the same on the cluster as on the local machine.
 
 ```{r, filename="R, cluster"}
 library(sceptre)
@@ -317,7 +321,66 @@ On SLURM cluster, one would use the `sbatch` command.
 sbatch launch_script.sh
 ```
 
-We are able to launch the pipeline using essentially the same command on our local machine as on the cluster. This is one of the advantages of Nextflow: it provides a layer of abstraction between the logic of the pipeline and the execution environment. Thus, we can develop (or debug, etc.) a pipeline on our local machine and then run it at scale on the cluster without modification.
+Note that we are able to launch the pipeline using essentially the same command on our local machine as on the cluster. This is one of the advantages of Nextflow: it provides a layer of abstraction between the logic of the pipeline and the execution environment. Thus, we can develop (or debug, etc.) a pipeline on our local machine and then run it at scale on the cluster without modification.
 
-The pipeline outputs are written to the directory `~/sceptre_outputs`. Again, all of the standard `sceptre` outputs --- e.g., `analysis_summary.txt`, `results_run_discovery_analysis.rds`, etc. --- are contained within this directory. In fact, the `~/sceptre_outputs` directory on the cluster should match exactly the `~/sceptre_outputs` directory on the local machine.
+The pipeline outputs are written to the directory `~/sceptre_outputs`. Again, all of the standard `sceptre` outputs --- e.g., `analysis_summary.txt`, `results_run_discovery_analysis.rds`, etc. --- are contained within this directory. In fact, the `~/sceptre_outputs` directory on the cluster should match exactly the `~/sceptre_outputs` directory on the local machine. We can view `analysis_summary.txt`, for example, by calling `cat` on this file:
+
+```{.terminal filename="terminal, cluster"}
+cat analysis_summary.txt
+```
+
+## Call the full pipeline (cluster)
+
+The final step is to run the full pipeline on the cluster. To this end, we modify `launch_script.sh`, removing the `--trial` flag from the last line of the script. We can do this on the cluster by calling `nano launch_script.sh`, deleting the `--trial` flag, and saving the updated script. `launch_script.sh` now should look as follows.
+
+```{bash,eval=FALSE}
+#| code-fold: true
+#| code-summary: "Show code"
+#!/bin/bash
+# Limit NF driver to 4 GB memory
+export NXF_OPTS="-Xms500M -Xmx4G"
+
+##########################
+# REQUIRED INPUT ARGUMENTS
+##########################
+data_directory=$HOME"/sceptre_data/"
+# sceptre object
+sceptre_object_fp=$data_directory"sceptre_object.rds"
+# response ODM
+response_odm_fp=$data_directory"gene.odm"
+# grna ODM
+grna_odm_fp=$data_directory"grna.odm"
+
+###################
+# OUTPUT DIRECTORY:
+##################
+output_directory=$HOME"/sceptre_outputs"
+
+#################
+# Invoke pipeline
+#################
+nextflow run timothy-barry/sceptre-pipeline -r main -resume \
+ --sceptre_object_fp $sceptre_object_fp \
+ --response_odm_fp $response_odm_fp \
+ --grna_odm_fp $grna_odm_fp \
+ --output_directory $output_directory \
+ --grna_assignment_method "mixture" \
+ --pair_pod_size "30" \
+ --grna_pod_size "10"
+```
+
+Finally, we can launch the full pipeline by calling `qsub` (or `sbatch`, depending on the scheduler) on `launch_script.sh`:
+
+```{.terminal filename="terminal, cluster"}
+qsub launch_script.sh
+# or sbatch launch_script.sh
+```
+
+The outputs are written to `~/sceptre_outputs`, having overwritten the previous outputs. We can download the outputs onto our local machine as follows.
+
+```{.terminal filename="terminal, local"}
+scp -r username@cluster_address:~/sceptre_outputs ~/
+```
+
+Again, "username" and "cluster_address" should be replaced by one's username and cluster address, respectively. An exploration of `~/sceptre_outputs` on the local machine shows that we have successfully carried out a *trans* analysis of the example high-MOI CRISPRi data.
 
