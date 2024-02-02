@@ -251,6 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sec-push_data_to_cluster" id="toc-sec-push_data_to_cluster" class="nav-link" data-scroll-target="#sec-push_data_to_cluster"><span class="header-section-number">7.6</span> Push the data to the cluster</a></li>
   <li><a href="#call-the-trial-pipeline-cluster" id="toc-call-the-trial-pipeline-cluster" class="nav-link" data-scroll-target="#call-the-trial-pipeline-cluster"><span class="header-section-number">7.7</span> Call the trial pipeline (cluster)</a></li>
   <li><a href="#call-the-full-pipeline-cluster" id="toc-call-the-full-pipeline-cluster" class="nav-link" data-scroll-target="#call-the-full-pipeline-cluster"><span class="header-section-number">7.8</span> Call the full pipeline (cluster)</a></li>
+  <li><a href="#stepping-through-the-pipeline-piece-by-piece" id="toc-stepping-through-the-pipeline-piece-by-piece" class="nav-link" data-scroll-target="#stepping-through-the-pipeline-piece-by-piece"><span class="header-section-number">7.9</span> Stepping through the pipeline piece by piece</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -286,7 +287,7 @@ Tip
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Users can leverage <code>sceptre</code> and <code>ondisc</code> to analyze their data in one of two ways. First, users can analyze their data <em>out-of-core</em> on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of perturbation-gene pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the <code>sceptre</code> Nextflow pipeline. This solution is most appropriate when the data are big <em>and</em> a large number of pairs is to be analyzed.</p>
-<p>The schematic below illustrates the two at-scale interfaces to <code>sceptre</code>. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, which is a kind of <code>sceptre_object</code> in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in <a href="import-data.html"><span>Chapter&nbsp;1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game</em>, calling the standard pipeline functions (i.e., <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, etc.) on the <code>ondisc</code>-backed <code>sceptre_object</code> one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. This chapter focuses on the Nextflow interface, although we include some discussion of the simpler R console interface at the end.</p>
+<p>The schematic below illustrates the two at-scale interfaces to <code>sceptre</code>. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, which is a kind of <code>sceptre_object</code> in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game</em>, calling the standard pipeline functions (i.e., <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, etc.) on the <code>ondisc</code>-backed <code>sceptre_object</code> one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. This chapter focuses on the Nextflow interface, although we include some discussion of the simpler R console interface at the end.</p>
 <div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-2_9454315b4f3095e1023a6123e0005bf7">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -685,14 +686,117 @@ cd sceptre-pipeline/examples</code></pre>
 <pre class="terminal"><code>qsub launch_script.sh
 # or sbatch launch_script.sh</code></pre>
 </div>
-<p>The outputs are written to <code>~/sceptre_outputs</code>, having overwritten the previous outputs. We can download the outputs onto our local machine as follows.</p>
+<p>The outputs are written to <code>~/sceptre_outputs</code>. (The previous outputs are overwritten.) We can download the output directory onto our local machine as follows.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>terminal, local</strong></pre>
 </div>
 <pre class="terminal"><code>scp -r username@cluster_address:~/sceptre_outputs ~/</code></pre>
 </div>
-<p>Again, “username” and “cluster_address” should be replaced by one’s username and cluster address, respectively. An exploration of <code>~/sceptre_outputs</code> shows that we have successfully carried out a <em>trans</em> analysis of the example high-MOI CRISPRi data.</p>
+<p>Again, “username” and “cluster_address” should be replaced by one’s username and cluster address, respectively. An exploration of <code>~/sceptre_outputs</code> on the local machine shows that we have successfully carried out a <em>trans</em> analysis of the example high-MOI CRISPRi data.</p>
+</section><section id="stepping-through-the-pipeline-piece-by-piece" class="level2" data-number="7.9"><h2 data-number="7.9" class="anchored" data-anchor-id="stepping-through-the-pipeline-piece-by-piece">
+<span class="header-section-number">7.9</span> Stepping through the pipeline piece by piece</h2>
+<p>The <code>sceptre</code> Nextflow pipeline consists of six distinct steps, depicted below.</p>
+<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-25_e2f39ac3cf2ef5c5320085abacd907cd">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="reduced_pipeline.png" class="img-fluid figure-img" width="500"></p>
+<figcaption class="figure-caption">The <code>sceptre</code> Nextflow pipeline.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>The Nextflow pipeline is nearly the same as the pipeline introduced in <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game.</em> The difference is that the “Import data” step is not part of this pipeline (as we import the data into an <code>ondisc</code>-backed <code>sceptre</code> object prior to calling the Nextflow pipeline), and likewise the “Write outputs to directory” step is not part of this pipeline (as the Nextflow pipeline automatically writes results to the output directory at the end of each step).</p>
+<p>We can advance through the Nextflow pipeline one step at a time by specifying the <code>pipeline_stop</code> argument. <code>pipeline_stop</code> takes six possible values: <code>"set_analysis_parameters"</code>, <code>"assign_grnas"</code>, <code>"run_qc"</code>, <code>"run_calibration_check"</code>, <code>"run_power_check"</code>, and <code>"run_discovery_analysis"</code>. When <code>pipeline_stop</code> is specified, the Nextflow pipeline runs through all the steps of the pipeline up to and including <code>pipeline_stop</code>. For example, if we set <code>pipeline_stop</code> to <code>"run_calibration_check"</code>, the Nextflow pipeline carries out the steps “Set analysis parameters,” “Assign gRNAs,” “Run quality control,” and “Run calibration check” and then stops. The default value of <code>pipeline_stop</code> is <code>"run_discovery_analysis"</code>, which is why the Nextflow pipeline by default runs through to completion.</p>
+<p>We provide an example of using the <code>pipeline_stop</code> argument below. This example can be carried out either on the local machine or on the cluster. First, let us remove the <code>~/sceptre_outputs</code> directory.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal</strong></pre>
+</div>
+<pre class="terminal"><code>rm -r ~/sceptre_outputs</code></pre>
+</div>
+<p>We modify <code>launch_script.sh</code>, adding the line <code>--pipeline_stop "assign_grnas"</code> to the bottom of the script. This line tells Nextflow to stop at the “Assign gRNAs” step.</p>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-26_21855f874fc5a278d37af0c520257170">
+<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co"># REQUIRED INPUT ARGUMENTS</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="va">data_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_data/"</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sceptre object</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="va">sceptre_object_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"sceptre_object.rds"</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="co"># response ODM</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a><span class="va">response_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"gene.odm"</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="co"># grna ODM</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a><span class="va">grna_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"grna.odm"</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a><span class="co">###################</span></span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTPUT DIRECTORY:</span></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a><span class="co">##################</span></span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a><span class="va">output_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_outputs"</span></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke pipeline</span></span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run timothy-barry/sceptre-pipeline <span class="at">-r</span> main <span class="at">-resume</span> <span class="dt">\</span></span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a> <span class="at">--sceptre_object_fp</span> <span class="va">$sceptre_object_fp</span> <span class="dt">\</span></span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_odm_fp</span> <span class="va">$response_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_odm_fp</span> <span class="va">$grna_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a> <span class="at">--output_directory</span> <span class="va">$output_directory</span> <span class="dt">\</span></span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_assignment_method</span> <span class="st">"mixture"</span> <span class="dt">\</span></span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a> <span class="at">--pair_pod_size</span> <span class="st">"30"</span> <span class="dt">\</span></span>
+<span id="cb40-31"><a href="#cb40-31" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_pod_size</span> <span class="st">"10"</span> <span class="dt">\</span></span>
+<span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a> <span class="at">--pipeline_stop</span> <span class="st">"assign_grnas"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We then launch the pipeline (via <code>bash launch_script.sh</code>, <code>qsub launch_script.sh</code>, or <code>sbatch launch_script.sh</code>, etc.) and examine the outputs directory. We see (via an inspection of <code>analysis_summary.txt</code>, for example) that “Set analysis parameters” and “Assign gRNAs” have completed, but that the other pipeline steps have not yet run.</p>
+<p>Next, we might want to run the subsequent step in the pipeline, namely “Run quality control.” To this end, we update <code>launch_script.sh</code>, changing the line <code>--pipeline_stop "assign_grnas"</code> to <code>--pipeline_stop "run_qc"</code>. Additionally, we add the line <code>-resume</code> to the launch script. The <code>-resume</code> flag in effect tells Nextflow to skip over all steps preceeding “Run QC” (including “Assign gRNAs”), as these steps already have been run.</p>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-27_cf15323dc573722716e4b31fc95f50b9">
+<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="co"># REQUIRED INPUT ARGUMENTS</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="va">data_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_data/"</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sceptre object</span></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="va">sceptre_object_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"sceptre_object.rds"</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a><span class="co"># response ODM</span></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a><span class="va">response_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"gene.odm"</span></span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a><span class="co"># grna ODM</span></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="va">grna_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"grna.odm"</span></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a><span class="co">###################</span></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTPUT DIRECTORY:</span></span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a><span class="co">##################</span></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a><span class="va">output_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_outputs"</span></span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke pipeline</span></span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run timothy-barry/sceptre-pipeline <span class="at">-r</span> main <span class="at">-resume</span> <span class="dt">\</span></span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a> <span class="at">--sceptre_object_fp</span> <span class="va">$sceptre_object_fp</span> <span class="dt">\</span></span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_odm_fp</span> <span class="va">$response_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_odm_fp</span> <span class="va">$grna_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a> <span class="at">--output_directory</span> <span class="va">$output_directory</span> <span class="dt">\</span></span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_assignment_method</span> <span class="st">"mixture"</span> <span class="dt">\</span></span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a> <span class="at">--pair_pod_size</span> <span class="st">"30"</span> <span class="dt">\</span></span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_pod_size</span> <span class="st">"10"</span> <span class="dt">\</span></span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a> <span class="at">--pipeline_stop</span> <span class="st">"run_qc"</span> <span class="dt">\</span></span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a> <span class="at">-resume</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-28_a5800ea368e7148a9760885b5cbf79dd">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="nf_output_2.png" class="img-fluid figure-img" width="700"></p>
+<figcaption class="figure-caption">Nextflow output when the <code>-resume</code> flag is passed as an argument.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>We launch the pipeline and display the terminal output above. Note that <code>assign_grnas</code> has been cached, indicating that this step of the pipeline has not been recomputed. In conclusion, <code>--pipeline_stop</code> and <code>-resume</code> enable one to step through the Nextflow pipeline in an incremental way, verifying that a given step of the pipeline looks good before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, one can update the arguments passed to that step of the pipeline, as described in the next chapter.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
