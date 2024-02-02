@@ -217,12 +217,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#import-data-into-an-ondisc-backed-sceptre-object-local-machine" id="toc-import-data-into-an-ondisc-backed-sceptre-object-local-machine" class="nav-link active" data-scroll-target="#import-data-into-an-ondisc-backed-sceptre-object-local-machine"><span class="header-section-number">8</span> 1. Import data into an <code>ondisc</code>-backed <code>sceptre</code> object (local machine)</a></li>
-  <li><a href="#explore-the-data-local-machine" id="toc-explore-the-data-local-machine" class="nav-link" data-scroll-target="#explore-the-data-local-machine"><span class="header-section-number">9</span> 2. Explore the data (local machine)</a></li>
-  <li><a href="#set-the-analysis-parameters-local-machine" id="toc-set-the-analysis-parameters-local-machine" class="nav-link" data-scroll-target="#set-the-analysis-parameters-local-machine"><span class="header-section-number">10</span> 3. Set the analysis parameters (local machine)</a></li>
-  <li><a href="#write-the-ondisc-backed-sceptre_object-to-disk-local-machine" id="toc-write-the-ondisc-backed-sceptre_object-to-disk-local-machine" class="nav-link" data-scroll-target="#write-the-ondisc-backed-sceptre_object-to-disk-local-machine"><span class="header-section-number">11</span> 4. Write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk (local machine)</a></li>
-  <li><a href="#call-the-trial-nextflow-pipeline-local-machine" id="toc-call-the-trial-nextflow-pipeline-local-machine" class="nav-link" data-scroll-target="#call-the-trial-nextflow-pipeline-local-machine"><span class="header-section-number">12</span> 4. Call the trial Nextflow pipeline (local machine)</a></li>
-  <li><a href="#push-the-data-to-the-cluster" id="toc-push-the-data-to-the-cluster" class="nav-link" data-scroll-target="#push-the-data-to-the-cluster"><span class="header-section-number">13</span> 5. Push the data to the cluster</a></li>
+<li><a href="#sec-import_data_into_odm_backed_sceptre_object" id="toc-sec-import_data_into_odm_backed_sceptre_object" class="nav-link active" data-scroll-target="#sec-import_data_into_odm_backed_sceptre_object"><span class="header-section-number">7.1</span> Import data into an <code>ondisc</code>-backed <code>sceptre</code> object (local machine)</a></li>
+  <li><a href="#explore-the-data-local-machine" id="toc-explore-the-data-local-machine" class="nav-link" data-scroll-target="#explore-the-data-local-machine"><span class="header-section-number">7.2</span> Explore the data (local machine)</a></li>
+  <li><a href="#set-the-analysis-parameters-local-machine" id="toc-set-the-analysis-parameters-local-machine" class="nav-link" data-scroll-target="#set-the-analysis-parameters-local-machine"><span class="header-section-number">7.3</span> Set the analysis parameters (local machine)</a></li>
+  <li><a href="#write-the-ondisc-backed-sceptre_object-to-disk-local-machine" id="toc-write-the-ondisc-backed-sceptre_object-to-disk-local-machine" class="nav-link" data-scroll-target="#write-the-ondisc-backed-sceptre_object-to-disk-local-machine"><span class="header-section-number">7.4</span> Write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk (local machine)</a></li>
+  <li><a href="#call-the-trial-nextflow-pipeline-local-machine" id="toc-call-the-trial-nextflow-pipeline-local-machine" class="nav-link" data-scroll-target="#call-the-trial-nextflow-pipeline-local-machine"><span class="header-section-number">7.5</span> Call the trial Nextflow pipeline (local machine)</a></li>
+  <li><a href="#sec-push_data_to_cluster" id="toc-sec-push_data_to_cluster" class="nav-link" data-scroll-target="#sec-push_data_to_cluster"><span class="header-section-number">7.6</span> Push the data to the cluster</a></li>
+  <li><a href="#call-the-trial-pipeline-cluster" id="toc-call-the-trial-pipeline-cluster" class="nav-link" data-scroll-target="#call-the-trial-pipeline-cluster"><span class="header-section-number">7.7</span> Call the trial pipeline (cluster)</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -245,7 +246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Users can leverage <code>sceptre</code> and <code>ondisc</code> to analyze their data in one of two ways. First, users can analyze their data <em>out-of-core</em> on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of perturbation-gene pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the <code>sceptre</code> Nextflow pipeline. This solution is most appropriate when the data are big <em>and</em> a large number of pairs is to be analyzed.</p>
-<p>The schematic below illustrates these two at-scale interfaces. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: import the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, which is a kind of <code>sceptre_object</code> in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in <a href="import-data.html"><span>Chapter&nbsp;1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game</em>, calling the standard pipeline functions (i.e., <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, etc.) on the <code>ondisc</code>-backed <code>sceptre_object</code> one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved sequence of steps. This chapter focuses on the Nextflow interface, although we include some discussion of the simpler R console interface at the end.</p>
+<p>The schematic below illustrates the two at-scale interfaces to <code>sceptre</code>. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, which is a kind of <code>sceptre_object</code> in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in <a href="import-data.html"><span>Chapter&nbsp;1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game</em>, calling the standard pipeline functions (i.e., <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, etc.) on the <code>ondisc</code>-backed <code>sceptre_object</code> one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. This chapter focuses on the Nextflow interface, although we include some discussion of the simpler R console interface at the end.</p>
 <div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-2_9454315b4f3095e1023a6123e0005bf7">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -255,26 +256,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p><code>ondisc</code> is an R package for large-scale computing on single-cell data, with a special focus on single-cell CRISPR screen analysis. <code>ondisc</code> implements several novel algorithms and data structures for efficiently manipulating and querying large single-cell expression matrices. <code>ondisc</code> is implemented as a lightweight layer of abstraction on top of the popular <a href="https://www.hdfgroup.org/solutions/hdf5/">HDF5</a> database system. Expression matrices within <code>ondisc</code> are stored on-disk in the custom <code>.odm</code> file format, which is an HDF5 file with special structure. <code>ondisc</code> enables fast, out-of-core access to the rows of a feature-by-cell expression matrix. (Thus, loading the expression vector of a given feature into memory is fast.) This chapter keeps discussion about <code>ondisc</code> to a minimum; interested readers can learn more about <code>ondisc</code> by reading XXX.</p>
-<p>We use the high-MOI CRISPRi data that ship with <code>sceptre</code> as a running example in this chapter. We note that the example high-MOI CRISPRi data are fairly small; typically, we would leverage the at-scale interface of <code>sceptre</code> when the data are large (e.g., &gt;10 gigabytes). We describe each step of the Nextflow-based pipeline in a separate section below. The title of each section indicates in parentheses whether the step is to be carried out on a local machine (“local machine”) or on a cluster (“cluster”). By “local machine,” we mean a laptop or a desktop, and by “cluster,” we mean a computing cluster or a cloud.</p>
+<p>We use the high-MOI CRISPRi data that ship with <code>sceptre</code> as a running example in this chapter. We note that the example high-MOI CRISPRi data are fairly small; typically, we would leverage the at-scale interface of <code>sceptre</code> when the data are large (e.g., &gt;10 gigabytes). We describe each step of the Nextflow-based pipeline below, with one section per step. The title of each section indicates whether the step is to be carried out on a local machine (“local machine”) or on a cluster (“cluster”). By “local machine,” we mean a laptop or a desktop, and by “cluster,” we mean a computing cluster or a cloud.</p>
 <p>We begin by loading the <code>sceptre</code> package.</p>
 <div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-3_a25a39ba437a6f3e4abd73f7b85b2f24">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="import-data-into-an-ondisc-backed-sceptre-object-local-machine" class="level1" data-number="8"><h1 data-number="8">
-<span class="header-section-number">8</span> 1. Import data into an <code>ondisc</code>-backed <code>sceptre</code> object (local machine)</h1>
-<p>The first step is to import the data into an <code>ondisc</code>-backed <code>sceptre</code> object. To this end, we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code>, setting the argument <code>use_ondisc</code> to <code>TRUE</code>. Additionally, we set <code>directory_to_write</code> to a string indicating the directory in which to write the backing <code>.odm</code> files that will contain the gene and gRNA expression matrices. In the example below we set <code>directory_to_write</code> to <code>"/tmp/sceptre_example"</code>. Finally, we set <code>moi</code> to the MOI of the dataset, <code>grna_target_data_frame</code> to the gRNA target data frame, and <code>directories</code> to the set of directories outputted by one or more calls to <code>cellranger count</code>. (The latter three arguments were described detail in <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> of <em>The whole game</em>.)</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-4_823e63ac5008f3ee7754005cf105748f">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># set the arguments to be passed to the import function</span></span>
+<section id="sec-import_data_into_odm_backed_sceptre_object" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="sec-import_data_into_odm_backed_sceptre_object">
+<span class="header-section-number">7.1</span> Import data into an <code>ondisc</code>-backed <code>sceptre</code> object (local machine)</h2>
+<p>The first step is to import the data into an <code>ondisc</code>-backed <code>sceptre</code> object. To this end, we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code>, setting the argument <code>use_ondisc</code> to <code>TRUE</code>. Additionally, we set <code>directory_to_write</code> to a string indicating the directory in which to write the backing <code>.odm</code> files, which are the files that will contain the gene and gRNA expression matrices. In the example below we set <code>directory_to_write</code> to <code>"~/sceptre_data"</code>, although any valid file path will do. Finally, we set <code>moi</code> to the MOI of the dataset, <code>grna_target_data_frame</code> to the gRNA target data frame, and <code>directories</code> to the set of directories outputted by one or more calls to <code>cellranger count</code>. (The latter three arguments were described in depth in <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> of <em>The whole game</em>.)</p>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-4_33efccf42767943c0307866274e24585">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># set the arguments</span></span>
 <span><span class="va">directories</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"sceptre"</span><span class="op">)</span>,</span>
 <span>  <span class="st">"/highmoi_example/gem_group_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">grna_target_data_frame_highmoi</span><span class="op">)</span></span>
-<span><span class="va">directory_to_write</span> <span class="op">&lt;-</span> <span class="st">"/tmp/sceptre_example"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">directory_to_write</span> <span class="op">&lt;-</span> <span class="st">"~/sceptre_data"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Next, we call <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code>, passing the arguments set in the above code block.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-6_66ed1648c034d1a5af4a73206591d2d6">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger</a></span><span class="op">(</span></span>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-6_00fbf270acc9ea78b10db0e423d77655">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># call the data import function</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger</a></span><span class="op">(</span></span>
 <span>  directories <span class="op">=</span> <span class="va">directories</span>,</span>
 <span>  moi <span class="op">=</span> <span class="st">"high"</span>,</span>
 <span>  grna_target_data_frame <span class="op">=</span> <span class="va">grna_target_data_frame_highmoi</span>,</span>
@@ -282,22 +283,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  directory_to_write <span class="op">=</span> <span class="va">directory_to_write</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> (with <code>use_ondisc</code> set to <code>TRUE</code>) converts the input <code>.mtx</code> files into <code>.odm</code> files, with one <code>.odm</code> file generated per modality. The <code>.odm</code> files contain the same information as the <code>.mtx</code> files but stored in a more efficient format. Additionally, <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> computes the cell-specific covariates (e.g., <code>response_n_umis</code>, <code>response_p_mito</code>, <code>batch</code>, etc.). Importantly, <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> typically requires only a few gigabytes of memory, even when the input data are tens of gigabytes in size.</p>
-<p>Calling <code><a href="https://rdrr.io/r/base/list.files.html">list.files()</a></code> on <code>directory_to_write</code> shows that two files have been created in <code>directory_to_write</code>: <code>gene.odm</code>, the gene expression matrix, and <code>grna.odm</code>, the gRNA expression matrix.</p>
+<p><code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> (with <code>use_ondisc</code> set to <code>TRUE</code>) converts the inputted <code>.mtx</code> files into <code>.odm</code> files, with one <code>.odm</code> file generated per modality. The <code>.odm</code> files contain the same information as the <code>.mtx</code> files, but the data are stored in a much more efficient format for single-cell CRISPR screen analysis. Additionally, <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> computes the cell-specific covariates (e.g., <code>response_n_umis</code>, <code>response_p_mito</code>, <code>batch</code>, etc.). Importantly, <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> uses only a few gigabytes of memory, even when the input data are tens of gigabytes in size.</p>
+<p>Calling <code><a href="https://rdrr.io/r/base/list.files.html">list.files()</a></code> on <code>directory_to_write</code> shows that two files have been created in this directory: <code>gene.odm</code>, the file storing the gene expression matrix, and <code>grna.odm</code>, the file storing the gRNA expression matrix.</p>
 <div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-8_ca596cb9be1396f4e6341470c04d1cf9">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">directory_to_write</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "/tmp/sceptre_example/gene.odm" "/tmp/sceptre_example/grna.odm"</code></pre>
+<pre><code>[1] "/Users/timbarry/sceptre_data/gene.odm"
+[2] "/Users/timbarry/sceptre_data/grna.odm"</code></pre>
 </div>
 </div>
-</section><section id="explore-the-data-local-machine" class="level1" data-number="9"><h1 data-number="9">
-<span class="header-section-number">9</span> 2. Explore the data (local machine)</h1>
-<p>The next step — which is optional but helpful — is to explore the data within the R console. Data exploration is especially useful when the data cannot easily be loaded into memory. There are three relevant functions in this context: <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_cell_covariates()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_response_matrix()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_grna_matrix()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_cell_covariates()</a></code> returns the cell-specific covariates that were computed as part of the data import step.</p>
+</section><section id="explore-the-data-local-machine" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="explore-the-data-local-machine">
+<span class="header-section-number">7.2</span> Explore the data (local machine)</h2>
+<p>The next step — which is optional but generally helpful — is to explore the data within the R console. There are three relevant functions in this context: <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_cell_covariates()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_response_matrix()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_grna_matrix()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_cell_covariates()</a></code> returns the cell-specific covariates that were computed as part of the data import step.</p>
 <div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-9_5ebc6a7f0e0c586b70a58b6924b186e6">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cell_covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_cell_covariates</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cell_covariates</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   response_n_umis response_n_nonzero response_p_mito grna_n_umis
+             &lt;int&gt;              &lt;int&gt;           &lt;num&gt;       &lt;int&gt;
 1:             830                171      0.04096386          24
 2:             737                160      0.05563094           8
 3:            1172                199      0.03412969           6
@@ -305,6 +308,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 5:             653                128      0.04594181          14
 6:             879                177      0.02957907          25
    grna_n_nonzero   batch
+            &lt;int&gt;  &lt;fctr&gt;
 1:              3 batch_1
 2:              1 batch_1
 3:              1 batch_1
@@ -317,14 +321,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-10_29c40a46f4b4a98440cc28bb9be3eae2">
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">response_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_response_matrix</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>response_matrix</code> is an object of class <code>odm</code>, which is an integer-valued expression matrix backed by an <code>.odm</code> file. Evaluating <code>response_matrix</code> in the console prints the number of features and cells contained within the matrix, as well as the file path to the backing <code>.odm</code> file.</p>
+<p><code>response_matrix</code> is an object of class <code>odm</code>, which is an integer-valued expression matrix backed by an <code>.odm</code> file. Evaluating <code>response_matrix</code> in the console prints the number of features and cells contained within the matrix, as well as the file path to the backing <code>.odm</code> file. The “Backing file” field is machine-specific.</p>
 <div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-11_f5e2fe589f45d39f34de86b06654e5d2">
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">response_matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class odm with the following attributes:
     • 526 features
     • 45919 cells
-    • Backing file: /tmp/sceptre_example/gene.odm</code></pre>
+    • Backing file: /Users/timbarry/sceptre_data/gene.odm</code></pre>
 </div>
 </div>
 <p><code>odm</code> objects support many of the key operators that standard R matrices support. For example, one can obtain the feature IDs of an <code>odm</code> object by calling <code><a href="https://rdrr.io/r/base/colnames.html">rownames()</a></code>.</p>
@@ -351,10 +355,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] "38.6 Kb"</code></pre>
 </div>
 </div>
-<p>Users can learn more about <code>odm</code> objects by reading Appendix XXX.</p>
-</section><section id="set-the-analysis-parameters-local-machine" class="level1" data-number="10"><h1 data-number="10">
-<span class="header-section-number">10</span> 3. Set the analysis parameters (local machine)</h1>
-<p>The third step is to set the analysis parameters. We proceed more or less exactly as described in <a href="sceptre.html#sec-whole_game_set_analysis_parameters"><span>Section&nbsp;2</span></a> of <em>The whole game</em>. In this example we seek to conduct a <em>trans</em> analysis of the high-MOI CRISPRi data. We construct the positive control and discovery pairs using the functions <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>, respectively.</p>
+<p>Users can learn more about <code>odm</code> objects by referring to Appendix XXX.</p>
+</section><section id="set-the-analysis-parameters-local-machine" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="set-the-analysis-parameters-local-machine">
+<span class="header-section-number">7.3</span> Set the analysis parameters (local machine)</h2>
+<p>The third step is to set the analysis parameters. We proceed more or less exactly as described in <a href="sceptre.html#sec-whole_game_set_analysis_parameters"><span>Section&nbsp;2</span></a> of <em>The whole game</em>. We seek to conduct a <em>trans</em> analysis of the high-MOI CRISPRi data. Hence, we construct the positive control and discovery pairs using the functions <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>, respectively.</p>
 <div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-15_42e63a608d671bf47800545ea49ab1ac">
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># positive control pairs</span></span>
 <span><span class="va">positive_control_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span></span>
@@ -367,39 +371,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  pairs_to_exclude <span class="op">=</span> <span class="st">"pairs_containing_pc_targets"</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Next, we set the analysis parameters via a call to <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>. Note that we set <code>resampling_mechanism</code> to <code>"permutations"</code> (as opposed to the default <code>"crt"</code>; see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_resampling_mech"><span>Section&nbsp;2.7</span></a> of <em>Set analysis parameters</em>). <code>"permutations"</code> currently is the only option available for <code>resampling_mechanism</code> for <code>ondisc</code>-backed <code>sceptre_object</code>s.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-16_8f1a264bd658053290e9fbc903854a8c">
+<p>Next, we set the analysis parameters via a call to <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>. We set <code>resampling_mechanism</code> to <code>"permutations"</code> (as opposed to the default of <code>"crt"</code> in high-MOI), as <code>"permutations"</code> currently is the only option available for <code>resampling_mechanism</code> for an <code>ondisc</code>-backed <code>sceptre_object</code>. Additionally, we set <code>side</code> to <code>"both"</code> to conduct a two-tailed test, as we do not have a strong prior as to whether the perturbations will lead to an increase or decrease in the expression of the genes in <em>trans</em>.</p>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-16_a4ac85e401bb68b2978f6986a910243d">
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
 <span>  discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span>,</span>
 <span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
-<span>  side <span class="op">=</span> <span class="st">"left"</span>,</span>
+<span>  side <span class="op">=</span> <span class="st">"both"</span>,</span>
 <span>  resampling_mechanism <span class="op">=</span> <span class="st">"permutations"</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This step is optional; we instead can specify the analysis parameters as arguments to the Nextflow pipeline on the command line. However, we find that it is generally easier to specify the analysis parameters within the R console via a call to <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>.</p>
-</section><section id="write-the-ondisc-backed-sceptre_object-to-disk-local-machine" class="level1" data-number="11"><h1 data-number="11">
-<span class="header-section-number">11</span> 4. Write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk (local machine)</h1>
-<p>The next step is to write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk. To this end, we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">write_ondisc_backed_sceptre_object()</a></code>, passing <code>sceptre_object</code> and <code>sceptre_object_fp</code> as arguments; the latter is a string specifying the (fully-qualified) name of the file in which to write the <code>sceptre_object</code>. We set <code>sceptre_object_fp</code> to <code>paste0(directory_to_write, "/sceptre_object.rds")</code>, although <code>sceptre_object_fp</code> can be set to any valid file path.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-17_2f5a8d4ca5e827e973652c561d8bb3e1">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">directory_to_write</span>, <span class="st">"/sceptre_object.rds"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">write_ondisc_backed_sceptre_object</a></span><span class="op">(</span></span>
+<p>We note that this step is optional; we instead could specify the analysis parameters on the command line as arguments to the Nextflow pipeline.</p>
+</section><section id="write-the-ondisc-backed-sceptre_object-to-disk-local-machine" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="write-the-ondisc-backed-sceptre_object-to-disk-local-machine">
+<span class="header-section-number">7.4</span> Write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk (local machine)</h2>
+<p>The next step is to write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk. To this end, we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">write_ondisc_backed_sceptre_object()</a></code>, passing <code>sceptre_object</code> and <code>directory_to_write</code> as arguments. The <code>sceptre_object</code> is saved within <code>directory_to_write</code> as <code>sceptre_object.rds</code>. <code>directory_to_write</code> can be any directory.</p>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-17_6d088a23c1b57948ff9713d54a121845">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">write_ondisc_backed_sceptre_object</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
-<span>  sceptre_object_fp <span class="op">=</span> <span class="va">sceptre_object_fp</span></span>
+<span>  directory_to_write <span class="op">=</span> <span class="va">directory_to_write</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>directory_to_write</code> now contains three files: <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code>.</p>
 <div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-18_624d5505003d26f742d37464daf1516a">
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">directory_to_write</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "/tmp/sceptre_example/gene.odm"          
-[2] "/tmp/sceptre_example/grna.odm"          
-[3] "/tmp/sceptre_example/sceptre_object.rds"</code></pre>
+<pre><code>[1] "/Users/timbarry/sceptre_data/gene.odm"          
+[2] "/Users/timbarry/sceptre_data/grna.odm"          
+[3] "/Users/timbarry/sceptre_data/sceptre_object.rds"</code></pre>
 </div>
 </div>
-</section><section id="call-the-trial-nextflow-pipeline-local-machine" class="level1" data-number="12"><h1 data-number="12">
-<span class="header-section-number">12</span> 4. Call the trial Nextflow pipeline (local machine)</h1>
-<p>Next, we invoke the Nextflow pipeline on our local machine to analyze a small subset of the data. This small-scale analysis — which we call a “trial” analysis — helps us verify that the pipeline and data are in working order. A Nextflow launch script for the example high-MOI data is as follows.</p>
+</section><section id="call-the-trial-nextflow-pipeline-local-machine" class="level2" data-number="7.5"><h2 data-number="7.5" class="anchored" data-anchor-id="call-the-trial-nextflow-pipeline-local-machine">
+<span class="header-section-number">7.5</span> Call the trial Nextflow pipeline (local machine)</h2>
+<p>The next step is to invoke the Nextflow pipeline on the local machine to analyze a small subset of the data. This small-scale analysis — which we call a “trial” analysis — enables us to verify that the pipeline is in working order. A Nextflow launch script for the example high-MOI data is as follows.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>launch_script.sh</strong></pre>
+</div>
 <div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
@@ -407,18 +414,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co"># REQUIRED INPUT ARGUMENTS</span></span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="va">example_dir</span><span class="op">=</span><span class="st">"/tmp/sceptre_example/"</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="va">data_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_data/"</span></span>
 <span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sceptre object</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="va">sceptre_object_fp</span><span class="op">=</span><span class="va">$example_dir</span><span class="st">"sceptre_object.rds"</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="va">sceptre_object_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"sceptre_object.rds"</span></span>
 <span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co"># response ODM</span></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="va">response_odm_fp</span><span class="op">=</span><span class="va">$example_dir</span><span class="st">"gene.odm"</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="va">response_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"gene.odm"</span></span>
 <span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co"># grna ODM</span></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="va">grna_odm_fp</span><span class="op">=</span><span class="va">$example_dir</span><span class="st">"grna.odm"</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="va">grna_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"grna.odm"</span></span>
 <span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="co">###################</span></span>
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTPUT DIRECTORY:</span></span>
 <span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="co">##################</span></span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="va">output_directory</span><span class="op">=</span><span class="va">$example_dir</span><span class="st">"/pipeline_outputs"</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="va">output_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_outputs"</span></span>
 <span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
 <span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke pipeline</span></span>
@@ -431,13 +438,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_assignment_method</span> <span class="st">"mixture"</span> <span class="dt">\</span></span>
 <span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a> <span class="at">--pair_pod_size</span> <span class="st">"30"</span> <span class="dt">\</span></span>
 <span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_pod_size</span> <span class="st">"10"</span> <span class="dt">\</span></span>
-<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a> <span class="at">--trial</span> <span class="st">"true"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>We will describe this launch script in detail shortly. For the time being, we note that the <code>--trial "true"</code> line tells Nextflow to run the trial pipeline as opposed to the full-scale pipeline. Users can copy and paste the above script into a file called <code>launch_script.sh</code>. Alternately, users can access <code>launch_script.sh</code> by git cloning the <code>sceptre-pipeline</code> directory and then changing directories into the <code>examples</code> subdirectory, as follows.</p>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a> <span class="at">--trial</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We will describe the structure of this launch script in detail shortly. For the time being, note that the <code>--trial</code> flag on the last line tells Nextflow to run the trial pipeline as opposed to the full-scale pipeline. Users can copy and paste the above script into a file called <code>launch_script.sh</code>. Alternately, users can access <code>launch_script.sh</code> by git cloning the <code>sceptre-pipeline</code> directory and then changing directories into the <code>examples</code> subdirectory, as follows.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal</strong></pre>
+</div>
 <pre class="terminal"><code>git clone git@github.com:timothy-barry/sceptre-pipeline.git
 cd sceptre-pipeline/examples</code></pre>
-<p>One can run the pipeline by calling <code>bash</code> on <code>launch_script.sh</code>:</p>
-<pre><code>bash launch_script.sh
+</div>
+<p>We run the pipeline by calling <code>bash</code> on <code>launch_script.sh</code>:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal</strong></pre>
+</div>
+<pre class="terminal"><code>bash launch_script.sh
 # alternately: ./launch_script.sh</code></pre>
+</div>
 <p>If the pipeline runs correctly, the terminal output looks something like the following.</p>
 <div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-19_6882a1a6cb17c3fe8709f0d198009f59">
 <div class="cell-output-display">
@@ -447,9 +465,9 @@ cd sceptre-pipeline/examples</code></pre>
 </div>
 </div>
 </div>
-<p>The outputs of the pipeline are stored in <code>/tmp/sceptre_example/pipeline_outputs</code>. Calling <code>list.files</code> on this directory shows that the directory contains all of the standard <code>sceptre</code> outputs, including the analysis summary text file (<code>analysis_summary.txt</code>), the plots (e.g., <code>plot_assign_grnas.png</code>, etc.), and the results files (e.g., <code>results_run_discovery_analysis.rds</code>, etc.). To explore the results in more detail, one can <code>cd</code> to the pipeline output directory: <code>cd /tmp/sceptre_example/pipeline_outputs</code>. Mac users can view the output directory in the Finder via Finder -&gt; Go -&gt; Go to folder -&gt; “tmp/sceptre_example” -&gt; enter.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-20_0ea2ed35c92288c7071dc9a207ee339a">
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"/tmp/sceptre_example/pipeline_outputs"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The results of the pipeline are stored in <code>~/sceptre_outputs</code>. Calling <code>list.files</code> on <code>~/sceptre_outputs</code> shows that the directory contains all of the standard <code>sceptre</code> outputs, including the analysis summary text file (<code>analysis_summary.txt</code>), the plot files (e.g., <code>plot_assign_grnas.png</code>, etc.), and the result files (e.g., <code>results_run_discovery_analysis.rds</code>, etc.).</p>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-20_883090cf42a1aefe772bc02bb59a730e">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"~/sceptre_outputs"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "analysis_summary.txt"               "plot_assign_grnas.png"             
  [3] "plot_covariates.png"                "plot_grna_count_distributions.png" 
@@ -459,9 +477,123 @@ cd sceptre-pipeline/examples</code></pre>
 [11] "results_run_power_check.rds"       </code></pre>
 </div>
 </div>
-<p>An inspection of <code>analysis_summary.txt</code> indicates that 97 negative control pairs and 97 discovery pairs were analyzed. The trial Nextflow pipeline randomly samples 100 pairs from the discovery set, 100 pairs from the negative control set, and 100 pairs from the positive control set and subjects these pairs to analysis. (Some of the pairs may be filtered out by pairwise QC. Moreover, if any of the sets contains fewer than 100 pairs, then the entire set is analyzed.) As the trial pipeline ran without issue, we can proceed to the next step.</p>
-</section><section id="push-the-data-to-the-cluster" class="level1" data-number="13"><h1 data-number="13">
-<span class="header-section-number">13</span> 5. Push the data to the cluster</h1>
+<p>An inspection of <code>analysis_summary.txt</code> indicates that 97 negative control pairs and 97 discovery pairs were analyzed. The trial Nextflow pipeline randomly samples 100 pairs from the discovery set, 100 pairs from the negative control set, and 100 pairs from the positive control set and subjects these pairs to analysis. (Some of the pairs may be filtered out by pairwise QC. Moreover, if any of the sets contains fewer than 100 pairs, then that entire set of pairs is analyzed.) If the trial pipeline runs without issue, one can proceed to the next step.</p>
+</section><section id="sec-push_data_to_cluster" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="sec-push_data_to_cluster">
+<span class="header-section-number">7.6</span> Push the data to the cluster</h2>
+<p>The next step is to push the data to the cluster. The following block of code creates a directory <code>~/sceptre_data</code> on the cluster. It then copies the contents of <code>~/sceptre_data</code> (on the local machine) into <code>~/sceptre_data</code> (on the cluster). The strings “username” and “cluster_address” should be replaced by one’s username and cluster address, respectively.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal</strong></pre>
+</div>
+<pre class="terminal"><code>ssh username@cluster_address "mkdir -p ~/sceptre_data"
+scp -r ~/sceptre_data username@cluster_address:~/</code></pre>
+</div>
+<p>We optionally can load and explore the data on the cluster. First, we ensure that the required packages are installed on the cluster.</p>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-21_b4687798bd7906344eebfeb690b00062">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>R, cluster</strong></pre>
+</div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"katsevich-lab/sceptre"</span><span class="op">)</span> <span class="co"># sceptre</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span> <span class="co"># ondisc</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>The function <code><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">read_ondisc_backed_sceptre_object()</a></code> loads an <code>ondisc</code>-backed <code>sceptre_object</code>, taking <code>sceptre_object_fp</code> (i.e., the file path to <code>sceptre_object.rds</code>), <code>response_odm_file_fp</code> (i.e., the file path to the response <code>.odm</code> file), and <code>grna_odm_file_fp</code> (i.e., the file path to the gRNA <code>.odm</code> file) as arguments. We explore the <code>sceptre_object</code> to verify that it works as expected on the cluster.</p>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-22_3763d8077ff3311ca2d581e6d15a29ec">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>R, cluster</strong></pre>
+</div>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span>
+<span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="st">"~/sceptre_data/"</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">read_ondisc_backed_sceptre_object</a></span><span class="op">(</span> </span>
+<span>  sceptre_object_fp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"sceptre_object.rds"</span><span class="op">)</span>,</span>
+<span>  response_odm_file_fp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"gene.odm"</span><span class="op">)</span>,</span>
+<span>  grna_odm_file_fp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">"grna.odm"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">response_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_response_matrix</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span>
+<span><span class="va">expression_vector</span> <span class="op">&lt;-</span> <span class="va">response_matrix</span><span class="op">[</span><span class="st">"ENSG00000069275"</span>,<span class="op">]</span></span>
+<span><span class="co"># etc...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We saved the example data to the home directory for convenience. On most clusters there is a dedicated “data” directory. Best practices dictate that users store their data in the dedicated data directory, especially when the data are large.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The first six steps of the Nextflow-based pipeline (i.e., <a href="#sec-import_data_into_odm_backed_sceptre_object"><span>Section&nbsp;7.1</span></a> – <a href="#sec-push_data_to_cluster"><span>Section&nbsp;7.6</span></a>) can be carried out entirely on the cluster, bypassing the local machine. If the output directories from <code>cellranger count</code> are stored on the cluster, the user can import the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, set the analysis parameters, and write the updated <code>sceptre_object</code> to disk on the cluster as follows.</p>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-23_6d6076b09e690effa5b2498246668a2d">
+<details><summary>Show code</summary><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># on cluster</span></span>
+<span><span class="co"># import data</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger</a></span><span class="op">(</span></span>
+<span>  directories <span class="op">=</span> <span class="va">directories</span>,</span>
+<span>  moi <span class="op">=</span> <span class="st">"high"</span>,</span>
+<span>  grna_target_data_frame <span class="op">=</span> <span class="va">grna_target_data_frame_highmoi</span>,</span>
+<span>  use_ondisc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  directory_to_write <span class="op">=</span> <span class="va">directory_to_write</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># set analysis parameters (define discovery_pairs, positive_control_pairs)</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
+<span>  discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span>,</span>
+<span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
+<span>  side <span class="op">=</span> <span class="st">"both"</span>,</span>
+<span>  resampling_mechanism <span class="op">=</span> <span class="st">"permutations"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co"># write updated sceptre_object to disk</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">write_ondisc_backed_sceptre_object</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
+<span>  directory_to_write <span class="op">=</span> <span class="va">directory_to_write</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The above script should require only a few (e.g., 3 – 4) gigabytes of memory, even if the input data are tens of gigabytes in size. This approach, though streamlined, is less interactive than the local-machine-based approach outlined in sections <a href="#sec-import_data_into_odm_backed_sceptre_object"><span>Section&nbsp;7.1</span></a> – <a href="#sec-push_data_to_cluster"><span>Section&nbsp;7.6</span></a>.</p>
+</div>
+</div>
+</section><section id="call-the-trial-pipeline-cluster" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="call-the-trial-pipeline-cluster">
+<span class="header-section-number">7.7</span> Call the trial pipeline (cluster)</h2>
+<p>The next step is to call the trial pipeline on the cluster. First, we download the <code>launch_script.sh</code> submission script onto the cluster using the same command as before.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal, cluster</strong></pre>
+</div>
+<pre class="terminal"><code>git clone git@github.com:timothy-barry/sceptre-pipeline.git
+cd sceptre-pipeline/examples</code></pre>
+</div>
+<p>We launch the submission script by submitting the script to the scheduler. For example, on a sun grid engine (SGE) cluster, one would use the <code>qsub</code> command.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal, cluster</strong></pre>
+</div>
+<pre class="terminal"><code>qsub launch_script.sh</code></pre>
+</div>
+<p>On SLURM cluster, one would use the <code>sbatch</code> command.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal, cluster</strong></pre>
+</div>
+<pre class="terminal"><code>sbatch launch_script.sh</code></pre>
+</div>
+<p>Note that we are able to launch the pipeline using essentially the same command on our local machine as on the cluster. This is one of the advantages of Nextflow: it provides a layer of abstraction between the logic of the pipeline and the execution environment. Thus, we can develop (or debug, etc.) a pipeline on our local machine and then run it at scale on the cluster without modification.</p>
+<p>The pipeline outputs are written to the directory <code>~/sceptre_outputs</code>. Again, all of the standard <code>sceptre</code> outputs — e.g., <code>analysis_summary.txt</code>, <code>results_run_discovery_analysis.rds</code>, etc. — are contained within this directory. In fact, the <code>~/sceptre_outputs</code> directory on the cluster should match exactly the <code>~/sceptre_outputs</code> directory on the local machine.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
