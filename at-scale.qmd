@@ -1,7 +1,7 @@
-# `sceptre` at scale {#at-scale}
+# Overview of at-scale `sceptre` {#at-scale}
 
 ::: callout-tip
-Part II of this book describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. This part is slightly more advanced than Part I. Ideally, readers will have intermediate bioinformatics experience, including familiarity with basic linux commands and facility with submitting and monitoring jobs on a cluster. Knowledge of Nextflow (or some similar workflow management tool) is helpful not required.
+Part II of this book describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. Part II is slightly more advanced than Part I. Ideally, readers will have intermediate bioinformatics experience, including familiarity with basic linux commands and facility with submitting and monitoring jobs on a cluster. Knowledge of Nextflow (or some similar workflow management tool) is helpful not required.
 :::
 
 This chapter describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. We begin by installing `ondisc`, a companion R package to `sceptre`. `ondisc` provides facilities for out-of-core and distributed computing on large-scale single-cell CRISPR screen data.
@@ -10,9 +10,9 @@ This chapter describes how to apply `sceptre` to analyze large-scale single-cell
 devtools::install_github("timothy-barry/ondisc")
 ```
 
-Users can leverage `sceptre` and `ondisc` to analyze their data in one of two ways. First, users can analyze their data *out-of-core* on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of perturbation-gene pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the `sceptre` Nextflow pipeline. This solution is most appropriate when the data are big *and* a large number of pairs is to be analyzed.
+Users can leverage `sceptre` and `ondisc` to analyze their data in one of two ways. First, users can analyze their data *out-of-core* on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of perturbation-gene pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the `sceptre` Nextflow pipeline. This solution is most appropriate when the data are big *and* a large number of pairs is to be analyzed. The addendum to this chapter (@sec-install_nextflow) explains how to download and install Nextflow.
 
-The schematic below illustrates the two at-scale interfaces to `sceptre`. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an `ondisc`-backed `sceptre_object`, which is a kind of `sceptre_object` in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in @sec-whole_game_import_data --- @sec-sceptre_write_outputs_to_directory of *The whole game*, calling the standard pipeline functions (i.e., `assign_grnas()`, `run_qc()`, etc.) on the `ondisc`-backed `sceptre_object` one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. This chapter focuses on the Nextflow interface, although we include some discussion of the simpler R console interface at the end.
+The schematic below illustrates the two at-scale interfaces to `sceptre`. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an `ondisc`-backed `sceptre_object`, which is a kind of `sceptre_object` in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in @sec-whole_game_import_data --- @sec-sceptre_write_outputs_to_directory of *The whole game*, calling the standard pipeline functions (i.e., `assign_grnas()`, `run_qc()`, etc.) on the `ondisc`-backed `sceptre_object` one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. This chapter focuses on the Nextflow interface.
 
 ```{r, out.width = "750px", fig.align="center", echo = FALSE, fig.cap=c("The two at-scale interfaces to `sceptre`. Users can analyze their data in the R console using the standard pipeline functions or on the command line using the Nextflow pipeline. In both cases users first import their data into an `ondisc`-backed `sceptre_object`, which is a kind of `sceptre_object` that stores the response and gRNA expression matrices on disk (as opposed to in memory).")}
 knitr::include_graphics("at_scale_schematic.png")
@@ -384,7 +384,7 @@ scp -r username@cluster_address:~/sceptre_outputs ~/
 
 Again, "username" and "cluster_address" should be replaced by one's username and cluster address, respectively. An exploration of `~/sceptre_outputs` on the local machine shows that we have successfully carried out a *trans* analysis of the example high-MOI CRISPRi data.
 
-## Stepping through the pipeline piece by piece
+## Stepping through the pipeline incrementally
 
 The `sceptre` Nextflow pipeline consists of six distinct steps, depicted below.
 
@@ -402,7 +402,7 @@ We provide an example of using the `pipeline_stop` argument below. This example 
 rm -r ~/sceptre_outputs
 ```
 
-We modify `launch_script.sh`, adding the line `--pipeline_stop "assign_grnas"` to the bottom of the script. This line tells Nextflow to stop at the "Assign gRNAs" step.
+We modify `launch_script.sh`, adding the line `--pipeline_stop "assign_grnas"` to the script. This line tells Nextflow to stop at the "Assign gRNAs" step.
 
 ```{bash,eval=FALSE}
 #| code-fold: true
@@ -443,7 +443,7 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
 
 We then launch the pipeline (via `bash launch_script.sh`, `qsub launch_script.sh`, or `sbatch launch_script.sh`, etc.) and examine the outputs directory. We see (via an inspection of `analysis_summary.txt`, for example) that "Set analysis parameters" and "Assign gRNAs" have completed, but that the other pipeline steps have not yet run.
 
-Next, we might want to run the subsequent step in the pipeline, namely "Run quality control." To this end, we update `launch_script.sh`, changing the line ` --pipeline_stop "assign_grnas"` to `--pipeline_stop "run_qc"`. Additionally, we add the line `-resume` to the launch script. The `-resume` flag in effect tells Nextflow to skip over all steps preceeding "Run QC" (including "Assign gRNAs"), as these steps already have been run.
+Suppose now that want to run the next step in the pipeline, namely "Run quality control." To this end, we update `launch_script.sh`, changing the line ` --pipeline_stop "assign_grnas"` to `--pipeline_stop "run_qc"`. Additionally, we add the line `-resume` to the launch script. The `-resume` flag in effect tells Nextflow to skip over all steps preceeding "Run QC" (including "Assign gRNAs"), as these steps already have been run.
 
 ```{bash,eval=FALSE}
 #| code-fold: true
@@ -483,8 +483,80 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
  -resume
 ```
 
-```{r, out.width = "700px", fig.align="center", echo = FALSE, fig.cap=c("Nextflow output when the `-resume` flag is passed as an argument.")}
+```{r, out.width = "700px", fig.align="center", echo = FALSE, fig.cap=c("Nextflow output when the `-resume` flag is used.")}
 knitr::include_graphics("nf_output_2.png")
 ```
 
-We launch the pipeline and display the terminal output above. Note that `assign_grnas` has been cached, indicating that this step of the pipeline has not been recomputed. In conclusion, `--pipeline_stop` and `-resume` enable one to step through the Nextflow pipeline in an incremental way, verifying that a given step of the pipeline looks good before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, one can update the arguments passed to that step of the pipeline, as described in the next chapter.
+We launch the pipeline and display the terminal output above. The "Assign gRNAs" step has not been recomputed, as indicated by the "cached" string next to the `assign_grnas` process. In conclusion, `--pipeline_stop` and `-resume` enable one to step through the Nextflow pipeline incrementally, verifying that a given step of the pipeline has run correctly before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, one can update the arguments passed to that step of the pipeline to try to improve the result.
+
+## Addendum: installing Nextflow {#sec-install_nextflow}
+
+Nextflow is a popular (and increasingly dominant) tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local computer and cluster to use the `sceptre` Nextflow pipeline. The [Nextflow website](https://www.nextflow.io/docs/latest/index.html) contains extensive documentation, including instructions on downloading and installing Nextflow. Briefly, you can install Nextflow as follows.
+
+1. Install SDKMAN!, a system for installing and managing software.
+
+```{.terminal filename="terminal"}
+curl -s "https://get.sdkman.io" | bash
+```
+
+2. Install Java.
+
+```{.terminal filename="terminal"}
+sdk install java 17.0.6-amzn
+```
+
+If this fails, try the following instead.
+
+```{.terminal filename="terminal"}
+sdk install java 17.0.6-tem
+```
+
+You can ensure that Java is installed via the following command.
+
+```{.terminal filename="terminal"}
+java -version 
+```
+
+You should see something like the output below. Ensure that the version of Java (as printed on the first line of the output) is greater than or equal to 17.0.0. (Note: the minimum version of Java required by Nextflow may have increased since the time of writing.)
+
+```{.terminal filename="terminal"}
+openjdk version "17.0.6" 2023-01-17 LTS
+OpenJDK Runtime Environment Corretto-17.0.6.10.1 (build 17.0.6+10-LTS)
+OpenJDK 64-Bit Server VM Corretto-17.0.6.10.1 (build 17.0.6+10-LTS, mixed mode, sharing)
+```
+
+3. Create a directory in which to store the Nextflow executable. We create a directory called `bin` in our home directory for this purpose, although the Nextflow executable can be stored in any directory.
+
+```{.terminal filename="terminal"}
+mkdir -p ~/bin
+```
+
+4. Change directories to `~/bin` and intall the Nextflow binary.
+
+```{.terminal filename="terminal"}
+cd ~/bin
+wget -qO- https://get.nextflow.io | bash
+# alternately: curl -s https://get.nextflow.io | bash
+```
+
+This creates a binary called `nextflow` in the current directory.
+
+5. Make the `nextflow` binary an executable by running the following command.
+
+```{.terminal filename="terminal"}
+chmod +x nextflow
+```
+
+(Note: The installed binary may already be executable; in this case `chmod` does nothing.)
+
+6. Add `nextflow` to your linux path. One way to do this is as follows. First, open `.bash_profile` (via, for example, `nano ~/.bash_profile`). Next, add the following line to `.bash_profile`: `export PATH="~/bin/:$PATH"`. Finally, save `.bash_profile`, close the terminal, and open a new terminal. When you enter `nextflow -version` on the command line, you should see an output similar to the following.
+
+```{.terminal filename="terminal"}
+N E X T F L O W
+version 23.10.1 build 5891
+created 12-01-2024 22:01 UTC (17:01 EDT)
+cite doi:10.1038/nbt.3820
+http://nextflow.io
+```
+
+This indicates that Nextflow has been installed successfully.
