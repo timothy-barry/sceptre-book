@@ -1,7 +1,7 @@
 # Import data {#sec-import_data}
 
 ::: callout-tip
-Part I of this book describes how to apply `sceptre` to analyze single-cell CRISPR screen data on a laptop or desktop. It assumes knowledge of R programming at a beginner level. 
+Part I of this book describes how to apply `sceptre` to analyze single-cell CRISPR screen data on a laptop or desktop. This part assumes knowledge of R at a beginner level. 
 :::
 
 This chapter describes how to import single-cell CRISPR screen data into `sceptre`, which is the first step of the `sceptre` pipeline.

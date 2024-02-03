@@ -258,7 +258,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#call-the-trial-pipeline-cluster" id="toc-call-the-trial-pipeline-cluster" class="nav-link" data-scroll-target="#call-the-trial-pipeline-cluster"><span class="header-section-number">7.7</span> Call the trial pipeline (cluster)</a></li>
   <li><a href="#call-the-full-pipeline-cluster" id="toc-call-the-full-pipeline-cluster" class="nav-link" data-scroll-target="#call-the-full-pipeline-cluster"><span class="header-section-number">7.8</span> Call the full pipeline (cluster)</a></li>
   <li><a href="#stepping-through-the-pipeline-incrementally" id="toc-stepping-through-the-pipeline-incrementally" class="nav-link" data-scroll-target="#stepping-through-the-pipeline-incrementally"><span class="header-section-number">7.9</span> Stepping through the pipeline incrementally</a></li>
-  <li><a href="#sec-install_nextflow" id="toc-sec-install_nextflow" class="nav-link" data-scroll-target="#sec-install_nextflow"><span class="header-section-number">7.10</span> Addendum: installing Nextflow</a></li>
+  <li>
+<a href="#sec-install_nextflow" id="toc-sec-install_nextflow" class="nav-link" data-scroll-target="#sec-install_nextflow"><span class="header-section-number">7.10</span> Addendum: installing and configuring Nextflow</a>
+  <ul class="collapse">
+<li><a href="#download-and-installation" id="toc-download-and-installation" class="nav-link" data-scroll-target="#download-and-installation"><span class="header-section-number">7.10.1</span> Download and installation</a></li>
+  <li><a href="#configuration" id="toc-configuration" class="nav-link" data-scroll-target="#configuration"><span class="header-section-number">7.10.2</span> Configuration</a></li>
+  </ul>
+</li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -805,8 +811,11 @@ cd sceptre-pipeline/examples</code></pre>
 </div>
 <p>We launch the pipeline and display the terminal output above. The “Assign gRNAs” step has not been recomputed, as indicated by the “cached” string next to the <code>assign_grnas</code> process. In conclusion, <code>--pipeline_stop</code> and <code>-resume</code> enable one to step through the Nextflow pipeline incrementally, verifying that a given step of the pipeline has run correctly before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, one can update the arguments passed to that step of the pipeline to try to improve the result.</p>
 </section><section id="sec-install_nextflow" class="level2" data-number="7.10"><h2 data-number="7.10" class="anchored" data-anchor-id="sec-install_nextflow">
-<span class="header-section-number">7.10</span> Addendum: installing Nextflow</h2>
-<p>Nextflow is a popular (and increasingly dominant) tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local computer and cluster to use the <code>sceptre</code> Nextflow pipeline. The <a href="https://www.nextflow.io/docs/latest/index.html">Nextflow website</a> contains extensive documentation, including instructions on downloading and installing Nextflow. Briefly, you can install Nextflow as follows.</p>
+<span class="header-section-number">7.10</span> Addendum: installing and configuring Nextflow</h2>
+<p>Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local machine and on their cluster to use the <code>sceptre</code> Nextflow pipeline. We encourage users to visit the <a href="https://www.nextflow.io/docs/latest/index.html">Nextflow website</a>, which contains extensive documentation on all aspects of Nextflow. Here, we summarize how to download, install, and configure Nextflow.</p>
+<section id="download-and-installation" class="level3" data-number="7.10.1"><h3 data-number="7.10.1" class="anchored" data-anchor-id="download-and-installation">
+<span class="header-section-number">7.10.1</span> Download and installation</h3>
+<p>Carry out the following sequence of steps twice: once on your local machine and once on your cluster.</p>
 <ol type="1">
 <li>Install SDKMAN!, a system for installing and managing software.</li>
 </ol>
@@ -893,9 +902,31 @@ cite doi:10.1038/nbt.3820
 http://nextflow.io</code></pre>
 </div>
 <p>This indicates that Nextflow has been installed successfully.</p>
+</section><section id="configuration" class="level3" data-number="7.10.2"><h3 data-number="7.10.2" class="anchored" data-anchor-id="configuration">
+<span class="header-section-number">7.10.2</span> Configuration</h3>
+<p>Nextflow should work without further configuration on a local machine. Configuring Nextflow to run on a cluster is somewhat more involved. First, you should create a Nextflow config file, which is a file that specifies how Nextflow is to interact with the scheduler on your cluster.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal, cluster</strong></pre>
+</div>
+<pre class="terminal"><code>touch ~/.nextflow/config</code></pre>
+</div>
+<p>The following is an example of a basic Nextflow config file.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>~/.nextflow/config</strong></pre>
+</div>
+<pre class="terminal"><code>process.executor = 'sge' # or 'slurm', etc.
+executor.queueSize = 100
+executor.submitRateLimit = '25 sec'</code></pre>
+</div>
+<p><code>process.executor</code> specifies the type of scheduler that your cluster uses. Options include <code>'sge'</code> for a Sun Grid Engine (i.e., <code>qsub</code>-based) scheduler and <code>'slurm'</code> for a SLURM (i.e., <code>sbatch</code>-based) scheduler. Next, <code>executor.queueSize</code> specifies the maximum number of jobs that can be queued simultaneously. Finally, <code>executor.submitRateLimit</code> specifies the maximum number of jobs that can be submitted per unit time to the scheduler. For example, <code>'25 sec'</code> limits the submission rate to 25 jobs per second.</p>
+<p>Like many Nextflow pipelines, the <code>sceptre</code> Nextflow pipeline uses the <code>time</code> and <code>memory</code> process directives to request a given amount of wall time and memory per process. Not all schedulers require wall time and/or memory allocation requests when submitting a job. However, if your scheduler requires that you request wall time and or/memory,</p>
+<pre><code>"-l m_mem_free=${task.memory.toGiga()}G "</code></pre>
+<p>Contacting a cluster administrator, asking questions about Nextflow to ChatGPT, reading through the documentation, or engaging with the (very helpful) Nextflow community (for example, on <a href="https://github.com/nextflow-io/nextflow/issues">Github issues</a>).</p>
 
 
-</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");

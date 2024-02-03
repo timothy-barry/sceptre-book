@@ -4,6 +4,6 @@
 knitr::include_graphics("cluster_structure.png")
 ```
 
-```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap=c("")}
+```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap=c("Graph illustrating the flow of data through the `sceptre` Nextflow pipeline.")}
 knitr::include_graphics("pipeline_dag.png")
 ```
