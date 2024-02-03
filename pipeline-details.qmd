@@ -1,2 +1,9 @@
 # Details of the pipeline
 
+```{r, out.width = "400px", fig.align="center", echo = FALSE, fig.cap=c("")}
+knitr::include_graphics("cluster_structure.png")
+```
+
+```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap=c("")}
+knitr::include_graphics("pipeline_dag.png")
+```
