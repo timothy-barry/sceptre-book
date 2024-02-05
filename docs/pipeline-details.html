@@ -212,7 +212,17 @@ ul.task-list li input[type="checkbox"] {
 </nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#cluster-architecture-and-nextflow-pipeline-structure" id="toc-cluster-architecture-and-nextflow-pipeline-structure" class="nav-link active" data-scroll-target="#cluster-architecture-and-nextflow-pipeline-structure"><span class="header-section-number">8.1</span> Cluster architecture and Nextflow pipeline structure</a></li>
+  <li>
+<a href="#pipeline-arguments" id="toc-pipeline-arguments" class="nav-link" data-scroll-target="#pipeline-arguments"><span class="header-section-number">8.2</span> Pipeline arguments</a>
+  <ul class="collapse">
+<li><a href="#statistical-arguments" id="toc-statistical-arguments" class="nav-link" data-scroll-target="#statistical-arguments"><span class="header-section-number">8.2.1</span> Statistical arguments</a></li>
+  </ul>
+</li>
+  </ul></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
@@ -231,26 +241,99 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
-</header><div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/unnamed-chunk-1_470c3753daaa34afbdebb3aa0a18aae8">
+</header><p>In this chapter we discuss technical details of the <code>sceptre</code> Nextflow pipeline.</p>
+<section id="cluster-architecture-and-nextflow-pipeline-structure" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="cluster-architecture-and-nextflow-pipeline-structure">
+<span class="header-section-number">8.1</span> Cluster architecture and Nextflow pipeline structure</h2>
+<p>A computing cluster is of a collection of computers, also known as <em>nodes</em>, that work in concert to carry out a large computation. <a href="#fig-cluster_structure">Figure&nbsp;<span>8.1</span></a> illustrates the structure of a typical computing cluster. The cluster contains dozens or even hundreds of nodes, with each node harboring multiple <em>processors</em>. Processors are the core units that execute code. Furthermore, all nodes are linked to a common storage area where files are kept. For instance, specific data files like <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code> are stored in this shared space.</p>
+<p>The process of performing a computation on a cluster involves several steps. Initially, each processor loads only the part of the data that it needs for its portion of the overall computation. Then, each processor processes this part of the data and saves the results back to the shared storage area. Once all processors complete their tasks, another processor retrieves these results from the shared space and merges them into a final result. Typically, the processors are spread across different nodes and thus do not directly interact with each other; rather, they coordinate through the shared storage space. This method of distributing tasks among independent processors and later combining their outputs is known as a <em>scatter-gather</em> operation. The <code>sceptre</code> Nextflow pipeline consists of multiple scatter-gather chained together.</p>
+<div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/fig-cluster_structure_62cb1c8871f8fcfe40319b87b92ee9da">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="cluster_structure.png" class="img-fluid figure-img" width="400"></p>
-</figure>
+<div id="fig-cluster_structure" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="cluster_structure.png" class="img-fluid figure-img" width="450"></p>
+<figcaption class="figure-caption">Figure&nbsp;8.1: A model of the architecture of a standard computing cluster. There are several nodes, each of which contains multiple processors and is connected to the shared storage space. The data — as stored within the <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code> files — are contained in the shared storage space.</figcaption></figure>
 </div>
 </div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/unnamed-chunk-2_af091ab340a9e8534bc6a088bb715bf5">
+<p>A graph illustrating the flow of information through the <code>sceptre</code> Nextflow pipeline is depicted in <a href="#fig-pipeline_dag">Figure&nbsp;<span>8.2</span></a>. The steps of the pipeline as outlined in <a href="at-scale.html#fig-nextflow_pipeline_schematic">Figure&nbsp;<span>7.1</span></a> (i.e., “set analysis parameters,” “assign gRNAs,” “run quality control,” “run calibration check,” “run power check,” and “run discovery analysis”) are all present in the graph. The computation is parallelized at four points: “assign gRNAs,” “run calibration check,” “run power check,” and “run discovery analysis.” The “assign gRNAs” step is parallelized according to the following scatter-gather strategy. First, the gRNAs are partitioned into <em>p</em> distinct “pods” (where the number of pods is selected by the user). For example, if the data contain 100 gRNAs, and if the user chooses to use <em>p</em> = 5 pods, then each pod is assigned 20 distinct gRNAs. Next, each pod is mapped to one of <em>p</em> processors, and each processor performs the gRNA-to-cell assignments for the gRNAs within the pod to which it has been assigned. Finally, the gRNA-to-cell assignments are combined across pods, yielding a single binary gRNA-to-cell assignment matrix.</p>
+<div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/fig-pipeline_dag_4560f7a06185ce6c9750d194c7f7cb89">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
+<div id="fig-pipeline_dag" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="pipeline_dag.png" class="img-fluid figure-img" width="650"></p>
-<figcaption class="figure-caption">Graph illustrating the flow of data through the <code>sceptre</code> Nextflow pipeline.</figcaption></figure>
+<figcaption class="figure-caption">Figure&nbsp;8.2: A graph illustrating the flow of information through the <code>sceptre</code> Nextflow pipeline. The pipeline consists of several scatter-gather operations chained together.</figcaption></figure>
 </div>
 </div>
 </div>
+<p>The “run calibration check,” “run power check,” and “run discovery analysis” steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into <em>r</em> distinct pods (where, again, <em>r</em> is selected by the user). Next, the pods are mapped to <em>r</em> processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association analyses are parallelized at the level of the target-response pair. (Note: if the “maximum” gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out “behind the scenes” as part of the data import step.)</p>
+</section><section id="pipeline-arguments" class="level2" data-number="8.2"><h2 data-number="8.2" class="anchored" data-anchor-id="pipeline-arguments">
+<span class="header-section-number">8.2</span> Pipeline arguments</h2>
+<p>Here, we describe the command line arguments that can be passed to the <code>sceptre</code> Nextflow pipeline. We partition the arguments into “statistical” and “computational” categories. Within the “statistical” category, we further divide the arguments into subcategories based on the step within the pipeline to which the argument applies.</p>
+<section id="statistical-arguments" class="level3" data-number="8.2.1"><h3 data-number="8.2.1" class="anchored" data-anchor-id="statistical-arguments">
+<span class="header-section-number">8.2.1</span> Statistical arguments</h3>
+<p><strong>Set analysis parameters</strong></p>
+<p>Users can set the analysis parameters within the R console as part of the data import step (<a href="at-scale.html#sec-at_scale_set_analysis_parameters"><span>Section&nbsp;7.3</span></a>) or on the command line via the following arguments. Analysis parameters set on the command line take precedence over those set within the R console.</p>
+<ul>
+<li><p><code>--side</code>: the sidedness of the statistical test, one of <code>"left"</code>, <code>"right"</code>, or <code>"both"</code>. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_side"><span>Section&nbsp;2.3</span></a>.)</p></li>
+<li><p><code>--grna_integration_strategy</code>: the gRNA integration strategy, one of <code>"union"</code>, <code>"singleton"</code>, or <code>"bonferroni"</code>. (See <a href="set-analysis-parameters.html#sec-grna_integration_strategy"><span>Section&nbsp;2.4</span></a>.)</p></li>
+<li><p><code>--control_group</code>: the control group used within the association analysis, one of <code>"nt_cells"</code> or <code>"complement"</code>. (See <a href="set-analysis-parameters.html#sec-set-analysis-parameters_control_group"><span>Section&nbsp;2.5</span></a>.)</p></li>
+<li><p><code>--formula_object</code>: the formula used to adjust for the covariates in the association analysis. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_formula"><span>Section&nbsp;2.6</span></a>.) <code>formula_object</code> should be a file path to an RDS file containing a formula object. For example, we create the formula object <code>formula(~response_n_umis + response_n_nonzero)</code> and save this formula object to the file <code>~/formula_object.rds</code> below.</p></li>
+</ul>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal</strong></pre>
+</div>
+<pre class="terminal"><code>Rscript -e "x &lt;- formula(~response_n_umis + response_n_nonzero);
+            saveRDS(x, '~/formula_object.rds')"</code></pre>
+</div>
+<p>We then can pass this formula object as an argument to the pipeline via <code>--formula_object $HOME"/formula_object.rds"</code>.</p>
+<ul>
+<li><p><code>--fit_parametric_curve</code>: a boolean string indicating whether to fit a parametric curve to the null distribution of test statistics, one of <code>"true"</code> or <code>"false"</code>. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_parametric_curve"><span>Section&nbsp;2.8</span></a>).</p></li>
+<li><p><code>--multiple_testing_method</code>: the multiple testing correction procedure used to adjust the p-values, one of <code>"BH"</code>, <code>"bonferroni"</code>, <code>"holm"</code>, <code>"hochberg"</code>, <code>"hommel"</code>, <code>"BY"</code>, <code>"fdr"</code>, or <code>"none"</code>. (See <a href="set-analysis-parameters.html#sec-multiple_testing"><span>Section&nbsp;2.9</span></a>.)</p></li>
+<li><p><code>--multiple_testing_alpha</code>: the nominal level of the multiple testing procedure. <code>multiple_testing_alpha</code> should be a string containing a number in the interval [0,1] (for example <code>"0.1"</code> or <code>"0.05"</code>; see <a href="set-analysis-parameters.html#sec-multiple_testing"><span>Section&nbsp;2.9</span></a>.)</p></li>
+</ul>
+<!-- --><ul>
+<li>
+<code>--discovery_pairs</code>: the discovery pairs to analyze. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_discovery_pairs"><span>Section&nbsp;2.2</span></a>.) <code>discovery_pairs</code> should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file <code>~/discovery_pairs.rds</code>.</li>
+</ul>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal</strong></pre>
+</div>
+<pre class="terminal"><code>  Rscript -e "x &lt;- data.frame(grna_target = c('candidate_enh_1', 'candidate_enh_2'),
+                              response_id = c('ENSG00000174529', 'ENSG00000143493'));
+              saveRDS(x, '~/discovery_pairs.rds')"</code></pre>
+</div>
+<p>We then can pass this argument to the pipeline via <code>--discovery_pairs $HOME"/discovery_pairs.rds"</code>.</p>
+<ul>
+<li>
+<code>--positive_control_pairs</code>: the positive control pairs to analyze. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_pc_pairs"><span>Section&nbsp;2.1</span></a>.) This argument works similarly to the <code>discovery_pairs</code> argument.</li>
+</ul>
+<p><strong>Assign gRNAs</strong></p>
+<ul>
+<li>
+<code>--grna_assignment_method</code>: a string indicating the gRNA assignment method to use (one of <code>"mixture"</code>, <code>"maximum"</code>, or <code>"thresholding"</code>).</li>
+</ul>
+<p>The following arguments are related to the “mixture” assignment strategy (see <a href="assign-grnas.html#sec-mixture_method"><span>Section&nbsp;3.3.1</span></a>).</p>
+<ul>
+<li><p><code>--n_em_rep</code>: the number of times to run the EM algorithm over randomly initialized starting values. <code>n_em_rep</code> should be a string containing a positive integer (e.g., <code>"5"</code> or <code>"15"</code>).</p></li>
+<li><p><code>--n_nonzero_cells_cutoff</code>: the number of cells that must contain nonzero expression of the gRNA to attempt fitting the mixture model. <code>n_nonzero_cells_cutoff</code> should be a string containing a positive integer.</p></li>
+<li><p><code>--backup_threshold</code>: the threshold to use to assign the gRNA to cells if the mixture model fails. <code>backup_threshold</code> should be a string containing a positive integer.</p></li>
+<li><p><code>--probability_threshold</code>: the value at which the posterior perturbation probability of each cell is thresholded to assign the gRNA to cells. <code>probability_threshold</code> should be a string containing a number in the interval [0,1] (for example <code>"0.5"</code> or <code>"0.8"</code>.)</p></li>
+<li><p><code>--grna_assignment_formula</code>: the formula used to adjust for covariates in the gRNA mixture model. This argument works similarly to the <code>formula_object</code> argument (described above).</p></li>
+</ul>
+<p>The following argument relates to the “maximum” assignment strategy (see <a href="assign-grnas.html#sec-maximum_method"><span>Section&nbsp;3.3.2</span></a>).</p>
+<ul>
+<li>
+<code>--umi_fraction_threshold</code>: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. <code>umi_fraction_threshold</code> should be a string containing a number in the interval [0,1].</li>
+</ul>
+<p>Finally, the following argument relates to the “thresholding” assignment strategy (see <a href="assign-grnas.html#sec-thresholding_method"><span>Section&nbsp;3.3.3</span></a>).</p>
+<ul>
+<li>
+<code>--threshold</code>: the threshold used to assign gRNAs to cells in the context of the thresholding method. <code>threshold</code> should be a cell containing a positive integer.</li>
+</ul>
+<p><strong>Run quality control</strong></p>
 
 
-
-</main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");

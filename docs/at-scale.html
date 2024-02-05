@@ -251,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
 <li><a href="#sec-import_data_into_odm_backed_sceptre_object" id="toc-sec-import_data_into_odm_backed_sceptre_object" class="nav-link active" data-scroll-target="#sec-import_data_into_odm_backed_sceptre_object"><span class="header-section-number">7.1</span> Import data into an <code>ondisc</code>-backed <code>sceptre</code> object (local machine)</a></li>
   <li><a href="#explore-the-data-local-machine" id="toc-explore-the-data-local-machine" class="nav-link" data-scroll-target="#explore-the-data-local-machine"><span class="header-section-number">7.2</span> Explore the data (local machine)</a></li>
-  <li><a href="#set-the-analysis-parameters-local-machine" id="toc-set-the-analysis-parameters-local-machine" class="nav-link" data-scroll-target="#set-the-analysis-parameters-local-machine"><span class="header-section-number">7.3</span> Set the analysis parameters (local machine)</a></li>
+  <li><a href="#sec-at_scale_set_analysis_parameters" id="toc-sec-at_scale_set_analysis_parameters" class="nav-link" data-scroll-target="#sec-at_scale_set_analysis_parameters"><span class="header-section-number">7.3</span> Set the analysis parameters (local machine)</a></li>
   <li><a href="#write-the-ondisc-backed-sceptre_object-to-disk-local-machine" id="toc-write-the-ondisc-backed-sceptre_object-to-disk-local-machine" class="nav-link" data-scroll-target="#write-the-ondisc-backed-sceptre_object-to-disk-local-machine"><span class="header-section-number">7.4</span> Write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk (local machine)</a></li>
   <li><a href="#call-the-trial-nextflow-pipeline-local-machine" id="toc-call-the-trial-nextflow-pipeline-local-machine" class="nav-link" data-scroll-target="#call-the-trial-nextflow-pipeline-local-machine"><span class="header-section-number">7.5</span> Call the trial Nextflow pipeline (local machine)</a></li>
   <li><a href="#sec-push_data_to_cluster" id="toc-sec-push_data_to_cluster" class="nav-link" data-scroll-target="#sec-push_data_to_cluster"><span class="header-section-number">7.6</span> Push the data to the cluster</a></li>
@@ -410,7 +410,7 @@ Tip
 </div>
 </div>
 <p>Users can learn more about <code>odm</code> objects by referring to Appendix XXX.</p>
-</section><section id="set-the-analysis-parameters-local-machine" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="set-the-analysis-parameters-local-machine">
+</section><section id="sec-at_scale_set_analysis_parameters" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="sec-at_scale_set_analysis_parameters">
 <span class="header-section-number">7.3</span> Set the analysis parameters (local machine)</h2>
 <p>The third step is to set the analysis parameters. We proceed more or less exactly as described in <a href="sceptre.html#sec-whole_game_set_analysis_parameters"><span>Section&nbsp;2</span></a> of <em>The whole game</em>. We seek to conduct a <em>trans</em> analysis of the high-MOI CRISPRi data. Hence, we construct the positive control and discovery pairs using the functions <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>, respectively.</p>
 <div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-15_42e63a608d671bf47800545ea49ab1ac">
@@ -532,6 +532,19 @@ cd sceptre-pipeline/examples</code></pre>
 </div>
 </div>
 <p>An inspection of <code>analysis_summary.txt</code> indicates that 97 negative control pairs and 97 discovery pairs were analyzed. The trial Nextflow pipeline randomly samples 100 pairs from the discovery set, 100 pairs from the negative control set, and 100 pairs from the positive control set and subjects these pairs to analysis. (Some of the pairs may be filtered out by pairwise QC. Moreover, if any of the sets contains fewer than 100 pairs, then that entire set of pairs is analyzed.) If the trial pipeline runs without issue, one can proceed to the next step.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nextflow better understands absolute file paths than relative file paths. Thus, we recommend using <code>$HOME</code> in place of <code>~</code> in the pipeline invocation script.</p>
+</div>
+</div>
 </section><section id="sec-push_data_to_cluster" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="sec-push_data_to_cluster">
 <span class="header-section-number">7.6</span> Push the data to the cluster</h2>
 <p>The next step is to push the data to the cluster. The following block of code creates a directory <code>~/sceptre_data</code> on the cluster. It then copies the contents of <code>~/sceptre_data</code> (on the local machine) into <code>~/sceptre_data</code> (on the cluster). The strings “username” and “cluster_address” should be replaced by one’s username and cluster address, respectively.</p>
@@ -710,15 +723,15 @@ cd sceptre-pipeline/examples</code></pre>
 </section><section id="stepping-through-the-pipeline-incrementally" class="level2" data-number="7.9"><h2 data-number="7.9" class="anchored" data-anchor-id="stepping-through-the-pipeline-incrementally">
 <span class="header-section-number">7.9</span> Stepping through the pipeline incrementally</h2>
 <p>The <code>sceptre</code> Nextflow pipeline consists of six distinct steps, depicted below.</p>
-<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-25_e2f39ac3cf2ef5c5320085abacd907cd">
+<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/fig-nextflow_pipeline_schematic_cd40af384b64e571b9377ae2e65721da">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="reduced_pipeline.png" class="img-fluid figure-img" width="500"></p>
-<figcaption class="figure-caption">The <code>sceptre</code> Nextflow pipeline.</figcaption></figure>
+<div id="fig-nextflow_pipeline_schematic" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="reduced_pipeline.png" class="img-fluid figure-img" width="450"></p>
+<figcaption class="figure-caption">Figure&nbsp;7.1: The <code>sceptre</code> Nextflow pipeline</figcaption></figure>
 </div>
 </div>
 </div>
-<p>The Nextflow pipeline is nearly the same as the pipeline introduced in <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game.</em> The difference is that the “Import data” step is not part of this pipeline (as we import the data into an <code>ondisc</code>-backed <code>sceptre</code> object prior to calling the Nextflow pipeline), and likewise the “Write outputs to directory” step is not part of this pipeline (as the Nextflow pipeline automatically writes results to the output directory at the end of each step).</p>
+<p>The Nextflow pipeline is nearly the same as the pipeline introduced in <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game.</em> The difference is that the “Import data” step is not part of this pipeline (as we import the data into an <code>ondisc</code>-backed <code>sceptre</code> object prior to calling the Nextflow pipeline), and likewise the “Write outputs to directory” step is not part of this pipeline (as the Nextflow pipeline automatically writes results to the output directory at the end of each step). There is some redundancy built into the pipeline with respect to “Set analysis parameters;” users either can set the analysis parameters within the R console before writing the <code>sceptre_object</code> to disk (as described in <a href="#sec-at_scale_set_analysis_parameters"><span>Section&nbsp;7.3</span></a>), or users can specify the analysis parameters on the command line when invoking the Nextflow pipeline.</p>
 <p>We can advance through the Nextflow pipeline one step at a time by specifying the <code>pipeline_stop</code> argument. <code>pipeline_stop</code> takes six possible values: <code>"set_analysis_parameters"</code>, <code>"assign_grnas"</code>, <code>"run_qc"</code>, <code>"run_calibration_check"</code>, <code>"run_power_check"</code>, and <code>"run_discovery_analysis"</code>. When <code>pipeline_stop</code> is specified, the Nextflow pipeline runs through all the steps of the pipeline up to and including <code>pipeline_stop</code>. For example, if we set <code>pipeline_stop</code> to <code>"run_calibration_check"</code>, the Nextflow pipeline carries out the steps “Set analysis parameters,” “Assign gRNAs,” “Run quality control,” and “Run calibration check” and then stops. The default value of <code>pipeline_stop</code> is <code>"run_discovery_analysis"</code>, which is why the Nextflow pipeline by default runs through to completion.</p>
 <p>We provide an example of using the <code>pipeline_stop</code> argument below. This example can be carried out either on the local machine or on the cluster. First, let us remove the <code>~/sceptre_outputs</code> directory.</p>
 <div class="code-with-filename">
@@ -812,7 +825,7 @@ cd sceptre-pipeline/examples</code></pre>
 <p>We launch the pipeline and display the terminal output above. The “Assign gRNAs” step has not been recomputed, as indicated by the “cached” string next to the <code>assign_grnas</code> process. In conclusion, <code>--pipeline_stop</code> and <code>-resume</code> enable one to step through the Nextflow pipeline incrementally, verifying that a given step of the pipeline has run correctly before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, one can update the arguments passed to that step of the pipeline to try to improve the result.</p>
 </section><section id="sec-install_nextflow" class="level2" data-number="7.10"><h2 data-number="7.10" class="anchored" data-anchor-id="sec-install_nextflow">
 <span class="header-section-number">7.10</span> Addendum: installing and configuring Nextflow</h2>
-<p>Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local machine and on their cluster to use the <code>sceptre</code> Nextflow pipeline. We encourage users to visit the <a href="https://www.nextflow.io/docs/latest/index.html">Nextflow website</a>, which contains extensive documentation on all aspects of Nextflow. Here, we summarize how to download, install, and configure Nextflow.</p>
+<p>Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local machine and on their cluster to use the <code>sceptre</code> Nextflow pipeline. We encourage readers to consult the extensive and high-quality <a href="https://www.nextflow.io/docs/latest/index.html">Nextflow documentation</a>. Here, we briefly describe how to download, install, and configure Nextflow.</p>
 <section id="download-and-installation" class="level3" data-number="7.10.1"><h3 data-number="7.10.1" class="anchored" data-anchor-id="download-and-installation">
 <span class="header-section-number">7.10.1</span> Download and installation</h3>
 <p>Carry out the following sequence of steps twice: once on your local machine and once on your cluster.</p>
@@ -904,7 +917,7 @@ http://nextflow.io</code></pre>
 <p>This indicates that Nextflow has been installed successfully.</p>
 </section><section id="configuration" class="level3" data-number="7.10.2"><h3 data-number="7.10.2" class="anchored" data-anchor-id="configuration">
 <span class="header-section-number">7.10.2</span> Configuration</h3>
-<p>Nextflow should work without further configuration on a local machine. Configuring Nextflow to run on a cluster is somewhat more involved. First, you should create a Nextflow config file, which is a file that specifies how Nextflow is to interact with the scheduler on your cluster.</p>
+<p>Nextflow should work without further configuration on a local machine. Configuring Nextflow to run on a cluster is somewhat more involved. First, create a Nextflow config file, which is a file that specifies how Nextflow is to interact with the scheduler on your cluster.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>terminal, cluster</strong></pre>
@@ -921,9 +934,11 @@ executor.queueSize = 100
 executor.submitRateLimit = '25 sec'</code></pre>
 </div>
 <p><code>process.executor</code> specifies the type of scheduler that your cluster uses. Options include <code>'sge'</code> for a Sun Grid Engine (i.e., <code>qsub</code>-based) scheduler and <code>'slurm'</code> for a SLURM (i.e., <code>sbatch</code>-based) scheduler. Next, <code>executor.queueSize</code> specifies the maximum number of jobs that can be queued simultaneously. Finally, <code>executor.submitRateLimit</code> specifies the maximum number of jobs that can be submitted per unit time to the scheduler. For example, <code>'25 sec'</code> limits the submission rate to 25 jobs per second.</p>
-<p>Like many Nextflow pipelines, the <code>sceptre</code> Nextflow pipeline uses the <code>time</code> and <code>memory</code> process directives to request a given amount of wall time and memory per process. Not all schedulers require wall time and/or memory allocation requests when submitting a job. However, if your scheduler requires that you request wall time and or/memory,</p>
-<pre><code>"-l m_mem_free=${task.memory.toGiga()}G "</code></pre>
-<p>Contacting a cluster administrator, asking questions about Nextflow to ChatGPT, reading through the documentation, or engaging with the (very helpful) Nextflow community (for example, on <a href="https://github.com/nextflow-io/nextflow/issues">Github issues</a>).</p>
+<p>Like many Nextflow pipelines, the <code>sceptre</code> Nextflow pipeline uses the <code>time</code> and <code>memory</code> process directives to request a given amount of wall time and memory per process. Not all schedulers require that the user issue a wall time and/or memory allocation request when submitting a job. However, if your scheduler has this requirement, then Nextflow should be configured on your cluster such that the scheduler recognizes the <code>time</code> and <code>memory</code> process directives within a Nextflow script. It may be necessary to manually configure these directives using the <code>process.clusterOptions</code> setting within your Nextflow config file. For example, on an SGE scheduler, you may need to add the following line to your <code>~/.nextflow/config</code> file to ensure that the scheduler correctly handles memory allocation requests.</p>
+<pre><code>process.clusterOptions = { task.memory ? "-l m_mem_free=${task.memory.toGiga()}G" : "" }</code></pre>
+<p>The corresponding command for a SLURM scheduler is as follows.</p>
+<pre><code>process.clusterOptions = { task.memory ? "--mem=${task.memory.toGiga()}G" : "" }</code></pre>
+<p>Configuring Nextflow on a given cluster often takes a bit of effort, but fortunately, it is a task that only needs to be completed once. For help with Nextflow configuration, we recommend reading through the Nextflow documentation, contacting a cluster administrator, pinging the (very helpful and responsive) Nextflow community (for example on <a href="https://github.com/nextflow-io/nextflow/issues">Github issues</a>), or consulting with ChatGPT (seriously; it seems to know a lot about Nextflow).</p>
 
 
 </section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">

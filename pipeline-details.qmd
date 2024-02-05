@@ -1,9 +1,97 @@
 # Details of the pipeline
 
-```{r, out.width = "400px", fig.align="center", echo = FALSE, fig.cap=c("")}
+In this chapter we discuss technical details of the `sceptre` Nextflow pipeline.
+
+## Cluster architecture and Nextflow pipeline structure
+
+A computing cluster is of a collection of computers, also known as *nodes*, that work in concert to carry out a large computation. @fig-cluster_structure illustrates the structure of a typical computing cluster. The cluster contains dozens or even hundreds of nodes, with each node harboring multiple *processors*. Processors are the core units that execute code. Furthermore, all nodes are linked to a common storage area where files are kept. For instance, specific data files like `gene.odm`, `grna.odm`, and `sceptre_object.rds` are stored in this shared space.
+
+The process of performing a computation on a cluster involves several steps. Initially, each processor loads only the part of the data that it needs for its portion of the overall computation. Then, each processor processes this part of the data and saves the results back to the shared storage area. Once all processors complete their tasks, another processor retrieves these results from the shared space and merges them into a final result. Typically, the processors are spread across different nodes and thus do not directly interact with each other; rather, they coordinate through the shared storage space. This method of distributing tasks among independent processors and later combining their outputs is known as a *scatter-gather* operation. The `sceptre` Nextflow pipeline consists of multiple scatter-gather chained together.
+
+```{r, out.width = "450px", fig.align="center", echo = FALSE}
+#| label: fig-cluster_structure
+#| fig-cap: "A model of the architecture of a standard computing cluster. There are several nodes, each of which contains multiple processors and is connected to the shared storage space. The data --- as stored within the `gene.odm`, `grna.odm`, and `sceptre_object.rds` files --- are contained in the shared storage space."
 knitr::include_graphics("cluster_structure.png")
 ```
 
-```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap=c("Graph illustrating the flow of data through the `sceptre` Nextflow pipeline.")}
+A graph illustrating the flow of information through the `sceptre` Nextflow pipeline is depicted in @fig-pipeline_dag. The steps of the pipeline as outlined in @fig-nextflow_pipeline_schematic (i.e., "set analysis parameters," "assign gRNAs," "run quality control," "run calibration check," "run power check," and "run discovery analysis") are all present in the graph. The computation is parallelized at four points: "assign gRNAs," "run calibration check," "run power check," and "run discovery analysis." The "assign gRNAs" step is parallelized according to the following scatter-gather strategy. First, the gRNAs are partitioned into *p* distinct "pods" (where the number of pods is selected by the user). For example, if the data contain 100 gRNAs, and if the user chooses to use *p* = 5 pods, then each pod is assigned 20 distinct gRNAs. Next, each pod is mapped to one of *p* processors, and each processor performs the gRNA-to-cell assignments for the gRNAs within the pod to which it has been assigned. Finally, the gRNA-to-cell assignments are combined across pods, yielding a single binary gRNA-to-cell assignment matrix.
+
+```{r, out.width = "650px", fig.align="center", echo = FALSE}
+#| label: fig-pipeline_dag
+#| fig-cap: "A graph illustrating the flow of information through the `sceptre` Nextflow pipeline. The pipeline consists of several scatter-gather operations chained together."
 knitr::include_graphics("pipeline_dag.png")
 ```
+
+The "run calibration check," "run power check," and "run discovery analysis" steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into *r* distinct pods (where, again, *r* is selected by the user). Next, the pods are mapped to *r* processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association analyses are parallelized at the level of the target-response pair. (Note: if the "maximum" gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out "behind the scenes" as part of the data import step.)
+
+## Pipeline arguments
+
+Here, we describe the command line arguments that can be passed to the `sceptre` Nextflow pipeline. We partition the arguments into "statistical" and "computational" categories. Within the "statistical" category, we further divide the arguments into subcategories based on the step within the pipeline to which the argument applies.
+
+### Statistical arguments
+
+**Set analysis parameters**
+
+Users can set the analysis parameters within the R console as part of the data import step (@sec-at_scale_set_analysis_parameters) or on the command line via the following arguments. Analysis parameters set on the command line take precedence over those set within the R console.
+
+-   `--side`: the sidedness of the statistical test, one of `"left"`, `"right"`, or `"both"`. (See @sec-set_analysis_parameters_side.)
+
+-   `--grna_integration_strategy`: the gRNA integration strategy, one of `"union"`, `"singleton"`, or `"bonferroni"`. (See @sec-grna_integration_strategy.)
+
+-   `--control_group`: the control group used within the association analysis, one of `"nt_cells"` or `"complement"`. (See @sec-set-analysis-parameters_control_group.)
+
+-   `--formula_object`: the formula used to adjust for the covariates in the association analysis. (See @sec-set_analysis_parameters_formula.) `formula_object` should be a file path to an RDS file containing a formula object. For example, we create the formula object `formula(~response_n_umis + response_n_nonzero)` and save this formula object to the file `~/formula_object.rds` below.
+
+``` {.terminal filename="terminal"}
+Rscript -e "x <- formula(~response_n_umis + response_n_nonzero);
+            saveRDS(x, '~/formula_object.rds')"
+```
+
+We then can pass this formula object as an argument to the pipeline via `--formula_object $HOME"/formula_object.rds"`.
+
+-   `--fit_parametric_curve`: a boolean string indicating whether to fit a parametric curve to the null distribution of test statistics, one of `"true"` or `"false"`. (See @sec-set_analysis_parameters_parametric_curve).
+
+-   `--multiple_testing_method`: the multiple testing correction procedure used to adjust the p-values, one of `"BH"`, `"bonferroni"`, `"holm"`, `"hochberg"`, `"hommel"`, `"BY"`, `"fdr"`, or `"none"`. (See @sec-multiple_testing.)
+
+-   `--multiple_testing_alpha`: the nominal level of the multiple testing procedure. `multiple_testing_alpha` should be a string containing a number in the interval \[0,1\] (for example `"0.1"` or `"0.05"`; see @sec-multiple_testing.)
+
+```{=html}
+<!-- -->
+```
+-   `--discovery_pairs`: the discovery pairs to analyze. (See @sec-set_analysis_parameters_discovery_pairs.) `discovery_pairs` should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file `~/discovery_pairs.rds`.
+
+``` {.terminal filename="terminal"}
+  Rscript -e "x <- data.frame(grna_target = c('candidate_enh_1', 'candidate_enh_2'),
+                              response_id = c('ENSG00000174529', 'ENSG00000143493'));
+              saveRDS(x, '~/discovery_pairs.rds')"
+```
+
+We then can pass this argument to the pipeline via `--discovery_pairs $HOME"/discovery_pairs.rds"`.
+
+-   `--positive_control_pairs`: the positive control pairs to analyze. (See @sec-set_analysis_parameters_pc_pairs.) This argument works similarly to the `discovery_pairs` argument.
+
+**Assign gRNAs**
+
+-   `--grna_assignment_method`: a string indicating the gRNA assignment method to use (one of `"mixture"`, `"maximum"`, or `"thresholding"`).
+
+The following arguments are related to the "mixture" assignment strategy (see @sec-mixture_method).
+
+-   `--n_em_rep`: the number of times to run the EM algorithm over randomly initialized starting values. `n_em_rep` should be a string containing a positive integer (e.g., `"5"` or `"15"`).
+
+-   `--n_nonzero_cells_cutoff`: the number of cells that must contain nonzero expression of the gRNA to attempt fitting the mixture model. `n_nonzero_cells_cutoff` should be a string containing a positive integer.
+
+-   `--backup_threshold`: the threshold to use to assign the gRNA to cells if the mixture model fails. `backup_threshold` should be a string containing a positive integer.
+
+-   `--probability_threshold`: the value at which the posterior perturbation probability of each cell is thresholded to assign the gRNA to cells. `probability_threshold` should be a string containing a number in the interval \[0,1\] (for example `"0.5"` or `"0.8"`.)
+
+-   `--grna_assignment_formula`: the formula used to adjust for covariates in the gRNA mixture model. This argument works similarly to the `formula_object` argument (described above).
+
+The following argument relates to the "maximum" assignment strategy (see @sec-maximum_method).
+
+-   `--umi_fraction_threshold`: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. `umi_fraction_threshold` should be a string containing a number in the interval \[0,1\].
+
+Finally, the following argument relates to the "thresholding" assignment strategy (see @sec-thresholding_method).
+
+-   `--threshold`: the threshold used to assign gRNAs to cells in the context of the thresholding method. `threshold` should be a cell containing a positive integer.
+
+**Run quality control**

@@ -68,7 +68,7 @@ We set the analysis parameters by calling the function `set_analysis_parameters(
 
 Of these parameters, only `discovery_pairs` is required; the rest have sensible defaults. We describe these arguments below.
 
-## Positive control pairs
+## Positive control pairs {#sec-set_analysis_parameters_pc_pairs}
 
 Positive control pairs are target-response pairs for which we know (or have strong reason to believe) that there is a regulatory relationship between the target and the response. We can use positive control pairs to verify that `sceptre` (or any association testing method for that matter) is sensitive (i.e., capable of detecting true associations) on the dataset under analysis. We use the function `construct_positive_control_pairs()` to construct the positive control pairs. `construct_positive_control_pairs()` takes as an argument a `sceptre_object` and returns a data frame with columns `grna_target` and `response_id`, where gRNA targets and response IDs with matching names are paired. We call `construct_positive_control_pairs()` on the high-MOI CRISPRi dataset and the low-MOI CRISPRko dataset. In both cases the positive control set consists of transcription start sites paired to the gene regulated by those transcription start sites.
 
@@ -102,7 +102,7 @@ positive_control_pairs_highmoi_updated
 
 We then could supply `positive_control_pairs_highmoi_updated` instead of `positive_control_pairs_highmoi` to `set_analysis_parameters()`.
 
-## Discovery pairs
+## Discovery pairs {#sec-set_analysis_parameters_discovery_pairs}
 
 Discovery pairs are target-response pairs whose association status we do not know but seek to learn. Unlike positive control and negative control pairs, which serve a mainly technical purpose, discovery pairs are of primary scientific interest. `sceptre` provides two helper functions for constructing discovery pairs: `construct_cis_pairs()` and `construct_trans_pairs()`.
 
@@ -171,7 +171,7 @@ Some users may wish to run both *cis* and *trans* analyses on their data. We rec
 
 `sceptre` computes a p-value for each target-response pair in the discovery set. These p-values are subjected to a multiple testing correction procedure (by default, the Benjamini-Hochberg method) to produce a discovery set that controls some notion of aggregate type-I error (by default, the false discovery rate). See @sec-multiple_testing for more details on multiple testing. The more pairs that are tested, the more stringest this multiplicity correction is. Therefore, including a large number of uninteresting or "null" pairs (i.e., pairs for which there is no relationship between the target and response) in the discovery set causes the power of the multiple testing correction procedure to decrease, resulting in fewer discoveries. If possible, it is good to restrict one's attention to pairs that are promising or scientifically interesting a priori.
 
-## Side
+## Side {#sec-set_analysis_parameters_side}
 
 `sceptre` can run left-tailed, right-tailed, and two-tailed tests of association. Left-tailed tests assess a *decrease* in expression, right-tailed tests assess an *increase* in expression, and two-tailed tests assess an increase *or* decrease in expression. The parameter `side` controls the sidedness of the test and can take values `"left"`, `"right"`, or `"both"`. (`"both"` indicates a two-tailed test.) Two-tailed tests typically are the best choice for *trans* analyses, as the direction of *trans* relationships generally is uncertain. For *cis* analyses, on the other hand, the sidedness of the test should be chosen on the basis of the type of genomic element targeted and the CRISPR perturbation modality. The following table summarizes whether a left- or right-tailed test is appropriate for a *cis* analysis as a function of these variables.
 
@@ -219,7 +219,7 @@ The choice of the control group should be made on the basis of the MOI of the da
 knitr::include_graphics("control_group_dec_tree.png")
 ```
 
-## Formula
+## Formula {#sec-set_analysis_parameters_formula}
 
 The parameter `formula_object` specifies how `sceptre` is to adjust for the cell-specific covariates. `formula_object` is optional; if not provided, `set_analysis_parameters()` constructs a default `formula_object`. The default `formula_object` is formed by summing over all covariates and log-transforming the count-based covariates. For example, the high-MOI CRISPRi data contain the cell-specific covariates `response_n_nonzero`, `response_n_umis`, `grna_n_nonzero`, `grna_n_umis`, `response_p_mito`, and `batch`. The first four of these covariates are count-based. Thus, the default formula object for this dataset is as follows:
 

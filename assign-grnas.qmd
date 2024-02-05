@@ -100,7 +100,7 @@ We see that the gRNA count distributions exhibit generally bimodal behavior. As 
 
 We assign gRNAs to cells to cells by calling the function `assign_grnas()`. `assign_grnas()` takes the arguments `sceptre_object` (required), `method` (optional), `print_progress` (optional), and `parallel` (optional). `method` is the gRNA assignment method and should be set to `"mixture"`, `"maximum"`, or `"thresholding"`. `print_progress` (default `TRUE`) and `parallel` (default `FALSE`) are logical values specifying whether to print progress updates and run the function in parallel, respectively. Note that parallel computation is not yet configured for Windows; thus, Windows users either should omit the `parallel` argument or set `parallel` to `FALSE`. Below, we describe the three gRNA assignment strategies in detail.
 
-### Mixture method
+### Mixture method {#sec-mixture_method}
 
 The first gRNA assignment strategy is the `"mixture"` method, which involves assigning gRNAs to cells using a mixture model [@barry2022c]. The mixture method is the default method for high-MOI screens and is an optional method for low-MOI screens. The method works as follows. First, we fit a latent variable Poisson GLM to the data, regressing the gRNA UMI count vector onto the (latent) gRNA indicator vector and cell-specific covariate matrix. (A given entry of the gRNA indicator vector is defined to be "1" if the gRNA is present in the corresponding cell and "0" otherwise.) We fit the latent variable Poisson GLM using a novel variant of the EM algorithm. The fitted model yields the probability that each cell contains the gRNA; we threshold these probabilities to assign the gRNA to cells. An advantage of the GLM-based mixture modeling approach is that it accounts for cell-specific covariates, such as sequencing depth and batch. For example, cells that are sequenced deeply (and have a large value for `grna_n_umis` or `response_n_umis`) generally exhibit higher levels of ambient background contamination; `sceptre` controls for heterogeneity across cells due to sequencing depth and other factors.
 
@@ -140,7 +140,7 @@ sceptre_object_highmoi_mixture <- assign_grnas(
 )
 ```
 
-### Maximum method
+### Maximum method {#sec-maximum_method}
 
 The second gRNA assignment strategy is the `"maximum"` method. The maximum method is the default assignment method for low-MOI screens and is not available as an option for high-MOI screens. The maximum method assigns the gRNA that accounts for the greatest number of UMIs in a given cell to that cell. We apply the maximum method to the low-MOI CRISPRko data below.
 

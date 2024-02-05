@@ -222,7 +222,7 @@ div.csl-indent {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pipeline-details.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pipeline details</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Details of the pipeline</span></span></a>
   </div>
 </li>
       </ul>
@@ -273,8 +273,8 @@ div.csl-indent {
   <li>
 <a href="#assign-grnas-to-cells" id="toc-assign-grnas-to-cells" class="nav-link" data-scroll-target="#assign-grnas-to-cells"><span class="header-section-number">3.3</span> Assign gRNAs to cells</a>
   <ul class="collapse">
-<li><a href="#mixture-method" id="toc-mixture-method" class="nav-link" data-scroll-target="#mixture-method"><span class="header-section-number">3.3.1</span> Mixture method</a></li>
-  <li><a href="#maximum-method" id="toc-maximum-method" class="nav-link" data-scroll-target="#maximum-method"><span class="header-section-number">3.3.2</span> Maximum method</a></li>
+<li><a href="#sec-mixture_method" id="toc-sec-mixture_method" class="nav-link" data-scroll-target="#sec-mixture_method"><span class="header-section-number">3.3.1</span> Mixture method</a></li>
+  <li><a href="#sec-maximum_method" id="toc-sec-maximum_method" class="nav-link" data-scroll-target="#sec-maximum_method"><span class="header-section-number">3.3.2</span> Maximum method</a></li>
   <li><a href="#sec-thresholding_method" id="toc-sec-thresholding_method" class="nav-link" data-scroll-target="#sec-thresholding_method"><span class="header-section-number">3.3.3</span> Thresholding method</a></li>
   </ul>
 </li>
@@ -388,7 +388,7 @@ div.csl-indent {
 </section><section id="assign-grnas-to-cells" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="assign-grnas-to-cells">
 <span class="header-section-number">3.3</span> Assign gRNAs to cells</h2>
 <p>We assign gRNAs to cells to cells by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code> takes the arguments <code>sceptre_object</code> (required), <code>method</code> (optional), <code>print_progress</code> (optional), and <code>parallel</code> (optional). <code>method</code> is the gRNA assignment method and should be set to <code>"mixture"</code>, <code>"maximum"</code>, or <code>"thresholding"</code>. <code>print_progress</code> (default <code>TRUE</code>) and <code>parallel</code> (default <code>FALSE</code>) are logical values specifying whether to print progress updates and run the function in parallel, respectively. Note that parallel computation is not yet configured for Windows; thus, Windows users either should omit the <code>parallel</code> argument or set <code>parallel</code> to <code>FALSE</code>. Below, we describe the three gRNA assignment strategies in detail.</p>
-<section id="mixture-method" class="level3" data-number="3.3.1"><h3 data-number="3.3.1" class="anchored" data-anchor-id="mixture-method">
+<section id="sec-mixture_method" class="level3" data-number="3.3.1"><h3 data-number="3.3.1" class="anchored" data-anchor-id="sec-mixture_method">
 <span class="header-section-number">3.3.1</span> Mixture method</h3>
 <p>The first gRNA assignment strategy is the <code>"mixture"</code> method, which involves assigning gRNAs to cells using a mixture model <span class="citation" data-cites="barry2022c">(<a href="references.html#ref-barry2022c" role="doc-biblioref">Barry, Roeder, and Katsevich 2022</a>)</span>. The mixture method is the default method for high-MOI screens and is an optional method for low-MOI screens. The method works as follows. First, we fit a latent variable Poisson GLM to the data, regressing the gRNA UMI count vector onto the (latent) gRNA indicator vector and cell-specific covariate matrix. (A given entry of the gRNA indicator vector is defined to be “1” if the gRNA is present in the corresponding cell and “0” otherwise.) We fit the latent variable Poisson GLM using a novel variant of the EM algorithm. The fitted model yields the probability that each cell contains the gRNA; we threshold these probabilities to assign the gRNA to cells. An advantage of the GLM-based mixture modeling approach is that it accounts for cell-specific covariates, such as sequencing depth and batch. For example, cells that are sequenced deeply (and have a large value for <code>grna_n_umis</code> or <code>response_n_umis</code>) generally exhibit higher levels of ambient background contamination; <code>sceptre</code> controls for heterogeneity across cells due to sequencing depth and other factors.</p>
 <p>We use the mixture assignment method to assign gRNAs to cells on both the high-MOI CRISPRi data and low-MOI CRISPRko data, saving the resulting outputs as <code>sceptre_object_lowmoi_mixture</code> and <code>sceptre_object_highmoi_mixture</code>, respectively.</p>
@@ -419,7 +419,7 @@ div.csl-indent {
 <span>  parallel <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="maximum-method" class="level3" data-number="3.3.2"><h3 data-number="3.3.2" class="anchored" data-anchor-id="maximum-method">
+</section><section id="sec-maximum_method" class="level3" data-number="3.3.2"><h3 data-number="3.3.2" class="anchored" data-anchor-id="sec-maximum_method">
 <span class="header-section-number">3.3.2</span> Maximum method</h3>
 <p>The second gRNA assignment strategy is the <code>"maximum"</code> method. The maximum method is the default assignment method for low-MOI screens and is not available as an option for high-MOI screens. The maximum method assigns the gRNA that accounts for the greatest number of UMIs in a given cell to that cell. We apply the maximum method to the low-MOI CRISPRko data below.</p>
 <div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-11_5435bb50635f507882ffc12a8ff1046f">

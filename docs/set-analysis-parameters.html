@@ -222,7 +222,7 @@ div.csl-indent {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pipeline-details.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Pipeline details</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Details of the pipeline</span></span></a>
   </div>
 </li>
       </ul>
@@ -268,19 +268,19 @@ div.csl-indent {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#positive-control-pairs" id="toc-positive-control-pairs" class="nav-link active" data-scroll-target="#positive-control-pairs"><span class="header-section-number">2.1</span> Positive control pairs</a></li>
+<li><a href="#sec-set_analysis_parameters_pc_pairs" id="toc-sec-set_analysis_parameters_pc_pairs" class="nav-link active" data-scroll-target="#sec-set_analysis_parameters_pc_pairs"><span class="header-section-number">2.1</span> Positive control pairs</a></li>
   <li>
-<a href="#discovery-pairs" id="toc-discovery-pairs" class="nav-link" data-scroll-target="#discovery-pairs"><span class="header-section-number">2.2</span> Discovery pairs</a>
+<a href="#sec-set_analysis_parameters_discovery_pairs" id="toc-sec-set_analysis_parameters_discovery_pairs" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_discovery_pairs"><span class="header-section-number">2.2</span> Discovery pairs</a>
   <ul class="collapse">
 <li><a href="#sec-set-analysis-parameters_construct_cis_pairs" id="toc-sec-set-analysis-parameters_construct_cis_pairs" class="nav-link" data-scroll-target="#sec-set-analysis-parameters_construct_cis_pairs"><span class="header-section-number">2.2.1</span> Construct <em>cis</em> pairs</a></li>
   <li><a href="#sec-set-analysis-parameters_construct_trans_pairs" id="toc-sec-set-analysis-parameters_construct_trans_pairs" class="nav-link" data-scroll-target="#sec-set-analysis-parameters_construct_trans_pairs"><span class="header-section-number">2.2.2</span> Construct <em>trans</em> pairs</a></li>
   <li><a href="#reducing-the-multiplicity-burden" id="toc-reducing-the-multiplicity-burden" class="nav-link" data-scroll-target="#reducing-the-multiplicity-burden"><span class="header-section-number">2.2.3</span> Reducing the multiplicity burden</a></li>
   </ul>
 </li>
-  <li><a href="#side" id="toc-side" class="nav-link" data-scroll-target="#side"><span class="header-section-number">2.3</span> Side</a></li>
+  <li><a href="#sec-set_analysis_parameters_side" id="toc-sec-set_analysis_parameters_side" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_side"><span class="header-section-number">2.3</span> Side</a></li>
   <li><a href="#sec-grna_integration_strategy" id="toc-sec-grna_integration_strategy" class="nav-link" data-scroll-target="#sec-grna_integration_strategy"><span class="header-section-number">2.4</span> gRNA integration strategy</a></li>
   <li><a href="#sec-set-analysis-parameters_control_group" id="toc-sec-set-analysis-parameters_control_group" class="nav-link" data-scroll-target="#sec-set-analysis-parameters_control_group"><span class="header-section-number">2.5</span> Control group</a></li>
-  <li><a href="#formula" id="toc-formula" class="nav-link" data-scroll-target="#formula"><span class="header-section-number">2.6</span> Formula</a></li>
+  <li><a href="#sec-set_analysis_parameters_formula" id="toc-sec-set_analysis_parameters_formula" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_formula"><span class="header-section-number">2.6</span> Formula</a></li>
   <li><a href="#sec-set_analysis_parameters_resampling_mech" id="toc-sec-set_analysis_parameters_resampling_mech" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_resampling_mech"><span class="header-section-number">2.7</span> Resampling mechanism</a></li>
   <li><a href="#sec-set_analysis_parameters_parametric_curve" id="toc-sec-set_analysis_parameters_parametric_curve" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_parametric_curve"><span class="header-section-number">2.8</span> Fit parametric curve</a></li>
   <li><a href="#sec-multiple_testing" id="toc-sec-multiple_testing" class="nav-link" data-scroll-target="#sec-multiple_testing"><span class="header-section-number">2.9</span> Multiple testing method and multiple testing <span class="math inline">\(\alpha\)</span></a></li>
@@ -383,7 +383,7 @@ Attributes of the data:
 <li><code>fit_parametric_curve</code></li>
 </ul>
 <p>Of these parameters, only <code>discovery_pairs</code> is required; the rest have sensible defaults. We describe these arguments below.</p>
-<section id="positive-control-pairs" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="positive-control-pairs">
+<section id="sec-set_analysis_parameters_pc_pairs" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="sec-set_analysis_parameters_pc_pairs">
 <span class="header-section-number">2.1</span> Positive control pairs</h2>
 <p>Positive control pairs are target-response pairs for which we know (or have strong reason to believe) that there is a regulatory relationship between the target and the response. We can use positive control pairs to verify that <code>sceptre</code> (or any association testing method for that matter) is sensitive (i.e., capable of detecting true associations) on the dataset under analysis. We use the function <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> to construct the positive control pairs. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> takes as an argument a <code>sceptre_object</code> and returns a data frame with columns <code>grna_target</code> and <code>response_id</code>, where gRNA targets and response IDs with matching names are paired. We call <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> on the high-MOI CRISPRi dataset and the low-MOI CRISPRko dataset. In both cases the positive control set consists of transcription start sites paired to the gene regulated by those transcription start sites.</p>
 <div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-7_ef5464c545a3c298f2aa4e47c40fa98a">
@@ -444,7 +444,7 @@ Attributes of the data:
 </div>
 </div>
 <p>We then could supply <code>positive_control_pairs_highmoi_updated</code> instead of <code>positive_control_pairs_highmoi</code> to <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>.</p>
-</section><section id="discovery-pairs" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="discovery-pairs">
+</section><section id="sec-set_analysis_parameters_discovery_pairs" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="sec-set_analysis_parameters_discovery_pairs">
 <span class="header-section-number">2.2</span> Discovery pairs</h2>
 <p>Discovery pairs are target-response pairs whose association status we do not know but seek to learn. Unlike positive control and negative control pairs, which serve a mainly technical purpose, discovery pairs are of primary scientific interest. <code>sceptre</code> provides two helper functions for constructing discovery pairs: <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>.</p>
 <section id="sec-set-analysis-parameters_construct_cis_pairs" class="level3" data-number="2.2.1"><h3 data-number="2.2.1" class="anchored" data-anchor-id="sec-set-analysis-parameters_construct_cis_pairs">
@@ -533,7 +533,7 @@ Attributes of the data:
 </section><section id="reducing-the-multiplicity-burden" class="level3" data-number="2.2.3"><h3 data-number="2.2.3" class="anchored" data-anchor-id="reducing-the-multiplicity-burden">
 <span class="header-section-number">2.2.3</span> Reducing the multiplicity burden</h3>
 <p><code>sceptre</code> computes a p-value for each target-response pair in the discovery set. These p-values are subjected to a multiple testing correction procedure (by default, the Benjamini-Hochberg method) to produce a discovery set that controls some notion of aggregate type-I error (by default, the false discovery rate). See <a href="#sec-multiple_testing"><span>Section&nbsp;2.9</span></a> for more details on multiple testing. The more pairs that are tested, the more stringest this multiplicity correction is. Therefore, including a large number of uninteresting or “null” pairs (i.e., pairs for which there is no relationship between the target and response) in the discovery set causes the power of the multiple testing correction procedure to decrease, resulting in fewer discoveries. If possible, it is good to restrict one’s attention to pairs that are promising or scientifically interesting a priori.</p>
-</section></section><section id="side" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="side">
+</section></section><section id="sec-set_analysis_parameters_side" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="sec-set_analysis_parameters_side">
 <span class="header-section-number">2.3</span> Side</h2>
 <p><code>sceptre</code> can run left-tailed, right-tailed, and two-tailed tests of association. Left-tailed tests assess a <em>decrease</em> in expression, right-tailed tests assess an <em>increase</em> in expression, and two-tailed tests assess an increase <em>or</em> decrease in expression. The parameter <code>side</code> controls the sidedness of the test and can take values <code>"left"</code>, <code>"right"</code>, or <code>"both"</code>. (<code>"both"</code> indicates a two-tailed test.) Two-tailed tests typically are the best choice for <em>trans</em> analyses, as the direction of <em>trans</em> relationships generally is uncertain. For <em>cis</em> analyses, on the other hand, the sidedness of the test should be chosen on the basis of the type of genomic element targeted and the CRISPR perturbation modality. The following table summarizes whether a left- or right-tailed test is appropriate for a <em>cis</em> analysis as a function of these variables.</p>
 <table class="table">
@@ -617,7 +617,7 @@ Attributes of the data:
 </div>
 </div>
 </div>
-</section><section id="formula" class="level2" data-number="2.6"><h2 data-number="2.6" class="anchored" data-anchor-id="formula">
+</section><section id="sec-set_analysis_parameters_formula" class="level2" data-number="2.6"><h2 data-number="2.6" class="anchored" data-anchor-id="sec-set_analysis_parameters_formula">
 <span class="header-section-number">2.6</span> Formula</h2>
 <p>The parameter <code>formula_object</code> specifies how <code>sceptre</code> is to adjust for the cell-specific covariates. <code>formula_object</code> is optional; if not provided, <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code> constructs a default <code>formula_object</code>. The default <code>formula_object</code> is formed by summing over all covariates and log-transforming the count-based covariates. For example, the high-MOI CRISPRi data contain the cell-specific covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_p_mito</code>, and <code>batch</code>. The first four of these covariates are count-based. Thus, the default formula object for this dataset is as follows:</p>
 <div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-20_9df7c26266788ccbc1a564fa6be0a643">
