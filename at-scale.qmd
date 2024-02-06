@@ -1,16 +1,10 @@
 # Overview of at-scale `sceptre` {#at-scale}
 
 ::: callout-tip
-Part II of this book describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. Part II is slightly more advanced than Part I. Ideally, readers will have intermediate bioinformatics experience, including familiarity with basic linux commands and facility with submitting and monitoring jobs on a cluster. Knowledge of Nextflow (or some similar workflow management tool) is helpful not required.
+Part II of this book describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. Part II is more advanced than Part I. Ideally, readers will have intermediate bioinformatics experience, including familiarity with basic linux commands and facility with submitting and monitoring jobs on a cluster. Knowledge of Nextflow (or some similar workflow management tool) is helpful not required.
 :::
 
-This chapter describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. We begin by installing `ondisc`, a companion R package to `sceptre`. `ondisc` provides facilities for out-of-core and distributed computing on large-scale single-cell CRISPR screen data.
-
-```{r, eval=FALSE}
-devtools::install_github("timothy-barry/ondisc")
-```
-
-Users can leverage `sceptre` and `ondisc` to analyze their data in one of two ways. First, users can analyze their data *out-of-core* on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of perturbation-gene pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the `sceptre` Nextflow pipeline. This solution is most appropriate when the data are big *and* a large number of pairs is to be analyzed. The addendum to this chapter (@sec-install_nextflow) explains how to download and install Nextflow.
+In this chapter we describe how to use `sceptre` to analyze large-scale single-cell CRISPR screen data. We also introduce the companion package `ondisc`, which provides facilities for out-of-core and distributed computing on single-cell data. Users can leverage `sceptre` and `ondisc` to analyze their data in one of two ways. First, users can analyze their data *out-of-core* on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of target-response pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the `sceptre` Nextflow pipeline. This solution is most appropriate when the data are big *and* a large number of pairs is to be analyzed.
 
 The schematic below illustrates the two at-scale interfaces to `sceptre`. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an `ondisc`-backed `sceptre_object`, which is a kind of `sceptre_object` in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in @sec-whole_game_import_data --- @sec-sceptre_write_outputs_to_directory of *The whole game*, calling the standard pipeline functions (i.e., `assign_grnas()`, `run_qc()`, etc.) on the `ondisc`-backed `sceptre_object` one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. This chapter focuses on the Nextflow interface.
 
@@ -18,21 +12,34 @@ The schematic below illustrates the two at-scale interfaces to `sceptre`. The fi
 knitr::include_graphics("at_scale_schematic.png")
 ```
 
-`ondisc` is an R package for large-scale computing on single-cell data, with a special focus on single-cell CRISPR screen analysis. `ondisc` implements several novel algorithms and data structures for efficiently manipulating and querying large single-cell expression matrices. `ondisc` is implemented as a lightweight layer of abstraction on top of the popular [HDF5](https://www.hdfgroup.org/solutions/hdf5/) database system. Expression matrices within `ondisc` are stored on-disk in the custom `.odm` file format, which is an HDF5 file with special structure. `ondisc` enables fast, out-of-core access to the rows of a feature-by-cell expression matrix. (Thus, loading the expression vector of a given feature into memory is fast.) This chapter keeps discussion about `ondisc` to a minimum; interested readers can learn more about `ondisc` by reading XXX.
+`ondisc` is an R package for large-scale computing on single-cell data, with a special focus on single-cell CRISPR screen analysis. `ondisc` implements several novel algorithms and data structures for efficiently manipulating and querying large single-cell expression matrices. `ondisc` is implemented as a lightweight layer of abstraction on top of the popular [HDF5](https://www.hdfgroup.org/solutions/hdf5/) database system. Expression matrices within `ondisc` are stored on-disk in the custom `.odm` file format, which is an HDF5 file with special structure. `ondisc` enables fast, out-of-core access to the rows of a feature-by-cell expression matrix. (Thus, loading the expression vector of a given feature into memory is fast.)
 
 We use the high-MOI CRISPRi data that ship with `sceptre` as a running example in this chapter. We note that the example high-MOI CRISPRi data are fairly small; typically, we would leverage the at-scale interface of `sceptre` when the data are large (e.g., \>10 gigabytes). We describe each step of the Nextflow-based pipeline below, with one section per step. The title of each section indicates whether the step is to be carried out on a local machine ("local machine") or on a cluster ("cluster"). By "local machine," we mean a laptop or a desktop, and by "cluster," we mean a computing cluster or a cloud.
 
-We begin by loading the `sceptre` package.
+## Software installation {.unnumbered}
 
-```{r,message = FALSE,results = "hide"}
-library(sceptre)
+The examples in this chapter depend on several software packages. First, users should install `ondisc` onto their local machine.
+
+```{r, filename="R, local", eval=FALSE}
+devtools::install_github("timothy-barry/ondisc")
 ```
+
+Next, users should install both `sceptre` and `ondisc` onto their cluster.
+
+```{r, filename="R, cluster", eval=FALSE}
+devtools::install_github("katsevich-lab/sceptre") # sceptre
+devtools::install_github("timothy-barry/ondisc") # ondisc
+```
+
+Finally, users should install Nextflow onto their local machine and their cluster. Instructions for installing Nextflow are available in the addendum to this chapter (@sec-install_nextflow).
 
 ## Import data into an `ondisc`-backed `sceptre` object (local machine) {#sec-import_data_into_odm_backed_sceptre_object}
 
 The first step is to import the data into an `ondisc`-backed `sceptre` object. To this end, we call the function `import_data_from_cellranger()`, setting the argument `use_ondisc` to `TRUE`. Additionally, we set `directory_to_write` to a string indicating the directory in which to write the backing `.odm` files, which are the files that will contain the gene and gRNA expression matrices. In the example below we set `directory_to_write` to `"~/sceptre_data"`, although any valid file path will do. Finally, we set `moi` to the MOI of the dataset, `grna_target_data_frame` to the gRNA target data frame, and `directories` to the set of directories outputted by one or more calls to `cellranger count`. (The latter three arguments were described in depth in @sec-whole_game_import_data of *The whole game*.)
 
 ```{r,message = FALSE, results = "hide"}
+library(sceptre)
+
 # set the arguments
 directories <- paste0(
   system.file("extdata", package = "sceptre"),
@@ -198,9 +205,9 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
  --response_odm_fp $response_odm_fp \
  --grna_odm_fp $grna_odm_fp \
  --output_directory $output_directory \
- --grna_assignment_method "mixture" \
- --pair_pod_size "30" \
- --grna_pod_size "10" \
+ --grna_assignment_method mixture \
+ --pair_pod_size 30 \
+ --grna_pod_size 10 \
  --trial
 ```
 
@@ -233,7 +240,7 @@ list.files("~/sceptre_outputs")
 An inspection of `analysis_summary.txt` indicates that 97 negative control pairs and 97 discovery pairs were analyzed. The trial Nextflow pipeline randomly samples 100 pairs from the discovery set, 100 pairs from the negative control set, and 100 pairs from the positive control set and subjects these pairs to analysis. (Some of the pairs may be filtered out by pairwise QC. Moreover, if any of the sets contains fewer than 100 pairs, then that entire set of pairs is analyzed.) If the trial pipeline runs without issue, one can proceed to the next step.
 
 ::: callout-note
-Nextflow better understands absolute file paths than relative file paths. Thus, we recommend using `$HOME` in place of `~` in the pipeline invocation script.
+Nextflow works better when an absolute file path (as opposed to a relative file path) is passed as an argument. Thus, we recommend using `$HOME` in place of `~` in the pipeline invocation script.
 :::
 
 ## Push the data to the cluster {#sec-push_data_to_cluster}
@@ -245,14 +252,7 @@ ssh username@cluster_address "mkdir -p ~/sceptre_data"
 scp -r ~/sceptre_data username@cluster_address:~/
 ```
 
-We optionally can load and explore the data on the cluster. First, we ensure that the required packages are installed on the cluster.
-
-```{r, filename="R, cluster", eval=FALSE}
-devtools::install_github("katsevich-lab/sceptre") # sceptre
-devtools::install_github("timothy-barry/ondisc") # ondisc
-```
-
-The function `read_ondisc_backed_sceptre_object()` loads an `ondisc`-backed `sceptre_object`, taking `sceptre_object_fp` (i.e., the file path to `sceptre_object.rds`), `response_odm_file_fp` (i.e., the file path to the response `.odm` file), and `grna_odm_file_fp` (i.e., the file path to the gRNA `.odm` file) as arguments. We briefly explore the `sceptre_object` to verify that looks the same on the cluster as on the local machine.
+We optionally can load and explore the data on the cluster. The function `read_ondisc_backed_sceptre_object()` loads an `ondisc`-backed `sceptre_object`, taking `sceptre_object_fp` (i.e., the file path to `sceptre_object.rds`), `response_odm_file_fp` (i.e., the file path to the response `.odm` file), and `grna_odm_file_fp` (i.e., the file path to the gRNA `.odm` file) as arguments. We briefly explore the `sceptre_object` to verify that looks the same on the cluster as on the local machine.
 
 ```{r, filename="R, cluster"}
 library(sceptre)
@@ -368,9 +368,9 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
  --response_odm_fp $response_odm_fp \
  --grna_odm_fp $grna_odm_fp \
  --output_directory $output_directory \
- --grna_assignment_method "mixture" \
- --pair_pod_size "30" \
- --grna_pod_size "10"
+ --grna_assignment_method mixture \
+ --pair_pod_size 30 \
+ --grna_pod_size 10
 ```
 
 Finally, we can launch the full pipeline by calling `qsub` (or `sbatch`, depending on the scheduler) on `launch_script.sh`:
@@ -386,7 +386,7 @@ The outputs are written to `~/sceptre_outputs`. (The previous outputs are overwr
 scp -r username@cluster_address:~/sceptre_outputs ~/
 ```
 
-Again, "username" and "cluster_address" should be replaced by one's username and cluster address, respectively. An exploration of `~/sceptre_outputs` on the local machine shows that we have successfully carried out a *trans* analysis of the example high-MOI CRISPRi data.
+Again, "username" and "cluster_address" should be replaced by one's username and cluster address, respectively. An exploration of `~/sceptre_outputs` on the local machine shows that we have successfully carried out a full *trans* analysis of the example high-MOI CRISPRi data.
 
 ## Stepping through the pipeline incrementally
 
@@ -398,9 +398,9 @@ The `sceptre` Nextflow pipeline consists of six distinct steps, depicted below.
 knitr::include_graphics("reduced_pipeline.png")
 ```
 
-The Nextflow pipeline is nearly the same as the pipeline introduced in @sec-whole_game_import_data --- @sec-sceptre_write_outputs_to_directory of *The whole game.* The difference is that the "Import data" step is not part of this pipeline (as we import the data into an `ondisc`-backed `sceptre` object prior to calling the Nextflow pipeline), and likewise the "Write outputs to directory" step is not part of this pipeline (as the Nextflow pipeline automatically writes results to the output directory at the end of each step). There is some redundancy built into the pipeline with respect to "Set analysis parameters;" users either can set the analysis parameters within the R console before writing the `sceptre_object` to disk (as described in @sec-at_scale_set_analysis_parameters), or users can specify the analysis parameters on the command line when invoking the Nextflow pipeline.
+The Nextflow pipeline is nearly the same as the pipeline introduced in @sec-whole_game_import_data --- @sec-sceptre_write_outputs_to_directory of *The whole game.* The difference is that the "Import data" step is not part of this pipeline (as we import the data into an `ondisc`-backed `sceptre` object prior to calling the Nextflow pipeline), and likewise the "Write outputs to directory" step is not part of this pipeline (as the Nextflow pipeline automatically writes results to the output directory at the end of each step). Furthermore, there is some redundancy built into the pipeline with respect to "Set analysis parameters:" users either can set the analysis parameters within the R console before writing the `sceptre_object` to disk (as described in @sec-at_scale_set_analysis_parameters), or users can specify the analysis parameters on the command line when invoking the Nextflow pipeline. The former typically is easier than the latter.
 
-We can advance through the Nextflow pipeline one step at a time by specifying the `pipeline_stop` argument. `pipeline_stop` takes six possible values: `"set_analysis_parameters"`, `"assign_grnas"`, `"run_qc"`, `"run_calibration_check"`, `"run_power_check"`, and `"run_discovery_analysis"`. When `pipeline_stop` is specified, the Nextflow pipeline runs through all the steps of the pipeline up to and including `pipeline_stop`. For example, if we set `pipeline_stop` to `"run_calibration_check"`, the Nextflow pipeline carries out the steps "Set analysis parameters," "Assign gRNAs," "Run quality control," and "Run calibration check" and then stops. The default value of `pipeline_stop` is `"run_discovery_analysis"`, which is why the Nextflow pipeline by default runs through to completion.
+We can advance through the Nextflow pipeline one step at a time by specifying the `pipeline_stop` argument. `pipeline_stop` takes six possible values: `set_analysis_parameters`, `assign_grnas`, `run_qc`, `run_calibration_check`, `run_power_check`, and `run_discovery_analysis`. When `pipeline_stop` is specified, the Nextflow pipeline runs through all the steps of the pipeline up to and including `pipeline_stop`. For example, if we set `pipeline_stop` to `run_calibration_check`, the Nextflow pipeline carries out the steps "Set analysis parameters," "Assign gRNAs," "Run quality control," and "Run calibration check" and then stops. The default value of `pipeline_stop` is `run_discovery_analysis`, and so the Nextflow pipeline by default runs through to completion.
 
 We provide an example of using the `pipeline_stop` argument below. This example can be carried out either on the local machine or on the cluster. First, let us remove the `~/sceptre_outputs` directory.
 
@@ -408,7 +408,7 @@ We provide an example of using the `pipeline_stop` argument below. This example 
 rm -r ~/sceptre_outputs
 ```
 
-We modify `launch_script.sh`, adding the line `--pipeline_stop "assign_grnas"` to the script. This line tells Nextflow to stop at the "Assign gRNAs" step.
+We modify `launch_script.sh`, adding the line `--pipeline_stop assign_grnas` to the script. This line tells Nextflow to stop at the "Assign gRNAs" step.
 
 ```{bash,eval=FALSE}
 #| code-fold: true
@@ -441,15 +441,15 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
  --response_odm_fp $response_odm_fp \
  --grna_odm_fp $grna_odm_fp \
  --output_directory $output_directory \
- --grna_assignment_method "mixture" \
- --pair_pod_size "30" \
- --grna_pod_size "10" \
- --pipeline_stop "assign_grnas"
+ --grna_assignment_method mixture \
+ --pair_pod_size 30 \
+ --grna_pod_size 10 \
+ --pipeline_stop assign_grnas
 ```
 
 We then launch the pipeline (via `bash launch_script.sh`, `qsub launch_script.sh`, or `sbatch launch_script.sh`, etc.) and examine the outputs directory. We see (via an inspection of `analysis_summary.txt`, for example) that "Set analysis parameters" and "Assign gRNAs" have completed, but that the other pipeline steps have not yet run.
 
-Suppose now that want to run the next step in the pipeline, namely "Run quality control." To this end, we update `launch_script.sh`, changing the line `--pipeline_stop "assign_grnas"` to `--pipeline_stop "run_qc"`. Additionally, we add the line `-resume` to the launch script. The `-resume` flag in effect tells Nextflow to skip over all steps preceeding "Run QC" (including "Assign gRNAs"), as these steps already have been run.
+Suppose now that want to run the next step in the pipeline, namely "Run quality control." To this end, we update `launch_script.sh`, changing the line `--pipeline_stop assign_grnas` to `--pipeline_stop run_qc`. Additionally, we add the line `-resume` to the launch script. The `-resume` flag in effect tells Nextflow to skip over all steps preceeding "Run QC" (including "Assign gRNAs"), as these steps already have been run.
 
 ```{bash,eval=FALSE}
 #| code-fold: true
@@ -482,10 +482,10 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
  --response_odm_fp $response_odm_fp \
  --grna_odm_fp $grna_odm_fp \
  --output_directory $output_directory \
- --grna_assignment_method "mixture" \
- --pair_pod_size "30" \
- --grna_pod_size "10" \
- --pipeline_stop "run_qc" \
+ --grna_assignment_method mixture \
+ --pair_pod_size 30 \
+ --grna_pod_size 10 \
+ --pipeline_stop run_qc \
  -resume
 ```
 
@@ -493,15 +493,13 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
 knitr::include_graphics("nf_output_2.png")
 ```
 
-We launch the pipeline and display the terminal output above. The "Assign gRNAs" step has not been recomputed, as indicated by the "cached" string next to the `assign_grnas` process. In conclusion, `--pipeline_stop` and `-resume` enable one to step through the Nextflow pipeline incrementally, verifying that a given step of the pipeline has run correctly before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, one can update the arguments passed to that step of the pipeline to try to improve the result.
+We launch the pipeline and display the terminal output above. The "Assign gRNAs" step has not been recomputed, as indicated by the "cached" string next to the `assign_grnas` process. In conclusion, `--pipeline_stop` and `-resume` enable one to step through the Nextflow pipeline incrementally, verifying that a given step of the pipeline has run correctly before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, one can update the arguments passed to that step of the pipeline to try to improve the result, as described in the next chapter.
 
 ## Addendum: installing and configuring Nextflow {#sec-install_nextflow}
 
-Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local machine and on their cluster to use the `sceptre` Nextflow pipeline. We encourage readers to consult the extensive and high-quality [Nextflow documentation](https://www.nextflow.io/docs/latest/index.html). Here, we briefly describe how to download, install, and configure Nextflow.
+Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local machine and on their cluster to work through the examples in this chapter. We encourage users to consult the extensive and high-quality [Nextflow documentation](https://www.nextflow.io/docs/latest/index.html) for guidance on using Nextflow. Here, we briefly describe how to download, install, and configure Nextflow. Users should carry out the following sequence of steps twice: once on their local machine and once on their cluster.
 
 ### Download and installation
-
-Carry out the following sequence of steps twice: once on your local machine and once on your cluster.
 
 1.  Install SDKMAN!, a system for installing and managing software.
 
@@ -601,4 +599,4 @@ The corresponding command for a SLURM scheduler is as follows.
 process.clusterOptions = { task.memory ? "--mem=${task.memory.toGiga()}G" : "" }
 ```
 
-Configuring Nextflow on a given cluster often takes a bit of effort, but fortunately, it is a task that only needs to be completed once. For help with Nextflow configuration, we recommend reading through the Nextflow documentation, contacting a cluster administrator, pinging the (very helpful and responsive) Nextflow community (for example on [Github issues](https://github.com/nextflow-io/nextflow/issues)), or consulting with ChatGPT (seriously; it seems to know a lot about Nextflow).
+Configuring Nextflow on a given cluster often takes a bit of effort, but fortunately, this task only needs to be completed once. For help with Nextflow configuration, we recommend reading through the Nextflow documentation, contacting a cluster administrator, pinging the (very helpful and responsive) Nextflow community (for example on [Github issues](https://github.com/nextflow-io/nextflow/issues)), or consulting with ChatGPT (seriously; it seems to know a lot about Nextflow).

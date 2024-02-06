@@ -220,6 +220,7 @@ ul.task-list li input[type="checkbox"] {
 <a href="#pipeline-arguments" id="toc-pipeline-arguments" class="nav-link" data-scroll-target="#pipeline-arguments"><span class="header-section-number">8.2</span> Pipeline arguments</a>
   <ul class="collapse">
 <li><a href="#statistical-arguments" id="toc-statistical-arguments" class="nav-link" data-scroll-target="#statistical-arguments"><span class="header-section-number">8.2.1</span> Statistical arguments</a></li>
+  <li><a href="#computational-arguments" id="toc-computational-arguments" class="nav-link" data-scroll-target="#computational-arguments"><span class="header-section-number">8.2.2</span> Computational arguments</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -241,7 +242,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
-</header><p>In this chapter we discuss technical details of the <code>sceptre</code> Nextflow pipeline.</p>
+</header><p>In this chapter we discuss several technical aspects of the <code>sceptre</code> Nextflow pipeline.</p>
 <section id="cluster-architecture-and-nextflow-pipeline-structure" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="cluster-architecture-and-nextflow-pipeline-structure">
 <span class="header-section-number">8.1</span> Cluster architecture and Nextflow pipeline structure</h2>
 <p>A computing cluster is of a collection of computers, also known as <em>nodes</em>, that work in concert to carry out a large computation. <a href="#fig-cluster_structure">Figure&nbsp;<span>8.1</span></a> illustrates the structure of a typical computing cluster. The cluster contains dozens or even hundreds of nodes, with each node harboring multiple <em>processors</em>. Processors are the core units that execute code. Furthermore, all nodes are linked to a common storage area where files are kept. For instance, specific data files like <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code> are stored in this shared space.</p>
@@ -263,19 +264,19 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
-<p>The “run calibration check,” “run power check,” and “run discovery analysis” steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into <em>r</em> distinct pods (where, again, <em>r</em> is selected by the user). Next, the pods are mapped to <em>r</em> processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association analyses are parallelized at the level of the target-response pair. (Note: if the “maximum” gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out “behind the scenes” as part of the data import step.)</p>
+<p>The “run calibration check,” “run power check,” and “run discovery analysis” steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into <em>r</em> distinct pods (where, again, <em>r</em> is selected by the user). Next, the pods are mapped to <em>r</em> processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association tests are parallelized at the level of the target-response pair. (Note: if the “maximum” gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out “behind the scenes” as part of the data import step.)</p>
 </section><section id="pipeline-arguments" class="level2" data-number="8.2"><h2 data-number="8.2" class="anchored" data-anchor-id="pipeline-arguments">
 <span class="header-section-number">8.2</span> Pipeline arguments</h2>
-<p>Here, we describe the command line arguments that can be passed to the <code>sceptre</code> Nextflow pipeline. We partition the arguments into “statistical” and “computational” categories. Within the “statistical” category, we further divide the arguments into subcategories based on the step within the pipeline to which the argument applies.</p>
+<p>We describe the command line arguments that can be passed to the <code>sceptre</code> Nextflow pipeline. We partition the arguments into “statistical” and “computational” categories. Within the “statistical” category, we further divide the arguments into subcategories based on the step within the pipeline to which the argument applies. One passes an argument to Nextflow via the syntax <code>--argument value</code>, where <code>argument</code> is the name of the argument and <code>value</code> is the value to assign to the argument.</p>
 <section id="statistical-arguments" class="level3" data-number="8.2.1"><h3 data-number="8.2.1" class="anchored" data-anchor-id="statistical-arguments">
 <span class="header-section-number">8.2.1</span> Statistical arguments</h3>
 <p><strong>Set analysis parameters</strong></p>
 <p>Users can set the analysis parameters within the R console as part of the data import step (<a href="at-scale.html#sec-at_scale_set_analysis_parameters"><span>Section&nbsp;7.3</span></a>) or on the command line via the following arguments. Analysis parameters set on the command line take precedence over those set within the R console.</p>
 <ul>
-<li><p><code>--side</code>: the sidedness of the statistical test, one of <code>"left"</code>, <code>"right"</code>, or <code>"both"</code>. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_side"><span>Section&nbsp;2.3</span></a>.)</p></li>
-<li><p><code>--grna_integration_strategy</code>: the gRNA integration strategy, one of <code>"union"</code>, <code>"singleton"</code>, or <code>"bonferroni"</code>. (See <a href="set-analysis-parameters.html#sec-grna_integration_strategy"><span>Section&nbsp;2.4</span></a>.)</p></li>
-<li><p><code>--control_group</code>: the control group used within the association analysis, one of <code>"nt_cells"</code> or <code>"complement"</code>. (See <a href="set-analysis-parameters.html#sec-set-analysis-parameters_control_group"><span>Section&nbsp;2.5</span></a>.)</p></li>
-<li><p><code>--formula_object</code>: the formula used to adjust for the covariates in the association analysis. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_formula"><span>Section&nbsp;2.6</span></a>.) <code>formula_object</code> should be a file path to an RDS file containing a formula object. For example, we create the formula object <code>formula(~response_n_umis + response_n_nonzero)</code> and save this formula object to the file <code>~/formula_object.rds</code> below.</p></li>
+<li><p><code>--side</code>: the sidedness of the statistical test, one of <code>left</code>, <code>right</code>, or <code>both</code> (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_side"><span>Section&nbsp;2.3</span></a>).</p></li>
+<li><p><code>--grna_integration_strategy</code>: the gRNA integration strategy, one of <code>union</code>, <code>singleton</code>, or <code>bonferroni</code> (see <a href="set-analysis-parameters.html#sec-grna_integration_strategy"><span>Section&nbsp;2.4</span></a>).</p></li>
+<li><p><code>--control_group</code>: the control group for the association test, one of <code>nt_cells</code> or <code>complement</code> (see <a href="set-analysis-parameters.html#sec-set-analysis-parameters_control_group"><span>Section&nbsp;2.5</span></a>).</p></li>
+<li><p><code>--formula_object</code>: the formula to adjust for the covariates in the association analysis (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_formula"><span>Section&nbsp;2.6</span></a>). <code>formula_object</code> should be a file path to an RDS file containing a formula object. For example, below, we create the formula object <code>formula(~response_n_umis + response_n_nonzero)</code> and save this formula object to the file <code>~/formula_object.rds</code>.</p></li>
 </ul>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
@@ -286,13 +287,10 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p>We then can pass this formula object as an argument to the pipeline via <code>--formula_object $HOME"/formula_object.rds"</code>.</p>
 <ul>
-<li><p><code>--fit_parametric_curve</code>: a boolean string indicating whether to fit a parametric curve to the null distribution of test statistics, one of <code>"true"</code> or <code>"false"</code>. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_parametric_curve"><span>Section&nbsp;2.8</span></a>).</p></li>
-<li><p><code>--multiple_testing_method</code>: the multiple testing correction procedure used to adjust the p-values, one of <code>"BH"</code>, <code>"bonferroni"</code>, <code>"holm"</code>, <code>"hochberg"</code>, <code>"hommel"</code>, <code>"BY"</code>, <code>"fdr"</code>, or <code>"none"</code>. (See <a href="set-analysis-parameters.html#sec-multiple_testing"><span>Section&nbsp;2.9</span></a>.)</p></li>
-<li><p><code>--multiple_testing_alpha</code>: the nominal level of the multiple testing procedure. <code>multiple_testing_alpha</code> should be a string containing a number in the interval [0,1] (for example <code>"0.1"</code> or <code>"0.05"</code>; see <a href="set-analysis-parameters.html#sec-multiple_testing"><span>Section&nbsp;2.9</span></a>.)</p></li>
-</ul>
-<!-- --><ul>
-<li>
-<code>--discovery_pairs</code>: the discovery pairs to analyze. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_discovery_pairs"><span>Section&nbsp;2.2</span></a>.) <code>discovery_pairs</code> should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file <code>~/discovery_pairs.rds</code>.</li>
+<li><p><code>--fit_parametric_curve</code>: a boolean (i.e., <code>true</code> or <code>false</code>) indicating whether to fit a parametric curve to the null distribution of test statistics (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_parametric_curve"><span>Section&nbsp;2.8</span></a>).</p></li>
+<li><p><code>--multiple_testing_method</code>: the multiple testing correction procedure to adjust the p-values, one of <code>BH</code>, <code>bonferroni</code>, <code>holm</code>, <code>hochberg</code>, <code>hommel</code>, <code>BY</code>, <code>fdr</code>, or <code>none</code> (see <a href="set-analysis-parameters.html#sec-multiple_testing"><span>Section&nbsp;2.9</span></a>).</p></li>
+<li><p><code>--multiple_testing_alpha</code>: the nominal level of the multiple testing procedure. <code>multiple_testing_alpha</code> should a number in the interval [0,1] (for example <code>0.1</code> or <code>0.05</code>; see <a href="set-analysis-parameters.html#sec-multiple_testing"><span>Section&nbsp;2.9</span></a>).</p></li>
+<li><p><code>--discovery_pairs</code>: the discovery pairs to analyze (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_discovery_pairs"><span>Section&nbsp;2.2</span></a>). <code>discovery_pairs</code> should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file <code>~/discovery_pairs.rds</code>.</p></li>
 </ul>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
@@ -305,32 +303,52 @@ ul.task-list li input[type="checkbox"] {
 <p>We then can pass this argument to the pipeline via <code>--discovery_pairs $HOME"/discovery_pairs.rds"</code>.</p>
 <ul>
 <li>
-<code>--positive_control_pairs</code>: the positive control pairs to analyze. (See <a href="set-analysis-parameters.html#sec-set_analysis_parameters_pc_pairs"><span>Section&nbsp;2.1</span></a>.) This argument works similarly to the <code>discovery_pairs</code> argument.</li>
+<code>--positive_control_pairs</code>: the positive control pairs to analyze (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_pc_pairs"><span>Section&nbsp;2.1</span></a>). This argument works similarly to the <code>discovery_pairs</code> argument.</li>
 </ul>
 <p><strong>Assign gRNAs</strong></p>
+<p>The most important argument related to gRNA assignment is <code>grna_assignment_method</code>:</p>
 <ul>
 <li>
-<code>--grna_assignment_method</code>: a string indicating the gRNA assignment method to use (one of <code>"mixture"</code>, <code>"maximum"</code>, or <code>"thresholding"</code>).</li>
+<code>--grna_assignment_method</code>: a string indicating the gRNA assignment method (one of <code>mixture</code>, <code>maximum</code>, or <code>thresholding</code>).</li>
 </ul>
-<p>The following arguments are related to the “mixture” assignment strategy (see <a href="assign-grnas.html#sec-mixture_method"><span>Section&nbsp;3.3.1</span></a>).</p>
+<p>The following arguments control application of the “mixture” assignment strategy (see <a href="assign-grnas.html#sec-mixture_method"><span>Section&nbsp;3.3.1</span></a>).</p>
 <ul>
-<li><p><code>--n_em_rep</code>: the number of times to run the EM algorithm over randomly initialized starting values. <code>n_em_rep</code> should be a string containing a positive integer (e.g., <code>"5"</code> or <code>"15"</code>).</p></li>
-<li><p><code>--n_nonzero_cells_cutoff</code>: the number of cells that must contain nonzero expression of the gRNA to attempt fitting the mixture model. <code>n_nonzero_cells_cutoff</code> should be a string containing a positive integer.</p></li>
-<li><p><code>--backup_threshold</code>: the threshold to use to assign the gRNA to cells if the mixture model fails. <code>backup_threshold</code> should be a string containing a positive integer.</p></li>
-<li><p><code>--probability_threshold</code>: the value at which the posterior perturbation probability of each cell is thresholded to assign the gRNA to cells. <code>probability_threshold</code> should be a string containing a number in the interval [0,1] (for example <code>"0.5"</code> or <code>"0.8"</code>.)</p></li>
-<li><p><code>--grna_assignment_formula</code>: the formula used to adjust for covariates in the gRNA mixture model. This argument works similarly to the <code>formula_object</code> argument (described above).</p></li>
+<li><p><code>--n_em_rep</code>: the number of times to run the EM algorithm over randomly initialized starting values. <code>n_em_rep</code> should be a positive integer (e.g., <code>5</code> or <code>15</code>).</p></li>
+<li><p><code>--n_nonzero_cells_cutoff</code>: the number of cells that must contain nonzero expression of the gRNA to attempt fitting the mixture model. <code>n_nonzero_cells_cutoff</code> should be a positive integer.</p></li>
+<li><p><code>--backup_threshold</code>: the threshold to use to assign the gRNA to cells if the mixture model fails. <code>backup_threshold</code> should be a positive integer.</p></li>
+<li><p><code>--probability_threshold</code>: the value at which the posterior perturbation probability of each cell is thresholded to assign the gRNA to cells. <code>probability_threshold</code> should be a number in the interval [0,1] (for example <code>0.5</code> or <code>0.8</code>).</p></li>
+<li><p><code>--grna_assignment_formula</code>: the formula to adjust for covariates in the gRNA mixture model. This argument works similarly to the <code>formula_object</code> argument (described above).</p></li>
 </ul>
-<p>The following argument relates to the “maximum” assignment strategy (see <a href="assign-grnas.html#sec-maximum_method"><span>Section&nbsp;3.3.2</span></a>).</p>
-<ul>
-<li>
-<code>--umi_fraction_threshold</code>: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. <code>umi_fraction_threshold</code> should be a string containing a number in the interval [0,1].</li>
-</ul>
-<p>Finally, the following argument relates to the “thresholding” assignment strategy (see <a href="assign-grnas.html#sec-thresholding_method"><span>Section&nbsp;3.3.3</span></a>).</p>
+<p>Next, <code>umi_fraction_threshold</code> and <code>threshold</code> relate to the “maximum” (<a href="assign-grnas.html#sec-maximum_method"><span>Section&nbsp;3.3.2</span></a>) and “thresholding” (<a href="assign-grnas.html#sec-thresholding_method"><span>Section&nbsp;3.3.3</span></a>) assignment methods, respectively.</p>
 <ul>
 <li>
-<code>--threshold</code>: the threshold used to assign gRNAs to cells in the context of the thresholding method. <code>threshold</code> should be a cell containing a positive integer.</li>
+<code>--umi_fraction_threshold</code>: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. <code>umi_fraction_threshold</code> should be a number in the interval [0,1].</li>
+</ul>
+<!-- --><ul>
+<li>
+<code>--threshold</code>: the threshold used to assign gRNAs to cells in the context of the thresholding method. <code>threshold</code> should be a positive integer.</li>
 </ul>
 <p><strong>Run quality control</strong></p>
+<p>The following five arguments relate to cellwise QC (see <a href="run-qc.html#sec-qc_cellwise_qc"><span>Section&nbsp;4.2.1</span></a>). All of these arguments should be supplied as a number in the interval [0,1] (for example <code>0.01</code> or <code>0.05</code>).</p>
+<ul>
+<li><p><code>-response_n_umis_range_lower</code>: a percentile indicating the location at which to clip the <em>left</em> tail of the <code>response_n_umis</code> distribution.</p></li>
+<li><p><code>--response_n_umis_range_uppper</code>: a percentile indicating the location at which to clip the <em>right</em> tail of the <code>response_n_umis</code> distribution.</p></li>
+<li><p><code>--response_n_nonzero_range_lower</code>: a percentile indicating the location at which to clip the <em>left</em> tail of the <code>response_n_nonzero</code> distribution.</p></li>
+<li><p><code>--response_n_nonzero_range_upper</code>: a percentile indicating the location at which to clip the <em>right</em> tail of the <code>response_n_nonzero</code> distribution.</p></li>
+<li><p><code>--p_mito_threshold</code>: an absolute number (i.e., not a percentile) indicating the location at which to clip the right tail of the <code>response_p_mito</code> distribution.</p></li>
+</ul>
+<p>The following two arguments relate to pairwise QC (see <a href="run-qc.html#sec-qc_pairwise_qc"><span>Section&nbsp;4.2.2</span></a>). Both arguments should be supplied as a non-negative integer (for example <code>7</code> or <code>10</code>).</p>
+<ul>
+<li><p><code>--n_nonzero_trt_thresh</code>: the minimum number of nonzero <em>treatment</em> cells that a pair must contain to be retained.</p></li>
+<li><p><code>--n_nonzero_cntrl_thresh</code>: the minimum number of nonzero <em>control</em> cells that a pair must contain to be retained.</p></li>
+</ul>
+<p><strong>Run calibration check</strong></p>
+<p>Two arguments control the calibration check analysis (see <a href="run-calibration-check.html#sec-run-calibration-check_running_the_calibration_check"><span>Section&nbsp;5.2</span></a>).</p>
+<ul>
+<li><p><code>n_calibration_pairs</code>: the number of negative control target-response pairs to include within the calibration check. <code>n_calibration_pairs</code> should be a positive integer.</p></li>
+<li><p><code>calibration_group_size</code>: the number of individual negative control gRNAs to group together to construct a negative control target. <code>calibration_group_size</code> should be a positive integer.</p></li>
+</ul></section><section id="computational-arguments" class="level3" data-number="8.2.2"><h3 data-number="8.2.2" class="anchored" data-anchor-id="computational-arguments">
+<span class="header-section-number">8.2.2</span> Computational arguments</h3>
 
 
 </section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">

@@ -107,11 +107,11 @@ The low-MOI plot is broadly similar to its high-MOI counterpart. In particular, 
 
 We apply QC to a `sceptre_object` by calling the function `run_qc()`. `run_qc()` takes the arguments `sceptre_object`, `response_n_umis_range`, `response_n_nonzero_range`, `p_mito_threshold`, `additional_cells_to_remove`, `n_nonzero_trt_thresh`, and `n_nonzero_cntrl_thresh`. The only required argument among these is `sceptre_object`; the rest are set to reasonable defaults.
 
-### Cellwise QC parameters
+### Cellwise QC parameters {#sec-qc_cellwise_qc}
 
 The parameters `response_n_umis_range`, `response_n_nonzero_range`, `p_mito_threshold`, and `additional_cells_to_remove` control cellwise QC. `response_n_umis_range` (resp., `response_n_nonzero_range`) is a length-two vector of quantiles (default `c(0.01, 0.99)`); cells whose `response_n_umis` (resp., `response_n_nonzero`) quantile falls outside this range are excluded. Next, `p_mito_threshold` is a number in the interval \[0,1\]; cells whose value for `response_p_mito` falls above this threshold likewise are excluded. (Note that `p_mito_threshold` is not a quantile but rather an absolute number). Finally, `additional_cells_to_remove` is an integer vector specifying the (1-based) indices of additional cells to remove. Cells flagged by `additional_cells_to_remove` are removed before applying any other cellwise QC filter.
 
-### Pairwise QC parameters
+### Pairwise QC parameters {#sec-qc_pairwise_qc}
 
 The parameters `n_nonzero_trt_thresh` and `n_nonzero_cntrl_thresh` control pairwise QC (i.e., QC at the level of the target-response pair). Recall from @sec-set-analysis-parameters_control_group that for a given target-response pair, we divide the cells into treatment and control groups. The treatment group consists of the cells that contain a gRNA targeting the given target, and the control group consists of the cells against which the treatment cells are compared. (The control group can be either the complement set or NT cells; this choice is governed by the `control_group` parameter.) We define the "number of nonzero treatment cells" (resp., the "number of nonzero control cells") as the number of cells in the treatment group (resp., control group) that contain nonzero expression of the response. (We sometimes use the shorthand `n_nonzero_trt` and `n_nonzero_cntrl` to refer to the number of nonzero treatment cells and control cells, respectively.) `n_nonzero_trt` and `n_nonzero_cntrl` are reasonable metrics of pair quality, with higher-quality pairs exhibiting larger values for `n_nonzero_trt` and `n_nonzero_cntrl`. The schematic below illustrates the definitions of `n_nonzero_trt` and `n_nonzero_cntrl`.
 

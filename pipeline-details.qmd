@@ -1,6 +1,6 @@
 # Details of the pipeline
 
-In this chapter we discuss technical details of the `sceptre` Nextflow pipeline.
+In this chapter we discuss several technical aspects of the `sceptre` Nextflow pipeline.
 
 ## Cluster architecture and Nextflow pipeline structure
 
@@ -22,11 +22,11 @@ A graph illustrating the flow of information through the `sceptre` Nextflow pipe
 knitr::include_graphics("pipeline_dag.png")
 ```
 
-The "run calibration check," "run power check," and "run discovery analysis" steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into *r* distinct pods (where, again, *r* is selected by the user). Next, the pods are mapped to *r* processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association analyses are parallelized at the level of the target-response pair. (Note: if the "maximum" gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out "behind the scenes" as part of the data import step.)
+The "run calibration check," "run power check," and "run discovery analysis" steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into *r* distinct pods (where, again, *r* is selected by the user). Next, the pods are mapped to *r* processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association tests are parallelized at the level of the target-response pair. (Note: if the "maximum" gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out "behind the scenes" as part of the data import step.)
 
 ## Pipeline arguments
 
-Here, we describe the command line arguments that can be passed to the `sceptre` Nextflow pipeline. We partition the arguments into "statistical" and "computational" categories. Within the "statistical" category, we further divide the arguments into subcategories based on the step within the pipeline to which the argument applies.
+We describe the command line arguments that can be passed to the `sceptre` Nextflow pipeline. We partition the arguments into "statistical" and "computational" categories. Within the "statistical" category, we further divide the arguments into subcategories based on the step within the pipeline to which the argument applies. One passes an argument to Nextflow via the syntax `--argument value`, where `argument` is the name of the argument and `value` is the value to assign to the argument.
 
 ### Statistical arguments
 
@@ -34,13 +34,13 @@ Here, we describe the command line arguments that can be passed to the `sceptre`
 
 Users can set the analysis parameters within the R console as part of the data import step (@sec-at_scale_set_analysis_parameters) or on the command line via the following arguments. Analysis parameters set on the command line take precedence over those set within the R console.
 
--   `--side`: the sidedness of the statistical test, one of `"left"`, `"right"`, or `"both"`. (See @sec-set_analysis_parameters_side.)
+-   `--side`: the sidedness of the statistical test, one of `left`, `right`, or `both` (see @sec-set_analysis_parameters_side).
 
--   `--grna_integration_strategy`: the gRNA integration strategy, one of `"union"`, `"singleton"`, or `"bonferroni"`. (See @sec-grna_integration_strategy.)
+-   `--grna_integration_strategy`: the gRNA integration strategy, one of `union`, `singleton`, or `bonferroni` (see @sec-grna_integration_strategy).
 
--   `--control_group`: the control group used within the association analysis, one of `"nt_cells"` or `"complement"`. (See @sec-set-analysis-parameters_control_group.)
+-   `--control_group`: the control group for the association test, one of `nt_cells` or `complement` (see @sec-set-analysis-parameters_control_group).
 
--   `--formula_object`: the formula used to adjust for the covariates in the association analysis. (See @sec-set_analysis_parameters_formula.) `formula_object` should be a file path to an RDS file containing a formula object. For example, we create the formula object `formula(~response_n_umis + response_n_nonzero)` and save this formula object to the file `~/formula_object.rds` below.
+-   `--formula_object`: the formula to adjust for the covariates in the association analysis (see @sec-set_analysis_parameters_formula). `formula_object` should be a file path to an RDS file containing a formula object. For example, below, we create the formula object `formula(~response_n_umis + response_n_nonzero)` and save this formula object to the file `~/formula_object.rds`.
 
 ``` {.terminal filename="terminal"}
 Rscript -e "x <- formula(~response_n_umis + response_n_nonzero);
@@ -49,16 +49,13 @@ Rscript -e "x <- formula(~response_n_umis + response_n_nonzero);
 
 We then can pass this formula object as an argument to the pipeline via `--formula_object $HOME"/formula_object.rds"`.
 
--   `--fit_parametric_curve`: a boolean string indicating whether to fit a parametric curve to the null distribution of test statistics, one of `"true"` or `"false"`. (See @sec-set_analysis_parameters_parametric_curve).
+-   `--fit_parametric_curve`: a boolean (i.e., `true` or `false`) indicating whether to fit a parametric curve to the null distribution of test statistics (see @sec-set_analysis_parameters_parametric_curve).
 
--   `--multiple_testing_method`: the multiple testing correction procedure used to adjust the p-values, one of `"BH"`, `"bonferroni"`, `"holm"`, `"hochberg"`, `"hommel"`, `"BY"`, `"fdr"`, or `"none"`. (See @sec-multiple_testing.)
+-   `--multiple_testing_method`: the multiple testing correction procedure to adjust the p-values, one of `BH`, `bonferroni`, `holm`, `hochberg`, `hommel`, `BY`, `fdr`, or `none` (see @sec-multiple_testing).
 
--   `--multiple_testing_alpha`: the nominal level of the multiple testing procedure. `multiple_testing_alpha` should be a string containing a number in the interval \[0,1\] (for example `"0.1"` or `"0.05"`; see @sec-multiple_testing.)
+-   `--multiple_testing_alpha`: the nominal level of the multiple testing procedure. `multiple_testing_alpha` should a number in the interval \[0,1\] (for example `0.1` or `0.05`; see @sec-multiple_testing).
 
-```{=html}
-<!-- -->
-```
--   `--discovery_pairs`: the discovery pairs to analyze. (See @sec-set_analysis_parameters_discovery_pairs.) `discovery_pairs` should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file `~/discovery_pairs.rds`.
+-   `--discovery_pairs`: the discovery pairs to analyze (see @sec-set_analysis_parameters_discovery_pairs). `discovery_pairs` should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file `~/discovery_pairs.rds`.
 
 ``` {.terminal filename="terminal"}
   Rscript -e "x <- data.frame(grna_target = c('candidate_enh_1', 'candidate_enh_2'),
@@ -68,30 +65,61 @@ We then can pass this formula object as an argument to the pipeline via `--formu
 
 We then can pass this argument to the pipeline via `--discovery_pairs $HOME"/discovery_pairs.rds"`.
 
--   `--positive_control_pairs`: the positive control pairs to analyze. (See @sec-set_analysis_parameters_pc_pairs.) This argument works similarly to the `discovery_pairs` argument.
+-   `--positive_control_pairs`: the positive control pairs to analyze (see @sec-set_analysis_parameters_pc_pairs). This argument works similarly to the `discovery_pairs` argument.
 
 **Assign gRNAs**
 
--   `--grna_assignment_method`: a string indicating the gRNA assignment method to use (one of `"mixture"`, `"maximum"`, or `"thresholding"`).
+The most important argument related to gRNA assignment is `grna_assignment_method`:
 
-The following arguments are related to the "mixture" assignment strategy (see @sec-mixture_method).
+-   `--grna_assignment_method`: a string indicating the gRNA assignment method (one of `mixture`, `maximum`, or `thresholding`).
 
--   `--n_em_rep`: the number of times to run the EM algorithm over randomly initialized starting values. `n_em_rep` should be a string containing a positive integer (e.g., `"5"` or `"15"`).
+The following arguments control application of the "mixture" assignment strategy (see @sec-mixture_method).
 
--   `--n_nonzero_cells_cutoff`: the number of cells that must contain nonzero expression of the gRNA to attempt fitting the mixture model. `n_nonzero_cells_cutoff` should be a string containing a positive integer.
+-   `--n_em_rep`: the number of times to run the EM algorithm over randomly initialized starting values. `n_em_rep` should be a positive integer (e.g., `5` or `15`).
 
--   `--backup_threshold`: the threshold to use to assign the gRNA to cells if the mixture model fails. `backup_threshold` should be a string containing a positive integer.
+-   `--n_nonzero_cells_cutoff`: the number of cells that must contain nonzero expression of the gRNA to attempt fitting the mixture model. `n_nonzero_cells_cutoff` should be a positive integer.
 
--   `--probability_threshold`: the value at which the posterior perturbation probability of each cell is thresholded to assign the gRNA to cells. `probability_threshold` should be a string containing a number in the interval \[0,1\] (for example `"0.5"` or `"0.8"`.)
+-   `--backup_threshold`: the threshold to use to assign the gRNA to cells if the mixture model fails. `backup_threshold` should be a positive integer.
 
--   `--grna_assignment_formula`: the formula used to adjust for covariates in the gRNA mixture model. This argument works similarly to the `formula_object` argument (described above).
+-   `--probability_threshold`: the value at which the posterior perturbation probability of each cell is thresholded to assign the gRNA to cells. `probability_threshold` should be a number in the interval \[0,1\] (for example `0.5` or `0.8`).
 
-The following argument relates to the "maximum" assignment strategy (see @sec-maximum_method).
+-   `--grna_assignment_formula`: the formula to adjust for covariates in the gRNA mixture model. This argument works similarly to the `formula_object` argument (described above).
 
--   `--umi_fraction_threshold`: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. `umi_fraction_threshold` should be a string containing a number in the interval \[0,1\].
+Next, `umi_fraction_threshold` and `threshold` relate to the "maximum" (@sec-maximum_method) and "thresholding" (@sec-thresholding_method) assignment methods, respectively.
 
-Finally, the following argument relates to the "thresholding" assignment strategy (see @sec-thresholding_method).
+-   `--umi_fraction_threshold`: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. `umi_fraction_threshold` should be a number in the interval \[0,1\].
 
--   `--threshold`: the threshold used to assign gRNAs to cells in the context of the thresholding method. `threshold` should be a cell containing a positive integer.
+```{=html}
+<!-- -->
+```
+-   `--threshold`: the threshold used to assign gRNAs to cells in the context of the thresholding method. `threshold` should be a positive integer.
 
 **Run quality control**
+
+The following five arguments relate to cellwise QC (see @sec-qc_cellwise_qc). All of these arguments should be supplied as a number in the interval \[0,1\] (for example `0.01` or `0.05`).
+
+-   `-response_n_umis_range_lower`: a percentile indicating the location at which to clip the *left* tail of the `response_n_umis` distribution.
+
+-   `--response_n_umis_range_uppper`: a percentile indicating the location at which to clip the *right* tail of the `response_n_umis` distribution.
+
+-   `--response_n_nonzero_range_lower`: a percentile indicating the location at which to clip the *left* tail of the `response_n_nonzero` distribution.
+
+-   `--response_n_nonzero_range_upper`: a percentile indicating the location at which to clip the *right* tail of the `response_n_nonzero` distribution.
+
+-   `--p_mito_threshold`: an absolute number (i.e., not a percentile) indicating the location at which to clip the right tail of the `response_p_mito` distribution.
+
+The following two arguments relate to pairwise QC (see @sec-qc_pairwise_qc). Both arguments should be supplied as a non-negative integer (for example `7` or `10`).
+
+-   `--n_nonzero_trt_thresh`: the minimum number of nonzero *treatment* cells that a pair must contain to be retained.
+
+-   `--n_nonzero_cntrl_thresh`: the minimum number of nonzero *control* cells that a pair must contain to be retained.
+
+**Run calibration check**
+
+Two arguments control the calibration check analysis (see @sec-run-calibration-check_running_the_calibration_check).
+
+-   `n_calibration_pairs`: the number of negative control target-response pairs to include within the calibration check. `n_calibration_pairs` should be a positive integer.
+
+-   `calibration_group_size`: the number of individual negative control gRNAs to group together to construct a negative control target. `calibration_group_size` should be a positive integer.
+
+### Computational arguments
