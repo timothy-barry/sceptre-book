@@ -296,7 +296,7 @@ Tip
 </div>
 </div>
 <p>In this chapter we describe how to use <code>sceptre</code> to analyze large-scale single-cell CRISPR screen data. We also introduce the companion package <code>ondisc</code>, which provides facilities for out-of-core and distributed computing on single-cell data. Users can leverage <code>sceptre</code> and <code>ondisc</code> to analyze their data in one of two ways. First, users can analyze their data <em>out-of-core</em> on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of target-response pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the <code>sceptre</code> Nextflow pipeline. This solution is most appropriate when the data are big <em>and</em> a large number of pairs is to be analyzed.</p>
-<p>The schematic below illustrates the two at-scale interfaces to <code>sceptre</code>. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, which is a kind of <code>sceptre_object</code> in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game</em>, calling the standard pipeline functions (i.e., <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, etc.) on the <code>ondisc</code>-backed <code>sceptre_object</code> one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. This chapter focuses on the Nextflow interface.</p>
+<p>The schematic below illustrates the two at-scale interfaces to <code>sceptre</code>. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, which is a kind of <code>sceptre_object</code> in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game</em>, calling the standard pipeline functions (i.e., <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, etc.) on the <code>ondisc</code>-backed <code>sceptre_object</code> one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. Part II of the book focuses on the Nextflow interface.</p>
 <div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-1_38f5573fe0f45051659cbd57b3ce4c93">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -450,7 +450,7 @@ Tip
 <span>  resampling_mechanism <span class="op">=</span> <span class="st">"permutations"</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We note that this step is optional; we instead could specify the analysis parameters on the command line as arguments to the Nextflow pipeline.</p>
+<p>This step is optional; users instead can specify the analysis parameters on the command line as arguments to the Nextflow pipeline.</p>
 </section><section id="write-the-ondisc-backed-sceptre_object-to-disk-local-machine" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="write-the-ondisc-backed-sceptre_object-to-disk-local-machine">
 <span class="header-section-number">7.4</span> Write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk (local machine)</h2>
 <p>The next step is to write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk. To this end, we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">write_ondisc_backed_sceptre_object()</a></code>, passing <code>sceptre_object</code> and <code>directory_to_write</code> as arguments. The <code>sceptre_object</code> is saved within <code>directory_to_write</code> as <code>sceptre_object.rds</code>. <code>directory_to_write</code> can be any directory.</p>
@@ -461,12 +461,17 @@ Tip
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>directory_to_write</code> now contains three files: <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code>.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-18_624d5505003d26f742d37464daf1516a">
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-18_91c246053606a7291b45f9fa868dbb3e">
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">directory_to_write</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-19_8d52182a5185306125ece74f19c1cf2a">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "/Users/timbarry/sceptre_data/gene.odm"          
-[2] "/Users/timbarry/sceptre_data/grna.odm"          
-[3] "/Users/timbarry/sceptre_data/sceptre_object.rds"</code></pre>
+<pre><code> [1] "analysis_summary.txt"               "plot_assign_grnas.png"             
+ [3] "plot_covariates.png"                "plot_grna_count_distributions.png" 
+ [5] "plot_run_calibration_check.png"     "plot_run_discovery_analysis.png"   
+ [7] "plot_run_power_check.png"           "plot_run_qc.png"                   
+ [9] "results_run_calibration_check.rds"  "results_run_discovery_analysis.rds"
+[11] "results_run_power_check.rds"       </code></pre>
 </div>
 </div>
 </section><section id="call-the-trial-nextflow-pipeline-local-machine" class="level2" data-number="7.5"><h2 data-number="7.5" class="anchored" data-anchor-id="call-the-trial-nextflow-pipeline-local-machine">
@@ -526,7 +531,7 @@ cd sceptre-pipeline/examples</code></pre>
 # alternately: ./launch_script.sh</code></pre>
 </div>
 <p>If the pipeline runs correctly, the terminal output looks something like the following.</p>
-<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-19_6882a1a6cb17c3fe8709f0d198009f59">
+<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-20_9a47347a5afd832b088106ed0d816ca8">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="nf_output.png" class="img-fluid figure-img" width="750"></p>
@@ -535,28 +540,18 @@ cd sceptre-pipeline/examples</code></pre>
 </div>
 </div>
 <p>The results of the pipeline are stored in <code>~/sceptre_outputs</code>. Calling <code>list.files</code> on <code>~/sceptre_outputs</code> shows that the directory contains all of the standard <code>sceptre</code> outputs, including the analysis summary text file (<code>analysis_summary.txt</code>), the plot files (e.g., <code>plot_assign_grnas.png</code>, etc.), and the result files (e.g., <code>results_run_discovery_analysis.rds</code>, etc.).</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-20_883090cf42a1aefe772bc02bb59a730e">
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-21_b261b5c92d182e5b02e2db72eb537436">
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"~/sceptre_outputs"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "analysis_summary.txt"              "plot_assign_grnas.png"            
-[3] "plot_covariates.png"               "plot_grna_count_distributions.png"
-[5] "plot_run_qc.png"                  </code></pre>
+<pre><code> [1] "analysis_summary.txt"               "plot_assign_grnas.png"             
+ [3] "plot_covariates.png"                "plot_grna_count_distributions.png" 
+ [5] "plot_run_calibration_check.png"     "plot_run_discovery_analysis.png"   
+ [7] "plot_run_power_check.png"           "plot_run_qc.png"                   
+ [9] "results_run_calibration_check.rds"  "results_run_discovery_analysis.rds"
+[11] "results_run_power_check.rds"       </code></pre>
 </div>
 </div>
 <p>An inspection of <code>analysis_summary.txt</code> indicates that 97 negative control pairs and 97 discovery pairs were analyzed. The trial Nextflow pipeline randomly samples 100 pairs from the discovery set, 100 pairs from the negative control set, and 100 pairs from the positive control set and subjects these pairs to analysis. (Some of the pairs may be filtered out by pairwise QC. Moreover, if any of the sets contains fewer than 100 pairs, then that entire set of pairs is analyzed.) If the trial pipeline runs without issue, one can proceed to the next step.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Nextflow works better when an absolute file path (as opposed to a relative file path) is passed as an argument. Thus, we recommend using <code>$HOME</code> in place of <code>~</code> in the pipeline invocation script.</p>
-</div>
-</div>
 </section><section id="sec-push_data_to_cluster" class="level2" data-number="7.6"><h2 data-number="7.6" class="anchored" data-anchor-id="sec-push_data_to_cluster">
 <span class="header-section-number">7.6</span> Push the data to the cluster</h2>
 <p>The next step is to push the data to the cluster. The following block of code creates a directory <code>~/sceptre_data</code> on the cluster. It then copies the contents of <code>~/sceptre_data</code> (on the local machine) into <code>~/sceptre_data</code> (on the cluster). The strings “username” and “cluster_address” should be replaced by one’s username and cluster address, respectively.</p>
@@ -568,7 +563,7 @@ Note
 scp -r ~/sceptre_data username@cluster_address:~/</code></pre>
 </div>
 <p>We optionally can load and explore the data on the cluster. The function <code><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">read_ondisc_backed_sceptre_object()</a></code> loads an <code>ondisc</code>-backed <code>sceptre_object</code>, taking <code>sceptre_object_fp</code> (i.e., the file path to <code>sceptre_object.rds</code>), <code>response_odm_file_fp</code> (i.e., the file path to the response <code>.odm</code> file), and <code>grna_odm_file_fp</code> (i.e., the file path to the gRNA <code>.odm</code> file) as arguments. We briefly explore the <code>sceptre_object</code> to verify that looks the same on the cluster as on the local machine.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-21_5916aba510ff25723c5cfac6d093885d">
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-22_3763d8077ff3311ca2d581e6d15a29ec">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R, cluster</strong></pre>
@@ -609,7 +604,7 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <p>The first six steps of the Nextflow-based pipeline (i.e., <a href="#sec-import_data_into_odm_backed_sceptre_object"><span>Section&nbsp;7.1</span></a> – <a href="#sec-push_data_to_cluster"><span>Section&nbsp;7.6</span></a>) can be carried out entirely on the cluster, bypassing the local machine. If the output directories from <code>cellranger count</code> are stored on the cluster, the user can import the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, set the analysis parameters, and write the updated <code>sceptre_object</code> to disk on the cluster as follows.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-22_d6eb4936077c69db72a3c11d849db24d">
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-23_6d6076b09e690effa5b2498246668a2d">
 <details><summary>Show code</summary><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># on cluster</span></span>
 <span><span class="co"># import data</span></span>
 <span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger</a></span><span class="op">(</span></span>
@@ -647,21 +642,21 @@ Note
 <pre class="terminal"><code>git clone git@github.com:timothy-barry/sceptre-pipeline.git
 cd sceptre-pipeline/examples</code></pre>
 </div>
-<p>We launch the submission script by submitting the script to the scheduler. For example, on a sun grid engine (SGE) cluster, one would use the <code>qsub</code> command.</p>
+<p>We launch the pipeline by submitting <code>launch_script.sh</code> to the scheduler. For example, on a sun grid engine (SGE) cluster, one would use the <code>qsub</code> command.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>terminal, cluster</strong></pre>
 </div>
 <pre class="terminal"><code>qsub launch_script.sh</code></pre>
 </div>
-<p>On SLURM cluster, one would use the <code>sbatch</code> command.</p>
+<p>On SLURM cluster, on the other hand, one would use the <code>sbatch</code> command.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>terminal, cluster</strong></pre>
 </div>
 <pre class="terminal"><code>sbatch launch_script.sh</code></pre>
 </div>
-<p><code>launch_script.sh</code> launches the Nextflow driver, which is a process that runs throughout the duration of the pipeline and manages the submission of all the other processes. Depending on their cluster, users may need to specify a time and/or memory allocation request at the top of <code>launch_script.sh</code>. The Nextflow driver for the trial pipeline should not require more than 30 minutes of wall time or four gigabytes of memory.</p>
+<p><code>launch_script.sh</code> launches the Nextflow driver, which is a process that runs throughout the duration of the pipeline and manages the submission of all the other processes. Depending on their cluster, users may need to specify a time and/or memory allocation request at the top of <code>launch_script.sh</code>. The Nextflow driver of the trial pipeline requires fewer than 30 minutes of wall time and four gigabytes of memory.</p>
 <p>Importantly, we are able to launch the pipeline using essentially the same command on our local machine as on the cluster. This is one of the advantages of Nextflow: it provides a layer of abstraction between the logic of the pipeline and the execution environment. Thus, we can develop (or debug, etc.) a pipeline on our local machine and then run it at scale on the cluster without modification.</p>
 <p>The pipeline outputs are written to the directory <code>~/sceptre_outputs</code>. Again, all of the standard <code>sceptre</code> outputs — e.g., <code>analysis_summary.txt</code>, <code>results_run_discovery_analysis.rds</code>, etc. — are contained within this directory. In fact, the <code>~/sceptre_outputs</code> directory on the cluster should match exactly the <code>~/sceptre_outputs</code> directory on the local machine. We can view <code>analysis_summary.txt</code>, for example, by calling <code>cat</code> on this file:</p>
 <div class="code-with-filename">
@@ -673,7 +668,7 @@ cd sceptre-pipeline/examples</code></pre>
 </section><section id="call-the-full-pipeline-cluster" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="call-the-full-pipeline-cluster">
 <span class="header-section-number">7.8</span> Call the full pipeline (cluster)</h2>
 <p>The final step is to run the full pipeline on the cluster. To this end, we modify <code>launch_script.sh</code>, removing the <code>--trial</code> flag from the last line of the script. We can do this on the cluster by calling <code>nano launch_script.sh</code>, deleting the <code>--trial</code> flag, and saving the updated script. <code>launch_script.sh</code> now should look as follows.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-23_8bc145c8b4bea530df38bc67045d6a85">
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-24_250b53161e9c8f952daaf910ab391538">
 <details><summary>Show code</summary><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
@@ -743,7 +738,7 @@ cd sceptre-pipeline/examples</code></pre>
 <pre class="terminal"><code>rm -r ~/sceptre_outputs</code></pre>
 </div>
 <p>We modify <code>launch_script.sh</code>, adding the line <code>--pipeline_stop assign_grnas</code> to the script. This line tells Nextflow to stop at the “Assign gRNAs” step.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-25_4509fea50d850acf197afd7c8d558aa0">
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-26_669e220e4cbf6903ecad744a2f84f976">
 <details><summary>Show code</summary><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
@@ -779,7 +774,7 @@ cd sceptre-pipeline/examples</code></pre>
 </div>
 <p>We then launch the pipeline (via <code>bash launch_script.sh</code>, <code>qsub launch_script.sh</code>, or <code>sbatch launch_script.sh</code>, etc.) and examine the outputs directory. We see (via an inspection of <code>analysis_summary.txt</code>, for example) that “Set analysis parameters” and “Assign gRNAs” have completed, but that the other pipeline steps have not yet run.</p>
 <p>Suppose now that want to run the next step in the pipeline, namely “Run quality control.” To this end, we update <code>launch_script.sh</code>, changing the line <code>--pipeline_stop assign_grnas</code> to <code>--pipeline_stop run_qc</code>. Additionally, we add the line <code>-resume</code> to the launch script. The <code>-resume</code> flag in effect tells Nextflow to skip over all steps preceeding “Run QC” (including “Assign gRNAs”), as these steps already have been run.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-26_4f35449086be99a9ca81162812c9b470">
+<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-27_ab84884486e4ca3f619db6e4b629c81a">
 <details><summary>Show code</summary><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
@@ -814,7 +809,7 @@ cd sceptre-pipeline/examples</code></pre>
 <span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a> <span class="at">-resume</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-27_85a36f50f00628f4e2cef37c3434c660">
+<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-28_8c36d627cff1d4b5da589476dd3ebe17">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="nf_output_2.png" class="img-fluid figure-img" width="700"></p>
@@ -822,7 +817,7 @@ cd sceptre-pipeline/examples</code></pre>
 </div>
 </div>
 </div>
-<p>We launch the pipeline and display the terminal output above. The “Assign gRNAs” step has not been recomputed, as indicated by the “cached” string next to the <code>assign_grnas</code> process. In conclusion, <code>--pipeline_stop</code> and <code>-resume</code> enable one to step through the Nextflow pipeline incrementally, verifying that a given step of the pipeline has run correctly before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, one can update the arguments passed to that step of the pipeline to try to improve the result, as described in the next chapter.</p>
+<p>We launch the updated pipeline; the terminal is displayed output above. The “Assign gRNAs” step has not been recomputed, as indicated by the “cached” string next to the <code>assign_grnas</code> process. In conclusion, <code>--pipeline_stop</code> and <code>-resume</code> enable us to step through the Nextflow pipeline incrementally, verifying that a given step of the pipeline has run correctly before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, we can update the arguments passed to that step of the pipeline to try to improve the result, as described in the next chapter.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">

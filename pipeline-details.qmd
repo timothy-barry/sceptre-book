@@ -24,7 +24,7 @@ knitr::include_graphics("pipeline_dag.png")
 
 The "run calibration check," "run power check," and "run discovery analysis" steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into *r* distinct pods (where, again, *r* is selected by the user). Next, the pods are mapped to *r* processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association tests are parallelized at the level of the target-response pair. (If the "maximum" gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out "behind the scenes" as part of the data import step.)
 
-## Pipeline launch script
+## Anatomy of a pipeline launch script
 
 An example `sceptre` Nextflow pipeline launch script is as follows.
 
@@ -67,11 +67,11 @@ nextflow run timothy-barry/sceptre-pipeline -r main \
  --combine_assign_grnas_time 5m
 ```
 
-We describe each component of this script line-by-line. First, we limit the Nextflow driver to four gigabytes of memory by including the line `export NXF_OPTS="-Xms500M -Xmx4G"`. (This line is optional but helps prevent the driver from exceeding its memory allocation.) Next, we set the variables `sceptre_object_fp`, `response_odm_fp`, and `grna_odm_fp` to the file paths of the `sceptre_object.rds` file, the `gene.odm` file, and the `grna.odm` file, respectively. We also set `output_directory` to the file path of the directory in which to write the results. These variables are defined in terms of `$HOME` as opposed to the shorthand `~`, as `$HOME` contains the absolute file path to the home directory, and Nextflow is more adept at handling absolute file paths than relative file paths.
+We describe each component of this script line-by-line. First, we limit the Nextflow driver to four gigabytes of memory by including the line `export NXF_OPTS="-Xms500M -Xmx4G"`. (This line is optional but helps prevent the driver from using too much memory.) Next, we set the variables `sceptre_object_fp`, `response_odm_fp`, and `grna_odm_fp` to the file paths of the `sceptre_object.rds` file, the `gene.odm` file, and the `grna.odm` file, respectively. We also set `output_directory` to the file path of the directory in which to write the results. These variables are defined in terms of `$HOME` as opposed to the shorthand `~`, as `$HOME` contains the absolute file path to the home directory, and Nextflow is more adept at handling absolute file paths than relative file paths.
 
 Finally, we invoke the Nextflow pipeline via the command `nextflow run timothy-barry/sceptre-pipeline -r main`. (`timothy-barry/sceptre-pipeline` is the current location of the `sceptre` Nextflow pipeline on Github; we plan to move the pipeline into the [nf-core](https://nf-co.re/pipelines) repository in the future.) We specify arguments to the pipeline via the syntax `--argument value`, where `argument` is the name of an argument and `value` is the value to assign to the argument. In the above script we organize the arguments such that each argument is on its own line, but this is not necessary. The `sceptre` pipeline has four required arguments: `sceptre_object_fp`, `response_odm_fp`, `grna_odm_fp`, and `output_directory` (described above). The pipeline additionally supports a variety of optional arguments. About half of the optional arguments are "statistical" in that they govern how the statistical methods are to be deployed to analyze the data. For example, above, we indicate that the pipeline is to use the "mixture" method to assign gRNAs to cells via `--grna_assignment_method`. Additionally, we alter the default cellwise QC thresholds via `--response_n_umis_range_lower 0.05` and `--response_n_umis_range_uppper 0.95`. Finally, we indicate that the pipeline is to use the "singleton" gRNA integration strategy via `--grna_integration_strategy singleton`.
 
-The other half of the optional arguments are "computational" in that they control how the computation is organized and executed. For example, we set the gRNA pod size to 25 and the target-response pair pod size to 1,000 via `–pair_pod_size 1000` and `–-grna_pod_size 25`, respectively. (The gRNA pod size and pair pod size correspond to *p* and *r* in @fig-pipeline_dag). Next, each process in the pipeline submits a time and memory allocation request to the scheduler. These resource requests are set to reasonable defaults, but we manually can override the defaults for a given process (or processes) on the command line. For example, we request eight gigabytes of memory and five minutes of wall time for the "Combine assign gRNAs" process via `–-combine_assign_grnas_memory 8GB` and `–-combine_assign_grnas_time 5m`, respectively.
+The other half of the optional arguments are "computational" in that they control how the computation is organized and executed. For example, we set the gRNA pod size to 25 and the target-response pair pod size to 1,000 via `–pair_pod_size 1000` and `–-grna_pod_size 25`, respectively. (The gRNA pod size and pair pod size correspond to *p* and *r* in @fig-pipeline_dag). Each process in the pipeline submits a time and memory allocation request to the scheduler. These resource requests are set to reasonable defaults, but we manually can override the defaults for a given process (or processes) on the command line. For example, we request eight gigabytes of memory and five minutes of wall time for the "Combine assign gRNAs" process via `–-combine_assign_grnas_memory 8GB` and `–-combine_assign_grnas_time 5m`, respectively.
 
 ::: callout-tip
 All of the `sceptre` Nextflow pipeline arguments are enumerated and described in @sec-nf_pipeline_args of the addendum to Part II of this book. We recommend that users skim through this section and reference it as needed.
@@ -79,9 +79,9 @@ All of the `sceptre` Nextflow pipeline arguments are enumerated and described in
 
 ## Example workflows
 
-We describe a few common workflows within the context of the `sceptre` Nextflow pipeline.
+We conclude with a few common workflows in the context of the `sceptre` Nextflow pipeline.
 
-### Tweaking pipeline arguments on the basis of intermediate results 
+### Tweaking the pipeline arguments using the intermediate results 
 
 A common workflow is to advance through the pipeline one step at a time (@sec-incremental_pipeline), adjusting the input arguments as necessary on the basis of the intermediate outputs. For example, suppose that we decide to implement an aggressive cellwise QC strategy, setting `--response_n_umis_range_lower` and `--response_n_umis_range_uppper` to` 0.2` and `0.8`, respectively, so as to clip the tails of the `response_n_umis` distribution at the 20th percentile and 80 percentile. Additionally, we set `--pipeline_stop` to `run_qc` to stop the pipeline at the "Run QC" step.
 
@@ -136,7 +136,7 @@ An inspection of the "Response N UMIs" panel of `plot_covariates.png` suggests t
 knitr::include_graphics("plot_covariates_aggressive.png")
 ```
 
-Thus, we relax the cellwise QC thresholds slightly, setting `--response_n_umis_range_lower` and `--response_n_umis_range_uppper` to` 0.01` and `0.9`, respectively. Additionally, we pass the `-resume` flag to the pipeline to avoid recomputing the gRNA-to-cell assignments.
+Thus, we relax the cellwise QC thresholds slightly, setting `--response_n_umis_range_lower` and `--response_n_umis_range_uppper` to` 0.1` and `0.9`, respectively. Additionally, we pass the `-resume` flag to the pipeline to avoid recomputing the gRNA-to-cell assignments.
 
 ```{bash,eval=FALSE}
 #| code-fold: true
@@ -171,13 +171,13 @@ nextflow run timothy-barry/sceptre-pipeline -r main \
  --output_directory $output_directory \
  --pair_pod_size 1000 \
  --grna_pod_size 25 \
- --response_n_umis_range_lower 0.2 \
- --response_n_umis_range_uppper 0.8 \
+ --response_n_umis_range_lower 0.1 \
+ --response_n_umis_range_uppper 0.9 \
  --pipeline_stop run_qc \
  -resume
 ```
 
-This approach --- i.e., passing a set of candidate arguments to the pipeline, examining the output of the pipeline, and then updating the candidate arguements as necessary --- can be used in any step in the pipeline.
+This approach --- i.e., passing a set of candidate arguments to the pipeline, examining the output of the pipeline, and then updating the candidate arguments as necessary --- is generally useful strategy.
 
 ### Debugging the pipeline
 

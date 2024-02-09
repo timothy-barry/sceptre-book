@@ -6,7 +6,7 @@ Part II of this book describes how to apply `sceptre` to analyze large-scale sin
 
 In this chapter we describe how to use `sceptre` to analyze large-scale single-cell CRISPR screen data. We also introduce the companion package `ondisc`, which provides facilities for out-of-core and distributed computing on single-cell data. Users can leverage `sceptre` and `ondisc` to analyze their data in one of two ways. First, users can analyze their data *out-of-core* on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of target-response pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the `sceptre` Nextflow pipeline. This solution is most appropriate when the data are big *and* a large number of pairs is to be analyzed.
 
-The schematic below illustrates the two at-scale interfaces to `sceptre`. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an `ondisc`-backed `sceptre_object`, which is a kind of `sceptre_object` in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in @sec-whole_game_import_data --- @sec-sceptre_write_outputs_to_directory of *The whole game*, calling the standard pipeline functions (i.e., `assign_grnas()`, `run_qc()`, etc.) on the `ondisc`-backed `sceptre_object` one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. This chapter focuses on the Nextflow interface.
+The schematic below illustrates the two at-scale interfaces to `sceptre`. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an `ondisc`-backed `sceptre_object`, which is a kind of `sceptre_object` in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in @sec-whole_game_import_data --- @sec-sceptre_write_outputs_to_directory of *The whole game*, calling the standard pipeline functions (i.e., `assign_grnas()`, `run_qc()`, etc.) on the `ondisc`-backed `sceptre_object` one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. Part II of the book focuses on the Nextflow interface.
 
 ```{r, out.width = "750px", fig.align="center", echo = FALSE, fig.cap=c("The two at-scale interfaces to `sceptre`. Users can analyze their data in the R console using the standard pipeline functions or on the command line using the Nextflow pipeline. In both cases users first import their data into an `ondisc`-backed `sceptre_object`, which is a kind of `sceptre_object` that stores the response and gRNA expression matrices on disk (as opposed to in memory).")}
 knitr::include_graphics("at_scale_schematic.png")
@@ -153,7 +153,7 @@ sceptre_object <- set_analysis_parameters(
 )
 ```
 
-We note that this step is optional; we instead could specify the analysis parameters on the command line as arguments to the Nextflow pipeline.
+This step is optional; users instead can specify the analysis parameters on the command line as arguments to the Nextflow pipeline.
 
 ## Write the `ondisc`-backed `sceptre_object` to disk (local machine)
 
@@ -168,8 +168,16 @@ write_ondisc_backed_sceptre_object(
 
 `directory_to_write` now contains three files: `gene.odm`, `grna.odm`, and `sceptre_object.rds`.
 
-```{r}
+```{r, eval=FALSE}
 list.files(directory_to_write, full.names = TRUE)
+```
+
+```{r, echo=FALSE}
+ c("analysis_summary.txt", "plot_assign_grnas.png", "plot_covariates.png",
+   "plot_grna_count_distributions.png", "plot_run_calibration_check.png",
+   "plot_run_discovery_analysis.png", "plot_run_power_check.png", "plot_run_qc.png",
+   "results_run_calibration_check.rds", "results_run_discovery_analysis.rds",
+   "results_run_power_check.rds")
 ```
 
 ## Call the trial Nextflow pipeline (local machine)
@@ -238,10 +246,6 @@ list.files("~/sceptre_outputs")
 ```
 
 An inspection of `analysis_summary.txt` indicates that 97 negative control pairs and 97 discovery pairs were analyzed. The trial Nextflow pipeline randomly samples 100 pairs from the discovery set, 100 pairs from the negative control set, and 100 pairs from the positive control set and subjects these pairs to analysis. (Some of the pairs may be filtered out by pairwise QC. Moreover, if any of the sets contains fewer than 100 pairs, then that entire set of pairs is analyzed.) If the trial pipeline runs without issue, one can proceed to the next step.
-
-::: callout-note
-Nextflow works better when an absolute file path (as opposed to a relative file path) is passed as an argument. Thus, we recommend using `$HOME` in place of `~` in the pipeline invocation script.
-:::
 
 ## Push the data to the cluster {#sec-push_data_to_cluster}
 
@@ -313,19 +317,19 @@ git clone git@github.com:timothy-barry/sceptre-pipeline.git
 cd sceptre-pipeline/examples
 ```
 
-We launch the submission script by submitting the script to the scheduler. For example, on a sun grid engine (SGE) cluster, one would use the `qsub` command.
+We launch the pipeline by submitting `launch_script.sh` to the scheduler. For example, on a sun grid engine (SGE) cluster, one would use the `qsub` command.
 
 ``` {.terminal filename="terminal, cluster"}
 qsub launch_script.sh
 ```
 
-On SLURM cluster, one would use the `sbatch` command.
+On SLURM cluster, on the other hand, one would use the `sbatch` command.
 
 ``` {.terminal filename="terminal, cluster"}
 sbatch launch_script.sh
 ```
 
-`launch_script.sh` launches the Nextflow driver, which is a process that runs throughout the duration of the pipeline and manages the submission of all the other processes. Depending on their cluster, users may need to specify a time and/or memory allocation request at the top of `launch_script.sh`. The Nextflow driver for the trial pipeline should not require more than 30 minutes of wall time or four gigabytes of memory.
+`launch_script.sh` launches the Nextflow driver, which is a process that runs throughout the duration of the pipeline and manages the submission of all the other processes. Depending on their cluster, users may need to specify a time and/or memory allocation request at the top of `launch_script.sh`. The Nextflow driver of the trial pipeline requires fewer than 30 minutes of wall time and four gigabytes of memory.
 
 Importantly, we are able to launch the pipeline using essentially the same command on our local machine as on the cluster. This is one of the advantages of Nextflow: it provides a layer of abstraction between the logic of the pipeline and the execution environment. Thus, we can develop (or debug, etc.) a pipeline on our local machine and then run it at scale on the cluster without modification.
 
@@ -492,4 +496,4 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
 knitr::include_graphics("nf_output_2.png")
 ```
 
-We launch the pipeline and display the terminal output above. The "Assign gRNAs" step has not been recomputed, as indicated by the "cached" string next to the `assign_grnas` process. In conclusion, `--pipeline_stop` and `-resume` enable one to step through the Nextflow pipeline incrementally, verifying that a given step of the pipeline has run correctly before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, one can update the arguments passed to that step of the pipeline to try to improve the result, as described in the next chapter.
+We launch the updated pipeline; the terminal is displayed output above. The "Assign gRNAs" step has not been recomputed, as indicated by the "cached" string next to the `assign_grnas` process. In conclusion, `--pipeline_stop` and `-resume` enable us to step through the Nextflow pipeline incrementally, verifying that a given step of the pipeline has run correctly before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, we can update the arguments passed to that step of the pipeline to try to improve the result, as described in the next chapter.
