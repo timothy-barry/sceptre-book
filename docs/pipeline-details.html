@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.3.450">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
-<title>Hands-On Single-Cell CRISPR Screen Analysis - 8&nbsp; Details of the pipeline</title>
+<title>Hands-On Single-Cell CRISPR Screen Analysis - 8&nbsp; A deeper dive into the Nextflow pipeline</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -18,6 +18,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -27,7 +61,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./glossary.html" rel="next">
+<link href="./pipeline-args.html" rel="next">
 <link href="./at-scale.html" rel="prev">
 <link href="./book_cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
@@ -66,7 +100,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html">Part II. At-scale sceptre</a></li><li class="breadcrumb-item"><a href="./pipeline-details.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Details of the pipeline</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html">Part II. At-scale sceptre</a></li><li class="breadcrumb-item"><a href="./pipeline-details.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A deeper dive into the Nextflow pipeline</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -163,13 +197,19 @@ ul.task-list li input[type="checkbox"] {
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./at-scale.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Overview of at-scale <code>sceptre</code></span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to the Nextflow pipeline</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pipeline-details.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Details of the pipeline</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A deeper dive into the Nextflow pipeline</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pipeline-args.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow intallation, pipeline arguments</span></span></a>
   </div>
 </li>
       </ul>
@@ -216,11 +256,13 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
 <li><a href="#cluster-architecture-and-nextflow-pipeline-structure" id="toc-cluster-architecture-and-nextflow-pipeline-structure" class="nav-link active" data-scroll-target="#cluster-architecture-and-nextflow-pipeline-structure"><span class="header-section-number">8.1</span> Cluster architecture and Nextflow pipeline structure</a></li>
+  <li><a href="#pipeline-launch-script" id="toc-pipeline-launch-script" class="nav-link" data-scroll-target="#pipeline-launch-script"><span class="header-section-number">8.2</span> Pipeline launch script</a></li>
   <li>
-<a href="#pipeline-arguments" id="toc-pipeline-arguments" class="nav-link" data-scroll-target="#pipeline-arguments"><span class="header-section-number">8.2</span> Pipeline arguments</a>
+<a href="#example-workflows" id="toc-example-workflows" class="nav-link" data-scroll-target="#example-workflows"><span class="header-section-number">8.3</span> Example workflows</a>
   <ul class="collapse">
-<li><a href="#statistical-arguments" id="toc-statistical-arguments" class="nav-link" data-scroll-target="#statistical-arguments"><span class="header-section-number">8.2.1</span> Statistical arguments</a></li>
-  <li><a href="#computational-arguments" id="toc-computational-arguments" class="nav-link" data-scroll-target="#computational-arguments"><span class="header-section-number">8.2.2</span> Computational arguments</a></li>
+<li><a href="#tweaking-the-pipeline-arguments-on-the-basis-of-the-intermediate-results" id="toc-tweaking-the-pipeline-arguments-on-the-basis-of-the-intermediate-results" class="nav-link" data-scroll-target="#tweaking-the-pipeline-arguments-on-the-basis-of-the-intermediate-results"><span class="header-section-number">8.3.1</span> Tweaking the pipeline arguments on the basis of the intermediate results</a></li>
+  <li><a href="#debugging-the-pipeline" id="toc-debugging-the-pipeline" class="nav-link" data-scroll-target="#debugging-the-pipeline"><span class="header-section-number">8.3.2</span> Debugging the pipeline</a></li>
+  <li><a href="#skipping-the-calibration-check" id="toc-skipping-the-calibration-check" class="nav-link" data-scroll-target="#skipping-the-calibration-check"><span class="header-section-number">8.3.3</span> Skipping the calibration check</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -228,7 +270,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">
-<span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Details of the pipeline</span>
+<span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A deeper dive into the Nextflow pipeline</span>
 </h1>
 </div>
 
@@ -242,7 +284,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
   
 
-</header><p>In this chapter we discuss several technical aspects of the <code>sceptre</code> Nextflow pipeline.</p>
+</header><p>In this chapter we discuss several technical aspects of the <code>sceptre</code> Nextflow pipeline. First, we review computing clusters and explain how information flows through the <code>sceptre</code> Nextflow pipeline on a cluster. Next, we describe the structure of a <code>sceptre</code> Nextflow submission script. Finally, we provide a few examples of common analysis workflows in the context of the Nextflow pipeline.</p>
 <section id="cluster-architecture-and-nextflow-pipeline-structure" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="cluster-architecture-and-nextflow-pipeline-structure">
 <span class="header-section-number">8.1</span> Cluster architecture and Nextflow pipeline structure</h2>
 <p>A computing cluster is of a collection of computers, also known as <em>nodes</em>, that work in concert to carry out a large computation. <a href="#fig-cluster_structure">Figure&nbsp;<span>8.1</span></a> illustrates the structure of a typical computing cluster. The cluster contains dozens or even hundreds of nodes, with each node harboring multiple <em>processors</em>. Processors are the core units that execute code. Furthermore, all nodes are linked to a common storage area where files are kept. For instance, specific data files like <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code> are stored in this shared space.</p>
@@ -256,99 +298,251 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p>A graph illustrating the flow of information through the <code>sceptre</code> Nextflow pipeline is depicted in <a href="#fig-pipeline_dag">Figure&nbsp;<span>8.2</span></a>. The steps of the pipeline as outlined in <a href="at-scale.html#fig-nextflow_pipeline_schematic">Figure&nbsp;<span>7.1</span></a> (i.e., “set analysis parameters,” “assign gRNAs,” “run quality control,” “run calibration check,” “run power check,” and “run discovery analysis”) are all present in the graph. The computation is parallelized at four points: “assign gRNAs,” “run calibration check,” “run power check,” and “run discovery analysis.” The “assign gRNAs” step is parallelized according to the following scatter-gather strategy. First, the gRNAs are partitioned into <em>p</em> distinct “pods” (where the number of pods is selected by the user). For example, if the data contain 100 gRNAs, and if the user chooses to use <em>p</em> = 5 pods, then each pod is assigned 20 distinct gRNAs. Next, each pod is mapped to one of <em>p</em> processors, and each processor performs the gRNA-to-cell assignments for the gRNAs within the pod to which it has been assigned. Finally, the gRNA-to-cell assignments are combined across pods, yielding a single binary gRNA-to-cell assignment matrix.</p>
-<div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/fig-pipeline_dag_4560f7a06185ce6c9750d194c7f7cb89">
+<div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/fig-pipeline_dag_193bb38df55c493187d69d6297d379e2">
 <div class="cell-output-display">
 <div id="fig-pipeline_dag" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure"><p><img src="pipeline_dag.png" class="img-fluid figure-img" width="650"></p>
-<figcaption class="figure-caption">Figure&nbsp;8.2: A graph illustrating the flow of information through the <code>sceptre</code> Nextflow pipeline. The pipeline consists of several scatter-gather operations chained together.</figcaption></figure>
+<figcaption class="figure-caption">Figure&nbsp;8.2: A graph illustrating the flow of information through the <code>sceptre</code> Nextflow pipeline. The pipeline consists of several scatter-gather operations chained together, with parallelization at the gRNA assignment and association testing steps.</figcaption></figure>
 </div>
 </div>
 </div>
-<p>The “run calibration check,” “run power check,” and “run discovery analysis” steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into <em>r</em> distinct pods (where, again, <em>r</em> is selected by the user). Next, the pods are mapped to <em>r</em> processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association tests are parallelized at the level of the target-response pair. (Note: if the “maximum” gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out “behind the scenes” as part of the data import step.)</p>
-</section><section id="pipeline-arguments" class="level2" data-number="8.2"><h2 data-number="8.2" class="anchored" data-anchor-id="pipeline-arguments">
-<span class="header-section-number">8.2</span> Pipeline arguments</h2>
-<p>We describe the command line arguments that can be passed to the <code>sceptre</code> Nextflow pipeline. We partition the arguments into “statistical” and “computational” categories. Within the “statistical” category, we further divide the arguments into subcategories based on the step within the pipeline to which the argument applies. One passes an argument to Nextflow via the syntax <code>--argument value</code>, where <code>argument</code> is the name of the argument and <code>value</code> is the value to assign to the argument.</p>
-<section id="statistical-arguments" class="level3" data-number="8.2.1"><h3 data-number="8.2.1" class="anchored" data-anchor-id="statistical-arguments">
-<span class="header-section-number">8.2.1</span> Statistical arguments</h3>
-<p><strong>Set analysis parameters</strong></p>
-<p>Users can set the analysis parameters within the R console as part of the data import step (<a href="at-scale.html#sec-at_scale_set_analysis_parameters"><span>Section&nbsp;7.3</span></a>) or on the command line via the following arguments. Analysis parameters set on the command line take precedence over those set within the R console.</p>
-<ul>
-<li><p><code>--side</code>: the sidedness of the statistical test, one of <code>left</code>, <code>right</code>, or <code>both</code> (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_side"><span>Section&nbsp;2.3</span></a>).</p></li>
-<li><p><code>--grna_integration_strategy</code>: the gRNA integration strategy, one of <code>union</code>, <code>singleton</code>, or <code>bonferroni</code> (see <a href="set-analysis-parameters.html#sec-grna_integration_strategy"><span>Section&nbsp;2.4</span></a>).</p></li>
-<li><p><code>--control_group</code>: the control group for the association test, one of <code>nt_cells</code> or <code>complement</code> (see <a href="set-analysis-parameters.html#sec-set-analysis-parameters_control_group"><span>Section&nbsp;2.5</span></a>).</p></li>
-<li><p><code>--formula_object</code>: the formula to adjust for the covariates in the association analysis (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_formula"><span>Section&nbsp;2.6</span></a>). <code>formula_object</code> should be a file path to an RDS file containing a formula object. For example, below, we create the formula object <code>formula(~response_n_umis + response_n_nonzero)</code> and save this formula object to the file <code>~/formula_object.rds</code>.</p></li>
-</ul>
+<p>The “run calibration check,” “run power check,” and “run discovery analysis” steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into <em>r</em> distinct pods (where, again, <em>r</em> is selected by the user). Next, the pods are mapped to <em>r</em> processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association tests are parallelized at the level of the target-response pair. (If the “maximum” gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out “behind the scenes” as part of the data import step.)</p>
+</section><section id="pipeline-launch-script" class="level2" data-number="8.2"><h2 data-number="8.2" class="anchored" data-anchor-id="pipeline-launch-script">
+<span class="header-section-number">8.2</span> Pipeline launch script</h2>
+<p>An example <code>sceptre</code> Nextflow pipeline launch script is as follows.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
-<pre><strong>terminal</strong></pre>
+<pre><strong>launch_script.sh</strong></pre>
 </div>
-<pre class="terminal"><code>Rscript -e "x &lt;- formula(~response_n_umis + response_n_nonzero);
-            saveRDS(x, '~/formula_object.rds')"</code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># REQUIRED INPUT ARGUMENTS</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="va">data_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_data/"</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sceptre object</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="va">sceptre_object_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"sceptre_object.rds"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># response ODM</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="va">response_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"gene.odm"</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># grna ODM</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="va">grna_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"grna.odm"</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">###################</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTPUT DIRECTORY:</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">##################</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="va">output_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_outputs"</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke pipeline</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run timothy-barry/sceptre-pipeline <span class="at">-r</span> main <span class="dt">\</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a> <span class="at">--sceptre_object_fp</span> <span class="va">$sceptre_object_fp</span> <span class="dt">\</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_odm_fp</span> <span class="va">$response_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_odm_fp</span> <span class="va">$grna_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a> <span class="at">--output_directory</span> <span class="va">$output_directory</span> <span class="dt">\</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_assignment_method</span> mixture <span class="dt">\</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_n_umis_range_lower</span> 0.05 <span class="dt">\</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_n_umis_range_uppper</span> 0.95 <span class="dt">\</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_integration_strategy</span> singleton <span class="dt">\</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a> <span class="at">--pair_pod_size</span> 1000 <span class="dt">\</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_pod_size</span> 25 <span class="dt">\</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a> <span class="at">--combine_assign_grnas_memory</span> 8GB <span class="dt">\</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a> <span class="at">--combine_assign_grnas_time</span> 5m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We then can pass this formula object as an argument to the pipeline via <code>--formula_object $HOME"/formula_object.rds"</code>.</p>
-<ul>
-<li><p><code>--fit_parametric_curve</code>: a boolean (i.e., <code>true</code> or <code>false</code>) indicating whether to fit a parametric curve to the null distribution of test statistics (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_parametric_curve"><span>Section&nbsp;2.8</span></a>).</p></li>
-<li><p><code>--multiple_testing_method</code>: the multiple testing correction procedure to adjust the p-values, one of <code>BH</code>, <code>bonferroni</code>, <code>holm</code>, <code>hochberg</code>, <code>hommel</code>, <code>BY</code>, <code>fdr</code>, or <code>none</code> (see <a href="set-analysis-parameters.html#sec-multiple_testing"><span>Section&nbsp;2.9</span></a>).</p></li>
-<li><p><code>--multiple_testing_alpha</code>: the nominal level of the multiple testing procedure. <code>multiple_testing_alpha</code> should a number in the interval [0,1] (for example <code>0.1</code> or <code>0.05</code>; see <a href="set-analysis-parameters.html#sec-multiple_testing"><span>Section&nbsp;2.9</span></a>).</p></li>
-<li><p><code>--discovery_pairs</code>: the discovery pairs to analyze (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_discovery_pairs"><span>Section&nbsp;2.2</span></a>). <code>discovery_pairs</code> should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file <code>~/discovery_pairs.rds</code>.</p></li>
-</ul>
+<p>We describe each component of this script line-by-line. First, we limit the Nextflow driver to four gigabytes of memory by including the line <code>export NXF_OPTS="-Xms500M -Xmx4G"</code>. (This line is optional but helps prevent the driver from exceeding its memory allocation.) Next, we set the variables <code>sceptre_object_fp</code>, <code>response_odm_fp</code>, and <code>grna_odm_fp</code> to the file paths of the <code>sceptre_object.rds</code> file, the <code>gene.odm</code> file, and the <code>grna.odm</code> file, respectively. We also set <code>output_directory</code> to the file path of the directory in which to write the results. These variables are defined in terms of <code>$HOME</code> as opposed to the shorthand <code>~</code>, as <code>$HOME</code> contains the absolute file path to the home directory, and Nextflow is more adept at handling absolute file paths than relative file paths.</p>
+<p>Finally, we invoke the Nextflow pipeline via the command <code>nextflow run timothy-barry/sceptre-pipeline -r main</code>. (<code>timothy-barry/sceptre-pipeline</code> is the current location of the <code>sceptre</code> Nextflow pipeline on Github; we plan to move the pipeline into the <a href="https://nf-co.re/pipelines">nf-core</a> repository in the future.) We specify arguments to the pipeline via the syntax <code>--argument value</code>, where <code>argument</code> is the name of an argument and <code>value</code> is the value to assign to the argument. In the above script we organize the arguments such that each argument is on its own line, but this is not necessary. The <code>sceptre</code> pipeline has four required arguments: <code>sceptre_object_fp</code>, <code>response_odm_fp</code>, <code>grna_odm_fp</code>, and <code>output_directory</code> (described above). The pipeline additionally supports a variety of optional arguments. About half of the optional arguments are “statistical” in that they govern how the statistical methods are to be deployed to analyze the data. For example, above, we indicate that the pipeline is to use the “mixture” method to assign gRNAs to cells via <code>--grna_assignment_method</code>. Additionally, we alter the default cellwise QC thresholds via <code>--response_n_umis_range_lower 0.05</code> and <code>--response_n_umis_range_uppper 0.95</code>. Finally, we indicate that the pipeline is to use the “singleton” gRNA integration strategy via <code>--grna_integration_strategy singleton</code>.</p>
+<p>The other half of the optional arguments are “computational” in that they control how the computation is organized and executed. For example, we set the gRNA pod size to 25 and the target-response pair pod size to 1,000 via <code>–pair_pod_size 1000</code> and <code>–-grna_pod_size 25</code>, respectively. (The gRNA pod size and pair pod size correspond to <em>p</em> and <em>r</em> in <a href="#fig-pipeline_dag">Figure&nbsp;<span>8.2</span></a>). Next, each process in the pipeline submits a time and memory allocation request to the scheduler. These resource requests are set to reasonable defaults, but we manually can override the defaults for a given process (or processes) on the command line. For example, we request eight gigabytes of memory and five minutes of wall time for the “Combine assign gRNAs” process via <code>–-combine_assign_grnas_memory 8GB</code> and <code>–-combine_assign_grnas_time 5m</code>, respectively.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>All of the <code>sceptre</code> Nextflow pipeline arguments are enumerated and described in <a href="pipeline-args.html#sec-nf_pipeline_args"><span>Section&nbsp;9.2</span></a> of the addendum to Part II of this book. We recommend that users skim through this section and reference it as needed.</p>
+</div>
+</div>
+</section><section id="example-workflows" class="level2" data-number="8.3"><h2 data-number="8.3" class="anchored" data-anchor-id="example-workflows">
+<span class="header-section-number">8.3</span> Example workflows</h2>
+<p>We describe a few common workflows within the context of the <code>sceptre</code> Nextflow pipeline.</p>
+<section id="tweaking-the-pipeline-arguments-on-the-basis-of-the-intermediate-results" class="level3" data-number="8.3.1"><h3 data-number="8.3.1" class="anchored" data-anchor-id="tweaking-the-pipeline-arguments-on-the-basis-of-the-intermediate-results">
+<span class="header-section-number">8.3.1</span> Tweaking the pipeline arguments on the basis of the intermediate results</h3>
+<p>A common workflow is to advance through the pipeline one step at a time (<span class="quarto-unresolved-ref">?sec-incremental_pipeline</span>), adjusting the input arguments as necessary based on the intermediate results. For example, suppose that we decide to implement an aggressive cellwise QC strategy, setting <code>--response_n_umis_range_lower</code> and <code>--response_n_umis_range_uppper</code> to 0.2 and 0.8, respectively, so as to clip the tails of the <code>response_n_umis</code> distribution at the 20th percentile and 80 percentile. We set <code>--pipeline_stop</code> to <code>run_qc</code> to stop the pipeline at the “Run QC” step.</p>
+<div class="cell" data-hash="pipeline-details_cache/html/unnamed-chunk-3_914e7a23961358ee72989571ce2d7abe">
+<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># REQUIRED INPUT ARGUMENTS</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="va">data_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_data/"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sceptre object</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="va">sceptre_object_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"sceptre_object.rds"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># response ODM</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="va">response_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"gene.odm"</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># grna ODM</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="va">grna_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"grna.odm"</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">###################</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTPUT DIRECTORY:</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">##################</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="va">output_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_outputs"</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke pipeline</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run timothy-barry/sceptre-pipeline <span class="at">-r</span> main <span class="at">-resume</span> <span class="dt">\</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a> <span class="at">--sceptre_object_fp</span> <span class="va">$sceptre_object_fp</span> <span class="dt">\</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_odm_fp</span> <span class="va">$response_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_odm_fp</span> <span class="va">$grna_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a> <span class="at">--output_directory</span> <span class="va">$output_directory</span> <span class="dt">\</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a> <span class="at">--pair_pod_size</span> 1000 <span class="dt">\</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_pod_size</span> 25 <span class="dt">\</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_n_umis_range_lower</span> 0.2 <span class="dt">\</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_n_umis_range_uppper</span> 0.8 <span class="dt">\</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a> <span class="at">--pipeline_stop</span> run_qc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/unnamed-chunk-4_59d9fae46f69b5977ec374fd32b06150">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="plot_covariates_aggressive.png" class="img-fluid figure-img" width="500"></p>
+<figcaption class="figure-caption">Aggressive cellwise QC strategy.</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="debugging-the-pipeline" class="level3" data-number="8.3.2"><h3 data-number="8.3.2" class="anchored" data-anchor-id="debugging-the-pipeline">
+<span class="header-section-number">8.3.2</span> Debugging the pipeline</h3>
+<p>The Nextflow pipeline may fail. This most commonly occurs when a process has exceeded its time and/or memory allocation. We provide an example of a pipeline failure and show how to resolve the failure. Consider the following submission script, in which we request only one MB of memory for the “Run association analysis” processes.</p>
+<div class="cell" data-hash="pipeline-details_cache/html/unnamed-chunk-5_6e32733f01c0a13072deaf1076234f59">
+<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># REQUIRED INPUT ARGUMENTS</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="va">data_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_data/"</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sceptre object</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="va">sceptre_object_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"sceptre_object.rds"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># response ODM</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="va">response_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"gene.odm"</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># grna ODM</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="va">grna_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"grna.odm"</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">###################</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTPUT DIRECTORY:</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">##################</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="va">output_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_outputs"</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke pipeline</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run timothy-barry/sceptre-pipeline <span class="at">-r</span> main <span class="at">-resume</span> <span class="dt">\</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a> <span class="at">--sceptre_object_fp</span> <span class="va">$sceptre_object_fp</span> <span class="dt">\</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_odm_fp</span> <span class="va">$response_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_odm_fp</span> <span class="va">$grna_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a> <span class="at">--output_directory</span> <span class="va">$output_directory</span> <span class="dt">\</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a> <span class="at">--pair_pod_size</span> 1000 <span class="dt">\</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_pod_size</span> 25 <span class="dt">\</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a> <span class="at">--run_association_analysis_memory</span> 1MB</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>We submit this script to the scheduler.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
-<pre><strong>terminal</strong></pre>
+<pre><strong>terminal, cluster</strong></pre>
 </div>
-<pre class="terminal"><code>  Rscript -e "x &lt;- data.frame(grna_target = c('candidate_enh_1', 'candidate_enh_2'),
-                              response_id = c('ENSG00000174529', 'ENSG00000143493'));
-              saveRDS(x, '~/discovery_pairs.rds')"</code></pre>
+<pre class="terminal"><code>qsub launch.sh # or sbatch, etc</code></pre>
 </div>
-<p>We then can pass this argument to the pipeline via <code>--discovery_pairs $HOME"/discovery_pairs.rds"</code>.</p>
-<ul>
-<li>
-<code>--positive_control_pairs</code>: the positive control pairs to analyze (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_pc_pairs"><span>Section&nbsp;2.1</span></a>). This argument works similarly to the <code>discovery_pairs</code> argument.</li>
-</ul>
-<p><strong>Assign gRNAs</strong></p>
-<p>The most important argument related to gRNA assignment is <code>grna_assignment_method</code>:</p>
-<ul>
-<li>
-<code>--grna_assignment_method</code>: a string indicating the gRNA assignment method (one of <code>mixture</code>, <code>maximum</code>, or <code>thresholding</code>).</li>
-</ul>
-<p>The following arguments control application of the “mixture” assignment strategy (see <a href="assign-grnas.html#sec-mixture_method"><span>Section&nbsp;3.3.1</span></a>).</p>
-<ul>
-<li><p><code>--n_em_rep</code>: the number of times to run the EM algorithm over randomly initialized starting values. <code>n_em_rep</code> should be a positive integer (e.g., <code>5</code> or <code>15</code>).</p></li>
-<li><p><code>--n_nonzero_cells_cutoff</code>: the number of cells that must contain nonzero expression of the gRNA to attempt fitting the mixture model. <code>n_nonzero_cells_cutoff</code> should be a positive integer.</p></li>
-<li><p><code>--backup_threshold</code>: the threshold to use to assign the gRNA to cells if the mixture model fails. <code>backup_threshold</code> should be a positive integer.</p></li>
-<li><p><code>--probability_threshold</code>: the value at which the posterior perturbation probability of each cell is thresholded to assign the gRNA to cells. <code>probability_threshold</code> should be a number in the interval [0,1] (for example <code>0.5</code> or <code>0.8</code>).</p></li>
-<li><p><code>--grna_assignment_formula</code>: the formula to adjust for covariates in the gRNA mixture model. This argument works similarly to the <code>formula_object</code> argument (described above).</p></li>
-</ul>
-<p>Next, <code>umi_fraction_threshold</code> and <code>threshold</code> relate to the “maximum” (<a href="assign-grnas.html#sec-maximum_method"><span>Section&nbsp;3.3.2</span></a>) and “thresholding” (<a href="assign-grnas.html#sec-thresholding_method"><span>Section&nbsp;3.3.3</span></a>) assignment methods, respectively.</p>
-<ul>
-<li>
-<code>--umi_fraction_threshold</code>: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. <code>umi_fraction_threshold</code> should be a number in the interval [0,1].</li>
-</ul>
-<!-- --><ul>
-<li>
-<code>--threshold</code>: the threshold used to assign gRNAs to cells in the context of the thresholding method. <code>threshold</code> should be a positive integer.</li>
-</ul>
-<p><strong>Run quality control</strong></p>
-<p>The following five arguments relate to cellwise QC (see <a href="run-qc.html#sec-qc_cellwise_qc"><span>Section&nbsp;4.2.1</span></a>). All of these arguments should be supplied as a number in the interval [0,1] (for example <code>0.01</code> or <code>0.05</code>).</p>
-<ul>
-<li><p><code>-response_n_umis_range_lower</code>: a percentile indicating the location at which to clip the <em>left</em> tail of the <code>response_n_umis</code> distribution.</p></li>
-<li><p><code>--response_n_umis_range_uppper</code>: a percentile indicating the location at which to clip the <em>right</em> tail of the <code>response_n_umis</code> distribution.</p></li>
-<li><p><code>--response_n_nonzero_range_lower</code>: a percentile indicating the location at which to clip the <em>left</em> tail of the <code>response_n_nonzero</code> distribution.</p></li>
-<li><p><code>--response_n_nonzero_range_upper</code>: a percentile indicating the location at which to clip the <em>right</em> tail of the <code>response_n_nonzero</code> distribution.</p></li>
-<li><p><code>--p_mito_threshold</code>: an absolute number (i.e., not a percentile) indicating the location at which to clip the right tail of the <code>response_p_mito</code> distribution.</p></li>
-</ul>
-<p>The following two arguments relate to pairwise QC (see <a href="run-qc.html#sec-qc_pairwise_qc"><span>Section&nbsp;4.2.2</span></a>). Both arguments should be supplied as a non-negative integer (for example <code>7</code> or <code>10</code>).</p>
-<ul>
-<li><p><code>--n_nonzero_trt_thresh</code>: the minimum number of nonzero <em>treatment</em> cells that a pair must contain to be retained.</p></li>
-<li><p><code>--n_nonzero_cntrl_thresh</code>: the minimum number of nonzero <em>control</em> cells that a pair must contain to be retained.</p></li>
-</ul>
-<p><strong>Run calibration check</strong></p>
-<p>Two arguments control the calibration check analysis (see <a href="run-calibration-check.html#sec-run-calibration-check_running_the_calibration_check"><span>Section&nbsp;5.2</span></a>).</p>
-<ul>
-<li><p><code>n_calibration_pairs</code>: the number of negative control target-response pairs to include within the calibration check. <code>n_calibration_pairs</code> should be a positive integer.</p></li>
-<li><p><code>calibration_group_size</code>: the number of individual negative control gRNAs to group together to construct a negative control target. <code>calibration_group_size</code> should be a positive integer.</p></li>
-</ul></section><section id="computational-arguments" class="level3" data-number="8.2.2"><h3 data-number="8.2.2" class="anchored" data-anchor-id="computational-arguments">
-<span class="header-section-number">8.2.2</span> Computational arguments</h3>
+<p>The job fails with the following log file.</p>
+<div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/unnamed-chunk-6_d05d3c13e751cc1f3031f7a76d457456">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="nf_output_3.png" class="img-fluid figure-img" width="700"></p>
+<figcaption class="figure-caption">Log file for failed Nextflow pipeline.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>We see that there was an error executing the process <code>run_analysis_subworkflow_calibration_check:run_association_analysis</code>, which is the calibration check process. Moreover, the process failed with exit code of 140, which, on an SGE cluster, indicates that the process exceeded its memory allocation. To resolve this issue, we increase the memory request of the “Run association analysis” processes to <code>4GB</code>, as follows.</p>
+<div class="cell" data-hash="pipeline-details_cache/html/unnamed-chunk-7_b0175f9894fe910eec9c2e758eab8b2c">
+<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># REQUIRED INPUT ARGUMENTS</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="va">data_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_data/"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sceptre object</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="va">sceptre_object_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"sceptre_object.rds"</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># response ODM</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="va">response_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"gene.odm"</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># grna ODM</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="va">grna_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"grna.odm"</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">###################</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTPUT DIRECTORY:</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">##################</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="va">output_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_outputs"</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke pipeline</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run timothy-barry/sceptre-pipeline <span class="at">-r</span> main <span class="at">-resume</span> <span class="dt">\</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a> <span class="at">--sceptre_object_fp</span> <span class="va">$sceptre_object_fp</span> <span class="dt">\</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_odm_fp</span> <span class="va">$response_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_odm_fp</span> <span class="va">$grna_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a> <span class="at">--output_directory</span> <span class="va">$output_directory</span> <span class="dt">\</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a> <span class="at">--pair_pod_size</span> 1000 <span class="dt">\</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_pod_size</span> 25 <span class="dt">\</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a> <span class="at">--run_association_analysis_memory</span> 4GB</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Now, the pipeline runs without issue. Determining the exact cause of a pipeline failure may take some sleuthing. In addition to examining the log file associated with the driver process, investigating the specific job that failed — through, e.g., a call to <code>qacct</code> on SGE or <code>sacct</code> on SLURM — can provide helpful information.</p>
+</section><section id="skipping-the-calibration-check" class="level3" data-number="8.3.3"><h3 data-number="8.3.3" class="anchored" data-anchor-id="skipping-the-calibration-check">
+<span class="header-section-number">8.3.3</span> Skipping the calibration check</h3>
+<p>One can skip the calibration check and proceed straight to the power check and discovery analysis by setting <code>--n_calibration_pairs</code> to <code>0</code>, as follows.</p>
+<div class="cell" data-hash="pipeline-details_cache/html/unnamed-chunk-8_b9d0db7ac5ada7e0ddd12934b33b5f7e">
+<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># REQUIRED INPUT ARGUMENTS</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="va">data_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_data/"</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sceptre object</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="va">sceptre_object_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"sceptre_object.rds"</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># response ODM</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="va">response_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"gene.odm"</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># grna ODM</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="va">grna_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"grna.odm"</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">###################</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTPUT DIRECTORY:</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">##################</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="va">output_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_outputs"</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke pipeline</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run timothy-barry/sceptre-pipeline <span class="at">-r</span> main <span class="at">-resume</span> <span class="dt">\</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a> <span class="at">--sceptre_object_fp</span> <span class="va">$sceptre_object_fp</span> <span class="dt">\</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_odm_fp</span> <span class="va">$response_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_odm_fp</span> <span class="va">$grna_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a> <span class="at">--output_directory</span> <span class="va">$output_directory</span> <span class="dt">\</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a> <span class="at">--pair_pod_size</span> 1000 <span class="dt">\</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_pod_size</span> 25 <span class="dt">\</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a> <span class="at">--n_calibration_pairs</span> 0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 
 
 </section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
@@ -585,12 +779,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./at-scale.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Overview of at-scale <code>sceptre</code></span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to the Nextflow pipeline</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./glossary.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Glossary</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./pipeline-args.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow intallation, pipeline arguments</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

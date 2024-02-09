@@ -34,6 +34,7 @@ book:
       chapters:
         - at-scale.qmd
         - pipeline-details.qmd
+        - pipeline-args.qmd
 
     - part: Part III. Methods and algorithms
 

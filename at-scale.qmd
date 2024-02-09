@@ -1,4 +1,4 @@
-# Overview of at-scale `sceptre` {#at-scale}
+# Introduction to the Nextflow pipeline {#at-scale}
 
 ::: callout-tip
 Part II of this book describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. Part II is more advanced than Part I. Ideally, readers will have intermediate bioinformatics experience, including familiarity with basic linux commands and facility with submitting and monitoring jobs on a cluster. Knowledge of Nextflow (or some similar workflow management tool) is helpful not required.
@@ -31,7 +31,7 @@ devtools::install_github("katsevich-lab/sceptre") # sceptre
 devtools::install_github("timothy-barry/ondisc") # ondisc
 ```
 
-Finally, users should install Nextflow onto their local machine and their cluster. Instructions for installing Nextflow are available in the addendum to this chapter (@sec-install_nextflow).
+Finally, users should install Nextflow onto their local machine and their cluster. Instructions for installing Nextflow are available in the addendum to Part II of the book (@sec-install_nextflow).
 
 ## Import data into an `ondisc`-backed `sceptre` object (local machine) {#sec-import_data_into_odm_backed_sceptre_object}
 
@@ -200,14 +200,14 @@ output_directory=$HOME"/sceptre_outputs"
 #################
 # Invoke pipeline
 #################
-nextflow run timothy-barry/sceptre-pipeline -r main -resume \
+nextflow run timothy-barry/sceptre-pipeline -r main \
  --sceptre_object_fp $sceptre_object_fp \
  --response_odm_fp $response_odm_fp \
  --grna_odm_fp $grna_odm_fp \
  --output_directory $output_directory \
  --grna_assignment_method mixture \
- --pair_pod_size 30 \
- --grna_pod_size 10 \
+ --pair_pod_size 1000 \
+ --grna_pod_size 25 \
  --trial
 ```
 
@@ -325,7 +325,9 @@ On SLURM cluster, one would use the `sbatch` command.
 sbatch launch_script.sh
 ```
 
-Note that we are able to launch the pipeline using essentially the same command on our local machine as on the cluster. This is one of the advantages of Nextflow: it provides a layer of abstraction between the logic of the pipeline and the execution environment. Thus, we can develop (or debug, etc.) a pipeline on our local machine and then run it at scale on the cluster without modification.
+`launch_script.sh` launches the Nextflow driver, which is a process that runs throughout the duration of the pipeline and manages the submission of all the other processes. Depending on their cluster, users may need to specify a time and/or memory allocation request at the top of `launch_script.sh`. The Nextflow driver for the trial pipeline should not require more than 30 minutes of wall time or four gigabytes of memory.
+
+Importantly, we are able to launch the pipeline using essentially the same command on our local machine as on the cluster. This is one of the advantages of Nextflow: it provides a layer of abstraction between the logic of the pipeline and the execution environment. Thus, we can develop (or debug, etc.) a pipeline on our local machine and then run it at scale on the cluster without modification.
 
 The pipeline outputs are written to the directory `~/sceptre_outputs`. Again, all of the standard `sceptre` outputs --- e.g., `analysis_summary.txt`, `results_run_discovery_analysis.rds`, etc. --- are contained within this directory. In fact, the `~/sceptre_outputs` directory on the cluster should match exactly the `~/sceptre_outputs` directory on the local machine. We can view `analysis_summary.txt`, for example, by calling `cat` on this file:
 
@@ -368,9 +370,8 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
  --response_odm_fp $response_odm_fp \
  --grna_odm_fp $grna_odm_fp \
  --output_directory $output_directory \
- --grna_assignment_method mixture \
- --pair_pod_size 30 \
- --grna_pod_size 10
+ --pair_pod_size 1000 \
+ --grna_pod_size 25 \
 ```
 
 Finally, we can launch the full pipeline by calling `qsub` (or `sbatch`, depending on the scheduler) on `launch_script.sh`:
@@ -388,7 +389,7 @@ scp -r username@cluster_address:~/sceptre_outputs ~/
 
 Again, "username" and "cluster_address" should be replaced by one's username and cluster address, respectively. An exploration of `~/sceptre_outputs` on the local machine shows that we have successfully carried out a full *trans* analysis of the example high-MOI CRISPRi data.
 
-## Stepping through the pipeline incrementally
+## Stepping through the pipeline incrementally {#sec-incremental_pipeline}
 
 The `sceptre` Nextflow pipeline consists of six distinct steps, depicted below.
 
@@ -441,9 +442,8 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
  --response_odm_fp $response_odm_fp \
  --grna_odm_fp $grna_odm_fp \
  --output_directory $output_directory \
- --grna_assignment_method mixture \
- --pair_pod_size 30 \
- --grna_pod_size 10 \
+ --pair_pod_size 1000 \
+ --grna_pod_size 25 \
  --pipeline_stop assign_grnas
 ```
 
@@ -482,9 +482,8 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
  --response_odm_fp $response_odm_fp \
  --grna_odm_fp $grna_odm_fp \
  --output_directory $output_directory \
- --grna_assignment_method mixture \
- --pair_pod_size 30 \
- --grna_pod_size 10 \
+ --pair_pod_size 1000 \
+ --grna_pod_size 25 \
  --pipeline_stop run_qc \
  -resume
 ```
@@ -494,109 +493,3 @@ knitr::include_graphics("nf_output_2.png")
 ```
 
 We launch the pipeline and display the terminal output above. The "Assign gRNAs" step has not been recomputed, as indicated by the "cached" string next to the `assign_grnas` process. In conclusion, `--pipeline_stop` and `-resume` enable one to step through the Nextflow pipeline incrementally, verifying that a given step of the pipeline has run correctly before proceeding to the next step. If a given step of the pipeline produces an unexpected or suboptimal result, one can update the arguments passed to that step of the pipeline to try to improve the result, as described in the next chapter.
-
-## Addendum: installing and configuring Nextflow {#sec-install_nextflow}
-
-Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local machine and on their cluster to work through the examples in this chapter. We encourage users to consult the extensive and high-quality [Nextflow documentation](https://www.nextflow.io/docs/latest/index.html) for guidance on using Nextflow. Here, we briefly describe how to download, install, and configure Nextflow. Users should carry out the following sequence of steps twice: once on their local machine and once on their cluster.
-
-### Download and installation
-
-1.  Install SDKMAN!, a system for installing and managing software.
-
-``` {.terminal filename="terminal"}
-curl -s "https://get.sdkman.io" | bash
-```
-
-2.  Install Java.
-
-``` {.terminal filename="terminal"}
-sdk install java 17.0.6-amzn
-```
-
-If this fails, try the following instead.
-
-``` {.terminal filename="terminal"}
-sdk install java 17.0.6-tem
-```
-
-You can ensure that Java is installed via the following command.
-
-``` {.terminal filename="terminal"}
-java -version 
-```
-
-You should see something like the output below. Ensure that the version of Java (as printed on the first line of the output) is greater than or equal to 17.0.0. (Note: the minimum version of Java required by Nextflow may have increased since the time of writing.)
-
-``` {.terminal filename="terminal"}
-openjdk version "17.0.6" 2023-01-17 LTS
-OpenJDK Runtime Environment Corretto-17.0.6.10.1 (build 17.0.6+10-LTS)
-OpenJDK 64-Bit Server VM Corretto-17.0.6.10.1 (build 17.0.6+10-LTS, mixed mode, sharing)
-```
-
-3.  Create a directory in which to store the Nextflow executable. We create a directory called `bin` in our home directory for this purpose, although the Nextflow executable can be stored in any directory.
-
-``` {.terminal filename="terminal"}
-mkdir -p ~/bin
-```
-
-4.  Change directories to `~/bin` and intall the Nextflow binary.
-
-``` {.terminal filename="terminal"}
-cd ~/bin
-wget -qO- https://get.nextflow.io | bash
-# alternately: curl -s https://get.nextflow.io | bash
-```
-
-This creates a binary called `nextflow` in the current directory.
-
-5.  Make the `nextflow` binary an executable by running the following command.
-
-``` {.terminal filename="terminal"}
-chmod +x nextflow
-```
-
-(Note: The installed binary may already be executable; in this case `chmod` does nothing.)
-
-6.  Add `nextflow` to your linux path. One way to do this is as follows. First, open `.bash_profile` (via, for example, `nano ~/.bash_profile`). Next, add the following line to `.bash_profile`: `export PATH="~/bin/:$PATH"`. Finally, save `.bash_profile`, close the terminal, and open a new terminal. When you enter `nextflow -version` on the command line, you should see an output similar to the following.
-
-``` {.terminal filename="terminal"}
-N E X T F L O W
-version 23.10.1 build 5891
-created 12-01-2024 22:01 UTC (17:01 EDT)
-cite doi:10.1038/nbt.3820
-http://nextflow.io
-```
-
-This indicates that Nextflow has been installed successfully.
-
-### Configuration
-
-Nextflow should work without further configuration on a local machine. Configuring Nextflow to run on a cluster is somewhat more involved. First, create a Nextflow config file, which is a file that specifies how Nextflow is to interact with the scheduler on your cluster.
-
-``` {.terminal filename="terminal, cluster"}
-touch ~/.nextflow/config
-```
-
-The following is an example of a basic Nextflow config file.
-
-``` {.terminal filename="~/.nextflow/config"}
-process.executor = 'sge' # or 'slurm', etc.
-executor.queueSize = 100
-executor.submitRateLimit = '25 sec'
-```
-
-`process.executor` specifies the type of scheduler that your cluster uses. Options include `'sge'` for a Sun Grid Engine (i.e., `qsub`-based) scheduler and `'slurm'` for a SLURM (i.e., `sbatch`-based) scheduler. Next, `executor.queueSize` specifies the maximum number of jobs that can be queued simultaneously. Finally, `executor.submitRateLimit` specifies the maximum number of jobs that can be submitted per unit time to the scheduler. For example, `'25 sec'` limits the submission rate to 25 jobs per second.
-
-Like many Nextflow pipelines, the `sceptre` Nextflow pipeline uses the `time` and `memory` process directives to request a given amount of wall time and memory per process. Not all schedulers require that the user issue a wall time and/or memory allocation request when submitting a job. However, if your scheduler has this requirement, then Nextflow should be configured on your cluster such that the scheduler recognizes the `time` and `memory` process directives within a Nextflow script. It may be necessary to manually configure these directives using the `process.clusterOptions` setting within your Nextflow config file. For example, on an SGE scheduler, you may need to add the following line to your `~/.nextflow/config` file to ensure that the scheduler correctly handles memory allocation requests.
-
-```
-process.clusterOptions = { task.memory ? "-l m_mem_free=${task.memory.toGiga()}G" : "" }
-```
-
-The corresponding command for a SLURM scheduler is as follows.
-
-```
-process.clusterOptions = { task.memory ? "--mem=${task.memory.toGiga()}G" : "" }
-```
-
-Configuring Nextflow on a given cluster often takes a bit of effort, but fortunately, this task only needs to be completed once. For help with Nextflow configuration, we recommend reading through the Nextflow documentation, contacting a cluster administrator, pinging the (very helpful and responsive) Nextflow community (for example on [Github issues](https://github.com/nextflow-io/nextflow/issues)), or consulting with ChatGPT (seriously; it seems to know a lot about Nextflow).

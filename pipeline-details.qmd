@@ -1,6 +1,6 @@
-# Details of the pipeline
+# A deeper dive into the Nextflow pipeline
 
-In this chapter we discuss several technical aspects of the `sceptre` Nextflow pipeline.
+In this chapter we discuss several technical aspects of the `sceptre` Nextflow pipeline. First, we review computing clusters and explain how information flows through the `sceptre` Nextflow pipeline on a cluster. Next, we describe the structure of a `sceptre` Nextflow submission script. Finally, we provide a few examples of common analysis workflows in the context of the Nextflow pipeline.
 
 ## Cluster architecture and Nextflow pipeline structure
 
@@ -18,108 +18,248 @@ A graph illustrating the flow of information through the `sceptre` Nextflow pipe
 
 ```{r, out.width = "650px", fig.align="center", echo = FALSE}
 #| label: fig-pipeline_dag
-#| fig-cap: "A graph illustrating the flow of information through the `sceptre` Nextflow pipeline. The pipeline consists of several scatter-gather operations chained together."
+#| fig-cap: "A graph illustrating the flow of information through the `sceptre` Nextflow pipeline. The pipeline consists of several scatter-gather operations chained together, with parallelization at the gRNA assignment and association testing steps."
 knitr::include_graphics("pipeline_dag.png")
 ```
 
-The "run calibration check," "run power check," and "run discovery analysis" steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into *r* distinct pods (where, again, *r* is selected by the user). Next, the pods are mapped to *r* processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association tests are parallelized at the level of the target-response pair. (Note: if the "maximum" gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out "behind the scenes" as part of the data import step.)
+The "run calibration check," "run power check," and "run discovery analysis" steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into *r* distinct pods (where, again, *r* is selected by the user). Next, the pods are mapped to *r* processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association tests are parallelized at the level of the target-response pair. (If the "maximum" gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out "behind the scenes" as part of the data import step.)
 
-## Pipeline arguments
+## Pipeline launch script
 
-We describe the command line arguments that can be passed to the `sceptre` Nextflow pipeline. We partition the arguments into "statistical" and "computational" categories. Within the "statistical" category, we further divide the arguments into subcategories based on the step within the pipeline to which the argument applies. One passes an argument to Nextflow via the syntax `--argument value`, where `argument` is the name of the argument and `value` is the value to assign to the argument.
+An example `sceptre` Nextflow pipeline launch script is as follows.
 
-### Statistical arguments
+``` {.bash filename="launch_script.sh"}
+#!/bin/bash
+# Limit NF driver to 4 GB memory
+export NXF_OPTS="-Xms500M -Xmx4G"
 
-**Set analysis parameters**
+##########################
+# REQUIRED INPUT ARGUMENTS
+##########################
+data_directory=$HOME"/sceptre_data/"
+# sceptre object
+sceptre_object_fp=$data_directory"sceptre_object.rds"
+# response ODM
+response_odm_fp=$data_directory"gene.odm"
+# grna ODM
+grna_odm_fp=$data_directory"grna.odm"
 
-Users can set the analysis parameters within the R console as part of the data import step (@sec-at_scale_set_analysis_parameters) or on the command line via the following arguments. Analysis parameters set on the command line take precedence over those set within the R console.
+###################
+# OUTPUT DIRECTORY:
+##################
+output_directory=$HOME"/sceptre_outputs"
 
--   `--side`: the sidedness of the statistical test, one of `left`, `right`, or `both` (see @sec-set_analysis_parameters_side).
-
--   `--grna_integration_strategy`: the gRNA integration strategy, one of `union`, `singleton`, or `bonferroni` (see @sec-grna_integration_strategy).
-
--   `--control_group`: the control group for the association test, one of `nt_cells` or `complement` (see @sec-set-analysis-parameters_control_group).
-
--   `--formula_object`: the formula to adjust for the covariates in the association analysis (see @sec-set_analysis_parameters_formula). `formula_object` should be a file path to an RDS file containing a formula object. For example, below, we create the formula object `formula(~response_n_umis + response_n_nonzero)` and save this formula object to the file `~/formula_object.rds`.
-
-``` {.terminal filename="terminal"}
-Rscript -e "x <- formula(~response_n_umis + response_n_nonzero);
-            saveRDS(x, '~/formula_object.rds')"
+#################
+# Invoke pipeline
+#################
+nextflow run timothy-barry/sceptre-pipeline -r main \
+ --sceptre_object_fp $sceptre_object_fp \
+ --response_odm_fp $response_odm_fp \
+ --grna_odm_fp $grna_odm_fp \
+ --output_directory $output_directory \
+ --grna_assignment_method mixture \
+ --response_n_umis_range_lower 0.05 \
+ --response_n_umis_range_uppper 0.95 \
+ --grna_integration_strategy singleton \
+ --pair_pod_size 1000 \
+ --grna_pod_size 25 \
+ --combine_assign_grnas_memory 8GB \
+ --combine_assign_grnas_time 5m
 ```
 
-We then can pass this formula object as an argument to the pipeline via `--formula_object $HOME"/formula_object.rds"`.
+We describe each component of this script line-by-line. First, we limit the Nextflow driver to four gigabytes of memory by including the line `export NXF_OPTS="-Xms500M -Xmx4G"`. (This line is optional but helps prevent the driver from exceeding its memory allocation.) Next, we set the variables `sceptre_object_fp`, `response_odm_fp`, and `grna_odm_fp` to the file paths of the `sceptre_object.rds` file, the `gene.odm` file, and the `grna.odm` file, respectively. We also set `output_directory` to the file path of the directory in which to write the results. These variables are defined in terms of `$HOME` as opposed to the shorthand `~`, as `$HOME` contains the absolute file path to the home directory, and Nextflow is more adept at handling absolute file paths than relative file paths.
 
--   `--fit_parametric_curve`: a boolean (i.e., `true` or `false`) indicating whether to fit a parametric curve to the null distribution of test statistics (see @sec-set_analysis_parameters_parametric_curve).
+Finally, we invoke the Nextflow pipeline via the command `nextflow run timothy-barry/sceptre-pipeline -r main`. (`timothy-barry/sceptre-pipeline` is the current location of the `sceptre` Nextflow pipeline on Github; we plan to move the pipeline into the [nf-core](https://nf-co.re/pipelines) repository in the future.) We specify arguments to the pipeline via the syntax `--argument value`, where `argument` is the name of an argument and `value` is the value to assign to the argument. In the above script we organize the arguments such that each argument is on its own line, but this is not necessary. The `sceptre` pipeline has four required arguments: `sceptre_object_fp`, `response_odm_fp`, `grna_odm_fp`, and `output_directory` (described above). The pipeline additionally supports a variety of optional arguments. About half of the optional arguments are "statistical" in that they govern how the statistical methods are to be deployed to analyze the data. For example, above, we indicate that the pipeline is to use the "mixture" method to assign gRNAs to cells via `--grna_assignment_method`. Additionally, we alter the default cellwise QC thresholds via `--response_n_umis_range_lower 0.05` and `--response_n_umis_range_uppper 0.95`. Finally, we indicate that the pipeline is to use the "singleton" gRNA integration strategy via `--grna_integration_strategy singleton`.
 
--   `--multiple_testing_method`: the multiple testing correction procedure to adjust the p-values, one of `BH`, `bonferroni`, `holm`, `hochberg`, `hommel`, `BY`, `fdr`, or `none` (see @sec-multiple_testing).
+The other half of the optional arguments are "computational" in that they control how the computation is organized and executed. For example, we set the gRNA pod size to 25 and the target-response pair pod size to 1,000 via `–pair_pod_size 1000` and `–-grna_pod_size 25`, respectively. (The gRNA pod size and pair pod size correspond to *p* and *r* in @fig-pipeline_dag). Next, each process in the pipeline submits a time and memory allocation request to the scheduler. These resource requests are set to reasonable defaults, but we manually can override the defaults for a given process (or processes) on the command line. For example, we request eight gigabytes of memory and five minutes of wall time for the "Combine assign gRNAs" process via `–-combine_assign_grnas_memory 8GB` and `–-combine_assign_grnas_time 5m`, respectively.
 
--   `--multiple_testing_alpha`: the nominal level of the multiple testing procedure. `multiple_testing_alpha` should a number in the interval \[0,1\] (for example `0.1` or `0.05`; see @sec-multiple_testing).
+::: callout-tip
+All of the `sceptre` Nextflow pipeline arguments are enumerated and described in @sec-nf_pipeline_args of the addendum to Part II of this book. We recommend that users skim through this section and reference it as needed.
+:::
 
--   `--discovery_pairs`: the discovery pairs to analyze (see @sec-set_analysis_parameters_discovery_pairs). `discovery_pairs` should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file `~/discovery_pairs.rds`.
+## Example workflows
 
-``` {.terminal filename="terminal"}
-  Rscript -e "x <- data.frame(grna_target = c('candidate_enh_1', 'candidate_enh_2'),
-                              response_id = c('ENSG00000174529', 'ENSG00000143493'));
-              saveRDS(x, '~/discovery_pairs.rds')"
+We describe a few common workflows within the context of the `sceptre` Nextflow pipeline.
+
+### Tweaking the pipeline arguments on the basis of the intermediate results 
+
+A common workflow is to advance through the pipeline one step at a time (@sec-incremental_pipeline), adjusting the input arguments as necessary based on the intermediate results. For example, suppose that we decide to implement an aggressive cellwise QC strategy, setting `--response_n_umis_range_lower` and `--response_n_umis_range_uppper` to 0.2 and 0.8, respectively, so as to clip the tails of the `response_n_umis` distribution at the 20th percentile and 80 percentile. We set `--pipeline_stop` to `run_qc` to stop the pipeline at the "Run QC" step.
+
+```{bash,eval=FALSE}
+#| code-fold: true
+#| code-summary: "Show code"
+#!/bin/bash
+# Limit NF driver to 4 GB memory
+export NXF_OPTS="-Xms500M -Xmx4G"
+
+##########################
+# REQUIRED INPUT ARGUMENTS
+##########################
+data_directory=$HOME"/sceptre_data/"
+# sceptre object
+sceptre_object_fp=$data_directory"sceptre_object.rds"
+# response ODM
+response_odm_fp=$data_directory"gene.odm"
+# grna ODM
+grna_odm_fp=$data_directory"grna.odm"
+
+###################
+# OUTPUT DIRECTORY:
+##################
+output_directory=$HOME"/sceptre_outputs"
+
+#################
+# Invoke pipeline
+#################
+nextflow run timothy-barry/sceptre-pipeline -r main -resume \
+ --sceptre_object_fp $sceptre_object_fp \
+ --response_odm_fp $response_odm_fp \
+ --grna_odm_fp $grna_odm_fp \
+ --output_directory $output_directory \
+ --pair_pod_size 1000 \
+ --grna_pod_size 25 \
+ --response_n_umis_range_lower 0.2 \
+ --response_n_umis_range_uppper 0.8 \
+ --pipeline_stop run_qc
 ```
 
-We then can pass this argument to the pipeline via `--discovery_pairs $HOME"/discovery_pairs.rds"`.
 
--   `--positive_control_pairs`: the positive control pairs to analyze (see @sec-set_analysis_parameters_pc_pairs). This argument works similarly to the `discovery_pairs` argument.
 
-**Assign gRNAs**
-
-The most important argument related to gRNA assignment is `grna_assignment_method`:
-
--   `--grna_assignment_method`: a string indicating the gRNA assignment method (one of `mixture`, `maximum`, or `thresholding`).
-
-The following arguments control application of the "mixture" assignment strategy (see @sec-mixture_method).
-
--   `--n_em_rep`: the number of times to run the EM algorithm over randomly initialized starting values. `n_em_rep` should be a positive integer (e.g., `5` or `15`).
-
--   `--n_nonzero_cells_cutoff`: the number of cells that must contain nonzero expression of the gRNA to attempt fitting the mixture model. `n_nonzero_cells_cutoff` should be a positive integer.
-
--   `--backup_threshold`: the threshold to use to assign the gRNA to cells if the mixture model fails. `backup_threshold` should be a positive integer.
-
--   `--probability_threshold`: the value at which the posterior perturbation probability of each cell is thresholded to assign the gRNA to cells. `probability_threshold` should be a number in the interval \[0,1\] (for example `0.5` or `0.8`).
-
--   `--grna_assignment_formula`: the formula to adjust for covariates in the gRNA mixture model. This argument works similarly to the `formula_object` argument (described above).
-
-Next, `umi_fraction_threshold` and `threshold` relate to the "maximum" (@sec-maximum_method) and "thresholding" (@sec-thresholding_method) assignment methods, respectively.
-
--   `--umi_fraction_threshold`: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. `umi_fraction_threshold` should be a number in the interval \[0,1\].
-
-```{=html}
-<!-- -->
+```{r, out.width = "600px", fig.align="center", echo = FALSE}
+#| fig-cap: "Aggressive cellwise QC strategy."
+knitr::include_graphics("plot_covariates_aggressive.png")
 ```
--   `--threshold`: the threshold used to assign gRNAs to cells in the context of the thresholding method. `threshold` should be a positive integer.
 
-**Run quality control**
 
-The following five arguments relate to cellwise QC (see @sec-qc_cellwise_qc). All of these arguments should be supplied as a number in the interval \[0,1\] (for example `0.01` or `0.05`).
+### Debugging the pipeline
 
--   `-response_n_umis_range_lower`: a percentile indicating the location at which to clip the *left* tail of the `response_n_umis` distribution.
+The Nextflow pipeline may fail. This most commonly occurs when a process has exceeded its time and/or memory allocation. We provide an example of a pipeline failure and show how to resolve the failure. Consider the following submission script, in which we request only one MB of memory for the "Run association analysis" processes.
 
--   `--response_n_umis_range_uppper`: a percentile indicating the location at which to clip the *right* tail of the `response_n_umis` distribution.
+```{bash,eval=FALSE}
+#| code-fold: true
+#| code-summary: "Show code"
+#!/bin/bash
+# Limit NF driver to 4 GB memory
+export NXF_OPTS="-Xms500M -Xmx4G"
 
--   `--response_n_nonzero_range_lower`: a percentile indicating the location at which to clip the *left* tail of the `response_n_nonzero` distribution.
+##########################
+# REQUIRED INPUT ARGUMENTS
+##########################
+data_directory=$HOME"/sceptre_data/"
+# sceptre object
+sceptre_object_fp=$data_directory"sceptre_object.rds"
+# response ODM
+response_odm_fp=$data_directory"gene.odm"
+# grna ODM
+grna_odm_fp=$data_directory"grna.odm"
 
--   `--response_n_nonzero_range_upper`: a percentile indicating the location at which to clip the *right* tail of the `response_n_nonzero` distribution.
+###################
+# OUTPUT DIRECTORY:
+##################
+output_directory=$HOME"/sceptre_outputs"
 
--   `--p_mito_threshold`: an absolute number (i.e., not a percentile) indicating the location at which to clip the right tail of the `response_p_mito` distribution.
+#################
+# Invoke pipeline
+#################
+nextflow run timothy-barry/sceptre-pipeline -r main -resume \
+ --sceptre_object_fp $sceptre_object_fp \
+ --response_odm_fp $response_odm_fp \
+ --grna_odm_fp $grna_odm_fp \
+ --output_directory $output_directory \
+ --pair_pod_size 1000 \
+ --grna_pod_size 25 \
+ --run_association_analysis_memory 1MB
+```
 
-The following two arguments relate to pairwise QC (see @sec-qc_pairwise_qc). Both arguments should be supplied as a non-negative integer (for example `7` or `10`).
+We submit this script to the scheduler.
 
--   `--n_nonzero_trt_thresh`: the minimum number of nonzero *treatment* cells that a pair must contain to be retained.
+``` {.terminal filename="terminal, cluster"}
+qsub launch.sh # or sbatch, etc
+```
 
--   `--n_nonzero_cntrl_thresh`: the minimum number of nonzero *control* cells that a pair must contain to be retained.
+The job fails with the following log file.
 
-**Run calibration check**
+```{r, out.width = "700px", fig.align="center", echo = FALSE}
+#| fig-cap: "Log file for failed Nextflow pipeline."
+knitr::include_graphics("nf_output_3.png")
+```
 
-Two arguments control the calibration check analysis (see @sec-run-calibration-check_running_the_calibration_check).
+We see that there was an error executing the process `run_analysis_subworkflow_calibration_check:run_association_analysis`, which is the calibration check process. Moreover, the process failed with exit code of 140, which, on an SGE cluster, indicates that the process exceeded its memory allocation. To resolve this issue, we increase the memory request of the "Run association analysis" processes to `4GB`, as follows.
 
--   `n_calibration_pairs`: the number of negative control target-response pairs to include within the calibration check. `n_calibration_pairs` should be a positive integer.
+```{bash,eval=FALSE}
+#| code-fold: true
+#| code-summary: "Show code"
+#!/bin/bash
+# Limit NF driver to 4 GB memory
+export NXF_OPTS="-Xms500M -Xmx4G"
 
--   `calibration_group_size`: the number of individual negative control gRNAs to group together to construct a negative control target. `calibration_group_size` should be a positive integer.
+##########################
+# REQUIRED INPUT ARGUMENTS
+##########################
+data_directory=$HOME"/sceptre_data/"
+# sceptre object
+sceptre_object_fp=$data_directory"sceptre_object.rds"
+# response ODM
+response_odm_fp=$data_directory"gene.odm"
+# grna ODM
+grna_odm_fp=$data_directory"grna.odm"
 
-### Computational arguments
+###################
+# OUTPUT DIRECTORY:
+##################
+output_directory=$HOME"/sceptre_outputs"
+
+#################
+# Invoke pipeline
+#################
+nextflow run timothy-barry/sceptre-pipeline -r main -resume \
+ --sceptre_object_fp $sceptre_object_fp \
+ --response_odm_fp $response_odm_fp \
+ --grna_odm_fp $grna_odm_fp \
+ --output_directory $output_directory \
+ --pair_pod_size 1000 \
+ --grna_pod_size 25 \
+ --run_association_analysis_memory 4GB
+```
+
+Now, the pipeline runs without issue. Determining the exact cause of a pipeline failure may take some sleuthing. In addition to examining the log file associated with the driver process, investigating the specific job that failed --- through, e.g., a call to `qacct` on SGE or `sacct` on SLURM --- can provide helpful information.
+
+### Skipping the calibration check
+
+One can skip the calibration check and proceed straight to the power check and discovery analysis by setting `--n_calibration_pairs` to `0`, as follows.
+
+```{bash,eval=FALSE}
+#| code-fold: true
+#| code-summary: "Show code"
+#!/bin/bash
+# Limit NF driver to 4 GB memory
+export NXF_OPTS="-Xms500M -Xmx4G"
+
+##########################
+# REQUIRED INPUT ARGUMENTS
+##########################
+data_directory=$HOME"/sceptre_data/"
+# sceptre object
+sceptre_object_fp=$data_directory"sceptre_object.rds"
+# response ODM
+response_odm_fp=$data_directory"gene.odm"
+# grna ODM
+grna_odm_fp=$data_directory"grna.odm"
+
+###################
+# OUTPUT DIRECTORY:
+##################
+output_directory=$HOME"/sceptre_outputs"
+
+#################
+# Invoke pipeline
+#################
+nextflow run timothy-barry/sceptre-pipeline -r main -resume \
+ --sceptre_object_fp $sceptre_object_fp \
+ --response_odm_fp $response_odm_fp \
+ --grna_odm_fp $grna_odm_fp \
+ --output_directory $output_directory \
+ --pair_pod_size 1000 \
+ --grna_pod_size 25 \
+ --n_calibration_pairs 0
+```
