@@ -264,7 +264,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sec-push_data_to_cluster" id="toc-sec-push_data_to_cluster" class="nav-link" data-scroll-target="#sec-push_data_to_cluster"><span class="header-section-number">7.6</span> Push the data to the cluster</a></li>
   <li><a href="#call-the-trial-pipeline-cluster" id="toc-call-the-trial-pipeline-cluster" class="nav-link" data-scroll-target="#call-the-trial-pipeline-cluster"><span class="header-section-number">7.7</span> Call the trial pipeline (cluster)</a></li>
   <li><a href="#call-the-full-pipeline-cluster" id="toc-call-the-full-pipeline-cluster" class="nav-link" data-scroll-target="#call-the-full-pipeline-cluster"><span class="header-section-number">7.8</span> Call the full pipeline (cluster)</a></li>
-  <li><a href="#stepping-through-the-pipeline-incrementally" id="toc-stepping-through-the-pipeline-incrementally" class="nav-link" data-scroll-target="#stepping-through-the-pipeline-incrementally"><span class="header-section-number">7.9</span> Stepping through the pipeline incrementally</a></li>
+  <li><a href="#sec-incremental_pipeline" id="toc-sec-incremental_pipeline" class="nav-link" data-scroll-target="#sec-incremental_pipeline"><span class="header-section-number">7.9</span> Stepping through the pipeline incrementally</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -722,7 +722,7 @@ cd sceptre-pipeline/examples</code></pre>
 <pre class="terminal"><code>scp -r username@cluster_address:~/sceptre_outputs ~/</code></pre>
 </div>
 <p>Again, “username” and “cluster_address” should be replaced by one’s username and cluster address, respectively. An exploration of <code>~/sceptre_outputs</code> on the local machine shows that we have successfully carried out a full <em>trans</em> analysis of the example high-MOI CRISPRi data.</p>
-</section><section id="stepping-through-the-pipeline-incrementally" class="level2" data-number="7.9"><h2 data-number="7.9" class="anchored" data-anchor-id="stepping-through-the-pipeline-incrementally">
+</section><section id="sec-incremental_pipeline" class="level2" data-number="7.9"><h2 data-number="7.9" class="anchored" data-anchor-id="sec-incremental_pipeline">
 <span class="header-section-number">7.9</span> Stepping through the pipeline incrementally</h2>
 <p>The <code>sceptre</code> Nextflow pipeline consists of six distinct steps, depicted below.</p>
 <div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/fig-nextflow_pipeline_schematic_cd40af384b64e571b9377ae2e65721da">

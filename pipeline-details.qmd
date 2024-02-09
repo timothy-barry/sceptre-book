@@ -81,9 +81,9 @@ All of the `sceptre` Nextflow pipeline arguments are enumerated and described in
 
 We describe a few common workflows within the context of the `sceptre` Nextflow pipeline.
 
-### Tweaking the pipeline arguments on the basis of the intermediate results 
+### Tweaking pipeline arguments on the basis of intermediate results 
 
-A common workflow is to advance through the pipeline one step at a time (@sec-incremental_pipeline), adjusting the input arguments as necessary based on the intermediate results. For example, suppose that we decide to implement an aggressive cellwise QC strategy, setting `--response_n_umis_range_lower` and `--response_n_umis_range_uppper` to 0.2 and 0.8, respectively, so as to clip the tails of the `response_n_umis` distribution at the 20th percentile and 80 percentile. We set `--pipeline_stop` to `run_qc` to stop the pipeline at the "Run QC" step.
+A common workflow is to advance through the pipeline one step at a time (@sec-incremental_pipeline), adjusting the input arguments as necessary on the basis of the intermediate outputs. For example, suppose that we decide to implement an aggressive cellwise QC strategy, setting `--response_n_umis_range_lower` and `--response_n_umis_range_uppper` to` 0.2` and `0.8`, respectively, so as to clip the tails of the `response_n_umis` distribution at the 20th percentile and 80 percentile. Additionally, we set `--pipeline_stop` to `run_qc` to stop the pipeline at the "Run QC" step.
 
 ```{bash,eval=FALSE}
 #| code-fold: true
@@ -111,7 +111,7 @@ output_directory=$HOME"/sceptre_outputs"
 #################
 # Invoke pipeline
 #################
-nextflow run timothy-barry/sceptre-pipeline -r main -resume \
+nextflow run timothy-barry/sceptre-pipeline -r main \
  --sceptre_object_fp $sceptre_object_fp \
  --response_odm_fp $response_odm_fp \
  --grna_odm_fp $grna_odm_fp \
@@ -123,13 +123,61 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
  --pipeline_stop run_qc
 ```
 
+We launch the pipeline.
 
+``` {.terminal filename="terminal"}
+qsub launch.sh # or sbatch or bash, etc.
+```
 
-```{r, out.width = "600px", fig.align="center", echo = FALSE}
+An inspection of the "Response N UMIs" panel of `plot_covariates.png` suggests that we have clipped the tails a too extreme a location.
+
+```{r, out.width = "550px", fig.align="center", echo = FALSE}
 #| fig-cap: "Aggressive cellwise QC strategy."
 knitr::include_graphics("plot_covariates_aggressive.png")
 ```
 
+Thus, we relax the cellwise QC thresholds slightly, setting `--response_n_umis_range_lower` and `--response_n_umis_range_uppper` to` 0.01` and `0.9`, respectively. Additionally, we pass the `-resume` flag to the pipeline to avoid recomputing the gRNA-to-cell assignments.
+
+```{bash,eval=FALSE}
+#| code-fold: true
+#| code-summary: "Show code"
+#!/bin/bash
+# Limit NF driver to 4 GB memory
+export NXF_OPTS="-Xms500M -Xmx4G"
+
+##########################
+# REQUIRED INPUT ARGUMENTS
+##########################
+data_directory=$HOME"/sceptre_data/"
+# sceptre object
+sceptre_object_fp=$data_directory"sceptre_object.rds"
+# response ODM
+response_odm_fp=$data_directory"gene.odm"
+# grna ODM
+grna_odm_fp=$data_directory"grna.odm"
+
+###################
+# OUTPUT DIRECTORY:
+##################
+output_directory=$HOME"/sceptre_outputs"
+
+#################
+# Invoke pipeline
+#################
+nextflow run timothy-barry/sceptre-pipeline -r main \
+ --sceptre_object_fp $sceptre_object_fp \
+ --response_odm_fp $response_odm_fp \
+ --grna_odm_fp $grna_odm_fp \
+ --output_directory $output_directory \
+ --pair_pod_size 1000 \
+ --grna_pod_size 25 \
+ --response_n_umis_range_lower 0.2 \
+ --response_n_umis_range_uppper 0.8 \
+ --pipeline_stop run_qc \
+ -resume
+```
+
+This approach --- i.e., passing a set of candidate arguments to the pipeline, examining the output of the pipeline, and then updating the candidate arguements as necessary --- can be used in any step in the pipeline.
 
 ### Debugging the pipeline
 

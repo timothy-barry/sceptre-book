@@ -463,7 +463,7 @@ workDir = 'path/to/directory/work'</code></pre>
 <p><strong>Run quality control</strong></p>
 <p>The following five arguments relate to cellwise QC (see <a href="run-qc.html#sec-qc_cellwise_qc"><span>Section&nbsp;4.2.1</span></a>). All of these arguments should be supplied as a number in the interval [0,1] (for example <code>0.01</code> or <code>0.05</code>).</p>
 <ul>
-<li><p><code>-response_n_umis_range_lower</code>: a percentile indicating the location at which to clip the <em>left</em> tail of the <code>response_n_umis</code> distribution.</p></li>
+<li><p><code>--response_n_umis_range_lower</code>: a percentile indicating the location at which to clip the <em>left</em> tail of the <code>response_n_umis</code> distribution.</p></li>
 <li><p><code>--response_n_umis_range_uppper</code>: a percentile indicating the location at which to clip the <em>right</em> tail of the <code>response_n_umis</code> distribution.</p></li>
 <li><p><code>--response_n_nonzero_range_lower</code>: a percentile indicating the location at which to clip the <em>left</em> tail of the <code>response_n_nonzero</code> distribution.</p></li>
 <li><p><code>--response_n_nonzero_range_upper</code>: a percentile indicating the location at which to clip the <em>right</em> tail of the <code>response_n_nonzero</code> distribution.</p></li>
@@ -477,7 +477,7 @@ workDir = 'path/to/directory/work'</code></pre>
 <p><strong>Run calibration check</strong></p>
 <p>Two arguments control the calibration check analysis (see <a href="run-calibration-check.html#sec-run-calibration-check_running_the_calibration_check"><span>Section&nbsp;5.2</span></a>).</p>
 <ul>
-<li><p><code>n_calibration_pairs</code>: the number of negative control target-response pairs to analyze within the calibration check. <code>n_calibration_pairs</code> should be a positive integer.</p></li>
+<li><p><code>n_calibration_pairs</code>: the number of negative control target-response pairs to analyze within the calibration check. <code>n_calibration_pairs</code> should be a non-negative integer. Setting <code>n_calibration_pairs</code> to <code>0</code> skips the calibration check.</p></li>
 <li><p><code>calibration_group_size</code>: the number of individual negative control gRNAs to combine to form a negative control target. <code>calibration_group_size</code> should be a positive integer.</p></li>
 </ul>
 </section>
