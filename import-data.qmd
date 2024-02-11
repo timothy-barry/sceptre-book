@@ -141,4 +141,10 @@ sceptre_object <- import_data(
 
 ## Accessing the fields of a `sceptre_object`
 
-A `sceptre_object` is an [S4 object](http://adv-r.had.co.nz/S4.html). Like all S4 objects, a `sceptre_object` contains data, both raw data inputted by the user and processed data that `sceptre` generates by operating on the raw data. The data stored within a `sceptre_object` can be accessed via the `@` operator (e.g., `sceptre_object@foo`). **We recommend against accessing the data stored within a `sceptre_object` in this way**. Instead, users should interact with a `sceptre_object` via the [functions exported by the package](https://katsevich-lab.github.io/sceptre/reference/index.html).
+A `sceptre_object` is an [S4 object](http://adv-r.had.co.nz/S4.html). Like all S4 objects, a `sceptre_object` contains data, including raw data inputted by the user and processed data that `sceptre` generates by operating on the raw data. The data stored within a `sceptre_object` can be accessed via the `@` operator (e.g., `sceptre_object@foo`). We recommend against accessing the data stored within a `sceptre_object` in this way. Instead, users should interact with a `sceptre_object` via the [functions exported by the package](https://katsevich-lab.github.io/sceptre/reference/index.html). For example, the "getter" functions `get_response_matrix()`, `get_grna_matrix()`, and `get_cell_covariates()` return the response matrix, gRNA matrix, and cell covariates, respectively, of a `sceptre_object`.
+
+```{r,eval=FALSE}
+response_matrix <- get_response_matrix(sceptre_object)
+grna_matrix <- get_grna_matrix(sceptre_object)
+cell_covariates <- get_cell_covariates(sceptre_object)
+```

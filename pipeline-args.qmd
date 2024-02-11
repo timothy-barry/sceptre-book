@@ -14,7 +14,7 @@ Nextflow is a powerful and increasingly popular tool for orchestrating complex b
 curl -s "https://get.sdkman.io" | bash
 ```
 
-2.  Install Java.
+2.  Install Java. Nextflow requires a specific distribution of Java, which can be installed as follows.
 
 ``` {.terminal filename="terminal"}
 sdk install java 17.0.6-amzn
@@ -199,7 +199,7 @@ The following five arguments relate to cellwise QC (see @sec-qc_cellwise_qc). Al
 
 -   `--response_n_umis_range_lower`: a percentile indicating the location at which to clip the *left* tail of the `response_n_umis` distribution.
 
--   `--response_n_umis_range_uppper`: a percentile indicating the location at which to clip the *right* tail of the `response_n_umis` distribution.
+-   `--response_n_umis_range_upper`: a percentile indicating the location at which to clip the *right* tail of the `response_n_umis` distribution.
 
 -   `--response_n_nonzero_range_lower`: a percentile indicating the location at which to clip the *left* tail of the `response_n_nonzero` distribution.
 

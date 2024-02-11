@@ -313,17 +313,12 @@ div.csl-indent {
 </div>
 </div>
 <p>We begin by loading <code>sceptre</code>.</p>
-<div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-2_067966860b6065ae171bbf9c30e59e3e">
+<div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-2_3233f702ea5e31d4354a637e60a995d6">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Welcome to sceptre.
-Submit issues on the sceptre website: github.com/Katsevich-Lab/sceptre
-Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
-</div>
 </div>
 <p>We initialize <code>sceptre_object</code>s corresponding to the low-MOI CRISPRko data and high-MOI CRISPRi data. We call the pipeline functions that precede <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> (namely, <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>) on both datasets.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-3_269b27e102e25d0c40500a303b89277a">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># low-MOI CRISPRko data</span></span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># low-MOI CRISPRko data</span></span>
 <span><span class="co"># 1. import data</span></span>
 <span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
 <span>  response_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
@@ -349,7 +344,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-4_eef44654ca9c6d8d2426eab930df3d5e">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
 <span><span class="co"># 1. import data</span></span>
 <span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
 <span>  response_matrix <span class="op">=</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
@@ -410,7 +405,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 <span class="header-section-number">5.2</span> Running the calibration check</h2>
 <p>We carry out the calibration check by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> on the <code>sceptre_object</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> takes the arguments <code>sceptre_object</code> (required), <code>n_calibration_pairs</code> (optional), <code>calibration_group_size</code> (optional), <code>print_progress</code> (optional), and <code>parallel</code> (optional), and <code>output_amount</code> (optional). <code>n_calibration_pairs</code> is the number of negative control target-response pairs to test for association. By default <code>n_calibration_pairs</code> is set to the number of discovery target-response pairs that passes pairwise QC. Next, <code>calibration_group_size</code> is the number of negative control gRNAs to put together to construct each negative control target. By default <code>calibration_group_size</code> is set to the median number of gRNAs per discovery target. Finally, <code>print_progress</code> and <code>parallel</code> control whether to print updates to the console and run the computation in parallel, respectively. We describe the <code>output_amount</code> argument in a subsequent section. Below, we run the calibration check on the high-MOI CRISPRi and low-MOI CRISPRko data, setting <code>parallel</code> to <code>TRUE</code>.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-7_53c354d5027a0604af898961e484e8a3">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
@@ -421,7 +416,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 </div>
 <p>We can plot the outcome of the calibration check by calling <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the resulting <code>sceptre_object</code>. We plot the outcome of the calibration check on the low-MOI CRISPRko data.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-8_39d3cf39945864873f3c775d4d0c9cc5">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-layout-align="center" data-hash="run-calibration-check_cache/html/unnamed-chunk-9_6e3b7097ea513d6a83fc4b15998c9ba6">
 <div class="cell-output-display">
@@ -434,7 +429,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 <p>We described <a href="sceptre.html#sec-sceptre_calibration_check"><span>Section&nbsp;5</span></a> of <em>The whole game</em> how to interpret this figure. Briefly, the upper left (resp., right) plot is a QQ plot of the negative control p-values on an untransformed (resp., transformed) scale; the p-values should lie predominantly along the diagonal line. The lower left plot is a histogram of the estimated (log-2) fold changes; the histogram should be symmetric and centered about zero. Finally, the lower right panel is a text box displaying the number of false discoveries made on the negative control pairs (after applying the multiple testing adjustment) and the mean estimated (log-2) fold change. Both of these numbers ideally should be close to zero. (It is OK if the number of false discoveries is nonzero; see next section.)</p>
 <p>We can obtain a data frame containing the results by calling <code>get_result</code> on the <code>sceptre_object</code>, setting <code>analysis</code> to <code>"run_calibration_check"</code>.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-10_a20d5eb11241cd38b2c116a3b2063d2b">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">calibration_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">calibration_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
 <span>  analysis <span class="op">=</span> <span class="st">"run_calibration_check"</span></span>
 <span><span class="op">)</span></span>
@@ -490,7 +485,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 <p><code>sceptre</code> could demonstrate miscalibration on a single-cell CRISPR screen dataset due to three main reasons: sparsity, the omission of relevant covariates, and model misspecification. Sparsity — the presence of a large proportion of zeros in the response UMI count matrix — can cause the skew-normal approximation to the distribution of the null test statistics to break down, resulting in miscalibrated p-values. Additionally, the omission of important covariates (such as batch or biological replicate) from the model or misspecification of the underlying negative binomial GLM (due, for example, to the presence of outlier cells) also can lead to miscalibration. Pairwise and cellwise QC (<a href="run-qc.html"><span>Chapter&nbsp;4</span></a>) provide the first line of defense against sparsity and model misspecification, respectively. Furthermore, the resampling methodology of <code>sceptre</code> protects against misspecification of the negative binomial GLM. In spite of these safeguards, <code>sceptre</code> may still exhibit miscalibration on some datasets.</p>
 <p>To provide an example of miscalibration, we again run the calibration check on the high-MOI CRISPRi data, this time setting <code>formula_object</code> to <code>formula(~log(grna_n_umis))</code>, thereby excluding <code>batch</code>, <code>response_n_umis</code>, and other important covariates.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-11_a15b299ca580cdd50c93352528ff24be">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
 <span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span>,</span>
 <span>    positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
@@ -507,7 +502,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 </div>
 <p>We create a plot to visualize the outcome of the calibration check analysis.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-12_84ebaaa97082f99308a5d07caf5cdd33">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-layout-align="center" data-hash="run-calibration-check_cache/html/unnamed-chunk-13_7e78b1d1b469a1033c43a1dd2fbfcd28">
 <div class="cell-output-display">
@@ -526,7 +521,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 <li>
 <p><strong>Deactivate the parametric curve fitting functionality</strong>. <code>sceptre</code> by default computes the p-value for a given target-response pair by fitting a parametric curve (specifically, a skew-normal density) to the distribution of null test statistics and then evaluating the tail probability of the fitted curve at the observed test statistic (<a href="set-analysis-parameters.html#sec-set_analysis_parameters_parametric_curve"><span>Section&nbsp;2.8</span></a>). If the parametric curve provides a poor fit to the distribution of the null test statistics, the resulting p-value can be miscalibrated. Users can deactivate the parametric curve fitting functionality of <code>sceptre</code> and instead return an exact p-value by setting <code>fit_parametric_curve</code> to <code>FALSE</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, as follows.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-14_c3363db7f455a0141a1d3a25f87a2b36">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
 <span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span>,</span>
 <span>    positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
@@ -536,7 +531,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 </div>
 <p>The calibration check, power check, and discovery analyses all run more slowly when <code>fit_parametric_curve</code> is set to <code>FALSE</code>, as <code>sceptre</code> must compute a greater number of null test statistics to preserve adequate precision of the p-values. Thus, setting <code>fit_parametric_curve</code> to <code>FALSE</code> may not be a feasible strategy for users seeking to test a large number (e.g., 10,000+) of pairs. Users should consider using the permutation test (<code>resampling_mechaism = "permutations"</code>) rather than the conditional randomization test (<code>resampling_mechanism = "crt"</code>) when setting <code>fit_parametric_curve</code> to <code>FALSE</code> to improve speed.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-15_0017325d126ab28b9616a50202e24586">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
 <span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span>,</span>
 <span>    positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
@@ -550,7 +545,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 <li>
 <p><strong>Tighten the QC thresholds</strong>. Users can tighten the cellwise and pairwise QC thresholds to remove outlier cells and target-response pairs with a low effective sample size, respectively, thereby ameliorating challenges to calibration due to sparsity and model misspecification. Below, we increase <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl_thresh</code> to 15; the default value for these parameters is 10. We additionally set <code>response_n_umis_range</code> to <code>c(0.05, 0.95)</code>, which clips the <code>response_n_umis</code> distribution at the fifth and ninety-fifth percentiles (as opposed the the first and ninety-ninth percentiles, which is the default).</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-16_4b4be8cc7556c089926a53353e857571">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span></span>
 <span>    n_nonzero_trt_thresh <span class="op">=</span> <span class="fl">15L</span>,</span>
 <span>    n_nonzero_cntrl_thresh <span class="op">=</span> <span class="fl">15L</span>,</span>
@@ -561,7 +556,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 <li>
 <p><strong>Change the resampling mechanism or the control group</strong>. <code>sceptre</code> provides two options for the resampling mechanism (namely, <code>"permutations"</code> or <code>"crt"</code>; see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_resampling_mech"><span>Section&nbsp;2.7</span></a>) and two options for the control group (namely, <code>"complement_set"</code> or <code>"nt_cells"</code>; see <a href="set-analysis-parameters.html#sec-set-analysis-parameters_control_group"><span>Section&nbsp;2.5</span></a>). (Note that <code>"nt_cells"</code> is available as an option only in low-MOI screens.) Switching the resampling mechanism and/or the control group may improve calibration. Below, we set the resampling mechanism to <code>"crt"</code> and the control group to <code>"complement_set"</code> on the low-MOI CRISPRko data; these choices are the opposites of the defaults.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-17_9ca8b548be3091912af79166edb21a7e">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
 <span>    sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
 <span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_lowmoi</span>,</span>
@@ -574,7 +569,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 <li>
 <p><strong>Test fewer pairs</strong>. Obtaining good calibration becomes increasingly challenging as the number of target-response pairs in the discovery set grows. This is because the p-values must maintain uniformity further and further out into the tail of the distribution. A simple strategy to improve calibration is to reduce the number of target-response pairs by more selectively choosing pairs for inclusion in the discovery set. For example, we could construct the discovery set for the high-MOI CRISPRi data by coupling each candidate enhancer to the set of genes within <em>one</em> megabase of that candidate enhancer (as opposed to <em>five</em> megabases, as we have done previously). This change reduces the number of pairs in the discovery set (before applying QC) from 610 to 353, which makes obtaining good calibration considerably easier.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-18_2f8cc9947305016b72c9a7e4183cf2bf">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span>,</span>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span>,</span>
 <span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs</span>,</span>
 <span>  distance_threshold <span class="op">=</span> <span class="fl">1e6</span> <span class="co"># previous value: 5e6</span></span>
 <span><span class="op">)</span></span>
@@ -591,7 +586,7 @@ Read the sceptre manual: timothy-barry.github.io/sceptre-book/</code></pre>
 <span class="header-section-number">5.5</span> The <code>output_amount</code> argument</h2>
 <p>The function <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> has the optional argument <code>output_amount</code>, which controls the amount of information that <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> returns. <code>output_amount</code> can be set to <code>1</code>, <code>2</code>, or <code>3</code>, with <code>1</code> (the default) returning the least information, <code>2</code> returning an intermediate amount of information, and <code>3</code> returning the most information. Setting <code>output_amount</code> to <code>2</code> causes several additional columns to be appended to the calibration check result data frame. To illustrate, we again run the calibration check on the low-MOI CRISPRko data, this time setting <code>output_amount</code> to 2.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-19_5548ee3bad9726fbde026d7d50d30968">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span>,</span>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  output_amount <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -603,7 +598,7 @@ Running calibration_check in parallel. Change directories to /var/folders/h6/pt5
 </div>
 </div>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-20_7f3e29eff7856aea322af18d8034eccc">
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span>analysis <span class="op">=</span> <span class="st">"run_calibration_check"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -634,7 +629,7 @@ Running calibration_check in parallel. Change directories to /var/folders/h6/pt5
 <p>The columns appended to the result data frame when <code>output_amount</code> is set to <code>2</code> are as follows: <code>z_orig</code>, <code>stage</code>, <code>xi</code>, <code>omega</code>, and <code>alpha</code>. <code>z_orig</code> is the original z-score. <code>stage</code> is the stage at which the p-value was computed, either 1, 2, or 3. And <code>xi</code>, <code>omega</code>, and <code>alpha</code> are the fitted values of the skew-normal distribution. (The latter three parameters are relevant only when <code>stage</code> is 2; when <code>stage</code> is 1 or 3, these parameters are set to <code>NA</code>.)</p>
 <p>Finally, we can set <code>output_amount</code> to <code>3</code>, which causes the null z-scores to be appended to the result data frame. The null z-scores are labeled <code>z_null_1</code>, <code>z_null_2</code>, <code>z_null_3</code>, etc.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-21_ea19878c2d24d8df37b1bd7933dca232">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span>,</span>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  output_amount <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span>
@@ -644,7 +639,7 @@ Running calibration_check in parallel. Change directories to /var/folders/h6/pt5
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-22_02a9c5eb83b15f8a0714e73a7c549686">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">calibration_result</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">calibration_result</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -659,7 +654,7 @@ Running calibration_check in parallel. Change directories to /var/folders/h6/pt5
 </div>
 <p>Finally, we can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on the updated <code>sceptre_object</code> to print a summary of the status of the analysis.</p>
 <div class="cell" data-hash="run-calibration-check_cache/html/unnamed-chunk-23_dc1cdcdb17846e7a909a7944d0e732aa">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
 

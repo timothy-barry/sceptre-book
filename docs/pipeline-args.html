@@ -288,7 +288,7 @@ ul.task-list li input[type="checkbox"] {
 <pre class="terminal"><code>curl -s "https://get.sdkman.io" | bash</code></pre>
 </div>
 <ol start="2" type="1">
-<li>Install Java.</li>
+<li>Install Java. Nextflow requires a specific distribution of Java, which can be installed as follows.</li>
 </ol>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
@@ -464,7 +464,7 @@ workDir = 'path/to/directory/work'</code></pre>
 <p>The following five arguments relate to cellwise QC (see <a href="run-qc.html#sec-qc_cellwise_qc"><span>Section&nbsp;4.2.1</span></a>). All of these arguments should be supplied as a number in the interval [0,1] (for example <code>0.01</code> or <code>0.05</code>).</p>
 <ul>
 <li><p><code>--response_n_umis_range_lower</code>: a percentile indicating the location at which to clip the <em>left</em> tail of the <code>response_n_umis</code> distribution.</p></li>
-<li><p><code>--response_n_umis_range_uppper</code>: a percentile indicating the location at which to clip the <em>right</em> tail of the <code>response_n_umis</code> distribution.</p></li>
+<li><p><code>--response_n_umis_range_upper</code>: a percentile indicating the location at which to clip the <em>right</em> tail of the <code>response_n_umis</code> distribution.</p></li>
 <li><p><code>--response_n_nonzero_range_lower</code>: a percentile indicating the location at which to clip the <em>left</em> tail of the <code>response_n_nonzero</code> distribution.</p></li>
 <li><p><code>--response_n_nonzero_range_upper</code>: a percentile indicating the location at which to clip the <em>right</em> tail of the <code>response_n_nonzero</code> distribution.</p></li>
 <li><p><code>--p_mito_threshold</code>: an absolute number (i.e., not a percentile) indicating the location at which to clip the right tail of the <code>response_p_mito</code> distribution.</p></li>

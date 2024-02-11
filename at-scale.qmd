@@ -1,7 +1,7 @@
 # Introduction to the Nextflow pipeline {#at-scale}
 
 ::: callout-tip
-Part II of this book describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. Part II is more advanced than Part I. Ideally, readers will have intermediate bioinformatics experience, including familiarity with basic linux commands and facility with submitting and monitoring jobs on a cluster. Knowledge of Nextflow (or some similar workflow management tool) is helpful not required.
+Part II of this book describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. Part II is somewhat more advanced than Part I. Ideally, readers will have intermediate bioinformatics experience, including familiarity with basic Linux commands and facility with submitting and monitoring jobs on a cluster. Knowledge of Nextflow (or some similar workflow management tool) is helpful not required.
 :::
 
 In this chapter we describe how to use `sceptre` to analyze large-scale single-cell CRISPR screen data. We also introduce the companion package `ondisc`, which provides facilities for out-of-core and distributed computing on single-cell data. Users can leverage `sceptre` and `ondisc` to analyze their data in one of two ways. First, users can analyze their data *out-of-core* on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of target-response pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the `sceptre` Nextflow pipeline. This solution is most appropriate when the data are big *and* a large number of pairs is to be analyzed.
@@ -153,7 +153,7 @@ sceptre_object <- set_analysis_parameters(
 )
 ```
 
-This step is optional; users instead can specify the analysis parameters on the command line as arguments to the Nextflow pipeline.
+This step is optional; users instead can specify the analysis parameters on the command line as arguments to the Nextflow pipeline. **The Nextflow pipeline currently can handle about ~5 million pairs. Future iterations of the pipeline likely will be able to handle ~100 million pairs.**
 
 ## Write the `ondisc`-backed `sceptre_object` to disk (local machine)
 
@@ -172,12 +172,8 @@ write_ondisc_backed_sceptre_object(
 list.files(directory_to_write, full.names = TRUE)
 ```
 
-```{r, echo=FALSE}
- c("analysis_summary.txt", "plot_assign_grnas.png", "plot_covariates.png",
-   "plot_grna_count_distributions.png", "plot_run_calibration_check.png",
-   "plot_run_discovery_analysis.png", "plot_run_power_check.png", "plot_run_qc.png",
-   "results_run_calibration_check.rds", "results_run_discovery_analysis.rds",
-   "results_run_power_check.rds")
+```{r, echo = FALSE}
+c("gene.odm", "grna.odm", "sceptre_object.rds")
 ```
 
 ## Call the trial Nextflow pipeline (local machine)
@@ -241,11 +237,25 @@ knitr::include_graphics("nf_output.png")
 
 The results of the pipeline are stored in `~/sceptre_outputs`. Calling `list.files` on `~/sceptre_outputs` shows that the directory contains all of the standard `sceptre` outputs, including the analysis summary text file (`analysis_summary.txt`), the plot files (e.g., `plot_assign_grnas.png`, etc.), and the result files (e.g., `results_run_discovery_analysis.rds`, etc.).
 
-```{r}
+```{r, eval = FALSE}
 list.files("~/sceptre_outputs")
 ```
 
+
+```{r, echo=FALSE}
+ c("analysis_summary.txt", "plot_assign_grnas.png", "plot_covariates.png",
+   "plot_grna_count_distributions.png", "plot_run_calibration_check.png",
+   "plot_run_discovery_analysis.png", "plot_run_power_check.png", "plot_run_qc.png",
+   "results_run_calibration_check.rds", "results_run_discovery_analysis.rds",
+   "results_run_power_check.rds")
+```
+
+
 An inspection of `analysis_summary.txt` indicates that 97 negative control pairs and 97 discovery pairs were analyzed. The trial Nextflow pipeline randomly samples 100 pairs from the discovery set, 100 pairs from the negative control set, and 100 pairs from the positive control set and subjects these pairs to analysis. (Some of the pairs may be filtered out by pairwise QC. Moreover, if any of the sets contains fewer than 100 pairs, then that entire set of pairs is analyzed.) If the trial pipeline runs without issue, one can proceed to the next step.
+
+::: callout-tip
+The trial pipeline is purely for computational purposes. Users should hold off on assessing the statistical quality of the results until they run the full analysis.
+:::
 
 ## Push the data to the cluster {#sec-push_data_to_cluster}
 
@@ -317,7 +327,7 @@ git clone git@github.com:timothy-barry/sceptre-pipeline.git
 cd sceptre-pipeline/examples
 ```
 
-We launch the pipeline by submitting `launch_script.sh` to the scheduler. For example, on a sun grid engine (SGE) cluster, one would use the `qsub` command.
+We launch the pipeline by submitting `launch_script.sh` to the scheduler. For example, on a Sun Grid Engine (SGE) cluster, one would use the `qsub` command.
 
 ``` {.terminal filename="terminal, cluster"}
 qsub launch_script.sh

@@ -8,7 +8,7 @@ knitr::include_graphics("pipeline_schematic_step_5.png")
 
 We begin by loading `sceptre`.
 
-```{r,results='hide'}
+```{r,message = FALSE}
 library(sceptre)
 ```
 
