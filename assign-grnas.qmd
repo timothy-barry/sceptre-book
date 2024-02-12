@@ -182,7 +182,7 @@ sceptre_object_highmoi_thresholding <- assign_grnas(
 
 Note that setting `threshold` to `1` causes background contamination to be ignored.
 
-## Plotting and printing the outcome of the gRNA-to-cell assignment step
+## Plotting the gRNA assignments
 
 We can call `plot()` on the `sceptre_object` to render a plot summarizing the outcome of the gRNA-to-cell assignment step. `plot()` takes the arguments `sceptre_object` (required) `n_grnas_to_plot` (optional), `grnas_to_plot` (optional), and `return_indiv_plots` (optional). `n_grnas_to_plot` is the number of (randomly selected) gRNAs to plot; `grnas_to_plot` is a vector of names of one or more gRNAs to plot; and `return_indiv_plots` is a logical value indicating whether to return the constituent panels of the plot individually (`TRUE`) or combined into a single figure (`FALSE`; default).
 
@@ -221,7 +221,30 @@ Encouragingly, the gRNA assignments appear to be highly concordant across the ma
 sceptre_object_lowmoi <- sceptre_object_lowmoi_mixture
 ```
 
-We can call `print()` on `sceptre_object_lowmoi` to print a summary tracking the progress of the analysis. The field "gRNA-to-cell assignment information" presents information about the gRNA assignment step, including the selected assignment method, the mean number of cells per gRNA, and the mean number of gRNAs per cell.
+## Returning and printing the gRNA assignments
+
+We can obtain the gRNA-to-cell assignments by calling `get_grna_assignments()` on the `sceptre_object`.
+
+```{r}
+grna_assignment_matrix <- get_grna_assignments(sceptre_object_lowmoi)
+```
+
+`grna_assignment_matrix` is a sparse, logical matrix of gRNA assignments; gRNA IDs are in the rows and cells are in the columns. A given entry of the matrix is set to `TRUE` if the given gRNA was assigned to the given cell (and `FALSE` otherwise). We can determine the cells to which a given gRNA was assigned by indexing `grna_assignment_matrix` by row; conversely, we can determine the gRNAs that were assigned to a given cell by indexing `grna_assignment_matrix` by column. We can cross-reference the gRNA assignment matrix and gRNA count matrix to quickly check that the gRNA-to-cell assignments are reasonable. For example, below, we see that gRNAs "POU2F2g1" and "ATF2g4" were assigned to the cell indexed as "7."
+
+```{r}
+cell_idx <- 7
+assigned_grnas <- names(which(grna_assignment_matrix[,cell_idx]))
+assigned_grnas
+```
+
+Next, we verify that the gRNAs "POU2F2g1" and "ATF2g4" exhibit a large UMI count in the cell indexed as "7."
+
+```{r}
+grna_count_matrix <- get_grna_matrix(sceptre_object_lowmoi)
+grna_count_matrix[assigned_grnas, cell_idx]
+```
+
+Finally, we can call `print()` on `sceptre_object_lowmoi` to print a summary tracking the progress of the analysis. The field "gRNA-to-cell assignment information" presents information about the gRNA assignment step, including the selected assignment method, the mean number of cells per gRNA, and the mean number of gRNAs per cell.
 
 ```{r}
 print(sceptre_object_lowmoi)

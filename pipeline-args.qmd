@@ -107,7 +107,7 @@ The corresponding command for a SLURM scheduler is as follows.
 process.clusterOptions = { task.memory ? "--mem=${task.memory.toGiga()}G" : "" }
 ```
 
-Configuring Nextflow on a given cluster often takes a bit of effort, but fortunately, this task only needs to be completed once. For help with Nextflow configuration, we recommend reading through the Nextflow documentation, contacting a cluster administrator, pinging the (very helpful and responsive) Nextflow community (for example on [Github issues](https://github.com/nextflow-io/nextflow/issues)), or consulting with ChatGPT (seriously; it seems to know a lot about Nextflow).
+Configuring Nextflow on a given cluster often takes a bit of effort, but fortunately, this task only needs to be completed once. For help with Nextflow configuration, we recommend reading through the Nextflow documentation, contacting a cluster administrator, pinging the (very helpful and responsive) Nextflow community (for example on [Github issues](https://github.com/nextflow-io/nextflow/issues)), or consulting with ChatGPT (seriously; it seems to know a lot about Nextflow). Finally, a couple helpful blog posts on the Nextflow website are located [here](https://www.nextflow.io/blog/2021/5_tips_for_hpc_users.html) and [here](https://nextflow.io/blog/2024/optimizing-nextflow-for-hpc-and-cloud-at-scale.html).
 
 ## Arguments to the Nextflow pipeline {#sec-nf_pipeline_args}
 
@@ -229,7 +229,7 @@ Within the "computational" category, we further divide the arguments into subcat
 
 Two arguments that control the degree of parallelization: `grna_pod_size` and `pair_pod_size`. The former argument relates to the gRNA-to-cell assignment step, and the latter argument relates to the target-to-response association testing steps (i.e., the calibration check, the power check, and the discovery analysis).
 
--   `--grna_pod_size`: the number of gRNAs to assign to each pod. Setting `grna_pod_size` to a large number (e.g., `1000`) reduces the amount of parallelization, while setting `grna_pod_size` to a small number (e.g., `10`) increases the amount of parallelization. By default `grna_pod_size` is set to 200. `grna_pod_size` should be a positive integer.
+-   `--grna_pod_size`: the number of gRNAs to assign to each pod. Setting `grna_pod_size` to a large number (e.g., `500`) reduces the amount of parallelization, while setting `grna_pod_size` to a small number (e.g., `10`) increases the amount of parallelization. By default `grna_pod_size` is set to 150. `grna_pod_size` should be a positive integer.
 
 -   `--pair_pod_size`: the number of target-response pairs to assign to each pod for each of the association analyses (i.e., calibration check, power check, and discovery analysis). Setting `pair_pod_size` to a large number (e.g., `50000`) reduces the amount of parallelization, while setting `pair_pod_size` to a small number (e.g., `500`) increases the amount of parallelization. By default `pair_pod_size` is set to `10000`. `pair_pod_size` should be a positive integer.
 

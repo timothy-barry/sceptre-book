@@ -24,13 +24,13 @@ knitr::include_graphics("pipeline_dag.png")
 
 The "run calibration check," "run power check," and "run discovery analysis" steps are parallelized using a similar strategy. First, the target-response pairs are partitioned into *r* distinct pods. Next, the pods are mapped to *r* processors, and each processor carries out the target-to-response association tests for the pairs in the pod to which it has been assigned. Finally, the results are combined across pods, and a multiplicity correction (e.g., the BH procedure) is applied to the entire set of p-values. Again, the user selects the number of pairs to assign to each pod, which in turn determines *r*. In summary the gRNA-to-cell assignments are parallelized at the level of the gRNA, and the target-to-response association tests are parallelized at the level of the target-response pair. (If the "maximum" gRNA assignment strategy is used, then the gRNA-to-cell assignment step is not parallelized. Rather, the gRNA-to-cell assignments are carried out "behind the scenes" as part of the data import step.)
 
-## Anatomy of a pipeline launch script
+## Anatomy of a pipeline launch script {#sec-anatomy_of_launch_script}
 
 An example `sceptre` Nextflow pipeline launch script is as follows.
 
 ``` {.bash filename="launch_script.sh"}
-#!/bin/bash
-# Limit NF driver to 4 GB memory
+#$ -l m_mem_free=4G
+#$ -pe openmp 2
 export NXF_OPTS="-Xms500M -Xmx4G"
 
 ##########################
@@ -67,7 +67,17 @@ nextflow run timothy-barry/sceptre-pipeline -r main \
  --combine_assign_grnas_time 5m
 ```
 
-We describe each component of this script line-by-line. First, we limit the Nextflow driver to four gigabytes of memory by including the line `export NXF_OPTS="-Xms500M -Xmx4G"`. (This line is optional but helps prevent the driver from using too much memory.) Next, we set the variables `sceptre_object_fp`, `response_odm_fp`, and `grna_odm_fp` to the file paths of the `sceptre_object.rds` file, the `gene.odm` file, and the `grna.odm` file, respectively. We also set `output_directory` to the file path of the directory in which to write the results. These variables are defined in terms of `$HOME` as opposed to the shorthand `~`, as `$HOME` contains the absolute file path to the home directory, and Nextflow is more adept at handling absolute file paths than relative file paths.
+We describe each component of this script line-by-line. The first few lines relate to resource requests for the driver process. We request four gigabytes of memory (`#$ -l m_mem_free=4G`) and two CPUs (`#$ -pe openmp 2`) for the driver.  Additionally, we specify that the "Java virtual machine" --- the application responsible for executing the driver --- is to use no fewer than 500 megabytes of memory and no more than to four gigabytes of memory via the line `export NXF_OPTS="-Xms500M -Xmx4G"`. (This line is optional, but it helps prevent the Nextflow driver from using too much memory.) Finally, the scheduler may require us to submit a wall time request, in which case we should include a wall time request at the top of `launch_script.sh`; the relevant command on SGE is `-l h_rt`. If we were on a SLURM cluster instead of an SGE cluster, the first few lines of `launch_script.sh` would look roughly as follows:
+
+```
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=4G
+#SBATCH --time=05:00:00
+export NXF_OPTS="-Xms500M -Xmx4G"
+```
+
+ Next, we set the variables `sceptre_object_fp`, `response_odm_fp`, and `grna_odm_fp` to the file paths of the `sceptre_object.rds` file, the `gene.odm` file, and the `grna.odm` file, respectively. We also set `output_directory` to the file path of the directory in which to write the results. These variables are defined in terms of `$HOME` as opposed to the shorthand `~`, as `$HOME` contains the absolute file path to the home directory, and Nextflow is more adept at handling absolute file paths than relative file paths.
 
 Finally, we invoke the Nextflow pipeline via the command `nextflow run timothy-barry/sceptre-pipeline -r main`. (`timothy-barry/sceptre-pipeline` is the current location of the `sceptre` Nextflow pipeline on Github; we plan to move the pipeline into the [nf-core](https://nf-co.re/pipelines) repository in the future.) We specify arguments to the pipeline via the syntax `--argument value`, where `argument` is the name of an argument and `value` is the value to assign to the argument. In the above script we organize the arguments such that each argument is on its own line, but this is not necessary. The `sceptre` pipeline has four required arguments: `sceptre_object_fp`, `response_odm_fp`, `grna_odm_fp`, and `output_directory` (described above). The pipeline additionally supports a variety of optional arguments. About half of the optional arguments are "statistical" in that they govern how the statistical methods are to be deployed to analyze the data. For example, above, we indicate that the pipeline is to use the "mixture" method to assign gRNAs to cells via `--grna_assignment_method`. Additionally, we alter the default cellwise QC thresholds via `--response_n_umis_range_lower 0.05` and `--response_n_umis_range_uppper 0.95`. Finally, we indicate that the pipeline is to use the "singleton" gRNA integration strategy via `--grna_integration_strategy singleton`.
 

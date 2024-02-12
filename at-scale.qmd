@@ -339,7 +339,7 @@ On SLURM cluster, on the other hand, one would use the `sbatch` command.
 sbatch launch_script.sh
 ```
 
-`launch_script.sh` launches the Nextflow driver, which is a process that runs throughout the duration of the pipeline and manages the submission of all the other processes. Depending on their cluster, users may need to specify a time and/or memory allocation request at the top of `launch_script.sh`. The Nextflow driver of the trial pipeline requires fewer than 30 minutes of wall time and four gigabytes of memory.
+`launch_script.sh` launches the Nextflow driver, which is a process that runs throughout the duration of the pipeline and manages the submission of all the other processes. Depending on their cluster, users may need to specify a time and/or memory allocation request at the top of `launch_script.sh`. The Nextflow driver of the trial pipeline requires fewer than 30 minutes of wall time and four gigabytes of memory. More details are available in @sec-anatomy_of_launch_script.
 
 Importantly, we are able to launch the pipeline using essentially the same command on our local machine as on the cluster. This is one of the advantages of Nextflow: it provides a layer of abstraction between the logic of the pipeline and the execution environment. Thus, we can develop (or debug, etc.) a pipeline on our local machine and then run it at scale on the cluster without modification.
 

@@ -284,7 +284,8 @@ div.csl-indent {
   <li><a href="#sec-thresholding_method" id="toc-sec-thresholding_method" class="nav-link" data-scroll-target="#sec-thresholding_method"><span class="header-section-number">3.3.3</span> Thresholding method</a></li>
   </ul>
 </li>
-  <li><a href="#plotting-and-printing-the-outcome-of-the-grna-to-cell-assignment-step" id="toc-plotting-and-printing-the-outcome-of-the-grna-to-cell-assignment-step" class="nav-link" data-scroll-target="#plotting-and-printing-the-outcome-of-the-grna-to-cell-assignment-step"><span class="header-section-number">3.4</span> Plotting and printing the outcome of the gRNA-to-cell assignment step</a></li>
+  <li><a href="#plotting-the-grna-assignments" id="toc-plotting-the-grna-assignments" class="nav-link" data-scroll-target="#plotting-the-grna-assignments"><span class="header-section-number">3.4</span> Plotting the gRNA assignments</a></li>
+  <li><a href="#returning-and-printing-the-grna-assignments" id="toc-returning-and-printing-the-grna-assignments" class="nav-link" data-scroll-target="#returning-and-printing-the-grna-assignments"><span class="header-section-number">3.5</span> Returning and printing the gRNA assignments</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -459,8 +460,8 @@ div.csl-indent {
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Note that setting <code>threshold</code> to <code>1</code> causes background contamination to be ignored.</p>
-</section></section><section id="plotting-and-printing-the-outcome-of-the-grna-to-cell-assignment-step" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="plotting-and-printing-the-outcome-of-the-grna-to-cell-assignment-step">
-<span class="header-section-number">3.4</span> Plotting and printing the outcome of the gRNA-to-cell assignment step</h2>
+</section></section><section id="plotting-the-grna-assignments" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="plotting-the-grna-assignments">
+<span class="header-section-number">3.4</span> Plotting the gRNA assignments</h2>
 <p>We can call <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the <code>sceptre_object</code> to render a plot summarizing the outcome of the gRNA-to-cell assignment step. <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> takes the arguments <code>sceptre_object</code> (required) <code>n_grnas_to_plot</code> (optional), <code>grnas_to_plot</code> (optional), and <code>return_indiv_plots</code> (optional). <code>n_grnas_to_plot</code> is the number of (randomly selected) gRNAs to plot; <code>grnas_to_plot</code> is a vector of names of one or more gRNAs to plot; and <code>return_indiv_plots</code> is a logical value indicating whether to return the constituent panels of the plot individually (<code>TRUE</code>) or combined into a single figure (<code>FALSE</code>; default).</p>
 <p>We visualize the outcome of the gRNA-to-cell assignment step on the low-MOI CRISPRko data based on the maximum assignment strategy. We specifically plot the gRNAs “IFNGR2g2”, “STAT1g2”, and “STAT5Ag4”. (These gRNAs were selected arbitrarily for the purpose of illustrating the <code>grnas_to_plot</code> argument.)</p>
 <div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-14_a85ff7573b498fa3903274463b346413">
@@ -492,9 +493,33 @@ div.csl-indent {
 <div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-18_df107cfc7863b8d27f04103eb2c10a8f">
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi_mixture</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on <code>sceptre_object_lowmoi</code> to print a summary tracking the progress of the analysis. The field “gRNA-to-cell assignment information” presents information about the gRNA assignment step, including the selected assignment method, the mean number of cells per gRNA, and the mean number of gRNAs per cell.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-19_f120e7ed2e26cccd8970a70ee0f8cc98">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section><section id="returning-and-printing-the-grna-assignments" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="returning-and-printing-the-grna-assignments">
+<span class="header-section-number">3.5</span> Returning and printing the gRNA assignments</h2>
+<p>We can obtain the gRNA-to-cell assignments by calling <code><a href="https://rdrr.io/pkg/sceptre/man/get_grna_assignments.html">get_grna_assignments()</a></code> on the <code>sceptre_object</code>.</p>
+<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-19_dc291f2e37d3928a2e63de5303ffbe2b">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_assignment_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_grna_assignments.html">get_grna_assignments</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>grna_assignment_matrix</code> is a sparse, logical matrix of gRNA assignments; gRNA IDs are in the rows and cells are in the columns. A given entry of the matrix is set to <code>TRUE</code> if the given gRNA was assigned to the given cell (and <code>FALSE</code> otherwise). We can determine the cells to which a given gRNA was assigned by indexing <code>grna_assignment_matrix</code> by row; conversely, we can determine the gRNAs that were assigned to a given cell by indexing <code>grna_assignment_matrix</code> by column. We can cross-reference the gRNA assignment matrix and gRNA count matrix to quickly check that the gRNA-to-cell assignments are reasonable. For example, below, we see that gRNAs “POU2F2g1” and “ATF2g4” were assigned to the cell indexed as “7.”</p>
+<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-20_eb66b218ad0675935350e46389f30833">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cell_idx</span> <span class="op">&lt;-</span> <span class="fl">7</span></span>
+<span><span class="va">assigned_grnas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">grna_assignment_matrix</span><span class="op">[</span>,<span class="va">cell_idx</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">assigned_grnas</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "POU2F2g1" "ATF2g4"  </code></pre>
+</div>
+</div>
+<p>Next, we verify that the gRNAs “POU2F2g1” and “ATF2g4” exhibit a large UMI count in the cell indexed as “7.”</p>
+<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-21_4a6d1e46ae6d9232ebe13dcfae8d2b65">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_count_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_grna_matrix</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span>
+<span><span class="va">grna_count_matrix</span><span class="op">[</span><span class="va">assigned_grnas</span>, <span class="va">cell_idx</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>POU2F2g1   ATF2g4 
+      72      292 </code></pre>
+</div>
+</div>
+<p>Finally, we can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on <code>sceptre_object_lowmoi</code> to print a summary tracking the progress of the analysis. The field “gRNA-to-cell assignment information” presents information about the gRNA assignment step, including the selected assignment method, the mean number of cells per gRNA, and the mean number of gRNAs per cell.</p>
+<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-22_94c45b668269561be6225139cea7e45b">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
 
@@ -519,17 +544,20 @@ Analysis parameters:
     • Discovery pairs: data frame with 7765 pairs
     • Positive control pairs: data frame with 9 pairs
     • Sidedness of test: both
-    • N nonzero treatment cells threshold: not specified
-    • N nonzero control cells threshold: not specified
     • Control group: non-targeting cells
     • Resampling mechanism: permutations
     • gRNA integration strategy: union
+    • Fit parametric curve: TRUE
+    • Multiple testing adjustment: BH at level 0.1
+    • N nonzero treatment cells threshold: not specified
+    • N nonzero control cells threshold: not specified
     • Formula object: log(response_n_nonzero) + log(response_n_umis) + bio_rep
 
 gRNA-to-cell assignment information:
     • Assignment method: mixture
     • Mean N cells per gRNA: 205.07
-    • Mean N gRNAs per cell (MOI): 1.09</code></pre>
+    • Mean N gRNAs per cell (MOI): 1.09 
+    • gRNA assignment formula object: log(response_n_nonzero) + log(response_n_umis) + log(grna_n_nonzero) + log(grna_n_umis) + bio_rep</code></pre>
 </div>
 </div>
 
