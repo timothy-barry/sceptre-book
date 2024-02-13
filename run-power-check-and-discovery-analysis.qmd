@@ -6,11 +6,12 @@ The next steps of the pipeline are to run the power check and the discovery anal
 knitr::include_graphics("pipeline_schematic_step_6_7.png")
 ```
 
-We load the `sceptre` and `dplyr` packages.
+We load the `sceptre`, `dplyr`, and `cowplot` packages.
 
 ```{r,message = FALSE}
 library(sceptre)
 library(dplyr)
+library(cowplot)
 ```
 
 ```{r, echo = FALSE, message=FALSE}
@@ -130,6 +131,36 @@ knitr::include_graphics("plot_discovery_analysis_lowmoi.png")
 ```
 
 We described how to interpret this plot in @sec-sceptre_run_discovery_analysis of *The whole game*. Briefly, the top left (resp. right) panel is a QQ plot of the negative control p-values and the discovery p-values plotted on an untransformed (resp., transformed) scale. The bottom left panel plots the p-value of each discovery pair against its log-2-fold-change. Finally, the bottom right panel displays the number of discoveries that `sceptre` makes on the discovery set (after applying the multiplicity correction).
+
+## Visualizing the results for individual pairs
+
+We can visualize the results for an individual target-response pair by calling the function `plot_response_grna_target_pair()`. `plot_response_grna_target_pair()` takes as input a `sceptre_object`, a response ID `response_id`, and a gRNA target `grna_target`. `plot_response_grna_target_pair()` creates two side-by-side violin plots depicting the expression level of the response. The left (resp., right) violin plot shows the expression level of the response in treatment (resp., control) cells. (When `control_group` is set to `"nt_cells"`, the control cells are those containing an NT gRNA, whereas when `control_group` is set to `"complement"`, the control cells are those that do *not* contain a gRNA targeting the given site.) The response expression vector is normalized by dividing by the library size (i.e., `response_n_umis`), adding a pseudo-count of 1, and then taking a log transformation. Finally, if the given pair has been analyzed (either as part of the power check or the discovery analysis), a p-value for the test of association between the target and response is displayed.
+
+To illustrate use of this function, we create the above-described plot for two pairs: the positive control pair consisting of gRNA target "CMTM6" and response "CMTM6", and the discovery pair consisting of gRNA target "STAT3" and response "ACADVL." We use `plot_grid()` from `cowplot` to render the plots side-by-side.
+
+```{r, eval=FALSE}
+pc_pair <- plot_response_grna_target_pair(sceptre_object = sceptre_object_lowmoi,
+                                          response_id = "CMTM6",
+                                          grna_target = "CMTM6")
+disc_pair <- plot_response_grna_target_pair(sceptre_object = sceptre_object_lowmoi,
+                                            response_id = "ACADVL",
+                                            grna_target = "STAT3")
+plot_grid(pc_pair, disc_pair)
+```
+
+```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap="A visualization of the results for two pairs."}
+pc_pair <- plot_response_grna_target_pair(sceptre_object = sceptre_object_lowmoi,
+                                          response_id = "CMTM6",
+                                          grna_target = "CMTM6")
+disc_pair <- plot_response_grna_target_pair(sceptre_object = sceptre_object_lowmoi,
+                                            response_id = "ACADVL",
+                                            grna_target = "STAT3")
+p <- plot_grid(pc_pair, disc_pair)
+ggplot2::ggsave(filename = "plot_individual_pairs.png", plot = p, device = "png", scale = 1.1, width = 5, height = 3.5, dpi = 330)
+knitr::include_graphics("plot_individual_pairs.png")
+```
+
+Finally, if `grna_integration_strategy` has been set to `"singleton"`, then an individual gRNA ID should be passed to `grna_target` in lieu of of a gRNA target. 
 
 ## Inspecting the results
 

@@ -257,8 +257,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
 <li><a href="#run-power-check" id="toc-run-power-check" class="nav-link active" data-scroll-target="#run-power-check"><span class="header-section-number">6.1</span> Run power check</a></li>
   <li><a href="#run-discovery-analysis" id="toc-run-discovery-analysis" class="nav-link" data-scroll-target="#run-discovery-analysis"><span class="header-section-number">6.2</span> Run discovery analysis</a></li>
-  <li><a href="#inspecting-the-results" id="toc-inspecting-the-results" class="nav-link" data-scroll-target="#inspecting-the-results"><span class="header-section-number">6.3</span> Inspecting the results</a></li>
-  <li><a href="#writing-the-outputs-to-a-directory" id="toc-writing-the-outputs-to-a-directory" class="nav-link" data-scroll-target="#writing-the-outputs-to-a-directory"><span class="header-section-number">6.4</span> Writing the outputs to a directory</a></li>
+  <li><a href="#visualizing-the-results-for-individual-pairs" id="toc-visualizing-the-results-for-individual-pairs" class="nav-link" data-scroll-target="#visualizing-the-results-for-individual-pairs"><span class="header-section-number">6.3</span> Visualizing the results for individual pairs</a></li>
+  <li><a href="#inspecting-the-results" id="toc-inspecting-the-results" class="nav-link" data-scroll-target="#inspecting-the-results"><span class="header-section-number">6.4</span> Inspecting the results</a></li>
+  <li><a href="#writing-the-outputs-to-a-directory" id="toc-writing-the-outputs-to-a-directory" class="nav-link" data-scroll-target="#writing-the-outputs-to-a-directory"><span class="header-section-number">6.5</span> Writing the outputs to a directory</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -287,10 +288,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>We load the <code>sceptre</code> and <code>dplyr</code> packages.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-2_308975013065396c04462eee782d2119">
+<p>We load the <code>sceptre</code>, <code>dplyr</code>, and <code>cowplot</code> packages.</p>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-2_b98df5bf8036ff68f73e34e7d93eb47f">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/cowplot/">cowplot</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We initialize <code>sceptre_object</code>s corresponding to the high-MOI CRISPRi data and low-MOI CRISPRko data. We call all pipeline functions that precede <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis()</a></code> (namely, <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code>) on both datasets.</p>
 <div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-4_8f31d83fa0b5d0ad3e4fa25110e13ca6">
@@ -396,24 +398,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>We described how to interpret this plot in <a href="sceptre.html#sec-sceptre_run_discovery_analysis"><span>Section&nbsp;7</span></a> of <em>The whole game</em>. Briefly, the top left (resp. right) panel is a QQ plot of the negative control p-values and the discovery p-values plotted on an untransformed (resp., transformed) scale. The bottom left panel plots the p-value of each discovery pair against its log-2-fold-change. Finally, the bottom right panel displays the number of discoveries that <code>sceptre</code> makes on the discovery set (after applying the multiplicity correction).</p>
-</section><section id="inspecting-the-results" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="inspecting-the-results">
-<span class="header-section-number">6.3</span> Inspecting the results</h2>
+</section><section id="visualizing-the-results-for-individual-pairs" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="visualizing-the-results-for-individual-pairs">
+<span class="header-section-number">6.3</span> Visualizing the results for individual pairs</h2>
+<p>We can visualize the results for an individual target-response pair by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/plot_response_grna_target_pair.html">plot_response_grna_target_pair()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/plot_response_grna_target_pair.html">plot_response_grna_target_pair()</a></code> takes as input a <code>sceptre_object</code>, a response ID <code>response_id</code>, and a gRNA target <code>grna_target</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/plot_response_grna_target_pair.html">plot_response_grna_target_pair()</a></code> creates two side-by-side violin plots depicting the expression level of the response. The left (resp., right) violin plot shows the expression level of the response in treatment (resp., control) cells. (When <code>control_group</code> is set to <code>"nt_cells"</code>, the control cells are those containing an NT gRNA, whereas when <code>control_group</code> is set to <code>"complement"</code>, the control cells are those that do <em>not</em> contain a gRNA targeting the given site.) The response expression vector is normalized by dividing by the library size (i.e., <code>response_n_umis</code>), adding a pseudo-count of 1, and then taking a log transformation. Finally, if the given pair has been analyzed (either as part of the power check or the discovery analysis), a p-value for the test of association between the target and response is displayed.</p>
+<p>To illustrate use of this function, we create the above-described plot for two pairs: the positive control pair consisting of gRNA target “CMTM6” and response “CMTM6”, and the discovery pair consisting of gRNA target “STAT3” and response “ACADVL.” We use <code><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid()</a></code> from <code>cowplot</code> to render the plots side-by-side.</p>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-12_5f852424265c270f68c5f2e07b231fae">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pc_pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/plot_response_grna_target_pair.html">plot_response_grna_target_pair</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
+<span>                                          response_id <span class="op">=</span> <span class="st">"CMTM6"</span>,</span>
+<span>                                          grna_target <span class="op">=</span> <span class="st">"CMTM6"</span><span class="op">)</span></span>
+<span><span class="va">disc_pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/plot_response_grna_target_pair.html">plot_response_grna_target_pair</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
+<span>                                            response_id <span class="op">=</span> <span class="st">"ACADVL"</span>,</span>
+<span>                                            grna_target <span class="op">=</span> <span class="st">"STAT3"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">pc_pair</span>, <span class="va">disc_pair</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-13_d9e677e03d3d334aec8825efd83928f4">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="plot_individual_pairs.png" class="img-fluid figure-img" width="650"></p>
+<figcaption class="figure-caption">A visualization of the results for two pairs.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>Finally, if <code>grna_integration_strategy</code> has been set to <code>"singleton"</code>, then an individual gRNA ID should be passed to <code>grna_target</code> in lieu of of a gRNA target.</p>
+</section><section id="inspecting-the-results" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="inspecting-the-results">
+<span class="header-section-number">6.4</span> Inspecting the results</h2>
 <p>We can obtain a data frame containing the results by calling <code><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result()</a></code> on the <code>sceptre_object</code>, setting the parameter <code>analysis</code> to the name of the function whose results we are querying. For example, we can obtain the discovery results as follows.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-12_ef6a38518ecb656e05e6808d51b995d5">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span></span>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-14_597d00a83afc51d61bfbf4d5dcb81cb1">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
 <span>  analysis <span class="op">=</span> <span class="st">"run_discovery_analysis"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">discovery_result</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   response_id grna_target n_nonzero_trt n_nonzero_cntrl pass_qc       p_value
+        &lt;char&gt;      &lt;char&gt;         &lt;int&gt;           &lt;int&gt;  &lt;lgcl&gt;         &lt;num&gt;
 1:        JAK2       STAT1           112            1557    TRUE 1.000000e-250
-2:       PSMB9      IFNGR1           873            1801    TRUE 3.381199e-155
+2:       PSMB9      IFNGR1           873            1801    TRUE 3.381202e-155
 3:       PSMB9        JAK2           706            1801    TRUE 4.456437e-145
-4:       STAT1      IFNGR2           821            1819    TRUE 3.231543e-127
-5:       STAT1      IFNGR1           898            1819    TRUE 3.361381e-127
-6:       STAT1        JAK2           714            1819    TRUE 1.404004e-122
+4:       STAT1      IFNGR2           821            1819    TRUE 1.918728e-127
+5:       STAT1      IFNGR1           898            1819    TRUE 7.934591e-127
+6:       STAT1        JAK2           714            1819    TRUE 1.342549e-122
    log_2_fold_change significant
+               &lt;num&gt;      &lt;lgcl&gt;
 1:        -1.3840723        TRUE
 2:        -0.8561766        TRUE
 3:        -0.9410000        TRUE
@@ -424,8 +450,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The data frame <code>discovery_result</code> contains the columns <code>response_id</code>, <code>grna_target</code>, <code>n_nonzero_trt</code>, <code>n_nonzero_cntrl</code>, <code>pass_qc</code>, <code>p_value</code>, <code>log_2_fold_change</code>, and <code>significant</code>; see <a href="run-calibration-check.html#sec-run-calibration-check_running_the_calibration_check"><span>Section&nbsp;5.2</span></a> of <em>Run calibration check</em> for a description of these columns. The rows are ordered according to <code>p_value</code>. Pairs called as significant are stored in the top rows of the data frame; pairs called as insignificant are stored in the middle rows; and pairs filtered out by pairwise QC are stored in the bottom rows. (The latter pairs have a value of <code>NA</code> in the <code>p_value</code>, <code>log_2_fold_change</code>, and <code>significant</code> columns.)</p>
 <p>The format of the result data frame is slightly different when we use the “singleton” gRNA integration strategy rather than the default “union” strategy. To illustrate, we again analyze the low-MOI CRISPRko data, this time setting <code>grna_integration_strategy</code> to <code>"singleton"</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>. We then call <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis()</a></code>.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-13_2bf16d225cb3399baa0c8dbeac30c04d">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi_singleton</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-15_3228dad7c27aa8f7160c25d97495b923">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi_singleton</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
 <span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_lowmoi</span>,</span>
 <span>    positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_lowmoi</span>,</span>
@@ -436,46 +462,49 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The result data frame obtained via <code><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result()</a></code> contains the additional column <code>grna_id</code>. Each row of this data frame corresponds to an individual <em>gRNA-response pair</em> (as opposed to <em>target-response pair</em>).</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-14_c355e8d28d87eb92f5516cec1450372f">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span></span>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-16_5deafe39ed7a898766101bc84b1c6de1">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi_singleton</span>,</span>
 <span>  analysis <span class="op">=</span> <span class="st">"run_discovery_analysis"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">discovery_result</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   response_id  grna_id grna_target n_nonzero_trt n_nonzero_cntrl pass_qc
-1:       PSMB9 IFNGR2g1      IFNGR2           384            1801    TRUE
-2:       STAT1 IFNGR2g1      IFNGR2           407            1819    TRUE
-3:       STAT1 IFNGR1g3      IFNGR1           317            1819    TRUE
-4:       PSMB9 IFNGR1g3      IFNGR1           304            1801    TRUE
+        &lt;char&gt;   &lt;char&gt;      &lt;char&gt;         &lt;int&gt;           &lt;int&gt;  &lt;lgcl&gt;
+1:        JAK2 IFNGR1g3      IFNGR1           141            1557    TRUE
+2:        JAK2   IRF1g4        IRF1            94            1557    TRUE
+3:       PSMB9 IFNGR1g3      IFNGR1           304            1801    TRUE
+4:       STAT1 IFNGR2g2      IFNGR2           280            1819    TRUE
 5:      UBE2L6 IFNGR2g1      IFNGR2           375            1794    TRUE
-6:        JAK2 IFNGR2g1      IFNGR2           176            1557    TRUE
+6:       PSMB9 IFNGR2g1      IFNGR2           384            1801    TRUE
          p_value log_2_fold_change significant
-1: 3.610750e-106        -1.2076649        TRUE
-2:  1.525194e-97        -0.9332334        TRUE
-3:  7.272333e-92        -1.0104953        TRUE
-4:  7.077892e-85        -1.2386121        TRUE
-5:  4.216879e-80        -0.8712660        TRUE
-6:  1.992249e-70        -1.5816584        TRUE</code></pre>
+           &lt;num&gt;             &lt;num&gt;      &lt;lgcl&gt;
+1: 1.000000e-250        -1.5869800        TRUE
+2: 1.000000e-250        -1.7962142        TRUE
+3: 1.000000e-250        -1.2386121        TRUE
+4: 1.000000e-250        -0.7611831        TRUE
+5: 1.000000e-250        -0.8712660        TRUE
+6: 9.742212e-106        -1.2076649        TRUE</code></pre>
 </div>
 </div>
 <p>We can filter for a given target to view the p-values of the individual gRNAs targeting that target. For example, we filter the result data frame for rows containing response ID “PSMB9” and gRNA target “IFNGR2,” displaying the columns <code>response_id</code>, <code>grna_id</code>, <code>grna_target</code>, <code>p_value</code>, <code>significant</code>, and <code>n_nonzero_trt</code>.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-15_eb79731106fbc47c115239b6e317837c">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">|&gt;</span></span>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-17_86655860f818ab3142e3ea78651876da">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">response_id</span> <span class="op">==</span> <span class="st">"PSMB9"</span>, <span class="va">grna_target</span> <span class="op">==</span> <span class="st">"IFNGR2"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">response_id</span>, <span class="va">grna_id</span>, <span class="va">grna_target</span>, <span class="va">p_value</span>, <span class="va">significant</span>, <span class="va">n_nonzero_trt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   response_id  grna_id grna_target       p_value significant n_nonzero_trt
-1:       PSMB9 IFNGR2g1      IFNGR2 3.610750e-106        TRUE           384
-2:       PSMB9 IFNGR2g2      IFNGR2  9.280090e-50        TRUE           286
+        &lt;char&gt;   &lt;char&gt;      &lt;char&gt;         &lt;num&gt;      &lt;lgcl&gt;         &lt;int&gt;
+1:       PSMB9 IFNGR2g1      IFNGR2 9.742212e-106        TRUE           384
+2:       PSMB9 IFNGR2g2      IFNGR2  9.280088e-50        TRUE           286
 3:       PSMB9 IFNGR2g3      IFNGR2  1.424416e-17        TRUE           115
 4:       PSMB9 IFNGR2g4      IFNGR2  3.200000e-02       FALSE            12</code></pre>
 </div>
 </div>
 <p>The individual gRNAs that target “IFNGR2” are “IFNGR2g1,” “IFNGR2g2,” IFNGR2g3,” and “IFNGR2g4.” All produce a significant association except “IFNGR2g4.” The latter likely does not produce a significant association because the pair consisting of gRNA IFNGR2g4 and response PSMB9 has a smaller effective sample size than the other pairs (as quantified by <code>n_nonzero_trt</code>).</p>
 <p>We additionally can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on the updated <code>sceptre_object</code> to print information about the status of the analysis to the console.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-16_a9349d0ee792b8cd4da44dfcbdb126cb">
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-18_caa54de0dcdbc58af3ca7795a33ba8ba">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
 
@@ -500,11 +529,13 @@ Analysis parameters:
     • Discovery pairs: data frame with 7765 pairs (6205 after pairwise QC)
     • Positive control pairs: data frame with 9 pairs (9 after pairwise QC)
     • Sidedness of test: both
-    • N nonzero treatment cells threshold: 7
-    • N nonzero control cells threshold: 7
     • Control group: non-targeting cells
     • Resampling mechanism: permutations
     • gRNA integration strategy: union
+    • Fit parametric curve: TRUE
+    • Multiple testing adjustment: BH at level 0.1
+    • N nonzero treatment cells threshold: 7
+    • N nonzero control cells threshold: 7
     • Formula object: log(response_n_nonzero) + log(response_n_umis) + bio_rep
 
 gRNA-to-cell assignment information:
@@ -520,8 +551,8 @@ Summary of results:
 </div>
 </div>
 <p>The third and fourth entries under the field “Summary of results” provide information about the power check and discovery analysis, respectively.</p>
-</section><section id="writing-the-outputs-to-a-directory" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="writing-the-outputs-to-a-directory">
-<span class="header-section-number">6.4</span> Writing the outputs to a directory</h2>
+</section><section id="writing-the-outputs-to-a-directory" class="level2" data-number="6.5"><h2 data-number="6.5" class="anchored" data-anchor-id="writing-the-outputs-to-a-directory">
+<span class="header-section-number">6.5</span> Writing the outputs to a directory</h2>
 <p>We can write all outputs (i.e., results and plots) of an analysis to a directory on disk via the function <code><a href="https://rdrr.io/pkg/sceptre/man/write_outputs_to_directory.html">write_outputs_to_directory()</a></code>. See <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game</em> for a description of this function.</p>
 
 
