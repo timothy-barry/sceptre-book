@@ -18,16 +18,20 @@ We use the high-MOI CRISPRi data that ship with `sceptre` as a running example i
 
 ## Software installation {.unnumbered}
 
-The examples in this chapter depend on several software packages. First, users should install `ondisc` onto their local machine.
+The examples in this chapter depend on several software packages. First, users should install `ondisc` onto their local machine. `ondisc` has the Bioconductor dependency `Rhdf5lib`, which we recommend downloading and installing from source (before installing `ondisc`).
 
 ```{r, filename="R, local", eval=FALSE}
-devtools::install_github("timothy-barry/ondisc")
+# install.packages("BiocManager")
+BiocManager::install("Rhdf5lib", type = "source") # Rhdf5lib
+devtools::install_github("timothy-barry/ondisc") # ondisc
 ```
 
 Next, users should install both `sceptre` and `ondisc` onto their cluster.
 
 ```{r, filename="R, cluster", eval=FALSE}
 devtools::install_github("katsevich-lab/sceptre") # sceptre
+# install.packages("BiocManager")
+BiocManager::install("Rhdf5lib", type = "source") # Rhdf5lib
 devtools::install_github("timothy-barry/ondisc") # ondisc
 ```
 

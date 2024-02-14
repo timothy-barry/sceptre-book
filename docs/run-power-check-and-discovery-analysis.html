@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
 <title>Hands-On Single-Cell CRISPR Screen Analysis - 6&nbsp; Run power check and discovery analysis</title>
@@ -20,7 +20,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -78,7 +78,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -87,6 +93,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -97,25 +104,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./run-power-check-and-discovery-analysis.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./run-power-check-and-discovery-analysis.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
-    <a href="https://katsevich-lab.github.io/sceptre/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
+    <a href="https://katsevich-lab.github.io/sceptre/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
 </div>
     </div>
       </div>
@@ -249,7 +256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
     </ul>
 </div>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
@@ -263,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./run-power-check-and-discovery-analysis.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></a></li></ol></nav><div class="quarto-title">
 <h1 class="title">
 <span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span>
 </h1>
@@ -279,23 +286,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header><p>The next steps of the pipeline are to run the power check and the discovery analysis. The power check entails applying <code>sceptre</code> to analyze positive control pairs — pairs for which we know there is an association between the target and the response — to ensure that <code>sceptre</code> is capable of detecting true associations. The discovery analysis, meanwhile, involves applying <code>sceptre</code> to analyze discovery pairs, or target-response pairs whose association status we do not know but seek to learn. Identifying associations among the discovery pairs is the primary objective of the single-cell CRISPR screen analysis. We explicate both the power check and discovery analysis in this chapter given the similarity of these two analyses.</p>
-<div class="cell" data-layout-align="center" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-1_68e791f0382021234f636175e1fc3d86">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="pipeline_schematic_step_6_7.png" class="img-fluid figure-img" width="650"></p>
+<figure class="figure"><p><img src="pipeline_schematic_step_6_7.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>We load the <code>sceptre</code>, <code>dplyr</code>, and <code>cowplot</code> packages.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-2_b98df5bf8036ff68f73e34e7d93eb47f">
+<div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/cowplot/">cowplot</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We initialize <code>sceptre_object</code>s corresponding to the high-MOI CRISPRi data and low-MOI CRISPRko data. We call all pipeline functions that precede <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis()</a></code> (namely, <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code>) on both datasets.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-4_8f31d83fa0b5d0ad3e4fa25110e13ca6">
+<div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># low-MOI CRISPRko data</span></span>
 <span><span class="co"># 1. import data</span></span>
 <span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
@@ -324,7 +332,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span>p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-5_8c70fb29ef75df26fb285b9397ee7253">
+<div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
 <span><span class="co"># 1. import data</span></span>
 <span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
@@ -356,53 +364,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We are now ready to run the power check and discovery analysis.</p>
 <section id="run-power-check" class="level2" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="run-power-check">
 <span class="header-section-number">6.1</span> Run power check</h2>
-<p>We run the power check by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code>, which takes the arguments <code>sceptre_object</code> (required), <code>output_amount</code> (optional), <code>print_progress</code> (optional), and <code>parallel</code> (optional). <code>output_amount</code> controls the amount of information that <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code> returns; see <a href="run-calibration-check.html#sec-run_calibration_check_output_amount"><span>Section&nbsp;5.5</span></a> of <em>Run calibration check</em> for more information about this argument. <code>print_progress</code> and <code>parallel</code> are logical values indicating whether to print progress updates and run the computation in parallel, respectively. We run the power check on the low-MOI CRISPRko data.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-6_12961bb605d9d927f689e125e8dabb44">
+<p>We run the power check by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code>, which takes the arguments <code>sceptre_object</code> (required), <code>output_amount</code> (optional), <code>print_progress</code> (optional), and <code>parallel</code> (optional). <code>output_amount</code> controls the amount of information that <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code> returns; see <a href="run-calibration-check.html#sec-run_calibration_check_output_amount" class="quarto-xref"><span>Section 5.5</span></a> of <em>Run calibration check</em> for more information about this argument. <code>print_progress</code> and <code>parallel</code> are logical values indicating whether to print progress updates and run the computation in parallel, respectively. We run the power check on the low-MOI CRISPRko data.</p>
+<div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We call <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the resulting <code>sceptre_object</code> to visualize the outcome of the power check.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-7_50202d0c7e706d08b38f8dbec41dd40a">
+<div class="cell">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-8_fd9655883f800e0f4796d79e4ff9e4f5">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="plot_power_check_lowmoi.png" class="img-fluid figure-img" width="500"></p>
-<figcaption class="figure-caption">Power check results on the low-MOI CRISPRko data.</figcaption></figure>
+<figure class="figure"><p><img src="plot_power_check_lowmoi.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></p>
+<figcaption>Power check results on the low-MOI CRISPRko data.</figcaption></figure>
 </div>
 </div>
 </div>
-<p>We described how to interpret this plot in <a href="sceptre.html#sec-sceptre_run_power_check"><span>Section&nbsp;6</span></a> of <em>The whole game</em>. Briefly, each point represents a pair, and the vertical position of a given point indicates the p-value of the corresponding pair. Points in the left (resp., right) column are positive control (resp, negative control) pairs. The positive control p-values should be generally smaller (i.e., more significant) than the negative control p-values.</p>
+<p>We described how to interpret this plot in <a href="sceptre.html#sec-sceptre_run_power_check" class="quarto-xref"><span>Section 6</span></a> of <em>The whole game</em>. Briefly, each point represents a pair, and the vertical position of a given point indicates the p-value of the corresponding pair. Points in the left (resp., right) column are positive control (resp, negative control) pairs. The positive control p-values should be generally smaller (i.e., more significant) than the negative control p-values.</p>
 </section><section id="run-discovery-analysis" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="run-discovery-analysis">
 <span class="header-section-number">6.2</span> Run discovery analysis</h2>
 <p>We run the discovery analysis by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis()</a></code>, which takes the same arguments as <code><a href="https://rdrr.io/pkg/sceptre/man/run_power_check.html">run_power_check()</a></code>. We illustrate this function on the low-MOI CRISPRko data.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-9_d6f75f919970a1fa0a1048fa011fada0">
+<div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can visualize the outcome of the discovery analysis by calling <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the resulting <code>sceptre_object</code>.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-10_63c556f5db3b2b7289141a79fb39972e">
+<div class="cell">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-11_f5b1453d5dd720204dfc13e0691aa4d9">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="plot_discovery_analysis_lowmoi.png" class="img-fluid figure-img" width="650"></p>
-<figcaption class="figure-caption">Discovery analysis results on the low-MOI CRISPRko data.</figcaption></figure>
+<figure class="figure"><p><img src="plot_discovery_analysis_lowmoi.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
+<figcaption>Discovery analysis results on the low-MOI CRISPRko data.</figcaption></figure>
 </div>
 </div>
 </div>
-<p>We described how to interpret this plot in <a href="sceptre.html#sec-sceptre_run_discovery_analysis"><span>Section&nbsp;7</span></a> of <em>The whole game</em>. Briefly, the top left (resp. right) panel is a QQ plot of the negative control p-values and the discovery p-values plotted on an untransformed (resp., transformed) scale. The bottom left panel plots the p-value of each discovery pair against its log-2-fold-change. Finally, the bottom right panel displays the number of discoveries that <code>sceptre</code> makes on the discovery set (after applying the multiplicity correction).</p>
+<p>We described how to interpret this plot in <a href="sceptre.html#sec-sceptre_run_discovery_analysis" class="quarto-xref"><span>Section 7</span></a> of <em>The whole game</em>. Briefly, the top left (resp. right) panel is a QQ plot of the negative control p-values and the discovery p-values plotted on an untransformed (resp., transformed) scale. The bottom left panel plots the p-value of each discovery pair against its log-2-fold-change. Finally, the bottom right panel displays the number of discoveries that <code>sceptre</code> makes on the discovery set (after applying the multiplicity correction).</p>
 </section><section id="visualizing-the-results-for-individual-pairs" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="visualizing-the-results-for-individual-pairs">
 <span class="header-section-number">6.3</span> Visualizing the results for individual pairs</h2>
 <p>We can visualize the results for an individual target-response pair by calling the function <code><a href="https://rdrr.io/pkg/sceptre/man/plot_response_grna_target_pair.html">plot_response_grna_target_pair()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/plot_response_grna_target_pair.html">plot_response_grna_target_pair()</a></code> takes as input a <code>sceptre_object</code>, a response ID <code>response_id</code>, and a gRNA target <code>grna_target</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/plot_response_grna_target_pair.html">plot_response_grna_target_pair()</a></code> creates two side-by-side violin plots depicting the expression level of the response. The left (resp., right) violin plot shows the expression level of the response in treatment (resp., control) cells. (When <code>control_group</code> is set to <code>"nt_cells"</code>, the control cells are those containing an NT gRNA, whereas when <code>control_group</code> is set to <code>"complement"</code>, the control cells are those that do <em>not</em> contain a gRNA targeting the given site.) The response expression vector is normalized by dividing by the library size (i.e., <code>response_n_umis</code>), adding a pseudo-count of 1, and then taking a log transformation. Finally, if the given pair has been analyzed (either as part of the power check or the discovery analysis), a p-value for the test of association between the target and response is displayed.</p>
 <p>To illustrate use of this function, we create the above-described plot for two pairs: the positive control pair consisting of gRNA target “CMTM6” and response “CMTM6”, and the discovery pair consisting of gRNA target “STAT3” and response “ACADVL.” We use <code><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid()</a></code> from <code>cowplot</code> to render the plots side-by-side.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-12_5f852424265c270f68c5f2e07b231fae">
+<div class="cell">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pc_pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/plot_response_grna_target_pair.html">plot_response_grna_target_pair</a></span><span class="op">(</span>sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
 <span>                                          response_id <span class="op">=</span> <span class="st">"CMTM6"</span>,</span>
 <span>                                          grna_target <span class="op">=</span> <span class="st">"CMTM6"</span><span class="op">)</span></span>
@@ -411,11 +419,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>                                            grna_target <span class="op">=</span> <span class="st">"STAT3"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">pc_pair</span>, <span class="va">disc_pair</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-13_d9e677e03d3d334aec8825efd83928f4">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="plot_individual_pairs.png" class="img-fluid figure-img" width="650"></p>
-<figcaption class="figure-caption">A visualization of the results for two pairs.</figcaption></figure>
+<figure class="figure"><p><img src="plot_individual_pairs.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
+<figcaption>A visualization of the results for two pairs.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -423,7 +431,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="inspecting-the-results" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="inspecting-the-results">
 <span class="header-section-number">6.4</span> Inspecting the results</h2>
 <p>We can obtain a data frame containing the results by calling <code><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result()</a></code> on the <code>sceptre_object</code>, setting the parameter <code>analysis</code> to the name of the function whose results we are querying. For example, we can obtain the discovery results as follows.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-14_597d00a83afc51d61bfbf4d5dcb81cb1">
+<div class="cell">
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
 <span>  analysis <span class="op">=</span> <span class="st">"run_discovery_analysis"</span></span>
@@ -448,9 +456,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 6:        -0.7134929        TRUE</code></pre>
 </div>
 </div>
-<p>The data frame <code>discovery_result</code> contains the columns <code>response_id</code>, <code>grna_target</code>, <code>n_nonzero_trt</code>, <code>n_nonzero_cntrl</code>, <code>pass_qc</code>, <code>p_value</code>, <code>log_2_fold_change</code>, and <code>significant</code>; see <a href="run-calibration-check.html#sec-run-calibration-check_running_the_calibration_check"><span>Section&nbsp;5.2</span></a> of <em>Run calibration check</em> for a description of these columns. The rows are ordered according to <code>p_value</code>. Pairs called as significant are stored in the top rows of the data frame; pairs called as insignificant are stored in the middle rows; and pairs filtered out by pairwise QC are stored in the bottom rows. (The latter pairs have a value of <code>NA</code> in the <code>p_value</code>, <code>log_2_fold_change</code>, and <code>significant</code> columns.)</p>
+<p>The data frame <code>discovery_result</code> contains the columns <code>response_id</code>, <code>grna_target</code>, <code>n_nonzero_trt</code>, <code>n_nonzero_cntrl</code>, <code>pass_qc</code>, <code>p_value</code>, <code>log_2_fold_change</code>, and <code>significant</code>; see <a href="run-calibration-check.html#sec-run-calibration-check_running_the_calibration_check" class="quarto-xref"><span>Section 5.2</span></a> of <em>Run calibration check</em> for a description of these columns. The rows are ordered according to <code>p_value</code>. Pairs called as significant are stored in the top rows of the data frame; pairs called as insignificant are stored in the middle rows; and pairs filtered out by pairwise QC are stored in the bottom rows. (The latter pairs have a value of <code>NA</code> in the <code>p_value</code>, <code>log_2_fold_change</code>, and <code>significant</code> columns.)</p>
 <p>The format of the result data frame is slightly different when we use the “singleton” gRNA integration strategy rather than the default “union” strategy. To illustrate, we again analyze the low-MOI CRISPRko data, this time setting <code>grna_integration_strategy</code> to <code>"singleton"</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>. We then call <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis()</a></code>.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-15_3228dad7c27aa8f7160c25d97495b923">
+<div class="cell">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi_singleton</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
 <span>    discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs_lowmoi</span>,</span>
@@ -462,7 +470,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span>parallel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The result data frame obtained via <code><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result()</a></code> contains the additional column <code>grna_id</code>. Each row of this data frame corresponds to an individual <em>gRNA-response pair</em> (as opposed to <em>target-response pair</em>).</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-16_5deafe39ed7a898766101bc84b1c6de1">
+<div class="cell">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi_singleton</span>,</span>
 <span>  analysis <span class="op">=</span> <span class="st">"run_discovery_analysis"</span></span>
@@ -488,7 +496,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>We can filter for a given target to view the p-values of the individual gRNAs targeting that target. For example, we filter the result data frame for rows containing response ID “PSMB9” and gRNA target “IFNGR2,” displaying the columns <code>response_id</code>, <code>grna_id</code>, <code>grna_target</code>, <code>p_value</code>, <code>significant</code>, and <code>n_nonzero_trt</code>.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-17_86655860f818ab3142e3ea78651876da">
+<div class="cell">
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_result</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">response_id</span> <span class="op">==</span> <span class="st">"PSMB9"</span>, <span class="va">grna_target</span> <span class="op">==</span> <span class="st">"IFNGR2"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">response_id</span>, <span class="va">grna_id</span>, <span class="va">grna_target</span>, <span class="va">p_value</span>, <span class="va">significant</span>, <span class="va">n_nonzero_trt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -503,7 +511,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The individual gRNAs that target “IFNGR2” are “IFNGR2g1,” “IFNGR2g2,” IFNGR2g3,” and “IFNGR2g4.” All produce a significant association except “IFNGR2g4.” The latter likely does not produce a significant association because the pair consisting of gRNA IFNGR2g4 and response PSMB9 has a smaller effective sample size than the other pairs (as quantified by <code>n_nonzero_trt</code>).</p>
 <p>We additionally can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on the updated <code>sceptre_object</code> to print information about the status of the analysis to the console.</p>
-<div class="cell" data-hash="run-power-check-and-discovery-analysis_cache/html/unnamed-chunk-18_caa54de0dcdbc58af3ca7795a33ba8ba">
+<div class="cell">
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
@@ -553,7 +561,7 @@ Summary of results:
 <p>The third and fourth entries under the field “Summary of results” provide information about the power check and discovery analysis, respectively.</p>
 </section><section id="writing-the-outputs-to-a-directory" class="level2" data-number="6.5"><h2 data-number="6.5" class="anchored" data-anchor-id="writing-the-outputs-to-a-directory">
 <span class="header-section-number">6.5</span> Writing the outputs to a directory</h2>
-<p>We can write all outputs (i.e., results and plots) of an analysis to a directory on disk via the function <code><a href="https://rdrr.io/pkg/sceptre/man/write_outputs_to_directory.html">write_outputs_to_directory()</a></code>. See <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game</em> for a description of this function.</p>
+<p>We can write all outputs (i.e., results and plots) of an analysis to a directory on disk via the function <code><a href="https://rdrr.io/pkg/sceptre/man/write_outputs_to_directory.html">write_outputs_to_directory()</a></code>. See <a href="sceptre.html#sec-sceptre_write_outputs_to_directory" class="quarto-xref"><span>Section 8</span></a> of <em>The whole game</em> for a description of this function.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
@@ -635,10 +643,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -648,8 +655,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -662,6 +678,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -705,6 +840,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -730,6 +866,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -789,23 +951,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./run-calibration-check.html" class="pagination-link">
+      <a href="./run-calibration-check.html" class="pagination-link  aria-label=" calibration="" check="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./at-scale.html" class="pagination-link">
+      <a href="./at-scale.html" class="pagination-link" aria-label="<span class='chapter-number'>7</span>&nbsp; <span class='chapter-title'>Introduction to the Nextflow pipeline</span>">
         <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to the Nextflow pipeline</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
-    <div class="nav-footer-left">Hands-On Single-Cell CRISPR Screen Analysis</div>   
+    <div class="nav-footer-left">
+<p>Hands-On Single-Cell CRISPR Screen Analysis</p>
+</div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>
-    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
   </div>
 </footer>
 

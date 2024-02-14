@@ -34,6 +34,27 @@ If this does not work, try to delete and reinstall the dependencies of `sceptre`
 
 See the instructions [here](https://katsevich-lab.github.io/sceptre/articles/install.html).
 
+## How can I improve the speed of `sceptre`?
+
+Create the file `Makevars` inside of your `~/.R` directory (if it does not yet exist):
+
+```{.bash filename="Terminal"}
+touch ~/.R/Makevars
+```
+
+Add the following line to your `Makevars` file:
+
+```{.bash filename="~/.R/Makevars"}
+CXXFLAGS += -O3 -Wall
+```
+
+This line tells the C++ compiler to use aggressive optimization in compiling C++ code contained within an R package. Finally, reinstall `sceptre` from source.
+
+
+```{R, filename = "R", eval=FALSE}
+devtools::install_github("katsevich-lab/sceptre")
+```
+
 ## `sceptre` unexpectedly crashed, or `sceptre` is using an unexpectedly large amount of memory or taking an unexpectedly long amount of time to run. What should I do?
 
 The most likely explanation is that something is going wrong with the parallel functionality of the package. Consider setting `parallel = FALSE` and then trying again. If the situation improves, consider setting `parallel = TRUE` and setting `n_processors` to a small number, such as `2` or `3`. 

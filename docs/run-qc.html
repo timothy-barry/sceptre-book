@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
 <title>Hands-On Single-Cell CRISPR Screen Analysis - 4&nbsp; Run quality control</title>
@@ -20,7 +20,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -56,6 +56,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -97,7 +98,13 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -106,35 +113,61 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="custom.css">
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="custom.css">
 </head>
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./run-qc.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./run-qc.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
-    <a href="https://katsevich-lab.github.io/sceptre/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
+    <a href="https://katsevich-lab.github.io/sceptre/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
 </div>
     </div>
       </div>
@@ -268,7 +301,7 @@ div.csl-indent {
 </li>
     </ul>
 </div>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
@@ -286,7 +319,7 @@ div.csl-indent {
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./run-qc.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></a></li></ol></nav><div class="quarto-title">
 <h1 class="title"><span id="sec-run_qc" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span></h1>
 </div>
 
@@ -300,25 +333,26 @@ div.csl-indent {
   </div>
   
 
+
 </header><p>The fourth step of the pipeline is to run quality control (QC). We apply QC both at the level of the cell (a common step in most single-cell analyses) and at the level of the target-response pair (specific to single-cell CRISPR screens).</p>
 <ul>
 <li><p><strong>Cellwise QC</strong> involves filtering cells on the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. In low-MOI we additionally remove cells that contain multiple gRNAs.</p></li>
 <li><p><strong>Pairwise QC</strong> involves filtering out target-response pairs whose data are too sparse to be analyzed reliably <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref">Barry et al. 2023</a>)</span>. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.</p></li>
 </ul>
-<div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-1_3f7faa931c2d7a004b670a0fddec360d">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="pipeline_schematic_step_4.png" class="img-fluid figure-img" width="650"></p>
+<figure class="figure"><p><img src="pipeline_schematic_step_4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>We begin by loading the <code>sceptre</code> package.</p>
-<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-2_27eb98aa540eafc5816f033acb1503df">
+<div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We initialize <code>sceptre_object</code>s corresponding to the high-MOI CRISPRi and low-MOI CRISPRko data. We call the first three pipeline functions on both datasets: <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>.</p>
-<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-3_9d024a2db08da109b99ee8d55fc448ee">
+<div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># low-MOI CRISPRko data</span></span>
 <span><span class="co"># 1. import data</span></span>
 <span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
@@ -343,7 +377,7 @@ div.csl-indent {
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-4_1406029167490bf1e894faca5c409c1c">
+<div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
 <span><span class="co"># 1. import data</span></span>
 <span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
@@ -373,27 +407,27 @@ div.csl-indent {
 <section id="plot-the-cell-specific-covariates" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="plot-the-cell-specific-covariates">
 <span class="header-section-number">4.1</span> Plot the cell-specific covariates</h2>
 <p>A helpful initial step in applying QC is to visualize the distribution of the cell-specific covariates. To this end we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code>, which creates a histogram of the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, and (if applicable) <code>response_p_mito</code>. Cellwise QC removes cells that lie in the extreme right tail of the <code>response_p_mito</code> distribution or that lie in the extreme left <em>or</em> right tail of the <code>response_n_nonzero</code> or <code>response_n_umis</code> distribution. To help guide the selection of QC thresholds, <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code> plots candidate QC thresholds as vertical lines on the histograms. The optional arguments <code>response_n_nonzero_range</code>, <code>response_n_umis_range</code>, and <code>p_mito_threshold</code> control the location of these candidate QC thresholds. <code>response_n_nonzero_range</code> (resp., <code>response_n_umis_range</code>) is a length-two vector of quantiles (default: <code>c(0.01, 0.99)</code>) indicating the location at which to draw candidate QC thresholds on the <code>response_n_nonzero</code> (resp., <code>response_n_umis</code>) histogram. Next, <code>p_mito_threshold</code> is a single numeric value in the interval [0,1] specifying the location at which to draw a candidate QC threshold on the <code>response_p_mito</code> plot. We call <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code> on the high-MOI CRISPRi <code>sceptre_object</code> (i.e., <code>sceptre_object_highmoi</code>), setting <code>p_mito_threshold</code> to <code>0.075</code>.</p>
-<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-5_ccec861dc99319bc74a0d8e89bfa4b1c">
+<div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span>, p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-6_304ee6b49414b6b7b55edd02572ae757">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="plot_covariates_highmoi.png" class="img-fluid figure-img" width="650"></p>
-<figcaption class="figure-caption">Plot of covariates for high-MOI CRISPRi data.</figcaption></figure>
+<figure class="figure"><p><img src="plot_covariates_highmoi.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
+<figcaption>Plot of covariates for high-MOI CRISPRi data.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>Inspecting these plots (and tinkering with <code>response_n_nonzero_range</code>, <code>response_n_umis_range</code>, and <code>p_mito_threshold</code> as necessary) helps guide the selection of reasonable QC thresholds. In general it is good to clip long, asymmetric tails so as to remove outlier cells. The QC thresholds appear to be drawn at sensible locations on these data.</p>
 <p>We also call <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code> low-MOI CRISPRko data, again setting <code>p_mito_threshold</code> to 0.075.</p>
-<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-7_b6a8a746623ac52681c8acc7992a26ef">
+<div class="cell">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span>, p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-8_f2535db1f7ae8fbcefae9a6cfaf8df99">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="plot_covariates_lowmoi.png" class="img-fluid figure-img" width="650"></p>
-<figcaption class="figure-caption">Outcome of QC on low-MOI CRISPRko data.</figcaption></figure>
+<figure class="figure"><p><img src="plot_covariates_lowmoi.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
+<figcaption>Outcome of QC on low-MOI CRISPRko data.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -406,12 +440,12 @@ div.csl-indent {
 <p>The parameters <code>response_n_umis_range</code>, <code>response_n_nonzero_range</code>, <code>p_mito_threshold</code>, and <code>additional_cells_to_remove</code> control cellwise QC. <code>response_n_umis_range</code> (resp., <code>response_n_nonzero_range</code>) is a length-two vector of quantiles (default <code>c(0.01, 0.99)</code>); cells whose <code>response_n_umis</code> (resp., <code>response_n_nonzero</code>) quantile falls outside this range are excluded. Next, <code>p_mito_threshold</code> is a number in the interval [0,1]; cells whose value for <code>response_p_mito</code> falls above this threshold likewise are excluded. (Note that <code>p_mito_threshold</code> is not a quantile but rather an absolute number). Finally, <code>additional_cells_to_remove</code> is an integer vector specifying the (1-based) indices of additional cells to remove. Cells flagged by <code>additional_cells_to_remove</code> are removed before applying any other cellwise QC filter.</p>
 </section><section id="sec-qc_pairwise_qc" class="level3" data-number="4.2.2"><h3 data-number="4.2.2" class="anchored" data-anchor-id="sec-qc_pairwise_qc">
 <span class="header-section-number">4.2.2</span> Pairwise QC parameters</h3>
-<p>The parameters <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl_thresh</code> control pairwise QC (i.e., QC at the level of the target-response pair). Recall from <a href="set-analysis-parameters.html#sec-set-analysis-parameters_control_group"><span>Section&nbsp;2.5</span></a> that for a given target-response pair, we divide the cells into treatment and control groups. The treatment group consists of the cells that contain a gRNA targeting the given target, and the control group consists of the cells against which the treatment cells are compared. (The control group can be either the complement set or NT cells; this choice is governed by the <code>control_group</code> parameter.) We define the “number of nonzero treatment cells” (resp., the “number of nonzero control cells”) as the number of cells in the treatment group (resp., control group) that contain nonzero expression of the response. (We sometimes use the shorthand <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> to refer to the number of nonzero treatment cells and control cells, respectively.) <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> are reasonable metrics of pair quality, with higher-quality pairs exhibiting larger values for <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>. The schematic below illustrates the definitions of <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>.</p>
-<div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-9_6bd485d266cbeef57e59fb6c19227909">
+<p>The parameters <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl_thresh</code> control pairwise QC (i.e., QC at the level of the target-response pair). Recall from <a href="set-analysis-parameters.html#sec-set-analysis-parameters_control_group" class="quarto-xref"><span>Section 2.5</span></a> that for a given target-response pair, we divide the cells into treatment and control groups. The treatment group consists of the cells that contain a gRNA targeting the given target, and the control group consists of the cells against which the treatment cells are compared. (The control group can be either the complement set or NT cells; this choice is governed by the <code>control_group</code> parameter.) We define the “number of nonzero treatment cells” (resp., the “number of nonzero control cells”) as the number of cells in the treatment group (resp., control group) that contain nonzero expression of the response. (We sometimes use the shorthand <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> to refer to the number of nonzero treatment cells and control cells, respectively.) <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> are reasonable metrics of pair quality, with higher-quality pairs exhibiting larger values for <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>. The schematic below illustrates the definitions of <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="pairwise_qc_schematic.png" class="img-fluid figure-img" width="550"></p>
-<figcaption class="figure-caption">Definition of <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>. Each square represents a cell, and the integer within a square represents the UMI count of the response in the corresponding cell. Some cells belong to the treatment group (blue), and others belong to the control group (red). <code>n_nonzero_trt</code> (resp., <code>n_nonzero_cntrl</code>) is the number of cells in the treatment group (resp., control group) with nonzero expression of the response.</figcaption></figure>
+<figure class="figure"><p><img src="pairwise_qc_schematic.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="550"></p>
+<figcaption>Definition of <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code>. Each square represents a cell, and the integer within a square represents the UMI count of the response in the corresponding cell. Some cells belong to the treatment group (blue), and others belong to the control group (red). <code>n_nonzero_trt</code> (resp., <code>n_nonzero_cntrl</code>) is the number of cells in the treatment group (resp., control group) with nonzero expression of the response.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -419,7 +453,7 @@ div.csl-indent {
 </section></section><section id="run-qc" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="run-qc">
 <span class="header-section-number">4.3</span> Run QC</h2>
 <p>We call <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code> on <code>sceptre_object_highmoi</code> and <code>sceptre_object_lowmoi</code> to run QC on the high-MOI CRISPRi and low-MOI CRISPRko data. In both cases we set <code>p_mito_threshold</code> to <code>0.075</code> but otherwise fall back on the default parameter values.</p>
-<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-10_1568eed3a4a7ec9b9fd6d5d67d38364d">
+<div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
 <span>  p_mito_threshold <span class="op">=</span> <span class="fl">0.075</span></span>
@@ -430,20 +464,20 @@ div.csl-indent {
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can call the function <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the resulting <code>sceptre_object</code> to render a visualization of the outcome of the QC step. We call <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on <code>sceptre_object_lowmoi</code> as an example.</p>
-<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-11_d5058c458a0d2d03ec7c4eb390cff552">
+<div class="cell">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="run-qc_cache/html/unnamed-chunk-12_f1b6c4ba993bd76068e474a362e5c1ba">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="plot_qc_lowmoi.png" class="img-fluid figure-img" width="500"></p>
-<figcaption class="figure-caption">Outcome of applying cellwise (top) and pairwise (bottom) QC to the low-MOI CRISPRko data.</figcaption></figure>
+<figure class="figure"><p><img src="plot_qc_lowmoi.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></p>
+<figcaption>Outcome of applying cellwise (top) and pairwise (bottom) QC to the low-MOI CRISPRko data.</figcaption></figure>
 </div>
 </div>
 </div>
-<p>We described in <a href="sceptre.html#sec-sceptre_qc"><span>Section&nbsp;4</span></a> of <em>The whole game</em> how to interpret this figure. The top panel displays the percentage of cells removed (vertical axis) as a result of applying the different cellwise QC filters (horizontal axis). For example, over 20<span class="math inline">\(\%\)</span> of cells were removed because they contain multiple gRNAs, and about 2<span class="math inline">\(\%\)</span> of cells were removed because they exhibit extremely high or extremely values for <code>response_n_nonzero</code>. Note that the “multiple gRNAs” filter in general is applied only to low-MOI data. Next, the bottom panel plots the set of discovery target-response pairs, where the vertical (resp., horizontal) position of a given pair indicates its <code>n_nonzero_cntrl</code> (resp., <code>n_nonzero_trt</code>) value. Pairs with a sufficiently large value for <code>n_nonzero_cntrl</code> <em>and</em> <code>n_nonzero_trt</code> (colored in green) pass pairwise QC; all other pairs are removed.</p>
+<p>We described in <a href="sceptre.html#sec-sceptre_qc" class="quarto-xref"><span>Section 4</span></a> of <em>The whole game</em> how to interpret this figure. The top panel displays the percentage of cells removed (vertical axis) as a result of applying the different cellwise QC filters (horizontal axis). For example, over 20<span class="math inline">\(\%\)</span> of cells were removed because they contain multiple gRNAs, and about 2<span class="math inline">\(\%\)</span> of cells were removed because they exhibit extremely high or extremely values for <code>response_n_nonzero</code>. Note that the “multiple gRNAs” filter in general is applied only to low-MOI data. Next, the bottom panel plots the set of discovery target-response pairs, where the vertical (resp., horizontal) position of a given pair indicates its <code>n_nonzero_cntrl</code> (resp., <code>n_nonzero_trt</code>) value. Pairs with a sufficiently large value for <code>n_nonzero_cntrl</code> <em>and</em> <code>n_nonzero_trt</code> (colored in green) pass pairwise QC; all other pairs are removed.</p>
 <p>We additionally can call <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code> on a <code>sceptre_object</code> <em>after</em> <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code> has been called on the <code>sceptre_object</code>. In this case the cellwise QC thresholds supplied to <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code> are superimposed as vertical lines on the plot; the remaining arguments to <code><a href="https://rdrr.io/pkg/sceptre/man/plot_covariates.html">plot_covariates()</a></code> (e.g., <code>response_n_umis_range</code>, etc.) are ignored. Finally, we can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on <code>sceptre_object_lowmoi</code> to print a summary of the analysis status. The summary contains information about cellwise and pairwise QC; see the first entry under the “Attributes of the data” field and the second two entries under the “Analysis parameters” field.</p>
-<div class="cell" data-hash="run-qc_cache/html/unnamed-chunk-13_2c5c092c3a11e8dabba89f5f6ae7f19a">
+<div class="cell">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
@@ -469,11 +503,13 @@ Analysis parameters:
     • Discovery pairs: data frame with 7765 pairs (6205 after pairwise QC)
     • Positive control pairs: data frame with 9 pairs (9 after pairwise QC)
     • Sidedness of test: both
-    • N nonzero treatment cells threshold: 7
-    • N nonzero control cells threshold: 7
     • Control group: non-targeting cells
     • Resampling mechanism: permutations
     • gRNA integration strategy: union
+    • Fit parametric curve: TRUE
+    • Multiple testing adjustment: BH at level 0.1
+    • N nonzero treatment cells threshold: 7
+    • N nonzero control cells threshold: 7
     • Formula object: log(response_n_nonzero) + log(response_n_umis) + bio_rep
 
 gRNA-to-cell assignment information:
@@ -485,7 +521,7 @@ gRNA-to-cell assignment information:
 <p>Users may wonder why <code>sceptre</code> does not implement response-wise QC (e.g., filtering out lowly expressed responses). The reason is that pairwise QC is in some sense stronger than response-wise QC. Suppose for example that a given response exhibits zero expression across cells. Target-response pairs containing this response will have <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> values of zero and thus be filtered out, in effect filtering out the response as well.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-barry2023" class="csl-entry" role="listitem">
 Barry, Timothy, Kaishu Mason, Kathryn Roeder, and Eugene Katsevich. 2023. <span>“<span class="nocase">Robust differential expression testing for single-cell CRISPR screens</span>.”</span> <em>bioRxiv</em>.
 </div>
@@ -569,10 +605,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -582,8 +617,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -596,6 +640,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -639,6 +802,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -664,6 +828,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -723,23 +913,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./assign-grnas.html" class="pagination-link">
+      <a href="./assign-grnas.html" class="pagination-link  aria-label=" grnas="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./run-calibration-check.html" class="pagination-link">
+      <a href="./run-calibration-check.html" class="pagination-link" aria-label="<span class='chapter-number'>5</span>&nbsp; <span class='chapter-title'>Run calibration check</span>">
         <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
-    <div class="nav-footer-left">Hands-On Single-Cell CRISPR Screen Analysis</div>   
+    <div class="nav-footer-left">
+<p>Hands-On Single-Cell CRISPR Screen Analysis</p>
+</div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>
-    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
   </div>
 </footer>
 

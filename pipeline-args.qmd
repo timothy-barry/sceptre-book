@@ -14,7 +14,7 @@ Nextflow is a powerful and increasingly popular tool for orchestrating complex b
 curl -s "https://get.sdkman.io" | bash
 ```
 
-2.  Install Java. Nextflow requires a specific distribution of Java, which can be installed as follows.
+2. Close and open a new instance of terminal. Install Java. Nextflow requires a specific distribution of Java, which can be installed as follows.
 
 ``` {.terminal filename="terminal"}
 sdk install java 17.0.6-amzn
@@ -46,7 +46,7 @@ OpenJDK 64-Bit Server VM Corretto-17.0.6.10.1 (build 17.0.6+10-LTS, mixed mode, 
 mkdir -p ~/bin
 ```
 
-4.  Change directories to `~/bin` and intall the Nextflow binary.
+4.  Close and open a new instance of terminal. Change directories to `~/bin` and intall the Nextflow binary.
 
 ``` {.terminal filename="terminal"}
 cd ~/bin

@@ -5,6 +5,7 @@
    }
 </script>
 ```
+
 # The whole game {#sec-whole_game .unnumbered}
 
 ::: callout-note

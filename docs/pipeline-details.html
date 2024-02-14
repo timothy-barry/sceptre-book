@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
 <title>Hands-On Single-Cell CRISPR Screen Analysis - 8&nbsp; A deeper dive into the Nextflow pipeline</title>
@@ -20,7 +20,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -78,7 +78,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -87,6 +93,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -97,25 +104,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html">Part II. At-scale sceptre</a></li><li class="breadcrumb-item"><a href="./pipeline-details.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A deeper dive into the Nextflow pipeline</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html">Part II. At-scale sceptre</a></li><li class="breadcrumb-item"><a href="./pipeline-details.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A deeper dive into the Nextflow pipeline</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
-    <a href="https://katsevich-lab.github.io/sceptre/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
+    <a href="https://katsevich-lab.github.io/sceptre/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
 </div>
     </div>
       </div>
@@ -249,7 +256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
     </ul>
 </div>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
@@ -268,7 +275,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html">Part II. At-scale sceptre</a></li><li class="breadcrumb-item"><a href="./pipeline-details.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A deeper dive into the Nextflow pipeline</span></a></li></ol></nav><div class="quarto-title">
 <h1 class="title">
 <span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A deeper dive into the Nextflow pipeline</span>
 </h1>
@@ -284,25 +291,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header><p>In this chapter we discuss several technical aspects of the <code>sceptre</code> Nextflow pipeline. First, we review computing clusters and explain how information flows through the <code>sceptre</code> Nextflow pipeline on a cluster. Next, we describe the structure of a <code>sceptre</code> Nextflow submission script. Finally, we provide a few examples of common analysis workflows in the context of the Nextflow pipeline.</p>
 <section id="cluster-architecture-and-nextflow-pipeline-structure" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="cluster-architecture-and-nextflow-pipeline-structure">
 <span class="header-section-number">8.1</span> Cluster architecture and Nextflow pipeline structure</h2>
-<p>A computing cluster is of a collection of computers, also known as <em>nodes</em>, that work in concert to carry out a large computation. <a href="#fig-cluster_structure">Figure&nbsp;<span>8.1</span></a> illustrates the structure of a typical computing cluster. The cluster contains dozens or even hundreds of nodes, with each node harboring multiple <em>processors</em>. Processors are the core units that execute code. Furthermore, all nodes are linked to a common storage area where files are kept. For instance, specific data files like <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code> are stored in this shared space.</p>
+<p>A computing cluster is of a collection of computers, also known as <em>nodes</em>, that work in concert to carry out a large computation. <a href="#fig-cluster_structure" class="quarto-xref">Figure&nbsp;<span>8.1</span></a> illustrates the structure of a typical computing cluster. The cluster contains dozens or even hundreds of nodes, with each node harboring multiple <em>processors</em>. Processors are the core units that execute code. Furthermore, all nodes are linked to a common storage area where files are kept. For instance, specific data files like <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code> are stored in this shared space.</p>
 <p>The process of performing a computation on a cluster involves several steps. Initially, each processor loads only the part of the data that it needs for its portion of the overall computation. Then, each processor processes this part of the data and saves the results back to the shared storage area. Once all processors complete their tasks, another processor retrieves these results from the shared space and merges them into a final result. Typically, the processors are spread across different nodes and thus do not directly interact with each other; rather, they coordinate through the shared storage space. This method of distributing tasks among independent processors and later combining their outputs is known as a <em>scatter-gather</em> operation. The <code>sceptre</code> Nextflow pipeline consists of multiple scatter-gather chained together.</p>
-<div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/fig-cluster_structure_62cb1c8871f8fcfe40319b87b92ee9da">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-cluster_structure" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="cluster_structure.png" class="img-fluid figure-img" width="450"></p>
-<figcaption class="figure-caption">Figure&nbsp;8.1: A model of the architecture of a standard computing cluster. There are several nodes, each of which contains multiple processors and is connected to the shared storage space. The data — as stored within the <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code> files — are contained in the shared storage space.</figcaption></figure>
+<div id="fig-cluster_structure" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-cluster_structure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="cluster_structure.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="450">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cluster_structure-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.1: A model of the architecture of a standard computing cluster. There are several nodes, each of which contains multiple processors and is connected to the shared storage space. The data — as stored within the <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code> files — are contained in the shared storage space.
+</figcaption></figure>
 </div>
 </div>
 </div>
-<p>A graph illustrating the flow of information through the <code>sceptre</code> Nextflow pipeline is depicted in <a href="#fig-pipeline_dag">Figure&nbsp;<span>8.2</span></a>. The steps of the pipeline as outlined in <a href="at-scale.html#fig-nextflow_pipeline_schematic">Figure&nbsp;<span>7.1</span></a> (i.e., “set analysis parameters,” “assign gRNAs,” “run quality control,” “run calibration check,” “run power check,” and “run discovery analysis”) are all present in the graph. The computation is parallelized at four points: “assign gRNAs,” “run calibration check,” “run power check,” and “run discovery analysis.” The “assign gRNAs” step is parallelized according to the following scatter-gather strategy. First, the gRNAs are partitioned into <em>p</em> distinct “pods.” For example, if the data contain 100 gRNAs, and if <em>p</em> = 5 pods are in use, then each pod is assigned 20 distinct gRNAs. Next, each pod is mapped to one of <em>p</em> processors, and each processor performs the gRNA-to-cell assignments for the gRNAs within the pod to which it has been assigned. Finally, the gRNA-to-cell assignments are combined across pods, yielding a single binary gRNA-to-cell assignment matrix. The user selects the number of gRNAs to assign to each pod, which in turn determines the number of pods <em>p</em>.</p>
-<div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/fig-pipeline_dag_193bb38df55c493187d69d6297d379e2">
+<p>A graph illustrating the flow of information through the <code>sceptre</code> Nextflow pipeline is depicted in <a href="#fig-pipeline_dag" class="quarto-xref">Figure&nbsp;<span>8.2</span></a>. The steps of the pipeline as outlined in <a href="at-scale.html#fig-nextflow_pipeline_schematic" class="quarto-xref">Figure&nbsp;<span>7.1</span></a> (i.e., “set analysis parameters,” “assign gRNAs,” “run quality control,” “run calibration check,” “run power check,” and “run discovery analysis”) are all present in the graph. The computation is parallelized at four points: “assign gRNAs,” “run calibration check,” “run power check,” and “run discovery analysis.” The “assign gRNAs” step is parallelized according to the following scatter-gather strategy. First, the gRNAs are partitioned into <em>p</em> distinct “pods.” For example, if the data contain 100 gRNAs, and if <em>p</em> = 5 pods are in use, then each pod is assigned 20 distinct gRNAs. Next, each pod is mapped to one of <em>p</em> processors, and each processor performs the gRNA-to-cell assignments for the gRNAs within the pod to which it has been assigned. Finally, the gRNA-to-cell assignments are combined across pods, yielding a single binary gRNA-to-cell assignment matrix. The user selects the number of gRNAs to assign to each pod, which in turn determines the number of pods <em>p</em>.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-pipeline_dag" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="pipeline_dag.png" class="img-fluid figure-img" width="650"></p>
-<figcaption class="figure-caption">Figure&nbsp;8.2: A graph illustrating the flow of information through the <code>sceptre</code> Nextflow pipeline. The pipeline consists of several scatter-gather operations chained together, with parallelization at the gRNA assignment and association testing steps.</figcaption></figure>
+<div id="fig-pipeline_dag" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pipeline_dag-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="pipeline_dag.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pipeline_dag-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.2: A graph illustrating the flow of information through the <code>sceptre</code> Nextflow pipeline. The pipeline consists of several scatter-gather operations chained together, with parallelization at the gRNA assignment and association testing steps.
+</figcaption></figure>
 </div>
 </div>
 </div>
@@ -314,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-with-filename-file">
 <pre><strong>launch_script.sh</strong></pre>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#$ -l m_mem_free=4G</span></span>
+<div class="sourceCode" id="cb1" data-filename="launch_script.sh"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#$ -l m_mem_free=4G</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#$ -pe openmp 2</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -359,7 +375,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 export NXF_OPTS="-Xms500M -Xmx4G"</code></pre>
 <p>Next, we set the variables <code>sceptre_object_fp</code>, <code>response_odm_fp</code>, and <code>grna_odm_fp</code> to the file paths of the <code>sceptre_object.rds</code> file, the <code>gene.odm</code> file, and the <code>grna.odm</code> file, respectively. We also set <code>output_directory</code> to the file path of the directory in which to write the results. These variables are defined in terms of <code>$HOME</code> as opposed to the shorthand <code>~</code>, as <code>$HOME</code> contains the absolute file path to the home directory, and Nextflow is more adept at handling absolute file paths than relative file paths.</p>
 <p>Finally, we invoke the Nextflow pipeline via the command <code>nextflow run timothy-barry/sceptre-pipeline -r main</code>. (<code>timothy-barry/sceptre-pipeline</code> is the current location of the <code>sceptre</code> Nextflow pipeline on Github; we plan to move the pipeline into the <a href="https://nf-co.re/pipelines">nf-core</a> repository in the future.) We specify arguments to the pipeline via the syntax <code>--argument value</code>, where <code>argument</code> is the name of an argument and <code>value</code> is the value to assign to the argument. In the above script we organize the arguments such that each argument is on its own line, but this is not necessary. The <code>sceptre</code> pipeline has four required arguments: <code>sceptre_object_fp</code>, <code>response_odm_fp</code>, <code>grna_odm_fp</code>, and <code>output_directory</code> (described above). The pipeline additionally supports a variety of optional arguments. About half of the optional arguments are “statistical” in that they govern how the statistical methods are to be deployed to analyze the data. For example, above, we indicate that the pipeline is to use the “mixture” method to assign gRNAs to cells via <code>--grna_assignment_method</code>. Additionally, we alter the default cellwise QC thresholds via <code>--response_n_umis_range_lower 0.05</code> and <code>--response_n_umis_range_uppper 0.95</code>. Finally, we indicate that the pipeline is to use the “singleton” gRNA integration strategy via <code>--grna_integration_strategy singleton</code>.</p>
-<p>The other half of the optional arguments are “computational” in that they control how the computation is organized and executed. For example, we set the gRNA pod size to 25 and the target-response pair pod size to 1,000 via <code>–pair_pod_size 1000</code> and <code>–-grna_pod_size 25</code>, respectively. (The gRNA pod size and pair pod size correspond to <em>p</em> and <em>r</em> in <a href="#fig-pipeline_dag">Figure&nbsp;<span>8.2</span></a>). Each process in the pipeline submits a time and memory allocation request to the scheduler. These resource requests are set to reasonable defaults, but we manually can override the defaults for a given process (or processes) on the command line. For example, we request eight gigabytes of memory and five minutes of wall time for the “Combine assign gRNAs” process via <code>–-combine_assign_grnas_memory 8GB</code> and <code>–-combine_assign_grnas_time 5m</code>, respectively.</p>
+<p>The other half of the optional arguments are “computational” in that they control how the computation is organized and executed. For example, we set the gRNA pod size to 25 and the target-response pair pod size to 1,000 via <code>–pair_pod_size 1000</code> and <code>–-grna_pod_size 25</code>, respectively. (The gRNA pod size and pair pod size correspond to <em>p</em> and <em>r</em> in <a href="#fig-pipeline_dag" class="quarto-xref">Figure&nbsp;<span>8.2</span></a>). Each process in the pipeline submits a time and memory allocation request to the scheduler. These resource requests are set to reasonable defaults, but we manually can override the defaults for a given process (or processes) on the command line. For example, we request eight gigabytes of memory and five minutes of wall time for the “Combine assign gRNAs” process via <code>–-combine_assign_grnas_memory 8GB</code> and <code>–-combine_assign_grnas_time 5m</code>, respectively.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -370,7 +386,7 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>All of the <code>sceptre</code> Nextflow pipeline arguments are enumerated and described in <a href="pipeline-args.html#sec-nf_pipeline_args"><span>Section&nbsp;9.2</span></a> of the addendum to Part II of this book. We recommend that users skim through this section and reference it as needed.</p>
+<p>All of the <code>sceptre</code> Nextflow pipeline arguments are enumerated and described in <a href="pipeline-args.html#sec-nf_pipeline_args" class="quarto-xref"><span>Section 9.2</span></a> of the addendum to Part II of this book. We recommend that users skim through this section and reference it as needed.</p>
 </div>
 </div>
 </section><section id="example-workflows" class="level2" data-number="8.3"><h2 data-number="8.3" class="anchored" data-anchor-id="example-workflows">
@@ -378,9 +394,9 @@ Tip
 <p>We conclude with a few common workflows in the context of the <code>sceptre</code> Nextflow pipeline.</p>
 <section id="tweaking-the-pipeline-arguments-using-the-intermediate-results" class="level3" data-number="8.3.1"><h3 data-number="8.3.1" class="anchored" data-anchor-id="tweaking-the-pipeline-arguments-using-the-intermediate-results">
 <span class="header-section-number">8.3.1</span> Tweaking the pipeline arguments using the intermediate results</h3>
-<p>A common workflow is to advance through the pipeline one step at a time (<a href="at-scale.html#sec-incremental_pipeline"><span>Section&nbsp;7.9</span></a>), adjusting the input arguments as necessary on the basis of the intermediate outputs. For example, suppose that we decide to implement an aggressive cellwise QC strategy, setting <code>--response_n_umis_range_lower</code> and <code>--response_n_umis_range_uppper</code> to<code>0.2</code> and <code>0.8</code>, respectively, so as to clip the tails of the <code>response_n_umis</code> distribution at the 20th percentile and 80 percentile. Additionally, we set <code>--pipeline_stop</code> to <code>run_qc</code> to stop the pipeline at the “Run QC” step.</p>
-<div class="cell" data-hash="pipeline-details_cache/html/unnamed-chunk-3_7f864312bffc97144c1d9f55f37634cf">
-<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<p>A common workflow is to advance through the pipeline one step at a time (<a href="at-scale.html#sec-incremental_pipeline" class="quarto-xref"><span>Section 7.9</span></a>), adjusting the input arguments as necessary on the basis of the intermediate outputs. For example, suppose that we decide to implement an aggressive cellwise QC strategy, setting <code>--response_n_umis_range_lower</code> and <code>--response_n_umis_range_uppper</code> to<code>0.2</code> and <code>0.8</code>, respectively, so as to clip the tails of the <code>response_n_umis</code> distribution at the 20th percentile and 80 percentile. Additionally, we set <code>--pipeline_stop</code> to <code>run_qc</code> to stop the pipeline at the “Run QC” step.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show code</summary><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -420,20 +436,20 @@ Tip
 <div class="code-with-filename-file">
 <pre><strong>terminal</strong></pre>
 </div>
-<pre class="terminal"><code>qsub launch.sh # or sbatch or bash, etc.</code></pre>
+<pre class="terminal" data-filename="terminal"><code>qsub launch.sh # or sbatch or bash, etc.</code></pre>
 </div>
 <p>An inspection of the “Response N UMIs” panel of <code>plot_covariates.png</code> suggests that we have clipped the tails a too extreme a location.</p>
-<div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/unnamed-chunk-4_617bb31defba668c46f0ff99d1e189fe">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="plot_covariates_aggressive.png" class="img-fluid figure-img" width="550"></p>
-<figcaption class="figure-caption">Aggressive cellwise QC strategy.</figcaption></figure>
+<figure class="figure"><p><img src="plot_covariates_aggressive.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="550"></p>
+<figcaption>Aggressive cellwise QC strategy.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>Thus, we relax the cellwise QC thresholds slightly, setting <code>--response_n_umis_range_lower</code> and <code>--response_n_umis_range_uppper</code> to<code>0.1</code> and <code>0.9</code>, respectively. Additionally, we pass the <code>-resume</code> flag to the pipeline to avoid recomputing the gRNA-to-cell assignments.</p>
-<div class="cell" data-hash="pipeline-details_cache/html/unnamed-chunk-5_2373cc6ff60a493382207e7c67f7b14c">
-<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<div class="cell">
+<details class="code-fold"><summary>Show code</summary><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -473,8 +489,8 @@ Tip
 </section><section id="debugging-the-pipeline" class="level3" data-number="8.3.2"><h3 data-number="8.3.2" class="anchored" data-anchor-id="debugging-the-pipeline">
 <span class="header-section-number">8.3.2</span> Debugging the pipeline</h3>
 <p>The Nextflow pipeline may fail. This most commonly occurs when a process has exceeded its time and/or memory allocation. We provide an example of a pipeline failure and show how to resolve the failure. Consider the following submission script, in which we request only one MB of memory for the “Run association analysis” processes.</p>
-<div class="cell" data-hash="pipeline-details_cache/html/unnamed-chunk-6_0f64454d7870a3c86217729eba315a5b">
-<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<div class="cell">
+<details class="code-fold"><summary>Show code</summary><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -512,20 +528,20 @@ Tip
 <div class="code-with-filename-file">
 <pre><strong>terminal, cluster</strong></pre>
 </div>
-<pre class="terminal"><code>qsub launch.sh # or sbatch, etc</code></pre>
+<pre class="terminal" data-filename="terminal, cluster"><code>qsub launch.sh # or sbatch, etc</code></pre>
 </div>
 <p>The job fails with the following log file.</p>
-<div class="cell" data-layout-align="center" data-hash="pipeline-details_cache/html/unnamed-chunk-7_4eb8bafba0f47c7dcffccc6a415f9877">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="nf_output_3.png" class="img-fluid figure-img" width="700"></p>
-<figcaption class="figure-caption">Log file for failed Nextflow pipeline.</figcaption></figure>
+<figure class="figure"><p><img src="nf_output_3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="700"></p>
+<figcaption>Log file for failed Nextflow pipeline.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>We see that there was an error executing the process <code>run_analysis_subworkflow_calibration_check:run_association_analysis</code>, which is the calibration check process. Moreover, the process failed with exit code of 140, which, on an SGE cluster, indicates that the process exceeded its memory allocation. To resolve this issue, we increase the memory request of the “Run association analysis” processes to <code>4GB</code>, as follows.</p>
-<div class="cell" data-hash="pipeline-details_cache/html/unnamed-chunk-8_212cd2573f8e10807dec1b9d1477e7d1">
-<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<div class="cell">
+<details class="code-fold"><summary>Show code</summary><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -562,8 +578,8 @@ Tip
 </section><section id="skipping-the-calibration-check" class="level3" data-number="8.3.3"><h3 data-number="8.3.3" class="anchored" data-anchor-id="skipping-the-calibration-check">
 <span class="header-section-number">8.3.3</span> Skipping the calibration check</h3>
 <p>One can skip the calibration check and proceed straight to the power check and discovery analysis by setting <code>--n_calibration_pairs</code> to <code>0</code>, as follows.</p>
-<div class="cell" data-hash="pipeline-details_cache/html/unnamed-chunk-9_6553744ffd1654613c465f4b37eb5647">
-<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<div class="cell">
+<details class="code-fold"><summary>Show code</summary><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -677,10 +693,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -690,8 +705,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -704,6 +728,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -747,6 +890,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -772,6 +916,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -831,23 +1001,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./at-scale.html" class="pagination-link">
+      <a href="./at-scale.html" class="pagination-link  aria-label=" to="" the="" nextflow="" pipeline="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to the Nextflow pipeline</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./pipeline-args.html" class="pagination-link">
+      <a href="./pipeline-args.html" class="pagination-link" aria-label="<span class='chapter-number'>9</span>&nbsp; <span class='chapter-title'>Addendum: Nextflow intallation, pipeline arguments</span>">
         <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow intallation, pipeline arguments</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
-    <div class="nav-footer-left">Hands-On Single-Cell CRISPR Screen Analysis</div>   
+    <div class="nav-footer-left">
+<p>Hands-On Single-Cell CRISPR Screen Analysis</p>
+</div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>
-    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
   </div>
 </footer>
 

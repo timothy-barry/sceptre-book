@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
 <title>Hands-On Single-Cell CRISPR Screen Analysis - 7&nbsp; Introduction to the Nextflow pipeline</title>
@@ -20,7 +20,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -78,7 +78,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -87,6 +93,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -97,25 +104,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html">Part II. At-scale sceptre</a></li><li class="breadcrumb-item"><a href="./at-scale.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to the Nextflow pipeline</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html">Part II. At-scale sceptre</a></li><li class="breadcrumb-item"><a href="./at-scale.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to the Nextflow pipeline</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
-    <a href="https://katsevich-lab.github.io/sceptre/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
+    <a href="https://katsevich-lab.github.io/sceptre/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
 </div>
     </div>
       </div>
@@ -249,7 +256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
     </ul>
 </div>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
@@ -268,7 +275,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html">Part II. At-scale sceptre</a></li><li class="breadcrumb-item"><a href="./at-scale.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to the Nextflow pipeline</span></a></li></ol></nav><div class="quarto-title">
 <h1 class="title"><span id="at-scale" class="quarto-section-identifier"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to the Nextflow pipeline</span></span></h1>
 </div>
 
@@ -281,6 +288,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     
   </div>
   
+
 
 </header><div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -296,42 +304,46 @@ Tip
 </div>
 </div>
 <p>In this chapter we describe how to use <code>sceptre</code> to analyze large-scale single-cell CRISPR screen data. We also introduce the companion package <code>ondisc</code>, which provides facilities for out-of-core and distributed computing on single-cell data. Users can leverage <code>sceptre</code> and <code>ondisc</code> to analyze their data in one of two ways. First, users can analyze their data <em>out-of-core</em> on a laptop or desktop within the R console. This solution is most appropriate when the data are too big to fit into memory but the number of target-response pairs to be analyzed is not too large. Second, users can distribute their analysis across tens or even hundreds of processors on a computing cluster via the <code>sceptre</code> Nextflow pipeline. This solution is most appropriate when the data are big <em>and</em> a large number of pairs is to be analyzed.</p>
-<p>The schematic below illustrates the two at-scale interfaces to <code>sceptre</code>. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, which is a kind of <code>sceptre_object</code> in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game</em>, calling the standard pipeline functions (i.e., <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, etc.) on the <code>ondisc</code>-backed <code>sceptre_object</code> one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. Part II of the book focuses on the Nextflow interface.</p>
-<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-1_38f5573fe0f45051659cbd57b3ce4c93">
+<p>The schematic below illustrates the two at-scale interfaces to <code>sceptre</code>. The first step is the same regardless of whether one plans to analyze the data within the R console or via the Nextflow pipeline: one imports the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, which is a kind of <code>sceptre_object</code> in which the response and gRNA count matrices are stored on-disk rather than in memory. If one plans to analyze the data entirely within the R console, then one proceeds in the manner as described in <a href="sceptre.html#sec-whole_game_import_data" class="quarto-xref"><span>Section 1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory" class="quarto-xref"><span>Section 8</span></a> of <em>The whole game</em>, calling the standard pipeline functions (i.e., <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code>, etc.) on the <code>ondisc</code>-backed <code>sceptre_object</code> one-by-one. If, one the other hand, one plans to analyze the data via the Nextflow pipeline, then one proceeds through a slightly more involved (though still straightforward) sequence of steps. Part II of the book focuses on the Nextflow interface.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="at_scale_schematic.png" class="img-fluid figure-img" width="750"></p>
-<figcaption class="figure-caption">The two at-scale interfaces to <code>sceptre</code>. Users can analyze their data in the R console using the standard pipeline functions or on the command line using the Nextflow pipeline. In both cases users first import their data into an <code>ondisc</code>-backed <code>sceptre_object</code>, which is a kind of <code>sceptre_object</code> that stores the response and gRNA expression matrices on disk (as opposed to in memory).</figcaption></figure>
+<figure class="figure"><p><img src="at_scale_schematic.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="750"></p>
+<figcaption>The two at-scale interfaces to <code>sceptre</code>. Users can analyze their data in the R console using the standard pipeline functions or on the command line using the Nextflow pipeline. In both cases users first import their data into an <code>ondisc</code>-backed <code>sceptre_object</code>, which is a kind of <code>sceptre_object</code> that stores the response and gRNA expression matrices on disk (as opposed to in memory).</figcaption></figure>
 </div>
 </div>
 </div>
 <p><code>ondisc</code> is an R package for large-scale computing on single-cell data, with a special focus on single-cell CRISPR screen analysis. <code>ondisc</code> implements several novel algorithms and data structures for efficiently manipulating and querying large single-cell expression matrices. <code>ondisc</code> is implemented as a lightweight layer of abstraction on top of the popular <a href="https://www.hdfgroup.org/solutions/hdf5/">HDF5</a> database system. Expression matrices within <code>ondisc</code> are stored on-disk in the custom <code>.odm</code> file format, which is an HDF5 file with special structure. <code>ondisc</code> enables fast, out-of-core access to the rows of a feature-by-cell expression matrix. (Thus, loading the expression vector of a given feature into memory is fast.)</p>
 <p>We use the high-MOI CRISPRi data that ship with <code>sceptre</code> as a running example in this chapter. We note that the example high-MOI CRISPRi data are fairly small; typically, we would leverage the at-scale interface of <code>sceptre</code> when the data are large (e.g., &gt;10 gigabytes). We describe each step of the Nextflow-based pipeline below, with one section per step. The title of each section indicates whether the step is to be carried out on a local machine (“local machine”) or on a cluster (“cluster”). By “local machine,” we mean a laptop or a desktop, and by “cluster,” we mean a computing cluster or a cloud.</p>
 <section id="software-installation" class="level2 unnumbered"><h2 class="unnumbered anchored" data-anchor-id="software-installation">Software installation</h2>
-<p>The examples in this chapter depend on several software packages. First, users should install <code>ondisc</code> onto their local machine.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-2_03efe50da5bdb5dbc8f176f26132a1f3">
+<p>The examples in this chapter depend on several software packages. First, users should install <code>ondisc</code> onto their local machine. <code>ondisc</code> has the Bioconductor dependency <code>Rhdf5lib</code>, which we recommend downloading and installing from source (before installing <code>ondisc</code>).</p>
+<div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R, local</strong></pre>
 </div>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># install.packages("BiocManager")</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html">install</a></span><span class="op">(</span><span class="st">"Rhdf5lib"</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span> <span class="co"># Rhdf5lib</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span> <span class="co"># ondisc</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>Next, users should install both <code>sceptre</code> and <code>ondisc</code> onto their cluster.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-3_76b7d161bb69c6fff85362d773b9d48b">
+<div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R, cluster</strong></pre>
 </div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"katsevich-lab/sceptre"</span><span class="op">)</span> <span class="co"># sceptre</span></span>
+<span><span class="co"># install.packages("BiocManager")</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html">install</a></span><span class="op">(</span><span class="st">"Rhdf5lib"</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span> <span class="co"># Rhdf5lib</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span> <span class="co"># ondisc</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-<p>Finally, users should install Nextflow onto their local machine and their cluster. Instructions for installing Nextflow are available in the addendum to Part II of the book (<a href="pipeline-args.html#sec-install_nextflow"><span>Section&nbsp;9.1</span></a>).</p>
+<p>Finally, users should install Nextflow onto their local machine and their cluster. Instructions for installing Nextflow are available in the addendum to Part II of the book (<a href="pipeline-args.html#sec-install_nextflow" class="quarto-xref"><span>Section 9.1</span></a>).</p>
 </section><section id="sec-import_data_into_odm_backed_sceptre_object" class="level2" data-number="7.1"><h2 data-number="7.1" class="anchored" data-anchor-id="sec-import_data_into_odm_backed_sceptre_object">
 <span class="header-section-number">7.1</span> Import data into an <code>ondisc</code>-backed <code>sceptre</code> object (local machine)</h2>
-<p>The first step is to import the data into an <code>ondisc</code>-backed <code>sceptre</code> object. To this end, we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code>, setting the argument <code>use_ondisc</code> to <code>TRUE</code>. Additionally, we set <code>directory_to_write</code> to a string indicating the directory in which to write the backing <code>.odm</code> files, which are the files that will contain the gene and gRNA expression matrices. In the example below we set <code>directory_to_write</code> to <code>"~/sceptre_data"</code>, although any valid file path will do. Finally, we set <code>moi</code> to the MOI of the dataset, <code>grna_target_data_frame</code> to the gRNA target data frame, and <code>directories</code> to the set of directories outputted by one or more calls to <code>cellranger count</code>. (The latter three arguments were described in depth in <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> of <em>The whole game</em>.)</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-4_a03ef4124355ae34452bd7db3e07f1f9">
+<p>The first step is to import the data into an <code>ondisc</code>-backed <code>sceptre</code> object. To this end, we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code>, setting the argument <code>use_ondisc</code> to <code>TRUE</code>. Additionally, we set <code>directory_to_write</code> to a string indicating the directory in which to write the backing <code>.odm</code> files, which are the files that will contain the gene and gRNA expression matrices. In the example below we set <code>directory_to_write</code> to <code>"~/sceptre_data"</code>, although any valid file path will do. Finally, we set <code>moi</code> to the MOI of the dataset, <code>grna_target_data_frame</code> to the gRNA target data frame, and <code>directories</code> to the set of directories outputted by one or more calls to <code>cellranger count</code>. (The latter three arguments were described in depth in <a href="sceptre.html#sec-whole_game_import_data" class="quarto-xref"><span>Section 1</span></a> of <em>The whole game</em>.)</p>
+<div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># set the arguments</span></span>
@@ -342,7 +354,7 @@ Tip
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">grna_target_data_frame_highmoi</span><span class="op">)</span></span>
 <span><span class="va">directory_to_write</span> <span class="op">&lt;-</span> <span class="st">"~/sceptre_data"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-6_00fbf270acc9ea78b10db0e423d77655">
+<div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># call the data import function</span></span>
 <span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger</a></span><span class="op">(</span></span>
 <span>  directories <span class="op">=</span> <span class="va">directories</span>,</span>
@@ -354,17 +366,16 @@ Tip
 </div>
 <p><code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> (with <code>use_ondisc</code> set to <code>TRUE</code>) converts the inputted <code>.mtx</code> files into <code>.odm</code> files, with one <code>.odm</code> file generated per modality. The <code>.odm</code> files contain the same information as the <code>.mtx</code> files, but the data are stored in a much more efficient format for single-cell CRISPR screen analysis. Additionally, <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> computes the cell-specific covariates (e.g., <code>response_n_umis</code>, <code>response_p_mito</code>, <code>batch</code>, etc.). Importantly, <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> uses only a few gigabytes of memory, even when the input data are tens of gigabytes in size.</p>
 <p>Calling <code><a href="https://rdrr.io/r/base/list.files.html">list.files()</a></code> on <code>directory_to_write</code> shows that two files have been created in this directory: <code>gene.odm</code>, the file storing the gene expression matrix, and <code>grna.odm</code>, the file storing the gRNA expression matrix.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-8_ca596cb9be1396f4e6341470c04d1cf9">
+<div class="cell">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">directory_to_write</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "/Users/timbarry/sceptre_data/gene.odm"
-[2] "/Users/timbarry/sceptre_data/grna.odm"</code></pre>
+<pre><code>[1] "/Users/tib163/sceptre_data/gene.odm" "/Users/tib163/sceptre_data/grna.odm"</code></pre>
 </div>
 </div>
 </section><section id="explore-the-data-local-machine" class="level2" data-number="7.2"><h2 data-number="7.2" class="anchored" data-anchor-id="explore-the-data-local-machine">
 <span class="header-section-number">7.2</span> Explore the data (local machine)</h2>
 <p>The next step — which is optional but generally helpful — is to explore the data within the R console. There are three relevant functions in this context: <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_cell_covariates()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_response_matrix()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_grna_matrix()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_cell_covariates()</a></code> returns the cell-specific covariates that were computed as part of the data import step.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-9_5ebc6a7f0e0c586b70a58b6924b186e6">
+<div class="cell">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cell_covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_cell_covariates</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cell_covariates</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -387,21 +398,21 @@ Tip
 </div>
 </div>
 <p>Next, <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_response_matrix()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_grna_matrix()</a></code> return the response and gRNA matrix, respectively. We call <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_response_matrix()</a></code> below.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-10_29c40a46f4b4a98440cc28bb9be3eae2">
+<div class="cell">
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">response_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_response_matrix</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>response_matrix</code> is an object of class <code>odm</code>, which is an integer-valued expression matrix backed by an <code>.odm</code> file. Evaluating <code>response_matrix</code> in the console prints the number of features and cells contained within the matrix, as well as the file path to the backing <code>.odm</code> file. The “Backing file” field is machine-specific.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-11_f5e2fe589f45d39f34de86b06654e5d2">
+<div class="cell">
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">response_matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class odm with the following attributes:
     • 526 features
     • 45919 cells
-    • Backing file: /Users/timbarry/sceptre_data/gene.odm</code></pre>
+    • Backing file: /Users/tib163/sceptre_data/gene.odm</code></pre>
 </div>
 </div>
 <p><code>odm</code> objects support many of the key operators that standard R matrices support. For example, one can obtain the feature IDs of an <code>odm</code> object by calling <code><a href="https://rdrr.io/r/base/colnames.html">rownames()</a></code>.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-12_bcd9e701ac6f32bb92946915f64920f5">
+<div class="cell">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">response_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">response_matrix</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">response_ids</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -410,7 +421,7 @@ Tip
 </div>
 </div>
 <p>Additionally, one can use the bracket operator (i.e, <code>[, ]</code>) to load a given row of the expression matrix into memory. For example, <code>response_matrix["ENSG00000069275",]</code> loads the expression vector corresponding to the gene “ENSG00000069275” into memory.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-13_01cc0cf8e82933a4e5de67a1b937d432">
+<div class="cell">
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">expression_vector</span> <span class="op">&lt;-</span> <span class="va">response_matrix</span><span class="op">[</span><span class="st">"ENSG00000069275"</span>,<span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">expression_vector</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -418,7 +429,7 @@ Tip
 </div>
 </div>
 <p><code>odm</code> objects take up very little space, as the expression data are stored on disk rather than in memory. For example, <code>response_matrix</code> takes up only 40 kilobytes (or 0.04 megabytes) of memory.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-14_40c240d87d7db3042f66a5a0a7baf603">
+<div class="cell">
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span><span class="op">(</span><span class="va">response_matrix</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span><span class="op">(</span>units <span class="op">=</span> <span class="st">"Kb"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "38.6 Kb"</code></pre>
@@ -427,8 +438,8 @@ Tip
 <p>Users can learn more about <code>odm</code> objects by referring to Appendix XXX.</p>
 </section><section id="sec-at_scale_set_analysis_parameters" class="level2" data-number="7.3"><h2 data-number="7.3" class="anchored" data-anchor-id="sec-at_scale_set_analysis_parameters">
 <span class="header-section-number">7.3</span> Set the analysis parameters (local machine)</h2>
-<p>The third step is to set the analysis parameters. We proceed more or less exactly as described in <a href="sceptre.html#sec-whole_game_set_analysis_parameters"><span>Section&nbsp;2</span></a> of <em>The whole game</em>. We seek to conduct a <em>trans</em> analysis of the high-MOI CRISPRi data. Hence, we construct the positive control and discovery pairs using the functions <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>, respectively.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-15_42e63a608d671bf47800545ea49ab1ac">
+<p>The third step is to set the analysis parameters. We proceed more or less exactly as described in <a href="sceptre.html#sec-whole_game_set_analysis_parameters" class="quarto-xref"><span>Section 2</span></a> of <em>The whole game</em>. We seek to conduct a <em>trans</em> analysis of the high-MOI CRISPRi data. Hence, we construct the positive control and discovery pairs using the functions <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>, respectively.</p>
+<div class="cell">
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># positive control pairs</span></span>
 <span><span class="va">positive_control_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span></span>
@@ -441,7 +452,7 @@ Tip
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, we set the analysis parameters via a call to <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>. We set <code>resampling_mechanism</code> to <code>"permutations"</code> (as opposed to the default of <code>"crt"</code> in high-MOI), as <code>"permutations"</code> currently is the only option available for <code>resampling_mechanism</code> for an <code>ondisc</code>-backed <code>sceptre_object</code>. Additionally, we set <code>side</code> to <code>"both"</code> to conduct a two-tailed test, as we do not have a strong prior as to whether the perturbations will lead to an increase or decrease in the expression of the genes in <em>trans</em>.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-16_a4ac85e401bb68b2978f6986a910243d">
+<div class="cell">
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
 <span>  discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span>,</span>
@@ -454,17 +465,17 @@ Tip
 </section><section id="write-the-ondisc-backed-sceptre_object-to-disk-local-machine" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="write-the-ondisc-backed-sceptre_object-to-disk-local-machine">
 <span class="header-section-number">7.4</span> Write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk (local machine)</h2>
 <p>The next step is to write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk. To this end, we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">write_ondisc_backed_sceptre_object()</a></code>, passing <code>sceptre_object</code> and <code>directory_to_write</code> as arguments. The <code>sceptre_object</code> is saved within <code>directory_to_write</code> as <code>sceptre_object.rds</code>. <code>directory_to_write</code> can be any directory.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-17_6d088a23c1b57948ff9713d54a121845">
+<div class="cell">
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">write_ondisc_backed_sceptre_object</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
 <span>  directory_to_write <span class="op">=</span> <span class="va">directory_to_write</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>directory_to_write</code> now contains three files: <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code>.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-18_91c246053606a7291b45f9fa868dbb3e">
+<div class="cell">
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">directory_to_write</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-19_5cdcb0b3797ce7d6be8d16ae28604492">
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "gene.odm"           "grna.odm"           "sceptre_object.rds"</code></pre>
 </div>
@@ -476,7 +487,7 @@ Tip
 <div class="code-with-filename-file">
 <pre><strong>launch_script.sh</strong></pre>
 </div>
-<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<div class="sourceCode" id="cb23" data-filename="launch_script.sh"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -514,7 +525,7 @@ Tip
 <div class="code-with-filename-file">
 <pre><strong>terminal</strong></pre>
 </div>
-<pre class="terminal"><code>git clone git@github.com:timothy-barry/sceptre-pipeline.git
+<pre class="terminal" data-filename="terminal"><code>git clone git@github.com:timothy-barry/sceptre-pipeline.git
 cd sceptre-pipeline/examples</code></pre>
 </div>
 <p>We run the pipeline by calling <code>bash</code> on <code>launch_script.sh</code>:</p>
@@ -522,23 +533,23 @@ cd sceptre-pipeline/examples</code></pre>
 <div class="code-with-filename-file">
 <pre><strong>terminal</strong></pre>
 </div>
-<pre class="terminal"><code>bash launch_script.sh
+<pre class="terminal" data-filename="terminal"><code>bash launch_script.sh
 # alternately: ./launch_script.sh</code></pre>
 </div>
 <p>If the pipeline runs correctly, the terminal output looks something like the following.</p>
-<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-20_9a47347a5afd832b088106ed0d816ca8">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="nf_output.png" class="img-fluid figure-img" width="750"></p>
-<figcaption class="figure-caption">Nextflow output for the trial pipeline on a local machine.</figcaption></figure>
+<figure class="figure"><p><img src="nf_output.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="750"></p>
+<figcaption>Nextflow output for the trial pipeline on a local machine.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>The results of the pipeline are stored in <code>~/sceptre_outputs</code>. Calling <code>list.files</code> on <code>~/sceptre_outputs</code> shows that the directory contains all of the standard <code>sceptre</code> outputs, including the analysis summary text file (<code>analysis_summary.txt</code>), the plot files (e.g., <code>plot_assign_grnas.png</code>, etc.), and the result files (e.g., <code>results_run_discovery_analysis.rds</code>, etc.).</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-21_7c30b63fca5af2548255969fb2f3e831">
+<div class="cell">
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"~/sceptre_outputs"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-22_95b078f7fc0fb80c29a97d885d336251">
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "analysis_summary.txt"               "plot_assign_grnas.png"             
  [3] "plot_covariates.png"                "plot_grna_count_distributions.png" 
@@ -569,11 +580,11 @@ Tip
 <div class="code-with-filename-file">
 <pre><strong>terminal</strong></pre>
 </div>
-<pre class="terminal"><code>ssh username@cluster_address "mkdir -p ~/sceptre_data"
+<pre class="terminal" data-filename="terminal"><code>ssh username@cluster_address "mkdir -p ~/sceptre_data"
 scp -r ~/sceptre_data username@cluster_address:~/</code></pre>
 </div>
 <p>We optionally can load and explore the data on the cluster. The function <code><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">read_ondisc_backed_sceptre_object()</a></code> loads an <code>ondisc</code>-backed <code>sceptre_object</code>, taking <code>sceptre_object_fp</code> (i.e., the file path to <code>sceptre_object.rds</code>), <code>response_odm_file_fp</code> (i.e., the file path to the response <code>.odm</code> file), and <code>grna_odm_file_fp</code> (i.e., the file path to the gRNA <code>.odm</code> file) as arguments. We briefly explore the <code>sceptre_object</code> to verify that looks the same on the cluster as on the local machine.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-23_5c1c03b9e3e53447ffb377667d0f7177">
+<div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R, cluster</strong></pre>
@@ -613,9 +624,9 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The first six steps of the Nextflow-based pipeline (i.e., <a href="#sec-import_data_into_odm_backed_sceptre_object"><span>Section&nbsp;7.1</span></a> – <a href="#sec-push_data_to_cluster"><span>Section&nbsp;7.6</span></a>) can be carried out entirely on the cluster, bypassing the local machine. If the output directories from <code>cellranger count</code> are stored on the cluster, the user can import the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, set the analysis parameters, and write the updated <code>sceptre_object</code> to disk on the cluster as follows.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-24_3333b790f46f62a4c9ad998906a6e652">
-<details><summary>Show code</summary><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># on cluster</span></span>
+<p>The first six steps of the Nextflow-based pipeline (i.e., <a href="#sec-import_data_into_odm_backed_sceptre_object" class="quarto-xref"><span>Section 7.1</span></a> – <a href="#sec-push_data_to_cluster" class="quarto-xref"><span>Section 7.6</span></a>) can be carried out entirely on the cluster, bypassing the local machine. If the output directories from <code>cellranger count</code> are stored on the cluster, the user can import the data into an <code>ondisc</code>-backed <code>sceptre_object</code>, set the analysis parameters, and write the updated <code>sceptre_object</code> to disk on the cluster as follows.</p>
+<div class="cell">
+<details class="code-fold"><summary>Show code</summary><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># on cluster</span></span>
 <span><span class="co"># import data</span></span>
 <span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger</a></span><span class="op">(</span></span>
 <span>  directories <span class="op">=</span> <span class="va">directories</span>,</span>
@@ -639,7 +650,7 @@ Note
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>The above script should require only a few (e.g., 3 – 4) gigabytes of memory, even if the input data are tens of gigabytes in size. This approach, though streamlined, is less interactive than the local-machine-based approach outlined in sections <a href="#sec-import_data_into_odm_backed_sceptre_object"><span>Section&nbsp;7.1</span></a> – <a href="#sec-push_data_to_cluster"><span>Section&nbsp;7.6</span></a>.</p>
+<p>The above script should require only a few (e.g., 3 – 4) gigabytes of memory, even if the input data are tens of gigabytes in size. This approach, though streamlined, is less interactive than the local-machine-based approach outlined in sections <a href="#sec-import_data_into_odm_backed_sceptre_object" class="quarto-xref"><span>Section 7.1</span></a> – <a href="#sec-push_data_to_cluster" class="quarto-xref"><span>Section 7.6</span></a>.</p>
 </div>
 </div>
 </section><section id="call-the-trial-pipeline-cluster" class="level2" data-number="7.7"><h2 data-number="7.7" class="anchored" data-anchor-id="call-the-trial-pipeline-cluster">
@@ -649,7 +660,7 @@ Note
 <div class="code-with-filename-file">
 <pre><strong>terminal, cluster</strong></pre>
 </div>
-<pre class="terminal"><code>git clone git@github.com:timothy-barry/sceptre-pipeline.git
+<pre class="terminal" data-filename="terminal, cluster"><code>git clone git@github.com:timothy-barry/sceptre-pipeline.git
 cd sceptre-pipeline/examples</code></pre>
 </div>
 <p>We launch the pipeline by submitting <code>launch_script.sh</code> to the scheduler. For example, on a Sun Grid Engine (SGE) cluster, one would use the <code>qsub</code> command.</p>
@@ -657,29 +668,29 @@ cd sceptre-pipeline/examples</code></pre>
 <div class="code-with-filename-file">
 <pre><strong>terminal, cluster</strong></pre>
 </div>
-<pre class="terminal"><code>qsub launch_script.sh</code></pre>
+<pre class="terminal" data-filename="terminal, cluster"><code>qsub launch_script.sh</code></pre>
 </div>
 <p>On SLURM cluster, on the other hand, one would use the <code>sbatch</code> command.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>terminal, cluster</strong></pre>
 </div>
-<pre class="terminal"><code>sbatch launch_script.sh</code></pre>
+<pre class="terminal" data-filename="terminal, cluster"><code>sbatch launch_script.sh</code></pre>
 </div>
-<p><code>launch_script.sh</code> launches the Nextflow driver, which is a process that runs throughout the duration of the pipeline and manages the submission of all the other processes. Depending on their cluster, users may need to specify a time and/or memory allocation request at the top of <code>launch_script.sh</code>. The Nextflow driver of the trial pipeline requires fewer than 30 minutes of wall time and four gigabytes of memory. More details are available in <a href="pipeline-details.html#sec-anatomy_of_launch_script"><span>Section&nbsp;8.2</span></a>.</p>
+<p><code>launch_script.sh</code> launches the Nextflow driver, which is a process that runs throughout the duration of the pipeline and manages the submission of all the other processes. Depending on their cluster, users may need to specify a time and/or memory allocation request at the top of <code>launch_script.sh</code>. The Nextflow driver of the trial pipeline requires fewer than 30 minutes of wall time and four gigabytes of memory. More details are available in <a href="pipeline-details.html#sec-anatomy_of_launch_script" class="quarto-xref"><span>Section 8.2</span></a>.</p>
 <p>Importantly, we are able to launch the pipeline using essentially the same command on our local machine as on the cluster. This is one of the advantages of Nextflow: it provides a layer of abstraction between the logic of the pipeline and the execution environment. Thus, we can develop (or debug, etc.) a pipeline on our local machine and then run it at scale on the cluster without modification.</p>
 <p>The pipeline outputs are written to the directory <code>~/sceptre_outputs</code>. Again, all of the standard <code>sceptre</code> outputs — e.g., <code>analysis_summary.txt</code>, <code>results_run_discovery_analysis.rds</code>, etc. — are contained within this directory. In fact, the <code>~/sceptre_outputs</code> directory on the cluster should match exactly the <code>~/sceptre_outputs</code> directory on the local machine. We can view <code>analysis_summary.txt</code>, for example, by calling <code>cat</code> on this file:</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>terminal, cluster</strong></pre>
 </div>
-<pre class="terminal"><code>cat analysis_summary.txt</code></pre>
+<pre class="terminal" data-filename="terminal, cluster"><code>cat analysis_summary.txt</code></pre>
 </div>
 </section><section id="call-the-full-pipeline-cluster" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="call-the-full-pipeline-cluster">
 <span class="header-section-number">7.8</span> Call the full pipeline (cluster)</h2>
 <p>The final step is to run the full pipeline on the cluster. To this end, we modify <code>launch_script.sh</code>, removing the <code>--trial</code> flag from the last line of the script. We can do this on the cluster by calling <code>nano launch_script.sh</code>, deleting the <code>--trial</code> flag, and saving the updated script. <code>launch_script.sh</code> now should look as follows.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-25_f7b12a3568d488ad6be2aedf80342605">
-<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<div class="cell">
+<details class="code-fold"><summary>Show code</summary><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -716,7 +727,7 @@ cd sceptre-pipeline/examples</code></pre>
 <div class="code-with-filename-file">
 <pre><strong>terminal, cluster</strong></pre>
 </div>
-<pre class="terminal"><code>qsub launch_script.sh
+<pre class="terminal" data-filename="terminal, cluster"><code>qsub launch_script.sh
 # or sbatch launch_script.sh</code></pre>
 </div>
 <p>The outputs are written to <code>~/sceptre_outputs</code>. (The previous outputs are overwritten.) We can download the output directory onto our local machine as follows.</p>
@@ -724,32 +735,36 @@ cd sceptre-pipeline/examples</code></pre>
 <div class="code-with-filename-file">
 <pre><strong>terminal, local</strong></pre>
 </div>
-<pre class="terminal"><code>scp -r username@cluster_address:~/sceptre_outputs ~/</code></pre>
+<pre class="terminal" data-filename="terminal, local"><code>scp -r username@cluster_address:~/sceptre_outputs ~/</code></pre>
 </div>
 <p>Again, “username” and “cluster_address” should be replaced by one’s username and cluster address, respectively. An exploration of <code>~/sceptre_outputs</code> on the local machine shows that we have successfully carried out a full <em>trans</em> analysis of the example high-MOI CRISPRi data.</p>
 </section><section id="sec-incremental_pipeline" class="level2" data-number="7.9"><h2 data-number="7.9" class="anchored" data-anchor-id="sec-incremental_pipeline">
 <span class="header-section-number">7.9</span> Stepping through the pipeline incrementally</h2>
 <p>The <code>sceptre</code> Nextflow pipeline consists of six distinct steps, depicted below.</p>
-<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/fig-nextflow_pipeline_schematic_cd40af384b64e571b9377ae2e65721da">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-nextflow_pipeline_schematic" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure"><p><img src="reduced_pipeline.png" class="img-fluid figure-img" width="450"></p>
-<figcaption class="figure-caption">Figure&nbsp;7.1: The <code>sceptre</code> Nextflow pipeline</figcaption></figure>
+<div id="fig-nextflow_pipeline_schematic" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-nextflow_pipeline_schematic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="reduced_pipeline.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="450">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nextflow_pipeline_schematic-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.1: The <code>sceptre</code> Nextflow pipeline
+</figcaption></figure>
 </div>
 </div>
 </div>
-<p>The Nextflow pipeline is nearly the same as the pipeline introduced in <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory"><span>Section&nbsp;8</span></a> of <em>The whole game.</em> The difference is that the “Import data” step is not part of this pipeline (as we import the data into an <code>ondisc</code>-backed <code>sceptre</code> object prior to calling the Nextflow pipeline), and likewise the “Write outputs to directory” step is not part of this pipeline (as the Nextflow pipeline automatically writes results to the output directory at the end of each step). Furthermore, there is some redundancy built into the pipeline with respect to “Set analysis parameters:” users either can set the analysis parameters within the R console before writing the <code>sceptre_object</code> to disk (as described in <a href="#sec-at_scale_set_analysis_parameters"><span>Section&nbsp;7.3</span></a>), or users can specify the analysis parameters on the command line when invoking the Nextflow pipeline. The former typically is easier than the latter.</p>
+<p>The Nextflow pipeline is nearly the same as the pipeline introduced in <a href="sceptre.html#sec-whole_game_import_data" class="quarto-xref"><span>Section 1</span></a> — <a href="sceptre.html#sec-sceptre_write_outputs_to_directory" class="quarto-xref"><span>Section 8</span></a> of <em>The whole game.</em> The difference is that the “Import data” step is not part of this pipeline (as we import the data into an <code>ondisc</code>-backed <code>sceptre</code> object prior to calling the Nextflow pipeline), and likewise the “Write outputs to directory” step is not part of this pipeline (as the Nextflow pipeline automatically writes results to the output directory at the end of each step). Furthermore, there is some redundancy built into the pipeline with respect to “Set analysis parameters:” users either can set the analysis parameters within the R console before writing the <code>sceptre_object</code> to disk (as described in <a href="#sec-at_scale_set_analysis_parameters" class="quarto-xref"><span>Section 7.3</span></a>), or users can specify the analysis parameters on the command line when invoking the Nextflow pipeline. The former typically is easier than the latter.</p>
 <p>We can advance through the Nextflow pipeline one step at a time by specifying the <code>pipeline_stop</code> argument. <code>pipeline_stop</code> takes six possible values: <code>set_analysis_parameters</code>, <code>assign_grnas</code>, <code>run_qc</code>, <code>run_calibration_check</code>, <code>run_power_check</code>, and <code>run_discovery_analysis</code>. When <code>pipeline_stop</code> is specified, the Nextflow pipeline runs through all the steps of the pipeline up to and including <code>pipeline_stop</code>. For example, if we set <code>pipeline_stop</code> to <code>run_calibration_check</code>, the Nextflow pipeline carries out the steps “Set analysis parameters,” “Assign gRNAs,” “Run quality control,” and “Run calibration check” and then stops. The default value of <code>pipeline_stop</code> is <code>run_discovery_analysis</code>, and so the Nextflow pipeline by default runs through to completion.</p>
 <p>We provide an example of using the <code>pipeline_stop</code> argument below. This example can be carried out either on the local machine or on the cluster. First, let us remove the <code>~/sceptre_outputs</code> directory.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>terminal</strong></pre>
 </div>
-<pre class="terminal"><code>rm -r ~/sceptre_outputs</code></pre>
+<pre class="terminal" data-filename="terminal"><code>rm -r ~/sceptre_outputs</code></pre>
 </div>
 <p>We modify <code>launch_script.sh</code>, adding the line <code>--pipeline_stop assign_grnas</code> to the script. This line tells Nextflow to stop at the “Assign gRNAs” step.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-27_2bd6af8b8de8853748642ac2b2c52aa0">
-<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<div class="cell">
+<details class="code-fold"><summary>Show code</summary><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -784,8 +799,8 @@ cd sceptre-pipeline/examples</code></pre>
 </div>
 <p>We then launch the pipeline (via <code>bash launch_script.sh</code>, <code>qsub launch_script.sh</code>, or <code>sbatch launch_script.sh</code>, etc.) and examine the outputs directory. We see (via an inspection of <code>analysis_summary.txt</code>, for example) that “Set analysis parameters” and “Assign gRNAs” have completed, but that the other pipeline steps have not yet run.</p>
 <p>Suppose now that want to run the next step in the pipeline, namely “Run quality control.” To this end, we update <code>launch_script.sh</code>, changing the line <code>--pipeline_stop assign_grnas</code> to <code>--pipeline_stop run_qc</code>. Additionally, we add the line <code>-resume</code> to the launch script. The <code>-resume</code> flag in effect tells Nextflow to skip over all steps preceeding “Run QC” (including “Assign gRNAs”), as these steps already have been run.</p>
-<div class="cell" data-hash="at-scale_cache/html/unnamed-chunk-28_44dc9ec5087b23f9847845940e9dda89">
-<details><summary>Show code</summary><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<div class="cell">
+<details class="code-fold"><summary>Show code</summary><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
 <span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -819,11 +834,11 @@ cd sceptre-pipeline/examples</code></pre>
 <span id="cb40-32"><a href="#cb40-32" aria-hidden="true" tabindex="-1"></a> <span class="at">-resume</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell" data-layout-align="center" data-hash="at-scale_cache/html/unnamed-chunk-29_55b65fe579820ce76e8da925535ac8ea">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="nf_output_2.png" class="img-fluid figure-img" width="700"></p>
-<figcaption class="figure-caption">Nextflow output when the <code>-resume</code> flag is used.</figcaption></figure>
+<figure class="figure"><p><img src="nf_output_2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="700"></p>
+<figcaption>Nextflow output when the <code>-resume</code> flag is used.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -909,10 +924,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -922,8 +936,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -936,6 +959,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -979,6 +1121,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -1004,6 +1147,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1063,23 +1232,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./run-power-check-and-discovery-analysis.html" class="pagination-link">
+      <a href="./run-power-check-and-discovery-analysis.html" class="pagination-link  aria-label=" power="" check="" and="" discovery="" analysis="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./pipeline-details.html" class="pagination-link">
+      <a href="./pipeline-details.html" class="pagination-link" aria-label="<span class='chapter-number'>8</span>&nbsp; <span class='chapter-title'>A deeper dive into the Nextflow pipeline</span>">
         <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A deeper dive into the Nextflow pipeline</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
-    <div class="nav-footer-left">Hands-On Single-Cell CRISPR Screen Analysis</div>   
+    <div class="nav-footer-left">
+<p>Hands-On Single-Cell CRISPR Screen Analysis</p>
+</div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>
-    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
   </div>
 </footer>
 

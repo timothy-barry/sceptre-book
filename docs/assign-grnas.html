@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
 <title>Hands-On Single-Cell CRISPR Screen Analysis - 3&nbsp; Assign gRNAs</title>
@@ -20,7 +20,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -56,6 +56,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -97,7 +98,13 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -106,35 +113,61 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="custom.css">
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="custom.css">
 </head>
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./assign-grnas.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./assign-grnas.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
-    <a href="https://katsevich-lab.github.io/sceptre/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
+    <a href="https://katsevich-lab.github.io/sceptre/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
 </div>
     </div>
       </div>
@@ -268,7 +301,7 @@ div.csl-indent {
 </li>
     </ul>
 </div>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
@@ -289,7 +322,7 @@ div.csl-indent {
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./assign-grnas.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></a></li></ol></nav><div class="quarto-title">
 <h1 class="title"><span id="sec-assign_grnas" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></h1>
 </div>
 
@@ -303,28 +336,29 @@ div.csl-indent {
   </div>
   
 
+
 </header><p>The third step of the pipeline is to assign gRNAs to cells. This step entails using the gRNA UMI counts to determine which cells contain which gRNAs. <code>sceptre</code> provides three gRNA-to-cell assignment methods:</p>
 <ul>
 <li><p>the mixture model method;</p></li>
 <li><p>the maximum method;</p></li>
 <li><p>the thresholding method.</p></li>
 </ul>
-<div class="cell" data-layout-align="center" data-hash="assign-grnas_cache/html/unnamed-chunk-1_17314e5c36dcb5cff883200737884897">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="pipeline_schematic_step_3.png" class="img-fluid figure-img" width="650"></p>
+<figure class="figure"><p><img src="pipeline_schematic_step_3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>We begin by loading <code>sceptre</code>.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-2_1240c1136661445d9822e1c909bdc0a2">
+<div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="initialize-the-crispri-and-crisprko-sceptre_objects" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="initialize-the-crispri-and-crisprko-sceptre_objects">
 <span class="header-section-number">3.1</span> Initialize the CRISPRi and CRISPRko <code>sceptre_object</code>s</h2>
 <p>We use the high-MOI CRISPRi and low-MOI CRISPRko data as running examples. We call <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code> on the low-MOI CRISPRko data to initialize a <code>sceptre_object</code> called <code>sceptre_object_lowmoi</code>.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-3_fda38985c068adf84a43c618391fb80e">
+<div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># low-MOI CRISPRko data setup</span></span>
 <span><span class="co"># 1. import data</span></span>
 <span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
@@ -349,7 +383,7 @@ div.csl-indent {
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We do the same for the high-MOI CRISPRi data, creating <code>sceptre_object_highmoi</code>.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-4_69b2125ee2d99bcaa2b5530ade1835ab">
+<div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi setup</span></span>
 <span><span class="co"># 1. import data</span></span>
 <span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
@@ -376,18 +410,18 @@ div.csl-indent {
 <p>We are now ready to carry out the gRNA assignment step on both datasets.</p>
 </section><section id="visualize-the-grna-count-distributions" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="visualize-the-grna-count-distributions">
 <span class="header-section-number">3.2</span> Visualize the gRNA count distributions</h2>
-<p>A helpful first step in assigning gRNAs to cells is to visualize the gRNA UMI count distributions. As discussed in <a href="sceptre.html#sec-sceptre_assign_grnas"><span>Section&nbsp;3</span></a> of <em>The whole game</em>, we can use the function <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> to plot the empirical UMI count distribution of one or more gRNAs. <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> takes several arguments: <code>sceptre_object</code> (required), <code>n_grnas_to_plot</code> (optional), <code>grnas_to_plot</code> (optional), and <code>threshold</code> (optional). <code>n_grnas_to_plot</code> is an integer specifying the number of randomly selected gRNAs to plot. <code>grnas_to_plot</code> is a character vector specifying (by name) one or more specific gRNAs to plot. Finally, <code>threshold</code> is an integer specifying the location at which to draw a dotted vertical line. We call <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> on the low-MOI CRISPRko data, plotting nine random gRNAs.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-5_f897477c72ecc018c0dd79cb1bc23793">
+<p>A helpful first step in assigning gRNAs to cells is to visualize the gRNA UMI count distributions. As discussed in <a href="sceptre.html#sec-sceptre_assign_grnas" class="quarto-xref"><span>Section 3</span></a> of <em>The whole game</em>, we can use the function <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> to plot the empirical UMI count distribution of one or more gRNAs. <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> takes several arguments: <code>sceptre_object</code> (required), <code>n_grnas_to_plot</code> (optional), <code>grnas_to_plot</code> (optional), and <code>threshold</code> (optional). <code>n_grnas_to_plot</code> is an integer specifying the number of randomly selected gRNAs to plot. <code>grnas_to_plot</code> is a character vector specifying (by name) one or more specific gRNAs to plot. Finally, <code>threshold</code> is an integer specifying the location at which to draw a dotted vertical line. We call <code><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions()</a></code> on the low-MOI CRISPRko data, plotting nine random gRNAs.</p>
+<div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/plot_grna_count_distributions.html">plot_grna_count_distributions</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
 <span>  n_grnas_to_plot <span class="op">=</span> <span class="fl">9</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="assign-grnas_cache/html/unnamed-chunk-6_30b4c98ca65ddadcd4955e8d027ca5c2">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="grna_count_distribution_step3.png" class="img-fluid figure-img" width="750"></p>
-<figcaption class="figure-caption">Histograms of the gRNA count distributions for the low-MOI CRISPRko data.</figcaption></figure>
+<figure class="figure"><p><img src="grna_count_distribution_step3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="750"></p>
+<figcaption>Histograms of the gRNA count distributions for the low-MOI CRISPRko data.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -399,14 +433,14 @@ div.csl-indent {
 <span class="header-section-number">3.3.1</span> Mixture method</h3>
 <p>The first gRNA assignment strategy is the <code>"mixture"</code> method, which involves assigning gRNAs to cells using a mixture model <span class="citation" data-cites="barry2022c">(<a href="references.html#ref-barry2022c" role="doc-biblioref">Barry, Roeder, and Katsevich 2022</a>)</span>. The mixture method is the default method for high-MOI screens and is an optional method for low-MOI screens. The method works as follows. First, we fit a latent variable Poisson GLM to the data, regressing the gRNA UMI count vector onto the (latent) gRNA indicator vector and cell-specific covariate matrix. (A given entry of the gRNA indicator vector is defined to be “1” if the gRNA is present in the corresponding cell and “0” otherwise.) We fit the latent variable Poisson GLM using a novel variant of the EM algorithm. The fitted model yields the probability that each cell contains the gRNA; we threshold these probabilities to assign the gRNA to cells. An advantage of the GLM-based mixture modeling approach is that it accounts for cell-specific covariates, such as sequencing depth and batch. For example, cells that are sequenced deeply (and have a large value for <code>grna_n_umis</code> or <code>response_n_umis</code>) generally exhibit higher levels of ambient background contamination; <code>sceptre</code> controls for heterogeneity across cells due to sequencing depth and other factors.</p>
 <p>We use the mixture assignment method to assign gRNAs to cells on both the high-MOI CRISPRi data and low-MOI CRISPRko data, saving the resulting outputs as <code>sceptre_object_lowmoi_mixture</code> and <code>sceptre_object_highmoi_mixture</code>, respectively.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-7_f8cd095fc34b3b6082fa17f4b48299dd">
+<div class="cell">
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
 <span><span class="va">sceptre_object_highmoi_mixture</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"mixture"</span>, parallel <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-8_6498eef30e19a91af78d4576e883383a">
+<div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># low-MOI CRISPRko data</span></span>
 <span><span class="va">sceptre_object_lowmoi_mixture</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
@@ -414,12 +448,12 @@ div.csl-indent {
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can pass optional, method-specific parameters to <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code> to control precisely how the assignment method is deployed. The relevant parameters for the mixture method include <code>formula_object</code>, <code>n_em_rep</code>, <code>n_nonzero_cells_cutoff</code>, <code>backup_threshold</code>, and <code>probability_threshold</code>. <code>formula_object</code> is a formula object that specifies how <code>sceptre</code> is to adjust for the cell-specific covariates in the latent-variable gRNA count model. The default formula object is constructed by summing over all covariates and then log-transforming the count-based covariates. It is sometimes helpful to exclude covariates from the formula object so as to improve the speed of the gRNA assignment step. For example, we define a reduced formula object <code>formula_object_reduced</code> that includes only <code>grna_n_nonzero</code> and <code>grna_n_umis</code>, the two most important covariates for assigning gRNAs to cells.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-9_d353783626b599e2624a010e5cff147b">
+<div class="cell">
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">formula_object_reduced</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">grna_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">grna_n_umis</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>n_em_rep</code> is the number of times to run the EM algorithm using random starting estimates (default: <code>n_em_rep = 5</code>). Setting <code>n_em_rep</code> to a larger integer can improve the accuracy of the gRNA assignments at the cost of increasing compute. <code>n_nonzero_cells_cutoff</code> is the minimum number of cells that must exhibit nonzero expression of the gRNA to attempt fitting a mixture model to the gRNA count distribution (default: <code>n_nonzero_cells_cutoff = 10</code>). If the gRNA is expressed in fewer than <code>n_nonzero_cells_cutoff</code> cells, the gRNA instead is assigned to cells via the thresholding method, where the threshold used is <code>backup_threshold</code> (default: <code>backup_threshold = 5</code>). (See <a href="#sec-thresholding_method"><span>Section&nbsp;3.3.3</span></a> for a detailed discussion of the thresholding method.) Finally, cells whose estimated probability of having received a gRNA exceeds <code>probability_threshold</code> are called as containing the gRNA (default: <code>probability_threshold = 0.8</code>). In practice <code>probability_threshold</code> typically does not impact the results considerably.</p>
+<p><code>n_em_rep</code> is the number of times to run the EM algorithm using random starting estimates (default: <code>n_em_rep = 5</code>). Setting <code>n_em_rep</code> to a larger integer can improve the accuracy of the gRNA assignments at the cost of increasing compute. <code>n_nonzero_cells_cutoff</code> is the minimum number of cells that must exhibit nonzero expression of the gRNA to attempt fitting a mixture model to the gRNA count distribution (default: <code>n_nonzero_cells_cutoff = 10</code>). If the gRNA is expressed in fewer than <code>n_nonzero_cells_cutoff</code> cells, the gRNA instead is assigned to cells via the thresholding method, where the threshold used is <code>backup_threshold</code> (default: <code>backup_threshold = 5</code>). (See <a href="#sec-thresholding_method" class="quarto-xref"><span>Section 3.3.3</span></a> for a detailed discussion of the thresholding method.) Finally, cells whose estimated probability of having received a gRNA exceeds <code>probability_threshold</code> are called as containing the gRNA (default: <code>probability_threshold = 0.8</code>). In practice <code>probability_threshold</code> typically does not impact the results considerably.</p>
 <p>To illustrate use of these method-specific parameters, we again call <code><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas()</a></code> to assign gRNAs to cells on the high-MOI CRISPRi data, this time setting <code>formula_object</code> to <code>formula_object_reduced</code>.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-10_ffa3009a0d0a0cd7ea0cae2d3ab31b1a">
+<div class="cell">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi_mixture</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
 <span>  formula_object <span class="op">=</span> <span class="va">formula_object_reduced</span>,</span>
@@ -429,17 +463,17 @@ div.csl-indent {
 </section><section id="sec-maximum_method" class="level3" data-number="3.3.2"><h3 data-number="3.3.2" class="anchored" data-anchor-id="sec-maximum_method">
 <span class="header-section-number">3.3.2</span> Maximum method</h3>
 <p>The second gRNA assignment strategy is the <code>"maximum"</code> method. The maximum method is the default assignment method for low-MOI screens and is not available as an option for high-MOI screens. The maximum method assigns the gRNA that accounts for the greatest number of UMIs in a given cell to that cell. We apply the maximum method to the low-MOI CRISPRko data below.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-11_5435bb50635f507882ffc12a8ff1046f">
+<div class="cell">
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi_maximum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>, </span>
 <span>  method <span class="op">=</span> <span class="st">"maximum"</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The maximum method allows for one optional argument: <code>umi_fraction_threshold</code> (default: <code>umi_fraction_threshold = 0.8</code>). Cells for which the maximally expressed gRNA constitutes fewer than <code>umi_fraction_threshold</code> of the UMIs in that cell are flagged as containing multiple gRNAs. (Cells containing multiple gRNAs are removed as part of low-MOI quality control step, as discussed in <a href="run-qc.html"><span>Chapter&nbsp;4</span></a>). For example, if the maximally expressed gRNA in a given cell makes up 0.64 (or 64<span class="math inline">\(\%\)</span>) of the UMIs in that cell, then that cell is flagged as containing multiple gRNAs and is removed during quality control (assuming that <code>umi_fraction_threshold = 0.8</code>).</p>
+<p>The maximum method allows for one optional argument: <code>umi_fraction_threshold</code> (default: <code>umi_fraction_threshold = 0.8</code>). Cells for which the maximally expressed gRNA constitutes fewer than <code>umi_fraction_threshold</code> of the UMIs in that cell are flagged as containing multiple gRNAs. (Cells containing multiple gRNAs are removed as part of low-MOI quality control step, as discussed in <a href="run-qc.html" class="quarto-xref"><span>Chapter 4</span></a>). For example, if the maximally expressed gRNA in a given cell makes up 0.64 (or 64<span class="math inline">\(\%\)</span>) of the UMIs in that cell, then that cell is flagged as containing multiple gRNAs and is removed during quality control (assuming that <code>umi_fraction_threshold = 0.8</code>).</p>
 </section><section id="sec-thresholding_method" class="level3" data-number="3.3.3"><h3 data-number="3.3.3" class="anchored" data-anchor-id="sec-thresholding_method">
 <span class="header-section-number">3.3.3</span> Thresholding method</h3>
 <p>The third method for assigning gRNAs to cells is the <code>"thresholding"</code> method; this method is available in both low- and high-MOI settings. The thresholding method assigns a gRNA to a cell if the UMI count of the gRNA in the cell is greater than or equal to some integer threshold (by default 5). We apply the <code>"thresholding"</code> method to both CRISPRi and CRISPRko datasets as follows.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-12_bfb15721e3c60c907b6bf452ab03437c">
+<div class="cell">
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
 <span><span class="va">sceptre_object_highmoi_thresholding</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
@@ -452,7 +486,7 @@ div.csl-indent {
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The thresholding method allows for one optional argument, namely the integer threshold <code>threshold</code>. An important special case is to set <code>threshold</code> to <code>1</code>, which causes any gRNA expressed in a given cell to be assigned to that cell. We assign gRNAs to cells on the CRISPRi data using a threshold of 1 below.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-13_ff70ff3d803888e9e134a9923aeec456">
+<div class="cell">
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi_thresholding</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/assign_grnas.html">assign_grnas</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"thresholding"</span>,</span>
@@ -464,43 +498,43 @@ div.csl-indent {
 <span class="header-section-number">3.4</span> Plotting the gRNA assignments</h2>
 <p>We can call <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> on the <code>sceptre_object</code> to render a plot summarizing the outcome of the gRNA-to-cell assignment step. <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> takes the arguments <code>sceptre_object</code> (required) <code>n_grnas_to_plot</code> (optional), <code>grnas_to_plot</code> (optional), and <code>return_indiv_plots</code> (optional). <code>n_grnas_to_plot</code> is the number of (randomly selected) gRNAs to plot; <code>grnas_to_plot</code> is a vector of names of one or more gRNAs to plot; and <code>return_indiv_plots</code> is a logical value indicating whether to return the constituent panels of the plot individually (<code>TRUE</code>) or combined into a single figure (<code>FALSE</code>; default).</p>
 <p>We visualize the outcome of the gRNA-to-cell assignment step on the low-MOI CRISPRko data based on the maximum assignment strategy. We specifically plot the gRNAs “IFNGR2g2”, “STAT1g2”, and “STAT5Ag4”. (These gRNAs were selected arbitrarily for the purpose of illustrating the <code>grnas_to_plot</code> argument.)</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-14_a85ff7573b498fa3903274463b346413">
+<div class="cell">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grnas_to_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"IFNGR2g2"</span>, <span class="st">"STAT1g2"</span>, <span class="st">"STAT5Ag4"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi_maximum</span>, grnas_to_plot <span class="op">=</span> <span class="va">grnas_to_plot</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="assign-grnas_cache/html/unnamed-chunk-15_0e81a07d45a1f20f27bebe5321796763">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="lowmoi_maximum_assignment_step3.png" class="img-fluid figure-img" width="650"></p>
-<figcaption class="figure-caption">Maximum assignment method on the low-MOI CRISPRko data.</figcaption></figure>
+<figure class="figure"><p><img src="lowmoi_maximum_assignment_step3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
+<figcaption>Maximum assignment method on the low-MOI CRISPRko data.</figcaption></figure>
 </div>
 </div>
 </div>
-<p><a href="sceptre.html#sec-sceptre_assign_grnas"><span>Section&nbsp;3</span></a> of <em>The whole game</em> describes how to interpret this plot. Briefly, the top panel displays the gRNA-to-cell assignments of several individual gRNAS, and the bottom left panel shows the number of cells per gRNA. Typically, the bottom right panel plots the number of gRNAs per cell, but the bottom right panel is not meaningful under the maximum assignment strategy and is thus omitted.</p>
+<p><a href="sceptre.html#sec-sceptre_assign_grnas" class="quarto-xref"><span>Section 3</span></a> of <em>The whole game</em> describes how to interpret this plot. Briefly, the top panel displays the gRNA-to-cell assignments of several individual gRNAS, and the bottom left panel shows the number of cells per gRNA. Typically, the bottom right panel plots the number of gRNAs per cell, but the bottom right panel is not meaningful under the maximum assignment strategy and is thus omitted.</p>
 <p>It is informative to compare the output of multiple gRNA assignment methods and check for consistency across methods. To this end we render a visualization of the gRNA-to-cell assignments on the same dataset, this time based on the mixture method.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-16_f125f1bde5d6a61ce201c55cfcce5ea3">
+<div class="cell">
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi_mixture</span>, grnas_to_plot <span class="op">=</span> <span class="va">grnas_to_plot</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-layout-align="center" data-hash="assign-grnas_cache/html/unnamed-chunk-17_27eddd435919e5bad44c8aca18c0f1d6">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="lowmoi_mixture_assignment_step3.png" class="img-fluid figure-img" width="650"></p>
-<figcaption class="figure-caption">Mixture assignment method on the low-MOI CRISPRko data.</figcaption></figure>
+<figure class="figure"><p><img src="lowmoi_mixture_assignment_step3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
+<figcaption>Mixture assignment method on the low-MOI CRISPRko data.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>Encouragingly, the gRNA assignments appear to be highly concordant across the maximum and mixture methods. Suppose that we ultimately choose to use the mixture strategy to assign gRNAs to cells on the low-MOI CRISPRko dataset. We update <code>sceptre_object_lowmoi</code> as follows.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-18_df107cfc7863b8d27f04103eb2c10a8f">
+<div class="cell">
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_lowmoi_mixture</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="returning-and-printing-the-grna-assignments" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="returning-and-printing-the-grna-assignments">
 <span class="header-section-number">3.5</span> Returning and printing the gRNA assignments</h2>
 <p>We can obtain the gRNA-to-cell assignments by calling <code><a href="https://rdrr.io/pkg/sceptre/man/get_grna_assignments.html">get_grna_assignments()</a></code> on the <code>sceptre_object</code>.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-19_dc291f2e37d3928a2e63de5303ffbe2b">
+<div class="cell">
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_assignment_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_grna_assignments.html">get_grna_assignments</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>grna_assignment_matrix</code> is a sparse, logical matrix of gRNA assignments; gRNA IDs are in the rows and cells are in the columns. A given entry of the matrix is set to <code>TRUE</code> if the given gRNA was assigned to the given cell (and <code>FALSE</code> otherwise). We can determine the cells to which a given gRNA was assigned by indexing <code>grna_assignment_matrix</code> by row; conversely, we can determine the gRNAs that were assigned to a given cell by indexing <code>grna_assignment_matrix</code> by column. We can cross-reference the gRNA assignment matrix and gRNA count matrix to quickly check that the gRNA-to-cell assignments are reasonable. For example, below, we see that gRNAs “POU2F2g1” and “ATF2g4” were assigned to the cell indexed as “7.”</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-20_eb66b218ad0675935350e46389f30833">
+<div class="cell">
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cell_idx</span> <span class="op">&lt;-</span> <span class="fl">7</span></span>
 <span><span class="va">assigned_grnas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">grna_assignment_matrix</span><span class="op">[</span>,<span class="va">cell_idx</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">assigned_grnas</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -509,7 +543,7 @@ div.csl-indent {
 </div>
 </div>
 <p>Next, we verify that the gRNAs “POU2F2g1” and “ATF2g4” exhibit a large UMI count in the cell indexed as “7.”</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-21_4a6d1e46ae6d9232ebe13dcfae8d2b65">
+<div class="cell">
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_count_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_grna_matrix</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span>
 <span><span class="va">grna_count_matrix</span><span class="op">[</span><span class="va">assigned_grnas</span>, <span class="va">cell_idx</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -518,7 +552,7 @@ div.csl-indent {
 </div>
 </div>
 <p>Finally, we can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on <code>sceptre_object_lowmoi</code> to print a summary tracking the progress of the analysis. The field “gRNA-to-cell assignment information” presents information about the gRNA assignment step, including the selected assignment method, the mean number of cells per gRNA, and the mean number of gRNAs per cell.</p>
-<div class="cell" data-hash="assign-grnas_cache/html/unnamed-chunk-22_94c45b668269561be6225139cea7e45b">
+<div class="cell">
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
@@ -562,7 +596,7 @@ gRNA-to-cell assignment information:
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-barry2022c" class="csl-entry" role="listitem">
 Barry, Timothy, Kathryn Roeder, and Eugene Katsevich. 2022. <span>“<span class="nocase">Exponential family measurement error models for single-cell CRISPR screens</span>.”</span> <em>arXiv</em>.
 </div>
@@ -646,10 +680,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -659,8 +692,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -673,6 +715,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -716,6 +877,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -741,6 +903,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -800,23 +988,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./set-analysis-parameters.html" class="pagination-link">
+      <a href="./set-analysis-parameters.html" class="pagination-link  aria-label=" analysis="" parameters="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./run-qc.html" class="pagination-link">
+      <a href="./run-qc.html" class="pagination-link" aria-label="<span class='chapter-number'>4</span>&nbsp; <span class='chapter-title'>Run quality control</span>">
         <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
-    <div class="nav-footer-left">Hands-On Single-Cell CRISPR Screen Analysis</div>   
+    <div class="nav-footer-left">
+<p>Hands-On Single-Cell CRISPR Screen Analysis</p>
+</div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>
-    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
   </div>
 </footer>
 
