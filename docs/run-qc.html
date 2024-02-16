@@ -449,7 +449,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p><code>sceptre</code> tabulates <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> for each target-response pair. Pairs for which <code>n_nonzero_trt</code> is less than <code>n_nonzero_trt_thresh</code> or <code>n_nonzero_cntrl</code> is less than <code>n_nonzero_cntrl_thresh</code> are excluded. Both <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl_thresh</code> are set to <code>7</code> by default.</p>
+<p><code>sceptre</code> tabulates <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> for each target-response pair. Pairs for which <code>n_nonzero_trt</code> is less than <code>n_nonzero_trt_thresh</code> or <code>n_nonzero_cntrl</code> is less than <code>n_nonzero_cntrl_thresh</code> are excluded. Both <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl_thresh</code> are set to <code>7</code> by default. An important special case is to set <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl</code> to <code>0</code>; in this case <em>all</em> cells (regardless of expression level) are counted toward the <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl_thresh</code> total.</p>
 </section></section><section id="run-qc" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="run-qc">
 <span class="header-section-number">4.3</span> Run QC</h2>
 <p>We call <code><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc()</a></code> on <code>sceptre_object_highmoi</code> and <code>sceptre_object_lowmoi</code> to run QC on the high-MOI CRISPRi and low-MOI CRISPRko data. In both cases we set <code>p_mito_threshold</code> to <code>0.075</code> but otherwise fall back on the default parameter values.</p>
