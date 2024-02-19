@@ -66,7 +66,7 @@ We set the analysis parameters by calling the function `set_analysis_parameters(
 -   `multiple_testing_alpha`
 -   `fit_parametric_curve`
 
-Of these parameters, only `discovery_pairs` is required; the rest have sensible defaults. We describe these arguments below.
+None of these arguments is required, and all are set to sensible defaults. We describe these arguments below.
 
 ## Positive control pairs {#sec-set_analysis_parameters_pc_pairs}
 
@@ -86,7 +86,7 @@ positive_control_pairs_lowmoi <- construct_positive_control_pairs(
 head(positive_control_pairs_lowmoi) # low MOI CRISPRko dataset
 ```
 
-Positive control pairs need not consist exclusively of gene transcription start sites paired to target genes. For example, enhancer-gene links that have been validated previously (through, e.g., arrayed CRISPR screens) also can serve as positive control pairs. Users can manually append additional positive control pairs to the positive control pair data frame via a call to `rbind()`. For example, suppose we know on the high-MOI CRISPRi data that `candidate_enh_1` regulates gene `ENSG00000069482` and that `candidate_enh_10` regulates gene `ENSG00000135821`. We can add these enhancer-gene links to the positive control pair data frame as follows.
+Positive control pairs need not consist exclusively of gene transcription start sites paired to target genes. For example, enhancer-gene links that have been validated previously (through, e.g., an arrayed CRISPR screen with bulk RNA-seq readout, or a bulk CRISPR screen with cell sorting) also can serve as positive control pairs. Users can manually append additional positive control pairs to the positive control pair data frame via a call to `rbind()`. For example, suppose we know on the high-MOI CRISPRi data that `candidate_enh_1` regulates gene `ENSG00000069482` and that `candidate_enh_10` regulates gene `ENSG00000135821`. We can add these enhancer-gene links to the positive control pair data frame as follows.
 
 ```{r}
 # construct data frame of additional positive control pairs
@@ -166,6 +166,8 @@ head(discovery_pairs_highmoi_trans)
 ```
 
 Some users may wish to run both *cis* and *trans* analyses on their data. We recommend that such users carry out the `sceptre` pipeline twice: once using a *cis* discovery set and once using a *trans* discovery set. See @sec-multiple_analyses for more details.
+
+The discovery pairs data frame is optional and need not be specified. Users may refrain from passing a discovery pairs data frame when runing a *control analysis*, i.e. an analysis of negative control data and positive control data exclusively. 
 
 ### Reducing the multiplicity burden
 
