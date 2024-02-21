@@ -67,9 +67,9 @@ nextflow run timothy-barry/sceptre-pipeline -r main \
  --combine_assign_grnas_time 5m
 ```
 
-We describe each component of this script line-by-line. The first few lines relate to resource requests for the driver process. We request four gigabytes of memory (`#$ -l m_mem_free=4G`) and two CPUs (`#$ -pe openmp 2`) for the driver.  Additionally, we specify that the "Java virtual machine" --- the application responsible for executing the driver --- is to use no fewer than 500 megabytes of memory and no more than to four gigabytes of memory via the line `export NXF_OPTS="-Xms500M -Xmx4G"`. (This line is optional, but it helps prevent the Nextflow driver from using too much memory.) Finally, the scheduler may require us to submit a wall time request, in which case we should include a wall time request at the top of `launch_script.sh`; the relevant command on SGE is `#$ -l h_rt`. If we were on a SLURM cluster instead of an SGE cluster, the first few lines of `launch_script.sh` would look roughly as follows:
+We describe each component of this script line-by-line. The first few lines relate to resource requests for the driver process. We request four gigabytes of memory (`#$ -l m_mem_free=4G`) and two CPUs (`#$ -pe openmp 2`) for the driver. Additionally, we specify that the "Java virtual machine" --- the application responsible for executing the driver --- is to use no fewer than 500 megabytes of memory and no more than to four gigabytes of memory via the line `export NXF_OPTS="-Xms500M -Xmx4G"`. (This line is optional, but it helps prevent the Nextflow driver from using too much memory.) Finally, the scheduler may require us to submit a wall time request, in which case we should include a wall time request at the top of `launch_script.sh`; the relevant command on SGE is `#$ -l h_rt`. If we were on a SLURM cluster instead of an SGE cluster, the first few lines of `launch_script.sh` would look roughly as follows:
 
-```
+```         
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=4G
@@ -77,7 +77,7 @@ We describe each component of this script line-by-line. The first few lines rela
 export NXF_OPTS="-Xms500M -Xmx4G"
 ```
 
- Next, we set the variables `sceptre_object_fp`, `response_odm_fp`, and `grna_odm_fp` to the file paths of the `sceptre_object.rds` file, the `gene.odm` file, and the `grna.odm` file, respectively. We also set `output_directory` to the file path of the directory in which to write the results. These variables are defined in terms of `$HOME` as opposed to the shorthand `~`, as `$HOME` contains the absolute file path to the home directory, and Nextflow is more adept at handling absolute file paths than relative file paths.
+Next, we set the variables `sceptre_object_fp`, `response_odm_fp`, and `grna_odm_fp` to the file paths of the `sceptre_object.rds` file, the `gene.odm` file, and the `grna.odm` file, respectively. We also set `output_directory` to the file path of the directory in which to write the results. These variables are defined in terms of `$HOME` as opposed to the shorthand `~`, as `$HOME` contains the absolute file path to the home directory, and Nextflow is more adept at handling absolute file paths than relative file paths.
 
 Finally, we invoke the Nextflow pipeline via the command `nextflow run timothy-barry/sceptre-pipeline -r main`. (`timothy-barry/sceptre-pipeline` is the current location of the `sceptre` Nextflow pipeline on Github; we plan to move the pipeline into the [nf-core](https://nf-co.re/pipelines) repository in the future.) We specify arguments to the pipeline via the syntax `--argument value`, where `argument` is the name of an argument and `value` is the value to assign to the argument. In the above script we organize the arguments such that each argument is on its own line, but this is not necessary. The `sceptre` pipeline has four required arguments: `sceptre_object_fp`, `response_odm_fp`, `grna_odm_fp`, and `output_directory` (described above). The pipeline additionally supports a variety of optional arguments. About half of the optional arguments are "statistical" in that they govern how the statistical methods are to be deployed to analyze the data. For example, above, we indicate that the pipeline is to use the "mixture" method to assign gRNAs to cells via `--grna_assignment_method`. Additionally, we alter the default cellwise QC thresholds via `--response_n_umis_range_lower 0.05` and `--response_n_umis_range_uppper 0.95`. Finally, we indicate that the pipeline is to use the "singleton" gRNA integration strategy via `--grna_integration_strategy singleton`.
 
@@ -89,11 +89,11 @@ All of the `sceptre` Nextflow pipeline arguments are enumerated and described in
 
 ## Example workflows
 
-We conclude with a few common workflows in the context of the `sceptre` Nextflow pipeline.
+We describe a few common workflows in the context of the `sceptre` Nextflow pipeline.
 
-### Tweaking the pipeline arguments using the intermediate results 
+### Tweaking the pipeline arguments using the intermediate results
 
-A common workflow is to advance through the pipeline one step at a time (@sec-incremental_pipeline), adjusting the input arguments as necessary on the basis of the intermediate outputs. For example, suppose that we decide to implement an aggressive cellwise QC strategy, setting `--response_n_umis_range_lower` and `--response_n_umis_range_uppper` to` 0.2` and `0.8`, respectively, so as to clip the tails of the `response_n_umis` distribution at the 20th percentile and 80 percentile. Additionally, we set `--pipeline_stop` to `run_qc` to stop the pipeline at the "Run QC" step.
+A common workflow is to advance through the pipeline one step at a time (@sec-incremental_pipeline), adjusting the input arguments as necessary on the basis of the intermediate outputs. For example, suppose that we decide to implement an aggressive cellwise QC strategy, setting `--response_n_umis_range_lower` and `--response_n_umis_range_uppper` to`0.2` and `0.8`, respectively, so as to clip the tails of the `response_n_umis` distribution at the 20th percentile and 80 percentile. Additionally, we set `--pipeline_stop` to `run_qc` to stop the pipeline at the "Run QC" step.
 
 ```{bash,eval=FALSE}
 #| code-fold: true
@@ -146,7 +146,7 @@ An inspection of the "Response N UMIs" panel of `plot_covariates.png` suggests t
 knitr::include_graphics("plot_covariates_aggressive.png")
 ```
 
-Thus, we relax the cellwise QC thresholds slightly, setting `--response_n_umis_range_lower` and `--response_n_umis_range_uppper` to` 0.1` and `0.9`, respectively. Additionally, we pass the `-resume` flag to the pipeline to avoid recomputing the gRNA-to-cell assignments.
+Thus, we relax the cellwise QC thresholds slightly, setting `--response_n_umis_range_lower` and `--response_n_umis_range_uppper` to`0.1` and `0.9`, respectively. Additionally, we pass the `-resume` flag to the pipeline to avoid recomputing the gRNA-to-cell assignments.
 
 ```{bash,eval=FALSE}
 #| code-fold: true
@@ -187,7 +187,7 @@ nextflow run timothy-barry/sceptre-pipeline -r main \
  -resume
 ```
 
-This approach --- i.e., passing a set of candidate arguments to the pipeline, examining the output of the pipeline, and then updating the candidate arguments as necessary --- is generally useful strategy.
+This approach --- i.e., passing a set of candidate arguments to the pipeline, examining the output of the pipeline, and then updating the candidate arguments as necessary --- is applicable to all steps of the pipeline.
 
 ### Debugging the pipeline
 
@@ -321,3 +321,158 @@ nextflow run timothy-barry/sceptre-pipeline -r main -resume \
  --grna_pod_size 25 \
  --n_calibration_pairs 0
 ```
+
+## Massive-scale *trans* analysis {#sec-massive_scale_trans_analysis}
+
+The `sceptre` Nextflow pipeline provides a special option for carrying out a massive-scale *trans* analysis in which each target is tested for association against each response. We call this special option the *trans* interface to the pipeline. The *trans* interface is an appropriate strategy for conducting a *trans* analysis when the number of *trans* pairs (i.e., the number of targets times the number of responses) exceeds 10 million, which is the maximum number of pairs that the standard interface to the Nextflow pipeline (as described in @sec-import_data_into_odm_backed_sceptre_object --- @sec-call_full_pipeline) can handle.
+
+### Software installation
+
+The *trans* interface to the pipeline depends on the `arrow` R package. `arrow` is a package for efficiently storing and manipulating large R data frames. The `arrow` package is used to store the results data frame (i.e., the data frame containing the p-values, estimated log fold changes, etc.). We recommend installing `arrow` both locally and on the cluster. Users can use the standard `install.packages()` function to install `arrow` locally.
+
+``` {.terminal filename="R, local"}
+install.packages("arrow")
+```
+
+Users can install `arrow` on the cluster as follows.
+
+``` {.terminal filename="R, cluster"}
+Sys.setenv('NOT_CRAN' = 'true')
+install.packages('arrow', repos='http://cran.us.r-project.org')
+```
+
+### Pipeline structure
+
+@fig-pipeline_dag_trans displays the flow of information through the Nextflow pipeline in the context the *trans* interface. The *trans* interface differs from the standard interface (as depicted in @fig-pipeline_dag) in several ways. First, the *trans* interface does not involve carrying out a calibration check. (Indeed, we typically are less concerned about stringent calibration of the p-values far out into the tail of the distribution in the context of a massive-scale trans analysis.) Next, the *trans* interface does not distinguish between positive control pairs and discovery pairs; rather, *all* target-response pairs are analyzed as part of the discovery analysis step. Moreover, the *trans* interface separates cellwise QC from pairwise QC; cellwise QC is carried out immediately after the gRNA assignment step, while pairwise QC is performed as part of the discovery analysis step. Finally, the *trans* interface is parallelized at two points: the gRNA assignment step and the discovery analysis step.
+
+```{r, out.width = "620px", fig.align="center", echo = FALSE}
+#| label: fig-pipeline_dag_trans
+#| fig-cap: "A graph illustrating the flow of information through the Nextflow pipeline in the context of a massive-scale *trans* analysis."
+knitr::include_graphics("nextflow_dag_trans.png")
+```
+
+### Preparing and launching a massive-scale *trans* analysis
+
+Using the *trans* interface to the Nextflow pipeline is similar to using the standard interface. In particular, one proceeds through the sequence of steps as outlined in sections @sec-import_data_into_odm_backed_sceptre_object --- @sec-call_full_pipeline, with two small modifications. First, in setting the analysis parameters within the R console (@sec-at_scale_set_analysis_parameters), one does not specify a set of discovery pairs or positive control pairs to analyze. Rather, one leaves these arguments blank, as follows.
+
+```{r, eval=FALSE}
+sceptre_object <- set_analysis_parameters(
+  sceptre_object = sceptre_object,
+  side = "both",
+  resampling_mechanism = "permutations"
+)
+```
+
+(If one *does* specify a discovery pairs data frame or a positive control pairs data frame, these data frames are ignored.) Second, when invoking the Nextflow pipeline on the command line, one sets `--discovery_pairs` to `trans`, which tells the pipeline to run a *trans* discovery analysis. An example launch script is as follows. (See final line.)
+
+```{bash,eval=FALSE}
+#| code-fold: true
+#| code-summary: "Show code"
+#!/bin/bash
+# Limit NF driver to 4 GB memory
+export NXF_OPTS="-Xms500M -Xmx4G"
+
+##########################
+# REQUIRED INPUT ARGUMENTS
+##########################
+data_directory=$HOME"/sceptre_data/"
+# sceptre object
+sceptre_object_fp=$data_directory"sceptre_object.rds"
+# response ODM
+response_odm_fp=$data_directory"gene.odm"
+# grna ODM
+grna_odm_fp=$data_directory"grna.odm"
+
+###################
+# OUTPUT DIRECTORY:
+##################
+output_directory=$HOME"/sceptre_outputs"
+
+#################
+# Invoke pipeline
+#################
+nextflow run timothy-barry/sceptre-pipeline -r main \
+ --sceptre_object_fp $sceptre_object_fp \
+ --response_odm_fp $response_odm_fp \
+ --grna_odm_fp $grna_odm_fp \
+ --output_directory $output_directory \
+ --discovery_pairs trans
+```
+
+Finally, one launches the pipeline as normal:
+
+``` {.terminal filename="terminal, local or cluster"}
+qsub launch_script.sh
+# or sbatch launch_script.sh
+```
+
+The `--pipeline_stop` argument takes four values in the context of the *trans* interface: `set_analysis_parameters`, `assign_grnas`, `run_qc`, and `run_discovery_analysis`. (`run_power_check` and `run_discovery_analysis` are not available as options.)
+
+### Interpreting the outputs
+
+The outputs of the pipeline are written to `output_directory`, which, in the above script, is set to `~/sceptre_outputs`. We used the *trans* interface to the Nextflow pipeline to conduct a *trans* analysis of one of the datasets published in @replogle2022. In particular, we analyzed the so-called "rd7" dataset, which contains 616,184 cells, 36,601 genes, and 5,086 targeting gRNAs spread across 2,384 genomic targets. (The code used to analyze these data is not shown in this book.) Upon completing the analysis, the Nextflow pipeline writes the following files to the `~/sceptre_outputs` directory.
+
+```{r, eval=FALSE}
+list.files("~/sceptre_outputs")
+```
+
+```{r, echo=FALSE}
+files <- c("analysis_summary.txt", "plot_covariates.png", "grna_assignment_matrix.rds",
+           "plot_grna_count_distributions.png", "plot_assign_grnas.png", "trans_results",
+           "plot_cellwise_qc.png")
+print(files)
+```
+
+The files contained within this directory are similar to those outputted by the standard interface. In particular, `analysis_summary.txt` is a text file summarizing the analysis, `grna_assignment_matrix.rds` is a sparse, logical matrix containing the gRNA-to-cell assignments, etc. However, the *trans* interface to the pipeline does not (currently) render plots corresponding to the calibration check, power check, or discovery analysis. (Indeed, the *trans* interface does not carry out a calibration check or dedicated positive control analysis, and the discovery analysis might be so large that the corresponding plot is challenging to render.) 
+
+The results of the discovery analysis are stored within the subdirectory `trans_results`. The results data frame is distributed across multiple `parquet` files, which is the file type used by the `arrow` package to store an R data frame. We print a few of the `parquet` files below.
+
+```{r, eval=FALSE}
+list.files("~/sceptre_outputs/trans_results") |> head(10)
+```
+
+```{r, echo=FALSE}
+c("result_1.parquet", "result_10.parquet", "result_11.parquet", "result_13.parquet", "result_14.parquet", "result_15.parquet", "result_16.parquet", "result_17.parquet", "result_18.parquet", "result_19.parquet")
+```
+
+Each `parquet` file stores the results for a distinct set of target-response pairs. The simplest way to interact with the results is to call the `arrow` function `open_dataset()` on the "trans_results" directory, as follows.
+
+```{r,eval=FALSE}
+library(arrow)
+library(dplyr)
+ds <- open_dataset("~/sceptre_outputs/trans_results/")
+```
+
+`ds` is an object of class `"FileSystemDataset"`, which is an `arrow` class representing a data frame stored on-disk (as opposed to in-memory). We can interact with `ds` as if it were a standard R data frame using the `dplyr` verbs. For example, a common operation is to obtain the p-value and log fold change for all pairs containing a given *target*. We can do this as follows.
+
+```{r,eval=FALSE}
+result_for_given_target <- ds |>
+  filter(grna_target == "ENSG00000094914") |> 
+  select(p_value, log_2_fold_change) |>
+  arrange(p_value) |>
+  collect()
+```
+
+Another common operation is to obtain the p-value and log fold change for all pairs containing a given *response*. We can do that as follows.
+
+```{r,eval=FALSE}
+result_for_given_response <- ds |>
+  filter(response_id == "ENSG00000130024") |> 
+  select(p_value, log_2_fold_change) |>
+  arrange(p_value) |>
+  collect()
+```
+
+The final verb in the chain of verbs always should be `dplyr::collect()`, which tells `arrow` to load the data frame into memory. Finally, we can load an individual `parqet` file into memory as a standard R data frame using the `read_parquet()` function.
+
+```{r,eval=FALSE}
+result_1 <- read_parquet(
+  "~/sceptre_outputs/trans_results/result_1.parquet"
+  )
+```
+
+We recommend that users consult the [dplyr package](https://dplyr.tidyverse.org) and [arrow package](https://arrow.apache.org/docs/r/) for more information on interracting with an `arrow` data frame using `dplyr` verbs.
+
+::: callout-note
+The *trans* interface to the Nextflow pipeline does not perform a multiplicity correction on the p-values. In particular, the p-values in the results data frame are unadjusted, and the results data frame does not contain a column `significant` indicating whether a given pair has been called as significant.
+:::

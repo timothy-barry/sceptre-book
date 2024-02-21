@@ -270,7 +270,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#call-the-trial-nextflow-pipeline-local-machine" id="toc-call-the-trial-nextflow-pipeline-local-machine" class="nav-link" data-scroll-target="#call-the-trial-nextflow-pipeline-local-machine"><span class="header-section-number">7.5</span> Call the trial Nextflow pipeline (local machine)</a></li>
   <li><a href="#sec-push_data_to_cluster" id="toc-sec-push_data_to_cluster" class="nav-link" data-scroll-target="#sec-push_data_to_cluster"><span class="header-section-number">7.6</span> Push the data to the cluster</a></li>
   <li><a href="#call-the-trial-pipeline-cluster" id="toc-call-the-trial-pipeline-cluster" class="nav-link" data-scroll-target="#call-the-trial-pipeline-cluster"><span class="header-section-number">7.7</span> Call the trial pipeline (cluster)</a></li>
-  <li><a href="#call-the-full-pipeline-cluster" id="toc-call-the-full-pipeline-cluster" class="nav-link" data-scroll-target="#call-the-full-pipeline-cluster"><span class="header-section-number">7.8</span> Call the full pipeline (cluster)</a></li>
+  <li><a href="#sec-call_full_pipeline" id="toc-sec-call_full_pipeline" class="nav-link" data-scroll-target="#sec-call_full_pipeline"><span class="header-section-number">7.8</span> Call the full pipeline (cluster)</a></li>
   <li><a href="#sec-incremental_pipeline" id="toc-sec-incremental_pipeline" class="nav-link" data-scroll-target="#sec-incremental_pipeline"><span class="header-section-number">7.9</span> Stepping through the pipeline incrementally</a></li>
   </ul></nav>
     </div>
@@ -461,7 +461,20 @@ Tip
 <span>  resampling_mechanism <span class="op">=</span> <span class="st">"permutations"</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This step is optional; users instead can specify the analysis parameters on the command line as arguments to the Nextflow pipeline. <strong>The Nextflow pipeline currently can handle about ~5 million pairs. Future iterations of the pipeline likely will be able to handle ~100 million pairs.</strong></p>
+<p>This step is optional; users instead can specify the analysis parameters on the command line as arguments to the Nextflow pipeline.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The standard interface to the <code>sceptre</code> Nextflow pipeline is designed to handle up to 10 million pairs (which is quite a large analysis!). Users interested in analyzing more than 10 million pairs (in particular, in the context of a massive-scale <em>trans</em> analysis) should consult <a href="pipeline-details.html#sec-massive_scale_trans_analysis" class="quarto-xref"><span>Section 8.4</span></a>.</p>
+</div>
+</div>
 </section><section id="write-the-ondisc-backed-sceptre_object-to-disk-local-machine" class="level2" data-number="7.4"><h2 data-number="7.4" class="anchored" data-anchor-id="write-the-ondisc-backed-sceptre_object-to-disk-local-machine">
 <span class="header-section-number">7.4</span> Write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk (local machine)</h2>
 <p>The next step is to write the <code>ondisc</code>-backed <code>sceptre_object</code> to disk. To this end, we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/read_ondisc_backed_sceptre_object.html">write_ondisc_backed_sceptre_object()</a></code>, passing <code>sceptre_object</code> and <code>directory_to_write</code> as arguments. The <code>sceptre_object</code> is saved within <code>directory_to_write</code> as <code>sceptre_object.rds</code>. <code>directory_to_write</code> can be any directory.</p>
@@ -686,7 +699,7 @@ cd sceptre-pipeline/examples</code></pre>
 </div>
 <pre class="terminal" data-filename="terminal, cluster"><code>cat analysis_summary.txt</code></pre>
 </div>
-</section><section id="call-the-full-pipeline-cluster" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="call-the-full-pipeline-cluster">
+</section><section id="sec-call_full_pipeline" class="level2" data-number="7.8"><h2 data-number="7.8" class="anchored" data-anchor-id="sec-call_full_pipeline">
 <span class="header-section-number">7.8</span> Call the full pipeline (cluster)</h2>
 <p>The final step is to run the full pipeline on the cluster. To this end, we modify <code>launch_script.sh</code>, removing the <code>--trial</code> flag from the last line of the script. We can do this on the cluster by calling <code>nano launch_script.sh</code>, deleting the <code>--trial</code> flag, and saving the updated script. <code>launch_script.sh</code> now should look as follows.</p>
 <div class="cell">

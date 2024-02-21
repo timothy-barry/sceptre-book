@@ -157,7 +157,11 @@ sceptre_object <- set_analysis_parameters(
 )
 ```
 
-This step is optional; users instead can specify the analysis parameters on the command line as arguments to the Nextflow pipeline. **The Nextflow pipeline currently can handle about ~5 million pairs. Future iterations of the pipeline likely will be able to handle ~100 million pairs.**
+This step is optional; users instead can specify the analysis parameters on the command line as arguments to the Nextflow pipeline.
+
+::: callout-tip
+The standard interface to the `sceptre` Nextflow pipeline is designed to handle up to 10 million pairs (which is quite a large analysis!). Users interested in analyzing more than 10 million pairs (in particular, in the context of a massive-scale *trans* analysis) should consult @sec-massive_scale_trans_analysis.
+:::
 
 ## Write the `ondisc`-backed `sceptre_object` to disk (local machine)
 
@@ -353,7 +357,7 @@ The pipeline outputs are written to the directory `~/sceptre_outputs`. Again, al
 cat analysis_summary.txt
 ```
 
-## Call the full pipeline (cluster)
+## Call the full pipeline (cluster) {#sec-call_full_pipeline}
 
 The final step is to run the full pipeline on the cluster. To this end, we modify `launch_script.sh`, removing the `--trial` flag from the last line of the script. We can do this on the cluster by calling `nano launch_script.sh`, deleting the `--trial` flag, and saving the updated script. `launch_script.sh` now should look as follows.
 

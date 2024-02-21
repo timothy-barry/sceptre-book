@@ -284,7 +284,7 @@ ul.task-list li input[type="checkbox"] {
 <p>This chapter provides instructions on downloading, installing, and configuring Nextflow. It also enumerates and describes each of the arguments that can be passed to the Nextflow pipeline.</p>
 <section id="sec-install_nextflow" class="level2" data-number="9.1">
 <h2 data-number="9.1" class="anchored" data-anchor-id="sec-install_nextflow"><span class="header-section-number">9.1</span> Downloading, installing, and configuring Nextflow</h2>
-<p>Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users need to install Nextflow on their local machine and on their cluster to work through the examples in this book. We encourage users to consult the extensive and high-quality <a href="https://www.nextflow.io/docs/latest/index.html">Nextflow documentation</a> for guidance on using Nextflow. Here, we briefly describe how to download, install, and configure Nextflow. Users should carry out the following sequence of steps twice: once on their local machine and once on their cluster.</p>
+<p>Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local machine and on their cluster to work through the examples in this book. We encourage users to consult the extensive and high-quality <a href="https://www.nextflow.io/docs/latest/index.html">Nextflow documentation</a> for guidance on using Nextflow. Here, we briefly describe how to download, install, and configure Nextflow. Users should carry out the following sequence of steps twice: once on their local machine and once on their cluster.</p>
 <section id="download-and-installation" class="level3" data-number="9.1.1">
 <h3 data-number="9.1.1" class="anchored" data-anchor-id="download-and-installation"><span class="header-section-number">9.1.1</span> Download and installation</h3>
 <ol type="1">
@@ -391,9 +391,10 @@ http://nextflow.io</code></pre>
 <pre class="terminal" data-filename="~/.nextflow/config"><code>process.executor = 'sge' # or 'slurm', etc.
 executor.queueSize = 100
 executor.submitRateLimit = '25 sec'
-workDir = 'path/to/directory/work'</code></pre>
+workDir = 'path/to/directory/work'
+process.queue = 'name of queue'</code></pre>
 </div>
-<p><code>process.executor</code> specifies the type of scheduler that your cluster uses. Options include <code>'sge'</code> for a Sun Grid Engine (i.e., <code>qsub</code>-based) scheduler and <code>'slurm'</code> for a SLURM (i.e., <code>sbatch</code>-based) scheduler. Next, <code>executor.queueSize</code> specifies the maximum number of jobs that can be queued simultaneously. Moreover, <code>executor.submitRateLimit</code> specifies the maximum number of jobs that can be submitted per unit time to the scheduler. For example, <code>'25 sec'</code> limits the submission rate to 25 jobs per second. Finally, <code>workDir</code> is a file path to the “work” directory, which is a directory that stores intermediate files. It is reasonable to create the “work” directory as a subdirectory of the dedicated “data” directory on your cluster.</p>
+<p><code>process.executor</code> specifies the type of scheduler that your cluster uses. Options include <code>'sge'</code> for a Sun Grid Engine (i.e., <code>qsub</code>-based) scheduler and <code>'slurm'</code> for a SLURM (i.e., <code>sbatch</code>-based) scheduler. Next, <code>executor.queueSize</code> specifies the maximum number of jobs that can be queued simultaneously. Moreover, <code>executor.submitRateLimit</code> specifies the maximum number of jobs that can be submitted per unit time to the scheduler. For example, <code>'25 sec'</code> limits the submission rate to 25 jobs per second. Additionally, <code>workDir</code> is a file path to the “work” directory, which is a directory that stores intermediate files. It is reasonable to create the “work” directory as a subdirectory of the dedicated “data” directory on your cluster. Finally, it may be necessary to specify a the name of a queue (or partition) in which to run the jobs via the <code>process.queue</code> option.</p>
 <p>Like many Nextflow pipelines, the <code>sceptre</code> Nextflow pipeline uses the <code>time</code> and <code>memory</code> process directives to request a given amount of wall time and memory per process. Not all schedulers require that the user issue a wall time and/or memory allocation request when submitting a job. However, if your scheduler has this requirement, then Nextflow should be configured on your cluster such that the scheduler recognizes the <code>time</code> and <code>memory</code> process directives within a Nextflow script. It may be necessary to manually configure these directives using the <code>process.clusterOptions</code> setting within your Nextflow config file. For example, on an SGE scheduler, you may need to add the following line to your <code>~/.nextflow/config</code> file to ensure that the scheduler correctly handles memory allocation requests.</p>
 <pre><code>process.clusterOptions = { task.memory ? "-l m_mem_free=${task.memory.toGiga()}G" : "" }</code></pre>
 <p>The corresponding command for a SLURM scheduler is as follows.</p>
@@ -414,7 +415,7 @@ workDir = 'path/to/directory/work'</code></pre>
 <li><p><code>–-response_odm_fp</code>: file path to the <code>.odm</code> file corresponding to the response modality (typically <code>gene.odm</code>).</p></li>
 <li><p><code>–-grna_odm_fp</code>: file path to the <code>grna.odm</code> file.</p></li>
 <li><p><code>–-output_directory</code>: file path to the directory in which to write the outputs.</p></li>
-<li><p><code>--pipeline_stop</code>: the step at which to stop the pipeline, one of <code>set_analysis_parameters</code>, <code>assign_grnas</code>, <code>run_qc</code>, <code>run_calibration_check</code>, <code>run_power_check</code>, or <code>run_discovery_analysis</code>. If not supplied, defaults to <code>run_discovery_analysis</code>, causing the pipeline to run through to completion.</p></li>
+<li><p><code>--pipeline_stop</code>: the step at which to stop the pipeline, one of <code>set_analysis_parameters</code>, <code>assign_grnas</code>, <code>run_qc</code>, <code>run_calibration_check</code>, <code>run_power_check</code>, or <code>run_discovery_analysis</code>. If not supplied, defaults to <code>run_discovery_analysis</code>, causing the pipeline to run through to completion. (The available options in the context of a massive-scale <em>trans</em> analysis are <code>set_analysis_parameters</code>, <code>assign_grnas</code>, <code>run_qc</code>, and <code>run_discovery_analysis</code>.)</p></li>
 <li><p><code>--trial</code>: a flag that tells Nextflow to run the trial pipeline (as opposed to the full pipeline).</p></li>
 </ul>
 <p><strong>Set analysis parameters</strong></p>
@@ -437,19 +438,12 @@ workDir = 'path/to/directory/work'</code></pre>
 <li><p><code>--fit_parametric_curve</code>: a boolean (i.e., <code>true</code> or <code>false</code>) value indicating whether to fit a parametric curve to the null distribution of test statistics (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_parametric_curve" class="quarto-xref"><span>Section 2.8</span></a>).</p></li>
 <li><p><code>--multiple_testing_method</code>: the multiple testing correction procedure to adjust the p-values, one of <code>BH</code>, <code>bonferroni</code>, <code>holm</code>, <code>hochberg</code>, <code>hommel</code>, <code>BY</code>, <code>fdr</code>, or <code>none</code> (see <a href="set-analysis-parameters.html#sec-multiple_testing" class="quarto-xref"><span>Section 2.9</span></a>).</p></li>
 <li><p><code>--multiple_testing_alpha</code>: the nominal level of the multiple testing procedure. <code>multiple_testing_alpha</code> should a number in the interval [0,1] (for example <code>0.1</code> or <code>0.05</code>; see <a href="set-analysis-parameters.html#sec-multiple_testing" class="quarto-xref"><span>Section 2.9</span></a>).</p></li>
-<li><p><code>--discovery_pairs</code>: the discovery pairs to analyze (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_discovery_pairs" class="quarto-xref"><span>Section 2.2</span></a>). <code>discovery_pairs</code> should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file <code>~/discovery_pairs.rds</code>.</p></li>
-</ul>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>terminal</strong></pre>
-</div>
-<pre class="terminal" data-filename="terminal"><code>  Rscript -e "x &lt;- data.frame(grna_target = c('candidate_enh_1', 'candidate_enh_2'),
+<li><p><code>--discovery_pairs</code>: the discovery pairs to analyze (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_discovery_pairs" class="quarto-xref"><span>Section 2.2</span></a>). <code>discovery_pairs</code> should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file <code>~/discovery_pairs.rds</code>.</p>
+<pre><code>  Rscript -e "x &lt;- data.frame(grna_target = c('candidate_enh_1', 'candidate_enh_2'),
                               response_id = c('ENSG00000174529', 'ENSG00000143493'));
               saveRDS(x, '~/discovery_pairs.rds')"</code></pre>
-</div>
-<p>We then can pass this argument to the pipeline via <code>--discovery_pairs $HOME"/discovery_pairs.rds"</code>.</p>
-<ul>
-<li><code>--positive_control_pairs</code>: the positive control pairs to analyze (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_pc_pairs" class="quarto-xref"><span>Section 2.1</span></a>). This argument works similarly to the <code>discovery_pairs</code> argument.</li>
+<p>We then can pass this argument to the pipeline via <code>--discovery_pairs $HOME"/discovery_pairs.rds"</code>. To run a massive-scale <em>trans</em> analysis, users should pass <code>--discovery_pairs trans</code>; see <a href="pipeline-details.html#sec-massive_scale_trans_analysis" class="quarto-xref"><span>Section 8.4</span></a> for details.</p></li>
+<li><p><code>--positive_control_pairs</code>: the positive control pairs to analyze (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_pc_pairs" class="quarto-xref"><span>Section 2.1</span></a>). This argument works similarly to the <code>discovery_pairs</code> argument.</p></li>
 </ul>
 <p><strong>Assign gRNAs</strong></p>
 <p>The most important argument related to gRNA assignment is <code>grna_assignment_method</code>:</p>
@@ -497,18 +491,18 @@ workDir = 'path/to/directory/work'</code></pre>
 <p>Two arguments that control the degree of parallelization: <code>grna_pod_size</code> and <code>pair_pod_size</code>. The former argument relates to the gRNA-to-cell assignment step, and the latter argument relates to the target-to-response association testing steps (i.e., the calibration check, the power check, and the discovery analysis).</p>
 <ul>
 <li><p><code>--grna_pod_size</code>: the number of gRNAs to assign to each pod. Setting <code>grna_pod_size</code> to a large number (e.g., <code>500</code>) reduces the amount of parallelization, while setting <code>grna_pod_size</code> to a small number (e.g., <code>10</code>) increases the amount of parallelization. By default <code>grna_pod_size</code> is set to 150. <code>grna_pod_size</code> should be a positive integer.</p></li>
-<li><p><code>--pair_pod_size</code>: the number of target-response pairs to assign to each pod for each of the association analyses (i.e., calibration check, power check, and discovery analysis). Setting <code>pair_pod_size</code> to a large number (e.g., <code>50000</code>) reduces the amount of parallelization, while setting <code>pair_pod_size</code> to a small number (e.g., <code>500</code>) increases the amount of parallelization. By default <code>pair_pod_size</code> is set to <code>10000</code>. <code>pair_pod_size</code> should be a positive integer.</p></li>
+<li><p><code>--pair_pod_size</code>: the number of target-response pairs to assign to each pod for each of the association analyses (i.e., calibration check, power check, and discovery analysis). Setting <code>pair_pod_size</code> to a large (resp., small) number reduces (resp., increases) the amount of parallelization. By default <code>pair_pod_size</code> is set to <code>25000</code> (<code>500000</code> for a massive-scale <em>trans</em> analysis). <code>pair_pod_size</code> should be a positive integer.</p></li>
 </ul>
 <p><strong>Wall time requests</strong></p>
 <p>Each process within the <code>sceptre</code> Nextflow pipeline submits a wall time request to the scheduler. The wall time requests are set to conservative defaults, and most users will not need to interact with parameters related to time allocation. However, users may need to increase the wall time request of a given process if that process has been killed by the scheduler because it exceeded its time limit. Conversely, users might find that a given process spends too much time in the queue, in which case users might consider <em>decreasing</em> the wall time request of that process so as to increase its priority. All arguments related to time allocation should be supplied in the format <code>Xu</code>, where <code>X</code> is a positive number and <code>u</code> is a unit of time. For example <code>5s</code>, <code>5m</code>, and <code>5h</code> indicate five seconds, five minutes, and five hours, respectively.</p>
 <ul>
 <li><p><code>--set_analysis_parameters_time</code>: the amount of time requested for the “Set analysis parameters” process; default <code>15m</code> (i.e., 15 minutes).</p></li>
 <li><p><code>--prepare_assign_grnas_time</code>: the amount of time requested for the “Prepare assign gRNAs” process; default <code>15m</code>.</p></li>
-<li><p><code>--assign_grnas_time_per_grna</code>: the amount of time requested <em>per gRNA</em> for the “Assign gRNAs” process; default <code>5s</code>. <code>assign_grnas_time_per_grna</code> and <code>grna_pod_size</code> are multiplied to calculate the total amount of time requested for the “Assign gRNAs” process. For example, if <code>assign_grnas_time_per_grna</code> is set to <code>5s</code>, and if <code>grna_pod_size</code> is set to <code>200</code>, then 1000 seconds (i.e., ~17 minutes) is requested for the “Assign gRNAs” process.</p></li>
+<li><p><code>--assign_grnas_time_per_grna</code>: the amount of time requested <em>per gRNA</em> for the “Assign gRNAs” process; default <code>2s</code>. <code>assign_grnas_time_per_grna</code> and <code>grna_pod_size</code> are multiplied to calculate the total amount of time requested for the “Assign gRNAs” process. For example, if <code>assign_grnas_time_per_grna</code> is set to <code>5s</code>, and if <code>grna_pod_size</code> is set to <code>200</code>, then 1000 seconds (i.e., ~17 minutes) is requested for the “Assign gRNAs” process.</p></li>
 <li><p><code>--combine_assign_grnas_time</code>: the amount of time requested for the “Combine assign gRNAs” process; default <code>15m</code>.</p></li>
 <li><p><code>--run_qc_time</code>: the amount of time requested for the “Run QC” process; default <code>60m</code>.</p></li>
 <li><p><code>--prepare_association_analysis_time</code>: the amount of time requested for the “Prepare association analysis” process; default <code>15m</code>.</p></li>
-<li><p><code>--run_association_analysis_time_per_pair</code>: the amount of time requested <em>per pair</em> for the “Run calibration check,” “Run power check,” and “Run discovery analysis” processes; default <code>1s</code>. <code>run_association_analysis_time_per_pair</code> and <code>pair_pod_size</code> are multiplied to calculate the total amount of time requested for the association analysis processes.</p></li>
+<li><p><code>--run_association_analysis_time_per_pair</code>: the amount of time requested <em>per pair</em> for the “Run calibration check,” “Run power check,” and “Run discovery analysis” processes; default <code>0.1s</code>. <code>run_association_analysis_time_per_pair</code> and <code>pair_pod_size</code> are multiplied to calculate the total amount of time requested for the association analysis processes.</p></li>
 <li><p><code>--combine_association_analysis_time</code>: the amount of time requested for the “Combine calibration check,” “Combine power check,” and “Combine discovery analysis” processes; default <code>15m</code>.</p></li>
 </ul>
 <p><strong>Memory requests</strong></p>
@@ -518,10 +512,14 @@ workDir = 'path/to/directory/work'</code></pre>
 <li><p><code>--prepare_assign_grnas_memory</code>: the amount of memory requested for the “Prepare assign gRNAs” process; default <code>4GB</code>.</p></li>
 <li><p><code>--assign_grnas_memory</code>: the amount of memory requested for the “Assign gRNAs” process; default <code>4GB</code>.</p></li>
 <li><p><code>--combine_assign_grnas_memory</code>: the amount of memory requested for the “Combine assign gRNAs” process; default <code>4GB</code>.</p></li>
-<li><p><code>--run_qc_memory</code>: the amount of memory requested for the “Run QC” process; default <code>4GB</code>.</p></li>
+<li><p><code>--run_qc_memory</code>: the amount of memory requested for the “Run QC” process; default <code>8GB</code> (<code>4GB</code> when running a massive-scale <em>trans</em> analysis).</p></li>
 <li><p><code>--prepare_association_analysis_memory</code>: the amount of memory requested for the “Prepare association analysis” process; default <code>4GB</code>.</p></li>
 <li><p><code>--run_association_analysis_memory</code>: the amount of memory requested for the “Run association analysis” processes; default <code>4GB</code>.</p></li>
 <li><p><code>--combine_association_analysis_memory</code>: the amount of memory requested for the “Combine association analysis” processes; default <code>4GB</code>.</p></li>
+</ul>
+<p><strong>Miscellaneous</strong></p>
+<ul>
+<li><code>--use_parquet</code>: a boolean (i.e., <code>true</code> or <code>false</code>) indicating whether to write the results as <code>parquet</code> files (<code>true</code>) or <code>RDS</code> files (<code>false</code>) in the context of a massive-scale <em>trans</em> analysis (<a href="pipeline-details.html#sec-massive_scale_trans_analysis" class="quarto-xref"><span>Section 8.4</span></a>).</li>
 </ul>
 
 

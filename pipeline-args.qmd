@@ -4,7 +4,7 @@ This chapter provides instructions on downloading, installing, and configuring N
 
 ## Downloading, installing, and configuring Nextflow {#sec-install_nextflow}
 
-Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users need to install Nextflow on their local machine and on their cluster to work through the examples in this book. We encourage users to consult the extensive and high-quality [Nextflow documentation](https://www.nextflow.io/docs/latest/index.html) for guidance on using Nextflow. Here, we briefly describe how to download, install, and configure Nextflow. Users should carry out the following sequence of steps twice: once on their local machine and once on their cluster.
+Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local machine and on their cluster to work through the examples in this book. We encourage users to consult the extensive and high-quality [Nextflow documentation](https://www.nextflow.io/docs/latest/index.html) for guidance on using Nextflow. Here, we briefly describe how to download, install, and configure Nextflow. Users should carry out the following sequence of steps twice: once on their local machine and once on their cluster.
 
 ### Download and installation
 
@@ -14,7 +14,7 @@ Nextflow is a powerful and increasingly popular tool for orchestrating complex b
 curl -s "https://get.sdkman.io" | bash
 ```
 
-2. Close and open a new instance of terminal. Install Java. Nextflow requires a specific distribution of Java, which can be installed as follows.
+2.  Close and open a new instance of terminal. Install Java. Nextflow requires a specific distribution of Java, which can be installed as follows.
 
 ``` {.terminal filename="terminal"}
 sdk install java 17.0.6-amzn
@@ -91,9 +91,10 @@ process.executor = 'sge' # or 'slurm', etc.
 executor.queueSize = 100
 executor.submitRateLimit = '25 sec'
 workDir = 'path/to/directory/work'
+process.queue = 'name of queue'
 ```
 
-`process.executor` specifies the type of scheduler that your cluster uses. Options include `'sge'` for a Sun Grid Engine (i.e., `qsub`-based) scheduler and `'slurm'` for a SLURM (i.e., `sbatch`-based) scheduler. Next, `executor.queueSize` specifies the maximum number of jobs that can be queued simultaneously. Moreover, `executor.submitRateLimit` specifies the maximum number of jobs that can be submitted per unit time to the scheduler. For example, `'25 sec'` limits the submission rate to 25 jobs per second. Finally, `workDir` is a file path to the "work" directory, which is a directory that stores intermediate files. It is reasonable to create the "work" directory as a subdirectory of the dedicated "data" directory on your cluster.
+`process.executor` specifies the type of scheduler that your cluster uses. Options include `'sge'` for a Sun Grid Engine (i.e., `qsub`-based) scheduler and `'slurm'` for a SLURM (i.e., `sbatch`-based) scheduler. Next, `executor.queueSize` specifies the maximum number of jobs that can be queued simultaneously. Moreover, `executor.submitRateLimit` specifies the maximum number of jobs that can be submitted per unit time to the scheduler. For example, `'25 sec'` limits the submission rate to 25 jobs per second. Additionally, `workDir` is a file path to the "work" directory, which is a directory that stores intermediate files. It is reasonable to create the "work" directory as a subdirectory of the dedicated "data" directory on your cluster. Finally, it may be necessary to specify a the name of a queue (or partition) in which to run the jobs via the `process.queue` option.
 
 Like many Nextflow pipelines, the `sceptre` Nextflow pipeline uses the `time` and `memory` process directives to request a given amount of wall time and memory per process. Not all schedulers require that the user issue a wall time and/or memory allocation request when submitting a job. However, if your scheduler has this requirement, then Nextflow should be configured on your cluster such that the scheduler recognizes the `time` and `memory` process directives within a Nextflow script. It may be necessary to manually configure these directives using the `process.clusterOptions` setting within your Nextflow config file. For example, on an SGE scheduler, you may need to add the following line to your `~/.nextflow/config` file to ensure that the scheduler correctly handles memory allocation requests.
 
@@ -129,7 +130,7 @@ These basic parameters relate to the inputs and outputs of the pipeline. File pa
 
 -   `–-output_directory`: file path to the directory in which to write the outputs.
 
--   `--pipeline_stop`: the step at which to stop the pipeline, one of `set_analysis_parameters`, `assign_grnas`, `run_qc`, `run_calibration_check`, `run_power_check`, or `run_discovery_analysis`. If not supplied, defaults to `run_discovery_analysis`, causing the pipeline to run through to completion.
+-   `--pipeline_stop`: the step at which to stop the pipeline, one of `set_analysis_parameters`, `assign_grnas`, `run_qc`, `run_calibration_check`, `run_power_check`, or `run_discovery_analysis`. If not supplied, defaults to `run_discovery_analysis`, causing the pipeline to run through to completion. (The available options in the context of a massive-scale *trans* analysis are `set_analysis_parameters`, `assign_grnas`, `run_qc`, and `run_discovery_analysis`.)
 
 -   `--trial`: a flag that tells Nextflow to run the trial pipeline (as opposed to the full pipeline).
 
@@ -160,13 +161,13 @@ We then can pass this formula object as an argument to the pipeline via `--formu
 
 -   `--discovery_pairs`: the discovery pairs to analyze (see @sec-set_analysis_parameters_discovery_pairs). `discovery_pairs` should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file `~/discovery_pairs.rds`.
 
-``` {.terminal filename="terminal"}
-  Rscript -e "x <- data.frame(grna_target = c('candidate_enh_1', 'candidate_enh_2'),
-                              response_id = c('ENSG00000174529', 'ENSG00000143493'));
-              saveRDS(x, '~/discovery_pairs.rds')"
-```
+    ```         
+      Rscript -e "x <- data.frame(grna_target = c('candidate_enh_1', 'candidate_enh_2'),
+                                  response_id = c('ENSG00000174529', 'ENSG00000143493'));
+                  saveRDS(x, '~/discovery_pairs.rds')"
+    ```
 
-We then can pass this argument to the pipeline via `--discovery_pairs $HOME"/discovery_pairs.rds"`.
+    We then can pass this argument to the pipeline via `--discovery_pairs $HOME"/discovery_pairs.rds"`. To run a massive-scale *trans* analysis, users should pass `--discovery_pairs trans`; see @sec-massive_scale_trans_analysis for details.
 
 -   `--positive_control_pairs`: the positive control pairs to analyze (see @sec-set_analysis_parameters_pc_pairs). This argument works similarly to the `discovery_pairs` argument.
 
@@ -231,7 +232,7 @@ Two arguments that control the degree of parallelization: `grna_pod_size` and `p
 
 -   `--grna_pod_size`: the number of gRNAs to assign to each pod. Setting `grna_pod_size` to a large number (e.g., `500`) reduces the amount of parallelization, while setting `grna_pod_size` to a small number (e.g., `10`) increases the amount of parallelization. By default `grna_pod_size` is set to 150. `grna_pod_size` should be a positive integer.
 
--   `--pair_pod_size`: the number of target-response pairs to assign to each pod for each of the association analyses (i.e., calibration check, power check, and discovery analysis). Setting `pair_pod_size` to a large number (e.g., `50000`) reduces the amount of parallelization, while setting `pair_pod_size` to a small number (e.g., `500`) increases the amount of parallelization. By default `pair_pod_size` is set to `10000`. `pair_pod_size` should be a positive integer.
+-   `--pair_pod_size`: the number of target-response pairs to assign to each pod for each of the association analyses (i.e., calibration check, power check, and discovery analysis). Setting `pair_pod_size` to a large (resp., small) number reduces (resp., increases) the amount of parallelization. By default `pair_pod_size` is set to `25000` (`500000` for a massive-scale *trans* analysis). `pair_pod_size` should be a positive integer.
 
 **Wall time requests**
 
@@ -241,7 +242,7 @@ Each process within the `sceptre` Nextflow pipeline submits a wall time request 
 
 -   `--prepare_assign_grnas_time`: the amount of time requested for the "Prepare assign gRNAs" process; default `15m`.
 
--   `--assign_grnas_time_per_grna`: the amount of time requested *per gRNA* for the "Assign gRNAs" process; default `5s`. `assign_grnas_time_per_grna` and `grna_pod_size` are multiplied to calculate the total amount of time requested for the "Assign gRNAs" process. For example, if `assign_grnas_time_per_grna` is set to `5s`, and if `grna_pod_size` is set to `200`, then 1000 seconds (i.e., \~17 minutes) is requested for the "Assign gRNAs" process.
+-   `--assign_grnas_time_per_grna`: the amount of time requested *per gRNA* for the "Assign gRNAs" process; default `2s`. `assign_grnas_time_per_grna` and `grna_pod_size` are multiplied to calculate the total amount of time requested for the "Assign gRNAs" process. For example, if `assign_grnas_time_per_grna` is set to `5s`, and if `grna_pod_size` is set to `200`, then 1000 seconds (i.e., \~17 minutes) is requested for the "Assign gRNAs" process.
 
 -   `--combine_assign_grnas_time`: the amount of time requested for the "Combine assign gRNAs" process; default `15m`.
 
@@ -249,7 +250,7 @@ Each process within the `sceptre` Nextflow pipeline submits a wall time request 
 
 -   `--prepare_association_analysis_time`: the amount of time requested for the "Prepare association analysis" process; default `15m`.
 
--   `--run_association_analysis_time_per_pair`: the amount of time requested *per pair* for the "Run calibration check," "Run power check," and "Run discovery analysis" processes; default `1s`. `run_association_analysis_time_per_pair` and `pair_pod_size` are multiplied to calculate the total amount of time requested for the association analysis processes.
+-   `--run_association_analysis_time_per_pair`: the amount of time requested *per pair* for the "Run calibration check," "Run power check," and "Run discovery analysis" processes; default `0.1s`. `run_association_analysis_time_per_pair` and `pair_pod_size` are multiplied to calculate the total amount of time requested for the association analysis processes.
 
 -   `--combine_association_analysis_time`: the amount of time requested for the "Combine calibration check," "Combine power check," and "Combine discovery analysis" processes; default `15m`.
 
@@ -265,10 +266,14 @@ Each process within the Nextflow pipeline likewise submits a memory request to t
 
 -   `--combine_assign_grnas_memory`: the amount of memory requested for the "Combine assign gRNAs" process; default `4GB`.
 
--   `--run_qc_memory`: the amount of memory requested for the "Run QC" process; default `4GB`.
+-   `--run_qc_memory`: the amount of memory requested for the "Run QC" process; default `8GB` (`4GB` when running a massive-scale *trans* analysis).
 
 -   `--prepare_association_analysis_memory`: the amount of memory requested for the "Prepare association analysis" process; default `4GB`.
 
 -   `--run_association_analysis_memory`: the amount of memory requested for the "Run association analysis" processes; default `4GB`.
 
 -   `--combine_association_analysis_memory`: the amount of memory requested for the "Combine association analysis" processes; default `4GB`.
+
+**Miscellaneous**
+
+-   `--use_parquet`: a boolean (i.e., `true` or `false`) indicating whether to write the results as `parquet` files (`true`) or `RDS` files (`false`) in the context of a massive-scale *trans* analysis (@sec-massive_scale_trans_analysis).

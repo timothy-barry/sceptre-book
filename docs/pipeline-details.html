@@ -52,7 +52,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -272,6 +292,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#skipping-the-calibration-check" id="toc-skipping-the-calibration-check" class="nav-link" data-scroll-target="#skipping-the-calibration-check"><span class="header-section-number">8.3.3</span> Skipping the calibration check</a></li>
   </ul>
 </li>
+  <li>
+<a href="#sec-massive_scale_trans_analysis" id="toc-sec-massive_scale_trans_analysis" class="nav-link" data-scroll-target="#sec-massive_scale_trans_analysis"><span class="header-section-number">8.4</span> Massive-scale <em>trans</em> analysis</a>
+  <ul class="collapse">
+<li><a href="#software-installation" id="toc-software-installation" class="nav-link" data-scroll-target="#software-installation"><span class="header-section-number">8.4.1</span> Software installation</a></li>
+  <li><a href="#pipeline-structure" id="toc-pipeline-structure" class="nav-link" data-scroll-target="#pipeline-structure"><span class="header-section-number">8.4.2</span> Pipeline structure</a></li>
+  <li><a href="#preparing-and-launching-a-massive-scale-trans-analysis" id="toc-preparing-and-launching-a-massive-scale-trans-analysis" class="nav-link" data-scroll-target="#preparing-and-launching-a-massive-scale-trans-analysis"><span class="header-section-number">8.4.3</span> Preparing and launching a massive-scale <em>trans</em> analysis</a></li>
+  <li><a href="#interpreting-the-outputs" id="toc-interpreting-the-outputs" class="nav-link" data-scroll-target="#interpreting-the-outputs"><span class="header-section-number">8.4.4</span> Interpreting the outputs</a></li>
+  </ul>
+</li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -391,7 +420,7 @@ Tip
 </div>
 </section><section id="example-workflows" class="level2" data-number="8.3"><h2 data-number="8.3" class="anchored" data-anchor-id="example-workflows">
 <span class="header-section-number">8.3</span> Example workflows</h2>
-<p>We conclude with a few common workflows in the context of the <code>sceptre</code> Nextflow pipeline.</p>
+<p>We describe a few common workflows in the context of the <code>sceptre</code> Nextflow pipeline.</p>
 <section id="tweaking-the-pipeline-arguments-using-the-intermediate-results" class="level3" data-number="8.3.1"><h3 data-number="8.3.1" class="anchored" data-anchor-id="tweaking-the-pipeline-arguments-using-the-intermediate-results">
 <span class="header-section-number">8.3.1</span> Tweaking the pipeline arguments using the intermediate results</h3>
 <p>A common workflow is to advance through the pipeline one step at a time (<a href="at-scale.html#sec-incremental_pipeline" class="quarto-xref"><span>Section 7.9</span></a>), adjusting the input arguments as necessary on the basis of the intermediate outputs. For example, suppose that we decide to implement an aggressive cellwise QC strategy, setting <code>--response_n_umis_range_lower</code> and <code>--response_n_umis_range_uppper</code> to<code>0.2</code> and <code>0.8</code>, respectively, so as to clip the tails of the <code>response_n_umis</code> distribution at the 20th percentile and 80 percentile. Additionally, we set <code>--pipeline_stop</code> to <code>run_qc</code> to stop the pipeline at the “Run QC” step.</p>
@@ -485,7 +514,7 @@ Tip
 <span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a> <span class="at">-resume</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>This approach — i.e., passing a set of candidate arguments to the pipeline, examining the output of the pipeline, and then updating the candidate arguments as necessary — is generally useful strategy.</p>
+<p>This approach — i.e., passing a set of candidate arguments to the pipeline, examining the output of the pipeline, and then updating the candidate arguments as necessary — is applicable to all steps of the pipeline.</p>
 </section><section id="debugging-the-pipeline" class="level3" data-number="8.3.2"><h3 data-number="8.3.2" class="anchored" data-anchor-id="debugging-the-pipeline">
 <span class="header-section-number">8.3.2</span> Debugging the pipeline</h3>
 <p>The Nextflow pipeline may fail. This most commonly occurs when a process has exceeded its time and/or memory allocation. We provide an example of a pipeline failure and show how to resolve the failure. Consider the following submission script, in which we request only one MB of memory for the “Run association analysis” processes.</p>
@@ -612,8 +641,169 @@ Tip
 <span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a> <span class="at">--n_calibration_pairs</span> 0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section></section><section id="sec-massive_scale_trans_analysis" class="level2" data-number="8.4"><h2 data-number="8.4" class="anchored" data-anchor-id="sec-massive_scale_trans_analysis">
+<span class="header-section-number">8.4</span> Massive-scale <em>trans</em> analysis</h2>
+<p>The <code>sceptre</code> Nextflow pipeline provides a special option for carrying out a massive-scale <em>trans</em> analysis in which each target is tested for association against each response. We call this special option the <em>trans</em> interface to the pipeline. The <em>trans</em> interface is an appropriate strategy for conducting a <em>trans</em> analysis when the number of <em>trans</em> pairs (i.e., the number of targets times the number of responses) exceeds 10 million, which is the maximum number of pairs that the standard interface to the Nextflow pipeline (as described in <a href="at-scale.html#sec-import_data_into_odm_backed_sceptre_object" class="quarto-xref"><span>Section 7.1</span></a> — <a href="at-scale.html#sec-call_full_pipeline" class="quarto-xref"><span>Section 7.8</span></a>) can handle.</p>
+<section id="software-installation" class="level3" data-number="8.4.1"><h3 data-number="8.4.1" class="anchored" data-anchor-id="software-installation">
+<span class="header-section-number">8.4.1</span> Software installation</h3>
+<p>The <em>trans</em> interface to the pipeline depends on the <code>arrow</code> R package. <code>arrow</code> is a package for efficiently storing and manipulating large R data frames. The <code>arrow</code> package is used to store the results data frame (i.e., the data frame containing the p-values, estimated log fold changes, etc.). We recommend installing <code>arrow</code> both locally and on the cluster. Users can use the standard <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> function to install <code>arrow</code> locally.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>R, local</strong></pre>
+</div>
+<pre class="terminal" data-filename="R, local"><code>install.packages("arrow")</code></pre>
+</div>
+<p>Users can install <code>arrow</code> on the cluster as follows.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>R, cluster</strong></pre>
+</div>
+<pre class="terminal" data-filename="R, cluster"><code>Sys.setenv('NOT_CRAN' = 'true')
+install.packages('arrow', repos='http://cran.us.r-project.org')</code></pre>
+</div>
+</section><section id="pipeline-structure" class="level3" data-number="8.4.2"><h3 data-number="8.4.2" class="anchored" data-anchor-id="pipeline-structure">
+<span class="header-section-number">8.4.2</span> Pipeline structure</h3>
+<p><a href="#fig-pipeline_dag_trans" class="quarto-xref">Figure&nbsp;<span>8.3</span></a> displays the flow of information through the Nextflow pipeline in the context the <em>trans</em> interface. The <em>trans</em> interface differs from the standard interface (as depicted in <a href="#fig-pipeline_dag" class="quarto-xref">Figure&nbsp;<span>8.2</span></a>) in several ways. First, the <em>trans</em> interface does not involve carrying out a calibration check. (Indeed, we typically are less concerned about stringent calibration of the p-values far out into the tail of the distribution in the context of a massive-scale trans analysis.) Next, the <em>trans</em> interface does not distinguish between positive control pairs and discovery pairs; rather, <em>all</em> target-response pairs are analyzed as part of the discovery analysis step. Moreover, the <em>trans</em> interface separates cellwise QC from pairwise QC; cellwise QC is carried out immediately after the gRNA assignment step, while pairwise QC is performed as part of the discovery analysis step. Finally, the <em>trans</em> interface is parallelized at two points: the gRNA assignment step and the discovery analysis step.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-pipeline_dag_trans" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-pipeline_dag_trans-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="nextflow_dag_trans.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="620">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pipeline_dag_trans-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.3: A graph illustrating the flow of information through the Nextflow pipeline in the context of a massive-scale <em>trans</em> analysis.
+</figcaption></figure>
+</div>
+</div>
+</div>
+</section><section id="preparing-and-launching-a-massive-scale-trans-analysis" class="level3" data-number="8.4.3"><h3 data-number="8.4.3" class="anchored" data-anchor-id="preparing-and-launching-a-massive-scale-trans-analysis">
+<span class="header-section-number">8.4.3</span> Preparing and launching a massive-scale <em>trans</em> analysis</h3>
+<p>Using the <em>trans</em> interface to the Nextflow pipeline is similar to using the standard interface. In particular, one proceeds through the sequence of steps as outlined in sections <a href="at-scale.html#sec-import_data_into_odm_backed_sceptre_object" class="quarto-xref"><span>Section 7.1</span></a> — <a href="at-scale.html#sec-call_full_pipeline" class="quarto-xref"><span>Section 7.8</span></a>, with two small modifications. First, in setting the analysis parameters within the R console (<a href="at-scale.html#sec-at_scale_set_analysis_parameters" class="quarto-xref"><span>Section 7.3</span></a>), one does not specify a set of discovery pairs or positive control pairs to analyze. Rather, one leaves these arguments blank, as follows.</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu">set_analysis_parameters</span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
+<span>  side <span class="op">=</span> <span class="st">"both"</span>,</span>
+<span>  resampling_mechanism <span class="op">=</span> <span class="st">"permutations"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>(If one <em>does</em> specify a discovery pairs data frame or a positive control pairs data frame, these data frames are ignored.) Second, when invoking the Nextflow pipeline on the command line, one sets <code>--discovery_pairs</code> to <code>trans</code>, which tells the pipeline to run a <em>trans</em> discovery analysis. An example launch script is as follows. (See final line.)</p>
+<div class="cell">
+<details class="code-fold"><summary>Show code</summary><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Limit NF driver to 4 GB memory</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NXF_OPTS</span><span class="op">=</span><span class="st">"-Xms500M -Xmx4G"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># REQUIRED INPUT ARGUMENTS</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">##########################</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="va">data_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_data/"</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sceptre object</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="va">sceptre_object_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"sceptre_object.rds"</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co"># response ODM</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="va">response_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"gene.odm"</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># grna ODM</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="va">grna_odm_fp</span><span class="op">=</span><span class="va">$data_directory</span><span class="st">"grna.odm"</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">###################</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># OUTPUT DIRECTORY:</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">##################</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="va">output_directory</span><span class="op">=</span><span class="va">$HOME</span><span class="st">"/sceptre_outputs"</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Invoke pipeline</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co">#################</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="ex">nextflow</span> run timothy-barry/sceptre-pipeline <span class="at">-r</span> main <span class="dt">\</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a> <span class="at">--sceptre_object_fp</span> <span class="va">$sceptre_object_fp</span> <span class="dt">\</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a> <span class="at">--response_odm_fp</span> <span class="va">$response_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a> <span class="at">--grna_odm_fp</span> <span class="va">$grna_odm_fp</span> <span class="dt">\</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a> <span class="at">--output_directory</span> <span class="va">$output_directory</span> <span class="dt">\</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a> <span class="at">--discovery_pairs</span> trans</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Finally, one launches the pipeline as normal:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>terminal, local or cluster</strong></pre>
+</div>
+<pre class="terminal" data-filename="terminal, local or cluster"><code>qsub launch_script.sh
+# or sbatch launch_script.sh</code></pre>
+</div>
+<p>The <code>--pipeline_stop</code> argument takes four values in the context of the <em>trans</em> interface: <code>set_analysis_parameters</code>, <code>assign_grnas</code>, <code>run_qc</code>, and <code>run_discovery_analysis</code>. (<code>run_power_check</code> and <code>run_discovery_analysis</code> are not available as options.)</p>
+</section><section id="interpreting-the-outputs" class="level3" data-number="8.4.4"><h3 data-number="8.4.4" class="anchored" data-anchor-id="interpreting-the-outputs">
+<span class="header-section-number">8.4.4</span> Interpreting the outputs</h3>
+<p>The outputs of the pipeline are written to <code>output_directory</code>, which, in the above script, is set to <code>~/sceptre_outputs</code>. We used the <em>trans</em> interface to the Nextflow pipeline to conduct a <em>trans</em> analysis of one of the datasets published in <span class="citation" data-cites="replogle2022">Replogle et al. (<a href="references.html#ref-replogle2022" role="doc-biblioref">2022</a>)</span>. In particular, we analyzed the so-called “rd7” dataset, which contains 616,184 cells, 36,601 genes, and 5,086 targeting gRNAs spread across 2,384 genomic targets. (The code used to analyze these data is not shown in this book.) Upon completing the analysis, the Nextflow pipeline writes the following files to the <code>~/sceptre_outputs</code> directory.</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"~/sceptre_outputs"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "analysis_summary.txt"              "plot_covariates.png"              
+[3] "grna_assignment_matrix.rds"        "plot_grna_count_distributions.png"
+[5] "plot_assign_grnas.png"             "trans_results"                    
+[7] "plot_cellwise_qc.png"             </code></pre>
+</div>
+</div>
+<p>The files contained within this directory are similar to those outputted by the standard interface. In particular, <code>analysis_summary.txt</code> is a text file summarizing the analysis, <code>grna_assignment_matrix.rds</code> is a sparse, logical matrix containing the gRNA-to-cell assignments, etc. However, the <em>trans</em> interface to the pipeline does not (currently) render plots corresponding to the calibration check, power check, or discovery analysis. (Indeed, the <em>trans</em> interface does not carry out a calibration check or dedicated positive control analysis, and the discovery analysis might be so large that the corresponding plot is challenging to render.)</p>
+<p>The results of the discovery analysis are stored within the subdirectory <code>trans_results</code>. The results data frame is distributed across multiple <code>parquet</code> files, which is the file type used by the <code>arrow</code> package to store an R data frame. We print a few of the <code>parquet</code> files below.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"~/sceptre_outputs/trans_results"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "result_1.parquet"  "result_10.parquet" "result_11.parquet"
+ [4] "result_13.parquet" "result_14.parquet" "result_15.parquet"
+ [7] "result_16.parquet" "result_17.parquet" "result_18.parquet"
+[10] "result_19.parquet"</code></pre>
+</div>
+</div>
+<p>Each <code>parquet</code> file stores the results for a distinct set of target-response pairs. The simplest way to interact with the results is to call the <code>arrow</code> function <code><a href="https://arrow.apache.org/docs/r/reference/open_dataset.html">open_dataset()</a></code> on the “trans_results” directory, as follows.</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/apache/arrow/">arrow</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span><span class="va">ds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://arrow.apache.org/docs/r/reference/open_dataset.html">open_dataset</a></span><span class="op">(</span><span class="st">"~/sceptre_outputs/trans_results/"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>ds</code> is an object of class <code>"FileSystemDataset"</code>, which is an <code>arrow</code> class representing a data frame stored on-disk (as opposed to in-memory). We can interact with <code>ds</code> as if it were a standard R data frame using the <code>dplyr</code> verbs. For example, a common operation is to obtain the p-value and log fold change for all pairs containing a given <em>target</em>. We can do this as follows.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result_for_given_target</span> <span class="op">&lt;-</span> <span class="va">ds</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">grna_target</span> <span class="op">==</span> <span class="st">"ENSG00000094914"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">p_value</span>, <span class="va">log_2_fold_change</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p_value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html">collect</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Another common operation is to obtain the p-value and log fold change for all pairs containing a given <em>response</em>. We can do that as follows.</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result_for_given_response</span> <span class="op">&lt;-</span> <span class="va">ds</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">response_id</span> <span class="op">==</span> <span class="st">"ENSG00000130024"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">p_value</span>, <span class="va">log_2_fold_change</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p_value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html">collect</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The final verb in the chain of verbs always should be <code><a href="https://dplyr.tidyverse.org/reference/compute.html">dplyr::collect()</a></code>, which tells <code>arrow</code> to load the data frame into memory. Finally, we can load an individual <code>parqet</code> file into memory as a standard R data frame using the <code><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html">read_parquet()</a></code> function.</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html">read_parquet</a></span><span class="op">(</span></span>
+<span>  <span class="st">"~/sceptre_outputs/trans_results/result_1.parquet"</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We recommend that users consult the <a href="https://dplyr.tidyverse.org">dplyr package</a> and <a href="https://arrow.apache.org/docs/r/">arrow package</a> for more information on interracting with an <code>arrow</code> data frame using <code>dplyr</code> verbs.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <em>trans</em> interface to the Nextflow pipeline does not perform a multiplicity correction on the p-values. In particular, the p-values in the results data frame are unadjusted, and the results data frame does not contain a column <code>significant</code> indicating whether a given pair has been called as significant.</p>
+</div>
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-replogle2022" class="csl-entry" role="listitem">
+Replogle, Joseph M, Reuben A Saunders, Angela N Pogson, Jeffrey A Hussmann, Alexander Lenail, Alina Guna, Lauren Mascibroda, et al. 2022. <span>“Mapping Information-Rich Genotype-Phenotype Landscapes with Genome-Scale Perturb-Seq.”</span> <em>Cell</em> 185 (14): 2559–75.
+</div>
+</div>
 </section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
