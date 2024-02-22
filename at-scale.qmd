@@ -255,7 +255,7 @@ list.files("~/sceptre_outputs")
    "plot_grna_count_distributions.png", "plot_run_calibration_check.png",
    "plot_run_discovery_analysis.png", "plot_run_power_check.png", "plot_run_qc.png",
    "results_run_calibration_check.rds", "results_run_discovery_analysis.rds",
-   "results_run_power_check.rds")
+   "results_run_power_check.rds", "grna_assignment_matrix.rds")
 ```
 
 

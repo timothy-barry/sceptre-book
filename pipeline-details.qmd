@@ -328,7 +328,7 @@ The `sceptre` Nextflow pipeline provides a special option for carrying out a mas
 
 ### Software installation
 
-The *trans* interface to the pipeline depends on the `arrow` R package. `arrow` is a package for efficiently storing and manipulating large R data frames. The `arrow` package is used to store the results data frame (i.e., the data frame containing the p-values, estimated log fold changes, etc.). We recommend installing `arrow` both locally and on the cluster. Users can use the standard `install.packages()` function to install `arrow` locally.
+The *trans* interface to the pipeline depends on the `arrow` R package. `arrow` is a package for efficiently storing and manipulating large R data frames. We use `arrow` to store the results data frame (i.e., the data frame containing the p-values, estimated log fold changes, etc.). We recommend installing `arrow` both locally and on the cluster. Users can use the standard `install.packages()` function to install `arrow` locally.
 
 ``` {.terminal filename="R, local"}
 install.packages("arrow")
@@ -408,7 +408,7 @@ qsub launch_script.sh
 
 The `--pipeline_stop` argument takes four values in the context of the *trans* interface: `set_analysis_parameters`, `assign_grnas`, `run_qc`, and `run_discovery_analysis`. (`run_power_check` and `run_discovery_analysis` are not available as options.)
 
-### Interpreting the outputs
+### Working with the outputs
 
 The outputs of the pipeline are written to `output_directory`, which, in the above script, is set to `~/sceptre_outputs`. We used the *trans* interface to the Nextflow pipeline to conduct a *trans* analysis of one of the datasets published in @replogle2022. In particular, we analyzed the so-called "rd7" dataset, which contains 616,184 cells, 36,601 genes, and 5,086 targeting gRNAs spread across 2,384 genomic targets. (The code used to analyze these data is not shown in this book.) Upon completing the analysis, the Nextflow pipeline writes the following files to the `~/sceptre_outputs` directory.
 
@@ -419,13 +419,13 @@ list.files("~/sceptre_outputs")
 ```{r, echo=FALSE}
 files <- c("analysis_summary.txt", "plot_covariates.png", "grna_assignment_matrix.rds",
            "plot_grna_count_distributions.png", "plot_assign_grnas.png", "trans_results",
-           "plot_cellwise_qc.png")
+           "plot_cellwise_qc.png", "response_to_pod_map.rds")
 print(files)
 ```
 
-The files contained within this directory are similar to those outputted by the standard interface. In particular, `analysis_summary.txt` is a text file summarizing the analysis, `grna_assignment_matrix.rds` is a sparse, logical matrix containing the gRNA-to-cell assignments, etc. However, the *trans* interface to the pipeline does not (currently) render plots corresponding to the calibration check, power check, or discovery analysis. (Indeed, the *trans* interface does not carry out a calibration check or dedicated positive control analysis, and the discovery analysis might be so large that the corresponding plot is challenging to render.) 
+The files contained within this directory are similar to those outputted by the standard interface. In particular, `analysis_summary.txt` is a text file summarizing the analysis, `grna_assignment_matrix.rds` is a sparse, logical matrix containing the gRNA-to-cell assignments, etc. The *trans* interface to the pipeline does not (currently) render plots corresponding to the calibration check, power check, or discovery analysis. (Indeed, the *trans* interface does not carry out a calibration check or a dedicated positive control analysis, and the discovery analysis might be so large that the corresponding plot is challenging to render.)
 
-The results of the discovery analysis are stored within the subdirectory `trans_results`. The results data frame is distributed across multiple `parquet` files, which is the file type used by the `arrow` package to store an R data frame. We print a few of the `parquet` files below.
+The results of the discovery analysis are stored within the subdirectory `trans_results`. The results are distributed across multiple `parquet` files, which is the file type used by the `arrow` package to store data. We print a few of the `parquet` files below.
 
 ```{r, eval=FALSE}
 list.files("~/sceptre_outputs/trans_results") |> head(10)
@@ -446,24 +446,34 @@ ds <- open_dataset("~/sceptre_outputs/trans_results/")
 `ds` is an object of class `"FileSystemDataset"`, which is an `arrow` class representing a data frame stored on-disk (as opposed to in-memory). We can interact with `ds` as if it were a standard R data frame using the `dplyr` verbs. For example, a common operation is to obtain the p-value and log fold change for all pairs containing a given *target*. We can do this as follows.
 
 ```{r,eval=FALSE}
-result_for_given_target <- ds |>
+ds |>
   filter(grna_target == "ENSG00000094914") |> 
-  select(p_value, log_2_fold_change) |>
+  select(p_value, log_2_fold_change, response_id) |>
   arrange(p_value) |>
-  collect()
+  collect() |>
+  head()
 ```
 
-Another common operation is to obtain the p-value and log fold change for all pairs containing a given *response*. We can do that as follows.
+```{r,echo=FALSE}
+readRDS("rd7_result_for_given_target.rds")
+```
+
+The converse operation is to obtain the p-value and log fold change for all pairs containing a given *response*. We can do that as follows.
 
 ```{r,eval=FALSE}
-result_for_given_response <- ds |>
+ds |>
   filter(response_id == "ENSG00000130024") |> 
-  select(p_value, log_2_fold_change) |>
+  select(p_value, log_2_fold_change, grna_target) |>
   arrange(p_value) |>
-  collect()
+  collect() |>
+  head()
 ```
 
-The final verb in the chain of verbs always should be `dplyr::collect()`, which tells `arrow` to load the data frame into memory. Finally, we can load an individual `parqet` file into memory as a standard R data frame using the `read_parquet()` function.
+```{r,echo=FALSE}
+readRDS("rd7_result_for_given_response.rds")
+```
+
+The final verb in the chain of verbs always should be `collect()`, which tells `arrow` to load the data frame into memory. Finally, we can load an individual `parqet` file into memory as a standard R data frame using the `read_parquet()` function. The file `response_to_pod_map.rds` --- stored within the output directory --- contains a data frame mapping each response to the `.parquet` file that contains the results for pairs consisting of that response.
 
 ```{r,eval=FALSE}
 result_1 <- read_parquet(
@@ -474,5 +484,5 @@ result_1 <- read_parquet(
 We recommend that users consult the [dplyr package](https://dplyr.tidyverse.org) and [arrow package](https://arrow.apache.org/docs/r/) for more information on interracting with an `arrow` data frame using `dplyr` verbs.
 
 ::: callout-note
-The *trans* interface to the Nextflow pipeline does not perform a multiplicity correction on the p-values. In particular, the p-values in the results data frame are unadjusted, and the results data frame does not contain a column `significant` indicating whether a given pair has been called as significant.
+The *trans* interface to the Nextflow pipeline does not perform a multiplicity correction on the p-values. In particular, the p-values in the results data frame are unadjusted, and the results data frame does not contain a column `significant` indicating whether a given pair has been called as significant. The `set_analysis_parameter()` arguments `multiple_testing_method` and `multiple_testing_alpha` are ignored.
 :::

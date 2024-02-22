@@ -569,7 +569,7 @@ cd sceptre-pipeline/examples</code></pre>
  [5] "plot_run_calibration_check.png"     "plot_run_discovery_analysis.png"   
  [7] "plot_run_power_check.png"           "plot_run_qc.png"                   
  [9] "results_run_calibration_check.rds"  "results_run_discovery_analysis.rds"
-[11] "results_run_power_check.rds"       </code></pre>
+[11] "results_run_power_check.rds"        "grna_assignment_matrix.rds"        </code></pre>
 </div>
 </div>
 <p>An inspection of <code>analysis_summary.txt</code> indicates that 97 negative control pairs and 97 discovery pairs were analyzed. The trial Nextflow pipeline randomly samples 100 pairs from the discovery set, 100 pairs from the negative control set, and 100 pairs from the positive control set and subjects these pairs to analysis. (Some of the pairs may be filtered out by pairwise QC. Moreover, if any of the sets contains fewer than 100 pairs, then that entire set of pairs is analyzed.) If the trial pipeline runs without issue, one can proceed to the next step.</p>

@@ -298,7 +298,7 @@ div.csl-indent {
 <li><a href="#software-installation" id="toc-software-installation" class="nav-link" data-scroll-target="#software-installation"><span class="header-section-number">8.4.1</span> Software installation</a></li>
   <li><a href="#pipeline-structure" id="toc-pipeline-structure" class="nav-link" data-scroll-target="#pipeline-structure"><span class="header-section-number">8.4.2</span> Pipeline structure</a></li>
   <li><a href="#preparing-and-launching-a-massive-scale-trans-analysis" id="toc-preparing-and-launching-a-massive-scale-trans-analysis" class="nav-link" data-scroll-target="#preparing-and-launching-a-massive-scale-trans-analysis"><span class="header-section-number">8.4.3</span> Preparing and launching a massive-scale <em>trans</em> analysis</a></li>
-  <li><a href="#interpreting-the-outputs" id="toc-interpreting-the-outputs" class="nav-link" data-scroll-target="#interpreting-the-outputs"><span class="header-section-number">8.4.4</span> Interpreting the outputs</a></li>
+  <li><a href="#working-with-the-outputs" id="toc-working-with-the-outputs" class="nav-link" data-scroll-target="#working-with-the-outputs"><span class="header-section-number">8.4.4</span> Working with the outputs</a></li>
   </ul>
 </li>
   </ul></nav>
@@ -646,7 +646,7 @@ Tip
 <p>The <code>sceptre</code> Nextflow pipeline provides a special option for carrying out a massive-scale <em>trans</em> analysis in which each target is tested for association against each response. We call this special option the <em>trans</em> interface to the pipeline. The <em>trans</em> interface is an appropriate strategy for conducting a <em>trans</em> analysis when the number of <em>trans</em> pairs (i.e., the number of targets times the number of responses) exceeds 10 million, which is the maximum number of pairs that the standard interface to the Nextflow pipeline (as described in <a href="at-scale.html#sec-import_data_into_odm_backed_sceptre_object" class="quarto-xref"><span>Section 7.1</span></a> — <a href="at-scale.html#sec-call_full_pipeline" class="quarto-xref"><span>Section 7.8</span></a>) can handle.</p>
 <section id="software-installation" class="level3" data-number="8.4.1"><h3 data-number="8.4.1" class="anchored" data-anchor-id="software-installation">
 <span class="header-section-number">8.4.1</span> Software installation</h3>
-<p>The <em>trans</em> interface to the pipeline depends on the <code>arrow</code> R package. <code>arrow</code> is a package for efficiently storing and manipulating large R data frames. The <code>arrow</code> package is used to store the results data frame (i.e., the data frame containing the p-values, estimated log fold changes, etc.). We recommend installing <code>arrow</code> both locally and on the cluster. Users can use the standard <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> function to install <code>arrow</code> locally.</p>
+<p>The <em>trans</em> interface to the pipeline depends on the <code>arrow</code> R package. <code>arrow</code> is a package for efficiently storing and manipulating large R data frames. We use <code>arrow</code> to store the results data frame (i.e., the data frame containing the p-values, estimated log fold changes, etc.). We recommend installing <code>arrow</code> both locally and on the cluster. Users can use the standard <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages()</a></code> function to install <code>arrow</code> locally.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R, local</strong></pre>
@@ -728,8 +728,8 @@ Figure&nbsp;8.3: A graph illustrating the flow of information through the Nextfl
 # or sbatch launch_script.sh</code></pre>
 </div>
 <p>The <code>--pipeline_stop</code> argument takes four values in the context of the <em>trans</em> interface: <code>set_analysis_parameters</code>, <code>assign_grnas</code>, <code>run_qc</code>, and <code>run_discovery_analysis</code>. (<code>run_power_check</code> and <code>run_discovery_analysis</code> are not available as options.)</p>
-</section><section id="interpreting-the-outputs" class="level3" data-number="8.4.4"><h3 data-number="8.4.4" class="anchored" data-anchor-id="interpreting-the-outputs">
-<span class="header-section-number">8.4.4</span> Interpreting the outputs</h3>
+</section><section id="working-with-the-outputs" class="level3" data-number="8.4.4"><h3 data-number="8.4.4" class="anchored" data-anchor-id="working-with-the-outputs">
+<span class="header-section-number">8.4.4</span> Working with the outputs</h3>
 <p>The outputs of the pipeline are written to <code>output_directory</code>, which, in the above script, is set to <code>~/sceptre_outputs</code>. We used the <em>trans</em> interface to the Nextflow pipeline to conduct a <em>trans</em> analysis of one of the datasets published in <span class="citation" data-cites="replogle2022">Replogle et al. (<a href="references.html#ref-replogle2022" role="doc-biblioref">2022</a>)</span>. In particular, we analyzed the so-called “rd7” dataset, which contains 616,184 cells, 36,601 genes, and 5,086 targeting gRNAs spread across 2,384 genomic targets. (The code used to analyze these data is not shown in this book.) Upon completing the analysis, the Nextflow pipeline writes the following files to the <code>~/sceptre_outputs</code> directory.</p>
 <div class="cell">
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"~/sceptre_outputs"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -739,11 +739,11 @@ Figure&nbsp;8.3: A graph illustrating the flow of information through the Nextfl
 <pre><code>[1] "analysis_summary.txt"              "plot_covariates.png"              
 [3] "grna_assignment_matrix.rds"        "plot_grna_count_distributions.png"
 [5] "plot_assign_grnas.png"             "trans_results"                    
-[7] "plot_cellwise_qc.png"             </code></pre>
+[7] "plot_cellwise_qc.png"              "response_to_pod_map.rds"          </code></pre>
 </div>
 </div>
-<p>The files contained within this directory are similar to those outputted by the standard interface. In particular, <code>analysis_summary.txt</code> is a text file summarizing the analysis, <code>grna_assignment_matrix.rds</code> is a sparse, logical matrix containing the gRNA-to-cell assignments, etc. However, the <em>trans</em> interface to the pipeline does not (currently) render plots corresponding to the calibration check, power check, or discovery analysis. (Indeed, the <em>trans</em> interface does not carry out a calibration check or dedicated positive control analysis, and the discovery analysis might be so large that the corresponding plot is challenging to render.)</p>
-<p>The results of the discovery analysis are stored within the subdirectory <code>trans_results</code>. The results data frame is distributed across multiple <code>parquet</code> files, which is the file type used by the <code>arrow</code> package to store an R data frame. We print a few of the <code>parquet</code> files below.</p>
+<p>The files contained within this directory are similar to those outputted by the standard interface. In particular, <code>analysis_summary.txt</code> is a text file summarizing the analysis, <code>grna_assignment_matrix.rds</code> is a sparse, logical matrix containing the gRNA-to-cell assignments, etc. The <em>trans</em> interface to the pipeline does not (currently) render plots corresponding to the calibration check, power check, or discovery analysis. (Indeed, the <em>trans</em> interface does not carry out a calibration check or a dedicated positive control analysis, and the discovery analysis might be so large that the corresponding plot is challenging to render.)</p>
+<p>The results of the discovery analysis are stored within the subdirectory <code>trans_results</code>. The results are distributed across multiple <code>parquet</code> files, which is the file type used by the <code>arrow</code> package to store data. We print a few of the <code>parquet</code> files below.</p>
 <div class="cell">
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"~/sceptre_outputs/trans_results"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -763,23 +763,47 @@ Figure&nbsp;8.3: A graph illustrating the flow of information through the Nextfl
 </div>
 <p><code>ds</code> is an object of class <code>"FileSystemDataset"</code>, which is an <code>arrow</code> class representing a data frame stored on-disk (as opposed to in-memory). We can interact with <code>ds</code> as if it were a standard R data frame using the <code>dplyr</code> verbs. For example, a common operation is to obtain the p-value and log fold change for all pairs containing a given <em>target</em>. We can do this as follows.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result_for_given_target</span> <span class="op">&lt;-</span> <span class="va">ds</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ds</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">grna_target</span> <span class="op">==</span> <span class="st">"ENSG00000094914"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">p_value</span>, <span class="va">log_2_fold_change</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">p_value</span>, <span class="va">log_2_fold_change</span>, <span class="va">response_id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p_value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html">collect</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Another common operation is to obtain the p-value and log fold change for all pairs containing a given <em>response</em>. We can do that as follows.</p>
 <div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result_for_given_response</span> <span class="op">&lt;-</span> <span class="va">ds</span> <span class="op">|&gt;</span></span>
+<div class="cell-output cell-output-stdout">
+<pre><code>      response_id      p_value log_2_fold_change
+1 ENSG00000183833 2.636215e-05         2.3685055
+2 ENSG00000103037 3.272519e-05         1.4391586
+3 ENSG00000106034 8.000000e-05         2.6024898
+4 ENSG00000213015 9.815693e-05         0.4922026
+5 ENSG00000100097 1.034180e-04         0.1332239
+6 ENSG00000067560 1.911778e-04         0.2658772</code></pre>
+</div>
+</div>
+<p>The converse operation is to obtain the p-value and log fold change for all pairs containing a given <em>response</em>. We can do that as follows.</p>
+<div class="cell">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ds</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">response_id</span> <span class="op">==</span> <span class="st">"ENSG00000130024"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">p_value</span>, <span class="va">log_2_fold_change</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">p_value</span>, <span class="va">log_2_fold_change</span>, <span class="va">grna_target</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">p_value</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html">collect</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The final verb in the chain of verbs always should be <code><a href="https://dplyr.tidyverse.org/reference/compute.html">dplyr::collect()</a></code>, which tells <code>arrow</code> to load the data frame into memory. Finally, we can load an individual <code>parqet</code> file into memory as a standard R data frame using the <code><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html">read_parquet()</a></code> function.</p>
 <div class="cell">
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html">read_parquet</a></span><span class="op">(</span></span>
+<div class="cell-output cell-output-stdout">
+<pre><code>      grna_target      p_value log_2_fold_change
+1 ENSG00000120948 1.627334e-09         0.3498972
+2 ENSG00000165819 3.809799e-07        -1.3201363
+3 ENSG00000175390 8.907555e-06         2.1186307
+4 ENSG00000110713 4.895796e-05         0.9468392
+5 ENSG00000146457 5.699367e-05        -0.6973474
+6 ENSG00000110321 7.144978e-05         0.7306015</code></pre>
+</div>
+</div>
+<p>The final verb in the chain of verbs always should be <code><a href="https://dplyr.tidyverse.org/reference/compute.html">collect()</a></code>, which tells <code>arrow</code> to load the data frame into memory. Finally, we can load an individual <code>parqet</code> file into memory as a standard R data frame using the <code><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html">read_parquet()</a></code> function. The file <code>response_to_pod_map.rds</code> — stored within the output directory — contains a data frame mapping each response to the <code>.parquet</code> file that contains the results for pairs consisting of that response.</p>
+<div class="cell">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://arrow.apache.org/docs/r/reference/read_parquet.html">read_parquet</a></span><span class="op">(</span></span>
 <span>  <span class="st">"~/sceptre_outputs/trans_results/result_1.parquet"</span></span>
 <span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -794,7 +818,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The <em>trans</em> interface to the Nextflow pipeline does not perform a multiplicity correction on the p-values. In particular, the p-values in the results data frame are unadjusted, and the results data frame does not contain a column <code>significant</code> indicating whether a given pair has been called as significant.</p>
+<p>The <em>trans</em> interface to the Nextflow pipeline does not perform a multiplicity correction on the p-values. In particular, the p-values in the results data frame are unadjusted, and the results data frame does not contain a column <code>significant</code> indicating whether a given pair has been called as significant. The <code>set_analysis_parameter()</code> arguments <code>multiple_testing_method</code> and <code>multiple_testing_alpha</code> are ignored.</p>
 </div>
 </div>
 

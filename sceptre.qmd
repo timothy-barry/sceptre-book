@@ -393,7 +393,7 @@ write_outputs_to_directory(
 )
 ```
 
-`write_outputs_to_directory()` writes several files to the specified directory: a text-based summary of the analysis ("analysis_summary.txt"), the various plots ("\*.png"), and the calibration check, power check, and discovery analysis results ("results_run_calibration_check.rds," "results_run_power_check.rds," and "results_run_discovery_analysis.rds," respectively).
+`write_outputs_to_directory()` writes several files to the specified directory: a text-based summary of the analysis ("analysis_summary.txt"), the various plots ("\*.png"), the calibration check, power check, discovery analysis results ("results_run_calibration_check.rds," "results_run_power_check.rds," and "results_run_discovery_analysis.rds," respectively), and the binary gRNA-to-cell assignment matrix ("grna_assignment_matrix.rds").
 
 ```{r}
 list.files("~/sceptre_outputs")
