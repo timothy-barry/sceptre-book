@@ -502,7 +502,7 @@ process.queue = 'name of queue'</code></pre>
 <li><p><code>--combine_assign_grnas_time</code>: the amount of time requested for the “Combine assign gRNAs” process; default <code>15m</code>.</p></li>
 <li><p><code>--run_qc_time</code>: the amount of time requested for the “Run QC” process; default <code>60m</code>.</p></li>
 <li><p><code>--prepare_association_analysis_time</code>: the amount of time requested for the “Prepare association analysis” process; default <code>15m</code>.</p></li>
-<li><p><code>--run_association_analysis_time_per_pair</code>: the amount of time requested <em>per pair</em> for the “Run calibration check,” “Run power check,” and “Run discovery analysis” processes; default <code>0.1s</code>. <code>run_association_analysis_time_per_pair</code> and <code>pair_pod_size</code> are multiplied to calculate the total amount of time requested for the association analysis processes.</p></li>
+<li><p><code>--run_association_analysis_time_per_pair</code>: the amount of time requested <em>per pair</em> for the “Run calibration check,” “Run power check,” and “Run discovery analysis” processes; default <code>0.05s</code>. <code>run_association_analysis_time_per_pair</code> and <code>pair_pod_size</code> are multiplied to calculate the total amount of time requested for the association analysis processes.</p></li>
 <li><p><code>--combine_association_analysis_time</code>: the amount of time requested for the “Combine calibration check,” “Combine power check,” and “Combine discovery analysis” processes; default <code>15m</code>.</p></li>
 </ul>
 <p><strong>Memory requests</strong></p>

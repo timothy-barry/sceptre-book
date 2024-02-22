@@ -250,7 +250,7 @@ Each process within the `sceptre` Nextflow pipeline submits a wall time request 
 
 -   `--prepare_association_analysis_time`: the amount of time requested for the "Prepare association analysis" process; default `15m`.
 
--   `--run_association_analysis_time_per_pair`: the amount of time requested *per pair* for the "Run calibration check," "Run power check," and "Run discovery analysis" processes; default `0.1s`. `run_association_analysis_time_per_pair` and `pair_pod_size` are multiplied to calculate the total amount of time requested for the association analysis processes.
+-   `--run_association_analysis_time_per_pair`: the amount of time requested *per pair* for the "Run calibration check," "Run power check," and "Run discovery analysis" processes; default `0.05s`. `run_association_analysis_time_per_pair` and `pair_pod_size` are multiplied to calculate the total amount of time requested for the association analysis processes.
 
 -   `--combine_association_analysis_time`: the amount of time requested for the "Combine calibration check," "Combine power check," and "Combine discovery analysis" processes; default `15m`.
 
