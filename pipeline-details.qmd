@@ -484,5 +484,5 @@ result_1 <- read_parquet(
 We recommend that users consult the [dplyr package](https://dplyr.tidyverse.org) and [arrow package](https://arrow.apache.org/docs/r/) for more information on interracting with an `arrow` data frame using `dplyr` verbs.
 
 ::: callout-note
-The *trans* interface to the Nextflow pipeline does not perform a multiplicity correction on the p-values. In particular, the p-values in the results data frame are unadjusted, and the results data frame does not contain a column `significant` indicating whether a given pair has been called as significant. The `set_analysis_parameter()` arguments `multiple_testing_method` and `multiple_testing_alpha` are ignored.
+The *trans* interface to the Nextflow pipeline does not perform a multiplicity correction on the p-values. In particular, the p-values in the results data frame are unadjusted, and the results data frame does not contain a column `significant` indicating whether a given pair has been called as significant. Additionally, the `set_analysis_parameter()` arguments `multiple_testing_method` and `multiple_testing_alpha` are ignored.
 :::

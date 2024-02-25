@@ -277,3 +277,52 @@ Each process within the Nextflow pipeline likewise submits a memory request to t
 **Miscellaneous**
 
 -   `--use_parquet`: a boolean (i.e., `true` or `false`) indicating whether to write the results as `parquet` files (`true`) or `RDS` files (`false`) in the context of a massive-scale *trans* analysis (@sec-massive_scale_trans_analysis).
+
+## Analyzing an `ondisc`-backed `sceptre_object` within the R console {#sec-analyze_odm_within_r}
+
+Users can analyze an `ondisc`-backed `sceptre_object` within the R console (as opposed to via the Nextflow pipeline). This solution is most appropriate when the data are big but the number of target-response pairs to be analyzed is not too large. Below, we use the function `import_data_from_cellranger()` (setting `use_ondisc` to `TRUE`) to create an `ondisc`-backed `sceptre_object` containing the example high-MOI data. We then proceed through a minimal version of the pipeline normally.
+
+```{r, results="hide",message=FALSE,warning=FALSE}
+# create an ondisc-backed sceptre object
+library(sceptre)
+directories <- paste0(
+  system.file("extdata", package = "sceptre"),
+  "/highmoi_example/gem_group_", 1:2
+)
+data(grna_target_data_frame_highmoi)
+sceptre_object <- import_data_from_cellranger(
+  directories = directories,
+  moi = "high",
+  grna_target_data_frame = grna_target_data_frame_highmoi,
+  use_ondisc = TRUE,
+  directory_to_write = tempdir()
+)
+
+# apply the pipeline functions to the sceptre_object in order
+discovery_pairs <- construct_cis_pairs(sceptre_object)
+sceptre_object <- sceptre_object |>
+  set_analysis_parameters(discovery_pairs = discovery_pairs,
+                          resampling_mechanism = "permutations") |>
+  run_discovery_analysis()
+```
+
+Next, to analyze the example low-MOI CRISPRko data, we first create an `ondisc`-backed `sceptre_object` from a collection of R objects via the function `import_data()` (setting `use_ondisc` to `TRUE`). We then proceed through the pipeline in the standard way.
+
+```{r, results="hide",message=FALSE,warning=FALSE}
+data(lowmoi_example_data)
+sceptre_object <- import_data(
+  response_matrix = lowmoi_example_data$response_matrix,
+  grna_matrix = lowmoi_example_data$grna_matrix,
+  extra_covariates = lowmoi_example_data$extra_covariates,
+  grna_target_data_frame = lowmoi_example_data$grna_target_data_frame,
+  moi = "low",
+  use_ondisc = TRUE,
+  directory_to_write = tempdir()
+)
+
+# apply the pipeline functions to the sceptre_object in order
+discovery_pairs <- construct_trans_pairs(sceptre_object)
+sceptre_object <- sceptre_object |>
+  set_analysis_parameters(discovery_pairs = discovery_pairs) |>
+  run_discovery_analysis()
+```

@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.4.549">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
-
 <title>Hands-On Single-Cell CRISPR Screen Analysis - 9&nbsp; Addendum: Nextflow intallation, pipeline arguments</title>
 <style>
 code{white-space: pre-wrap;}
@@ -21,8 +18,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
-
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -42,8 +72,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -69,18 +98,12 @@ ul.task-list li input[type="checkbox"] {
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-
-
-<link rel="stylesheet" href="custom.css">
+}</script><link rel="stylesheet" href="custom.css">
 </head>
-
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
@@ -91,16 +114,11 @@ ul.task-list li input[type="checkbox"] {
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
-      <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
-      </a>
+      <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
@@ -115,7 +133,7 @@ ul.task-list li input[type="checkbox"] {
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Welcome</span></a>
@@ -135,8 +153,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./import-data.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
@@ -173,7 +191,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
@@ -182,8 +200,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./at-scale.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to the Nextflow pipeline</span></span></a>
@@ -202,7 +220,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
  <span class="menu-text">Part III. Methods and algorithms</span></span>
@@ -215,8 +233,8 @@ ul.task-list li input[type="checkbox"] {
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
@@ -235,36 +253,37 @@ ul.task-list li input[type="checkbox"] {
   </div>
 </li>
       </ul>
-  </li>
+</li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-install_nextflow" id="toc-sec-install_nextflow" class="nav-link active" data-scroll-target="#sec-install_nextflow"><span class="header-section-number">9.1</span> Downloading, installing, and configuring Nextflow</a>
+<li>
+<a href="#sec-install_nextflow" id="toc-sec-install_nextflow" class="nav-link active" data-scroll-target="#sec-install_nextflow"><span class="header-section-number">9.1</span> Downloading, installing, and configuring Nextflow</a>
   <ul class="collapse">
-  <li><a href="#download-and-installation" id="toc-download-and-installation" class="nav-link" data-scroll-target="#download-and-installation"><span class="header-section-number">9.1.1</span> Download and installation</a></li>
+<li><a href="#download-and-installation" id="toc-download-and-installation" class="nav-link" data-scroll-target="#download-and-installation"><span class="header-section-number">9.1.1</span> Download and installation</a></li>
   <li><a href="#configuration" id="toc-configuration" class="nav-link" data-scroll-target="#configuration"><span class="header-section-number">9.1.2</span> Configuration</a></li>
-  </ul></li>
-  <li><a href="#sec-nf_pipeline_args" id="toc-sec-nf_pipeline_args" class="nav-link" data-scroll-target="#sec-nf_pipeline_args"><span class="header-section-number">9.2</span> Arguments to the Nextflow pipeline</a>
-  <ul class="collapse">
-  <li><a href="#sec-pipeline_statistical_args" id="toc-sec-pipeline_statistical_args" class="nav-link" data-scroll-target="#sec-pipeline_statistical_args"><span class="header-section-number">9.2.1</span> Statistical arguments</a></li>
-  <li><a href="#sec-pipeline_computational_args" id="toc-sec-pipeline_computational_args" class="nav-link" data-scroll-target="#sec-pipeline_computational_args"><span class="header-section-number">9.2.2</span> Computational arguments</a></li>
-  </ul></li>
   </ul>
-</nav>
+</li>
+  <li>
+<a href="#sec-nf_pipeline_args" id="toc-sec-nf_pipeline_args" class="nav-link" data-scroll-target="#sec-nf_pipeline_args"><span class="header-section-number">9.2</span> Arguments to the Nextflow pipeline</a>
+  <ul class="collapse">
+<li><a href="#sec-pipeline_statistical_args" id="toc-sec-pipeline_statistical_args" class="nav-link" data-scroll-target="#sec-pipeline_statistical_args"><span class="header-section-number">9.2.1</span> Statistical arguments</a></li>
+  <li><a href="#sec-pipeline_computational_args" id="toc-sec-pipeline_computational_args" class="nav-link" data-scroll-target="#sec-pipeline_computational_args"><span class="header-section-number">9.2.2</span> Computational arguments</a></li>
+  </ul>
+</li>
+  <li><a href="#sec-analyze_odm_within_r" id="toc-sec-analyze_odm_within_r" class="nav-link" data-scroll-target="#sec-analyze_odm_within_r"><span class="header-section-number">9.3</span> Analyzing an <code>ondisc</code>-backed <code>sceptre_object</code> within the R console</a></li>
+  </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html">Part II. At-scale sceptre</a></li><li class="breadcrumb-item"><a href="./pipeline-args.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow intallation, pipeline arguments</span></a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow intallation, pipeline arguments</span></h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./at-scale.html">Part II. At-scale sceptre</a></li><li class="breadcrumb-item"><a href="./pipeline-args.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow intallation, pipeline arguments</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title">
+<span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow intallation, pipeline arguments</span>
+</h1>
 </div>
 
 
@@ -278,15 +297,12 @@ ul.task-list li input[type="checkbox"] {
   
 
 
-</header>
-
-
-<p>This chapter provides instructions on downloading, installing, and configuring Nextflow. It also enumerates and describes each of the arguments that can be passed to the Nextflow pipeline.</p>
-<section id="sec-install_nextflow" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="sec-install_nextflow"><span class="header-section-number">9.1</span> Downloading, installing, and configuring Nextflow</h2>
+</header><p>This chapter provides instructions on downloading, installing, and configuring Nextflow. It also enumerates and describes each of the arguments that can be passed to the Nextflow pipeline.</p>
+<section id="sec-install_nextflow" class="level2" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="sec-install_nextflow">
+<span class="header-section-number">9.1</span> Downloading, installing, and configuring Nextflow</h2>
 <p>Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local machine and on their cluster to work through the examples in this book. We encourage users to consult the extensive and high-quality <a href="https://www.nextflow.io/docs/latest/index.html">Nextflow documentation</a> for guidance on using Nextflow. Here, we briefly describe how to download, install, and configure Nextflow. Users should carry out the following sequence of steps twice: once on their local machine and once on their cluster.</p>
-<section id="download-and-installation" class="level3" data-number="9.1.1">
-<h3 data-number="9.1.1" class="anchored" data-anchor-id="download-and-installation"><span class="header-section-number">9.1.1</span> Download and installation</h3>
+<section id="download-and-installation" class="level3" data-number="9.1.1"><h3 data-number="9.1.1" class="anchored" data-anchor-id="download-and-installation">
+<span class="header-section-number">9.1.1</span> Download and installation</h3>
 <ol type="1">
 <li>Install SDKMAN!, a system for installing and managing software.</li>
 </ol>
@@ -373,9 +389,8 @@ cite doi:10.1038/nbt.3820
 http://nextflow.io</code></pre>
 </div>
 <p>This indicates that Nextflow has been installed successfully.</p>
-</section>
-<section id="configuration" class="level3" data-number="9.1.2">
-<h3 data-number="9.1.2" class="anchored" data-anchor-id="configuration"><span class="header-section-number">9.1.2</span> Configuration</h3>
+</section><section id="configuration" class="level3" data-number="9.1.2"><h3 data-number="9.1.2" class="anchored" data-anchor-id="configuration">
+<span class="header-section-number">9.1.2</span> Configuration</h3>
 <p>Nextflow should work without further configuration on a local machine. Configuring Nextflow to run on a cluster is somewhat more involved. First, create a Nextflow config file, which is a file that specifies how Nextflow is to interact with the scheduler on your cluster.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
@@ -400,13 +415,11 @@ process.queue = 'name of queue'</code></pre>
 <p>The corresponding command for a SLURM scheduler is as follows.</p>
 <pre><code>process.clusterOptions = { task.memory ? "--mem=${task.memory.toGiga()}G" : "" }</code></pre>
 <p>Configuring Nextflow on a given cluster often takes a bit of effort, but fortunately, this task only needs to be completed once. For help with Nextflow configuration, we recommend reading through the Nextflow documentation, contacting a cluster administrator, pinging the (very helpful and responsive) Nextflow community (for example on <a href="https://github.com/nextflow-io/nextflow/issues">Github issues</a>), or consulting with ChatGPT (seriously; it seems to know a lot about Nextflow). Finally, a couple helpful blog posts on the Nextflow website are located <a href="https://www.nextflow.io/blog/2021/5_tips_for_hpc_users.html">here</a> and <a href="https://nextflow.io/blog/2024/optimizing-nextflow-for-hpc-and-cloud-at-scale.html">here</a>.</p>
-</section>
-</section>
-<section id="sec-nf_pipeline_args" class="level2" data-number="9.2">
-<h2 data-number="9.2" class="anchored" data-anchor-id="sec-nf_pipeline_args"><span class="header-section-number">9.2</span> Arguments to the Nextflow pipeline</h2>
+</section></section><section id="sec-nf_pipeline_args" class="level2" data-number="9.2"><h2 data-number="9.2" class="anchored" data-anchor-id="sec-nf_pipeline_args">
+<span class="header-section-number">9.2</span> Arguments to the Nextflow pipeline</h2>
 <p>We enumerate and describe each of the command line arguments that can be passed to the <code>sceptre</code> Nextflow pipeline. We partition the arguments into “statistical” (<a href="#sec-pipeline_statistical_args" class="quarto-xref"><span>Section 9.2.1</span></a>) and “computational” (<a href="#sec-pipeline_computational_args" class="quarto-xref"><span>Section 9.2.2</span></a>) categories.</p>
-<section id="sec-pipeline_statistical_args" class="level3" data-number="9.2.1">
-<h3 data-number="9.2.1" class="anchored" data-anchor-id="sec-pipeline_statistical_args"><span class="header-section-number">9.2.1</span> Statistical arguments</h3>
+<section id="sec-pipeline_statistical_args" class="level3" data-number="9.2.1"><h3 data-number="9.2.1" class="anchored" data-anchor-id="sec-pipeline_statistical_args">
+<span class="header-section-number">9.2.1</span> Statistical arguments</h3>
 <p>Within the “statistical” category, we further divide the arguments into subcategories based on the step within the pipeline to which the argument applies.</p>
 <p><strong>Input/output parameters</strong></p>
 <p>These basic parameters relate to the inputs and outputs of the pipeline. File paths should be absolute rather than relative. (Thus, users should specify file paths in terms of <code>$HOME</code> rather than the shorthand <code>~</code>.)</p>
@@ -438,17 +451,20 @@ process.queue = 'name of queue'</code></pre>
 <li><p><code>--fit_parametric_curve</code>: a boolean (i.e., <code>true</code> or <code>false</code>) value indicating whether to fit a parametric curve to the null distribution of test statistics (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_parametric_curve" class="quarto-xref"><span>Section 2.8</span></a>).</p></li>
 <li><p><code>--multiple_testing_method</code>: the multiple testing correction procedure to adjust the p-values, one of <code>BH</code>, <code>bonferroni</code>, <code>holm</code>, <code>hochberg</code>, <code>hommel</code>, <code>BY</code>, <code>fdr</code>, or <code>none</code> (see <a href="set-analysis-parameters.html#sec-multiple_testing" class="quarto-xref"><span>Section 2.9</span></a>).</p></li>
 <li><p><code>--multiple_testing_alpha</code>: the nominal level of the multiple testing procedure. <code>multiple_testing_alpha</code> should a number in the interval [0,1] (for example <code>0.1</code> or <code>0.05</code>; see <a href="set-analysis-parameters.html#sec-multiple_testing" class="quarto-xref"><span>Section 2.9</span></a>).</p></li>
-<li><p><code>--discovery_pairs</code>: the discovery pairs to analyze (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_discovery_pairs" class="quarto-xref"><span>Section 2.2</span></a>). <code>discovery_pairs</code> should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file <code>~/discovery_pairs.rds</code>.</p>
+<li>
+<p><code>--discovery_pairs</code>: the discovery pairs to analyze (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_discovery_pairs" class="quarto-xref"><span>Section 2.2</span></a>). <code>discovery_pairs</code> should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file <code>~/discovery_pairs.rds</code>.</p>
 <pre><code>  Rscript -e "x &lt;- data.frame(grna_target = c('candidate_enh_1', 'candidate_enh_2'),
                               response_id = c('ENSG00000174529', 'ENSG00000143493'));
               saveRDS(x, '~/discovery_pairs.rds')"</code></pre>
-<p>We then can pass this argument to the pipeline via <code>--discovery_pairs $HOME"/discovery_pairs.rds"</code>. To run a massive-scale <em>trans</em> analysis, users should pass <code>--discovery_pairs trans</code>; see <a href="pipeline-details.html#sec-massive_scale_trans_analysis" class="quarto-xref"><span>Section 8.4</span></a> for details.</p></li>
+<p>We then can pass this argument to the pipeline via <code>--discovery_pairs $HOME"/discovery_pairs.rds"</code>. To run a massive-scale <em>trans</em> analysis, users should pass <code>--discovery_pairs trans</code>; see <a href="pipeline-details.html#sec-massive_scale_trans_analysis" class="quarto-xref"><span>Section 8.4</span></a> for details.</p>
+</li>
 <li><p><code>--positive_control_pairs</code>: the positive control pairs to analyze (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_pc_pairs" class="quarto-xref"><span>Section 2.1</span></a>). This argument works similarly to the <code>discovery_pairs</code> argument.</p></li>
 </ul>
 <p><strong>Assign gRNAs</strong></p>
 <p>The most important argument related to gRNA assignment is <code>grna_assignment_method</code>:</p>
 <ul>
-<li><code>--grna_assignment_method</code>: a string indicating the gRNA assignment method (one of <code>mixture</code>, <code>maximum</code>, or <code>thresholding</code>).</li>
+<li>
+<code>--grna_assignment_method</code>: a string indicating the gRNA assignment method (one of <code>mixture</code>, <code>maximum</code>, or <code>thresholding</code>).</li>
 </ul>
 <p>The following arguments pertain to the “mixture” assignment strategy (see <a href="assign-grnas.html#sec-mixture_method" class="quarto-xref"><span>Section 3.3.1</span></a>).</p>
 <ul>
@@ -460,8 +476,10 @@ process.queue = 'name of queue'</code></pre>
 </ul>
 <p>Next, <code>umi_fraction_threshold</code> and <code>threshold</code> relate to the “maximum” (<a href="assign-grnas.html#sec-maximum_method" class="quarto-xref"><span>Section 3.3.2</span></a>) and “thresholding” (<a href="assign-grnas.html#sec-thresholding_method" class="quarto-xref"><span>Section 3.3.3</span></a>) assignment method, respectively.</p>
 <ul>
-<li><code>--umi_fraction_threshold</code>: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. <code>umi_fraction_threshold</code> should be a number in the interval [0,1].</li>
-<li><code>--threshold</code>: the threshold used to assign gRNAs to cells in the context of the thresholding method. <code>threshold</code> should be a positive integer.</li>
+<li>
+<code>--umi_fraction_threshold</code>: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. <code>umi_fraction_threshold</code> should be a number in the interval [0,1].</li>
+<li>
+<code>--threshold</code>: the threshold used to assign gRNAs to cells in the context of the thresholding method. <code>threshold</code> should be a positive integer.</li>
 </ul>
 <p><strong>Run quality control</strong></p>
 <p>The following five arguments relate to cellwise QC (see <a href="run-qc.html#sec-qc_cellwise_qc" class="quarto-xref"><span>Section 4.2.1</span></a>). All of these arguments should be supplied as a number in the interval [0,1] (for example <code>0.01</code> or <code>0.05</code>).</p>
@@ -482,10 +500,8 @@ process.queue = 'name of queue'</code></pre>
 <ul>
 <li><p><code>n_calibration_pairs</code>: the number of negative control target-response pairs to analyze within the calibration check. <code>n_calibration_pairs</code> should be a non-negative integer. Setting <code>n_calibration_pairs</code> to <code>0</code> skips the calibration check.</p></li>
 <li><p><code>calibration_group_size</code>: the number of individual negative control gRNAs to combine to form a negative control target. <code>calibration_group_size</code> should be a positive integer.</p></li>
-</ul>
-</section>
-<section id="sec-pipeline_computational_args" class="level3" data-number="9.2.2">
-<h3 data-number="9.2.2" class="anchored" data-anchor-id="sec-pipeline_computational_args"><span class="header-section-number">9.2.2</span> Computational arguments</h3>
+</ul></section><section id="sec-pipeline_computational_args" class="level3" data-number="9.2.2"><h3 data-number="9.2.2" class="anchored" data-anchor-id="sec-pipeline_computational_args">
+<span class="header-section-number">9.2.2</span> Computational arguments</h3>
 <p>Within the “computational” category, we further divide the arguments into subcategories based on whether the argument relates to parallelization, wall time requests, or memory requests.</p>
 <p><strong>Degree of parallelization</strong></p>
 <p>Two arguments that control the degree of parallelization: <code>grna_pod_size</code> and <code>pair_pod_size</code>. The former argument relates to the gRNA-to-cell assignment step, and the latter argument relates to the target-to-response association testing steps (i.e., the calibration check, the power check, and the discovery analysis).</p>
@@ -519,15 +535,56 @@ process.queue = 'name of queue'</code></pre>
 </ul>
 <p><strong>Miscellaneous</strong></p>
 <ul>
-<li><code>--use_parquet</code>: a boolean (i.e., <code>true</code> or <code>false</code>) indicating whether to write the results as <code>parquet</code> files (<code>true</code>) or <code>RDS</code> files (<code>false</code>) in the context of a massive-scale <em>trans</em> analysis (<a href="pipeline-details.html#sec-massive_scale_trans_analysis" class="quarto-xref"><span>Section 8.4</span></a>).</li>
-</ul>
+<li>
+<code>--use_parquet</code>: a boolean (i.e., <code>true</code> or <code>false</code>) indicating whether to write the results as <code>parquet</code> files (<code>true</code>) or <code>RDS</code> files (<code>false</code>) in the context of a massive-scale <em>trans</em> analysis (<a href="pipeline-details.html#sec-massive_scale_trans_analysis" class="quarto-xref"><span>Section 8.4</span></a>).</li>
+</ul></section></section><section id="sec-analyze_odm_within_r" class="level2" data-number="9.3"><h2 data-number="9.3" class="anchored" data-anchor-id="sec-analyze_odm_within_r">
+<span class="header-section-number">9.3</span> Analyzing an <code>ondisc</code>-backed <code>sceptre_object</code> within the R console</h2>
+<p>Users can analyze an <code>ondisc</code>-backed <code>sceptre_object</code> within the R console (as opposed to via the Nextflow pipeline). This solution is most appropriate when the data are big but the number of target-response pairs to be analyzed is not too large. Below, we use the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> (setting <code>use_ondisc</code> to <code>TRUE</code>) to create an <code>ondisc</code>-backed <code>sceptre_object</code> containing the example high-MOI data. We then proceed through a minimal version of the pipeline normally.</p>
+<div class="cell">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># create an ondisc-backed sceptre object</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span>
+<span><span class="va">directories</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"sceptre"</span><span class="op">)</span>,</span>
+<span>  <span class="st">"/highmoi_example/gem_group_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">grna_target_data_frame_highmoi</span><span class="op">)</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger</a></span><span class="op">(</span></span>
+<span>  directories <span class="op">=</span> <span class="va">directories</span>,</span>
+<span>  moi <span class="op">=</span> <span class="st">"high"</span>,</span>
+<span>  grna_target_data_frame <span class="op">=</span> <span class="va">grna_target_data_frame_highmoi</span>,</span>
+<span>  use_ondisc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  directory_to_write <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># apply the pipeline functions to the sceptre_object in order</span></span>
+<span><span class="va">discovery_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="va">sceptre_object</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span>,</span>
+<span>                          resampling_mechanism <span class="op">=</span> <span class="st">"permutations"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, to analyze the example low-MOI CRISPRko data, we first create an <code>ondisc</code>-backed <code>sceptre_object</code> from a collection of R objects via the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> (setting <code>use_ondisc</code> to <code>TRUE</code>). We then proceed through the pipeline in the standard way.</p>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">lowmoi_example_data</span><span class="op">)</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
+<span>  response_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
+<span>  grna_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>,</span>
+<span>  extra_covariates <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span>,</span>
+<span>  grna_target_data_frame <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_target_data_frame</span>,</span>
+<span>  moi <span class="op">=</span> <span class="st">"low"</span>,</span>
+<span>  use_ondisc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  directory_to_write <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># apply the pipeline functions to the sceptre_object in order</span></span>
+<span><span class="va">discovery_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="va">sceptre_object</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
-</section>
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -913,10 +970,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="./pipeline-details.html" class="pagination-link  aria-label=" &lt;span="" deeper="" dive="" into="" the="" nextflow="" pipeline&lt;="" span&gt;"="">
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./pipeline-details.html" class="pagination-link  aria-label=" deeper="" dive="" into="" the="" nextflow="" pipeline="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A deeper dive into the Nextflow pipeline</span></span>
       </a>          
   </div>
@@ -927,8 +982,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
+<footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
 <p>Hands-On Single-Cell CRISPR Screen Analysis</p>
 </div>   
@@ -940,8 +994,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div>
   </div>
 </footer>
-
-
 
 
 </body></html>

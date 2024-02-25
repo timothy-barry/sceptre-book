@@ -272,6 +272,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
   <li><a href="#import-data-from-a-collection-of-r-objects" id="toc-import-data-from-a-collection-of-r-objects" class="nav-link" data-scroll-target="#import-data-from-a-collection-of-r-objects"><span class="header-section-number">1.2</span> Import data from a collection of R objects</a></li>
   <li><a href="#accessing-the-fields-of-a-sceptre_object" id="toc-accessing-the-fields-of-a-sceptre_object" class="nav-link" data-scroll-target="#accessing-the-fields-of-a-sceptre_object"><span class="header-section-number">1.3</span> Accessing the fields of a <code>sceptre_object</code></a></li>
+  <li><a href="#initializing-an-ondisc-backed-sceptre-object" id="toc-initializing-an-ondisc-backed-sceptre-object" class="nav-link" data-scroll-target="#initializing-an-ondisc-backed-sceptre-object"><span class="header-section-number">1.4</span> Initializing an <code>ondisc</code>-backed <code>sceptre</code>-object</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -460,7 +461,7 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 </div>
 </li>
 <li>
-<p><code>extra_covariates</code> (optional) is a data frame specifying cell-specific covariates beyond those that <code>sceptre</code> can compute. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> computes the covariates <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> does <em>not</em> compute <code>batch</code>, as <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> does not have access to batch information. Thus, <code>batch</code> — alongside any other relevant covariates, such as cell type — should be included in the <code>extra_covariates</code> data frame. <strong>Note:</strong> The rows of <code>extra_covariates</code> are assumed to be in the same order as the columns of <code>response_matrix</code> and <code>grna_matrix</code>. We recommend users add cell barcodes as row names of <code>extra_covariates</code>, in which case <code>sceptre</code> will check the consistency of cell ordering on their behalf.</p>
+<p><code>extra_covariates</code> (optional) is a data frame specifying cell-specific covariates beyond those that <code>sceptre</code> can compute. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> computes the covariates <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> does <em>not</em> compute <code>batch</code>, as <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> does not have access to batch information. Thus, <code>batch</code> — alongside any other relevant covariates, such as cell type — should be included in the <code>extra_covariates</code> data frame. Note that the rows of <code>extra_covariates</code> are assumed to be in the same order as the columns of <code>response_matrix</code> and <code>grna_matrix</code>. We recommend users add cell barcodes as row names of <code>extra_covariates</code>, in which case <code>sceptre</code> will check the consistency of cell ordering on their behalf.</p>
 <div class="cell">
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">extra_covariates</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">30001</span><span class="op">:</span><span class="fl">30003</span><span class="op">)</span>,,drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -504,6 +505,44 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 <span><span class="va">grna_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_grna_matrix</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span>
 <span><span class="va">cell_covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_cell_covariates</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section><section id="initializing-an-ondisc-backed-sceptre-object" class="level2" data-number="1.4"><h2 data-number="1.4" class="anchored" data-anchor-id="initializing-an-ondisc-backed-sceptre-object">
+<span class="header-section-number">1.4</span> Initializing an <code>ondisc</code>-backed <code>sceptre</code>-object</h2>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 37%">
+<col style="width: 40%">
+</colgroup>
+<thead><tr class="header">
+<th>Input type</th>
+<th>Standard <code>sceptre_object</code>
+</th>
+<th>
+<code>ondisc</code>-backed <code>sceptre_object</code>
+</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>R matrices</td>
+<td><pre><code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code></pre></td>
+<td><pre><code>import_data(
+  use_ondisc = TRUE
+)</code></pre></td>
+</tr>
+<tr class="even">
+<td>10X Cell Ranger</td>
+<td><pre><code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code></pre></td>
+<td><pre><code>import_data_from_cellranger(
+  use_ondisc = TRUE
+)</code></pre></td>
+</tr>
+<tr class="odd">
+<td>Parse</td>
+<td><pre><code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_parse.html">import_data_from_parse()</a></code></pre></td>
+<td>Not implemented</td>
+</tr>
+</tbody>
+</table>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">

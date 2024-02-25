@@ -1,7 +1,7 @@
 # Import data {#sec-import_data}
 
 ::: callout-tip
-Part I of this book describes how to apply `sceptre` to analyze single-cell CRISPR screen data on a laptop or desktop. This part of the book assumes knowledge of R at a beginner level. 
+Part I of this book describes how to apply `sceptre` to analyze single-cell CRISPR screen data on a laptop or desktop. This part of the book assumes knowledge of R at a beginner level.
 :::
 
 This chapter describes how to import single-cell CRISPR screen data into `sceptre`, which is the first step of the `sceptre` pipeline.
@@ -114,7 +114,7 @@ We describe the inputs below.
     moi <- "high"
     ```
 
--   `extra_covariates` (optional) is a data frame specifying cell-specific covariates beyond those that `sceptre` can compute. `import_data()` computes the covariates `grna_n_nonzero`, `grna_n_umis`, `response_n_nonzero`, `response_n_umis`, and `response_p_mito`. `import_data()` does *not* compute `batch`, as `import_data()` does not have access to batch information. Thus, `batch` --- alongside any other relevant covariates, such as cell type --- should be included in the `extra_covariates` data frame. **Note:** The rows of `extra_covariates` are assumed to be in the same order as the columns of `response_matrix` and `grna_matrix`. We recommend users add cell barcodes as row names of `extra_covariates`, in which case `sceptre` will check the consistency of cell ordering on their behalf.
+-   `extra_covariates` (optional) is a data frame specifying cell-specific covariates beyond those that `sceptre` can compute. `import_data()` computes the covariates `grna_n_nonzero`, `grna_n_umis`, `response_n_nonzero`, `response_n_umis`, and `response_p_mito`. `import_data()` does *not* compute `batch`, as `import_data()` does not have access to batch information. Thus, `batch` --- alongside any other relevant covariates, such as cell type --- should be included in the `extra_covariates` data frame. Note that the rows of `extra_covariates` are assumed to be in the same order as the columns of `response_matrix` and `grna_matrix`. We recommend users add cell barcodes as row names of `extra_covariates`, in which case `sceptre` will check the consistency of cell ordering on their behalf.
 
     ```{r}
     extra_covariates[c(1:3, 30001:30003),,drop = FALSE]
@@ -148,3 +148,25 @@ response_matrix <- get_response_matrix(sceptre_object)
 grna_matrix <- get_grna_matrix(sceptre_object)
 cell_covariates <- get_cell_covariates(sceptre_object)
 ```
+
+## Initializing an `ondisc`-backed `sceptre`-object
+
++-----------------+-------------------------------+----------------------------------+
+| Input type      | Standard `sceptre_object`     | `ondisc`-backed `sceptre_object` |
++=================+===============================+==================================+
+| R matrices      | ```                           | ```                              |
+|                 | import_data()                 | import_data(                     |
+|                 | ```                           |   use_ondisc = TRUE              |
+|                 |                               | )                                |
+|                 |                               | ```                              |
++-----------------+-------------------------------+----------------------------------+
+| 10X Cell Ranger | ```                           | ```                              |
+|                 | import_data_from_cellranger() | import_data_from_cellranger(     |
+|                 | ```                           |   use_ondisc = TRUE              |
+|                 |                               | )                                |
+|                 |                               | ```                              |
++-----------------+-------------------------------+----------------------------------+
+| Parse           | ```                           | Not implemented                  |
+|                 | import_data_from_parse()      |                                  |
+|                 | ```                           |                                  |
++-----------------+-------------------------------+----------------------------------+

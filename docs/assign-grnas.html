@@ -533,27 +533,10 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_assignment_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_grna_assignments.html">get_grna_assignments</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>grna_assignment_matrix</code> is a sparse, logical matrix of gRNA assignments; gRNA IDs are in the rows and cells are in the columns. A given entry of the matrix is set to <code>TRUE</code> if the given gRNA was assigned to the given cell (and <code>FALSE</code> otherwise). We can determine the cells to which a given gRNA was assigned by indexing <code>grna_assignment_matrix</code> by row; conversely, we can determine the gRNAs that were assigned to a given cell by indexing <code>grna_assignment_matrix</code> by column. We can cross-reference the gRNA assignment matrix and gRNA count matrix to quickly check that the gRNA-to-cell assignments are reasonable. For example, below, we see that gRNAs “POU2F2g1” and “ATF2g4” were assigned to the cell indexed as “7.”</p>
-<div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cell_idx</span> <span class="op">&lt;-</span> <span class="fl">7</span></span>
-<span><span class="va">assigned_grnas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">grna_assignment_matrix</span><span class="op">[</span>,<span class="va">cell_idx</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">assigned_grnas</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "POU2F2g1" "ATF2g4"  </code></pre>
-</div>
-</div>
-<p>Next, we verify that the gRNAs “POU2F2g1” and “ATF2g4” exhibit a large UMI count in the cell indexed as “7.”</p>
-<div class="cell">
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_count_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_grna_matrix</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span>
-<span><span class="va">grna_count_matrix</span><span class="op">[</span><span class="va">assigned_grnas</span>, <span class="va">cell_idx</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>POU2F2g1   ATF2g4 
-      72      292 </code></pre>
-</div>
-</div>
+<p><code>grna_assignment_matrix</code> is a sparse, logical matrix of gRNA assignments; gRNA IDs are in the rows and cells are in the columns. A given entry of the matrix is set to <code>TRUE</code> if the given gRNA was assigned to the given cell (and <code>FALSE</code> otherwise). We can determine the cells to which a given gRNA was assigned by indexing <code>grna_assignment_matrix</code> by row; conversely, we can determine the gRNAs that were assigned to a given cell by indexing <code>grna_assignment_matrix</code> by column.</p>
 <p>Finally, we can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on <code>sceptre_object_lowmoi</code> to print a summary tracking the progress of the analysis. The field “gRNA-to-cell assignment information” presents information about the gRNA assignment step, including the selected assignment method, the mean number of cells per gRNA, and the mean number of gRNAs per cell.</p>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
 
