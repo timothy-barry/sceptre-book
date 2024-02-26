@@ -148,7 +148,7 @@ disc_pair <- plot_response_grna_target_pair(sceptre_object = sceptre_object_lowm
 plot_grid(pc_pair, disc_pair)
 ```
 
-```{r, out.width = "650px", fig.align="center", echo = FALSE, fig.cap="A visualization of the results for two pairs."}
+```{r, out.width = "600px", fig.align="center", echo = FALSE, fig.cap="A visualization of the results for two pairs."}
 pc_pair <- plot_response_grna_target_pair(sceptre_object = sceptre_object_lowmoi,
                                           response_id = "CMTM6",
                                           grna_target = "CMTM6")
