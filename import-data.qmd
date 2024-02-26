@@ -149,24 +149,42 @@ grna_matrix <- get_grna_matrix(sceptre_object)
 cell_covariates <- get_cell_covariates(sceptre_object)
 ```
 
-## Initializing an `ondisc`-backed `sceptre`-object
+## Initializing an `ondisc`-backed `sceptre`-object {#sec-import_data_odm_ch_1}
 
-+-----------------+-------------------------------+----------------------------------+
-| Input type      | Standard `sceptre_object`     | `ondisc`-backed `sceptre_object` |
-+=================+===============================+==================================+
-| R matrices      | ```                           | ```                              |
-|                 | import_data()                 | import_data(                     |
-|                 | ```                           |   use_ondisc = TRUE              |
-|                 |                               | )                                |
-|                 |                               | ```                              |
-+-----------------+-------------------------------+----------------------------------+
-| 10X Cell Ranger | ```                           | ```                              |
-|                 | import_data_from_cellranger() | import_data_from_cellranger(     |
-|                 | ```                           |   use_ondisc = TRUE              |
-|                 |                               | )                                |
-|                 |                               | ```                              |
-+-----------------+-------------------------------+----------------------------------+
-| Parse           | ```                           | Not implemented                  |
-|                 | import_data_from_parse()      |                                  |
-|                 | ```                           |                                  |
-+-----------------+-------------------------------+----------------------------------+
+`ondisc` is a companion R package to `sceptre` that enables users to analyze large-scale single-cell CRISPR screen data out-of-core on a laptop or distributed across multiple nodes on a computing cluster. `ondisc` enables the construction of a so-called "`ondisc`-backed `sceptre_object`," which is a special kind of `sceptre_object` in which the response and gRNA expression matrices are stored on-disk rather than in memory. We defer a detailed discussion of the `ondisc` package and large-scale single-cell CRISPR screen data analysis to Part II of this book (i.e., @sec-at-scale — @sec-pipeline_args). For the time being, we describe how to create an `ondisc`-backed `sceptre_object`. Users can create an `ondisc`-backed `sceptre_object` by calling a standard data import function (i.e., `import_data()` or `import_data_from_cellranger()`), setting the argument `use_ondisc` to `TRUE` and `directory_to_write` to the directory in which to write the disk-based gene and gRNA expression matrices. The table below summarizes which data import function one should call (and which arguments one should supply to that data import function) on the basis of the input data type and whether one wishes to create a standard `sceptre_object` or an `ondisc`-backed `sceptre_object`. (Note that initializing an `ondisc`-backed `sceptre_object` from the output of the Parse program is not yet implemented.)
+
++-----------------+-----------------------------+----------------------------------+
+| Input type      | Standard `sceptre_object`   | `ondisc`-backed `sceptre_object` |
++=================+=============================+==================================+
+| R matrices      | ```                         | ```                              |
+|                 | import_data                 | import_data(                     |
+|                 | ```                         |   use_ondisc = TRUE,             |
+|                 |                             |   directory_to_write = "/path/", |
+|                 |                             | )                                |
+|                 |                             | ```                              |
++-----------------+-----------------------------+----------------------------------+
+| 10X Cell Ranger | ```                         | ```                              |
+|                 | import_data_from_cellranger | import_data_from_cellranger(     |
+|                 | ```                         |   use_ondisc = TRUE,             |
+|                 |                             |   directory_to_write = "/path/"  |
+|                 |                             | )                                |
+|                 |                             | ```                              |
++-----------------+-----------------------------+----------------------------------+
+| Parse           | ```                         | Not implemented                  |
+|                 | import_data_from_parse      |                                  |
+|                 | ```                         |                                  |
++-----------------+-----------------------------+----------------------------------+
+
+For example, below, we create an `ondisc`-backed `sceptre_object` to represent the high-MOI CRISPRi data, setting `directory_to_write` to the temporary directory `tempdir()`.
+
+```         
+sceptre_object <- import_data_from_cellranger(
+  directories = directories,
+  moi = "high",
+  grna_target_data_frame = grna_target_data_frame_highmoi,
+  use_ondisc = TRUE,
+  directory_to_write = tempdir()
+)
+```
+
+See @sec-import_data_into_odm_backed_sceptre_object and @sec-analyze_odm_within_r for more information.

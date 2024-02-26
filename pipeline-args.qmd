@@ -1,4 +1,4 @@
-# Addendum: Nextflow intallation, pipeline arguments
+# Addendum: Nextflow intallation, pipeline arguments {#sec-pipeline_args}
 
 This chapter provides instructions on downloading, installing, and configuring Nextflow. It also enumerates and describes each of the arguments that can be passed to the Nextflow pipeline.
 
@@ -326,3 +326,5 @@ sceptre_object <- sceptre_object |>
   set_analysis_parameters(discovery_pairs = discovery_pairs) |>
   run_discovery_analysis()
 ```
+
+See @sec-import_data_odm_ch_1 for more information about creating an `ondisc`-backed `sceptre_object`.

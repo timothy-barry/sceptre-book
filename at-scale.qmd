@@ -1,4 +1,4 @@
-# Introduction to the Nextflow pipeline {#at-scale}
+# Introduction to the Nextflow pipeline {#sec-at-scale}
 
 ::: callout-tip
 Part II of this book describes how to apply `sceptre` to analyze large-scale single-cell CRISPR screen data. Part II is somewhat more advanced than Part I. Ideally, readers will have intermediate bioinformatics experience, including familiarity with basic Linux commands and facility with submitting and monitoring jobs on a cluster. Knowledge of Nextflow (or some similar workflow management tool) is helpful not required.
@@ -81,11 +81,15 @@ sceptre_object_2 <- import_data_from_cellranger(
 
 Calling `list.files()` on `directory_to_write` shows that two files have been created in this directory: `gene.odm`, the file storing the gene expression matrix, and `grna.odm`, the file storing the gRNA expression matrix.
 
-```{r}
+```{r,eval=FALSE}
 list.files(directory_to_write, full.names = TRUE)
 ```
 
-Users alternately can create an `ondisc`-backed `sceptre_object` from a collection of R objects by calling `import_data()`, setting `use_ondisc` to `TRUE`. (See `?import_data()`.) We recommend calling `import_data_from_cellranger()` in place of `import_data()` when possible, as the former can handle arbitrarily large matrices and is more memory-efficient, while the latter only can handle matrices that contain fewer than ~2.1 billion nonzero entries.
+```{r,echo=FALSE}
+c("gene.odm", "grna.odm", "sceptre_object.rds")
+```
+
+Users alternately can create an `ondisc`-backed `sceptre_object` from a collection of R objects by calling `import_data()`, setting `use_ondisc` to `TRUE`. (See `?import_data()` and @sec-import_data_odm_ch_1 for more information.) We recommend calling `import_data_from_cellranger()` in place of `import_data()` when possible, as the former can handle arbitrarily large matrices and is more memory-efficient, while the latter only can handle matrices that contain fewer than ~2.1 billion nonzero entries.
 
 ## Explore the data (local machine)
 
