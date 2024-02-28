@@ -139,6 +139,18 @@ sceptre_object <- import_data(
 )
 ```
 
+## Multi-guide vector data
+
+In single-cell CRISPR screen experiments viruses typically are used to deliver gRNAs to cells. In low-MOI screens the experimenter aims to deliver one virus to each cell; in high-MOI screens, by contrast, the experimenter aims to deliver *multiple* viruses (each harboring a different gRNA) to each cell. Some recent single-cell CRISPR screens involve a special design in which each virus contains a vector harboring multiple gRNAs. For example, @replogle2022 conducted a screen in which each viral vector contained two gRNAs, with each targeting the same site. In such "multi-guide vector" screens, it is important to account for the vector on which each gRNA is located to ensure that the cellwise QC and association testing steps are carried out correctly. Users can pass vector information to `sceptre` by including a `vector_id` column in the `grna_target_data_frame`, which specifies the vector on which each gRNA is located (@fig-multi_guide_vector_table).
+
+```{r, out.width = "330px", fig.align="center",echo=FALSE}
+#| label: fig-multi_guide_vector_table
+#| fig-cap: "Example gRNA target data frame for multi-guide vector data."
+knitr::include_graphics("grna_table_with_vector.png")
+```
+
+`sceptre` employs a simple strategy to handle multi-guide vector data: the UMI counts of gRNAs contained on the same vector are summed, and the resulting quantity is treated as if it were the expression vector of an individual gRNA. The vector IDs should be nested within the gRNA targets. (In other words, each gRNA target can map to multiple vector IDs, but each vector ID should map to a single gRNA target.) Finally, the genomic coordinate columns `chr`, `start`, and `end` optionally can be included the gRNA target data frame, but rows containing the same value for `vector_id` also should contain the same value for `chr`, `start`, and `end`.
+
 ## Accessing the fields of a `sceptre_object`
 
 A `sceptre_object` is an [S4 object](http://adv-r.had.co.nz/S4.html). Like all S4 objects, a `sceptre_object` contains data, including raw data inputted by the user and processed data that `sceptre` generates by operating on the raw data. The data stored within a `sceptre_object` can be accessed via the `@` operator (e.g., `sceptre_object@foo`). We recommend against accessing the data stored within a `sceptre_object` in this way. Instead, users should interact with a `sceptre_object` via the [functions exported by the package](https://katsevich-lab.github.io/sceptre/reference/index.html). For example, the "getter" functions `get_response_matrix()`, `get_grna_matrix()`, and `get_cell_covariates()` return the response matrix, gRNA matrix, and cell covariates, respectively, of a `sceptre_object`.
@@ -175,7 +187,7 @@ cell_covariates <- get_cell_covariates(sceptre_object)
 |                 | ```                         |                                  |
 +-----------------+-----------------------------+----------------------------------+
 
-For example, below, we create an `ondisc`-backed `sceptre_object` to represent the high-MOI CRISPRi data, setting `directory_to_write` to the temporary directory `tempdir()`.
+For example, below, we create an `ondisc`-backed `sceptre_object` to represent the high-MOI CRISPRi data, taking as input the output directories from `cellranger count` and setting `directory_to_write` to the temporary directory `tempdir()`.
 
 ```         
 sceptre_object <- import_data_from_cellranger(
