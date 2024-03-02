@@ -469,7 +469,7 @@ window.Quarto = {
 <span>  method <span class="op">=</span> <span class="st">"maximum"</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The maximum method allows for one optional argument: <code>umi_fraction_threshold</code> (default: <code>umi_fraction_threshold = 0.8</code>). Cells for which the maximally expressed gRNA constitutes fewer than <code>umi_fraction_threshold</code> of the UMIs in that cell are flagged as containing multiple gRNAs. (Cells containing multiple gRNAs are removed as part of low-MOI quality control step, as discussed in <a href="run-qc.html" class="quarto-xref"><span>Chapter 4</span></a>). For example, if the maximally expressed gRNA in a given cell makes up 0.64 (or 64<span class="math inline">\(\%\)</span>) of the UMIs in that cell, then that cell is flagged as containing multiple gRNAs and is removed during quality control (assuming that <code>umi_fraction_threshold = 0.8</code>).</p>
+<p>An advantage of the maximum method relative to the mixture method is that the former is model-free (and thus often more robust). However, when using the maximum method, one must take care to identify cells that contain zero gRNAs or multiple gRNAs (so that these cells can be removed as part of cellwise quality control). In this context the maximum method allows for two optional arguments: <code>umi_fraction_threshold</code> (default: <code>umi_fraction_threshold = 0.8</code>) and <code>min_grna_n_umis_threshold</code> (default: <code>min_grna_n_umis_threshold = 5</code>). Cells for which the maximally expressed gRNA constitutes fewer than <code>umi_fraction_threshold</code> of the UMIs in that cell are flagged as containing multiple gRNAs. For example, if the maximally expressed gRNA in a given cell makes up 0.64 (or 64<span class="math inline">\(\%\)</span>) of the UMIs in that cell, then that cell is flagged as containing multiple gRNAs (assuming that <code>umi_fraction_threshold = 0.8</code>). Next, cells for which the total gRNA UMI count (i.e., <code>n_grna_umis</code>) is less than <code>min_grna_n_umis_threshold</code> are flagged as containing zero gRNAs. Cells containing multiple gRNAs or zero gRNAs are removed as part of low-MOI quality control step, as discussed in <a href="run-qc.html" class="quarto-xref"><span>Chapter 4</span></a>.</p>
 </section><section id="sec-thresholding_method" class="level3" data-number="3.3.3"><h3 data-number="3.3.3" class="anchored" data-anchor-id="sec-thresholding_method">
 <span class="header-section-number">3.3.3</span> Thresholding method</h3>
 <p>The third method for assigning gRNAs to cells is the <code>"thresholding"</code> method; this method is available in both low- and high-MOI settings. The thresholding method assigns a gRNA to a cell if the UMI count of the gRNA in the cell is greater than or equal to some integer threshold (by default 5). We apply the <code>"thresholding"</code> method to both CRISPRi and CRISPRko datasets as follows.</p>
@@ -564,7 +564,7 @@ Analysis parameters:
     • Control group: non-targeting cells
     • Resampling mechanism: permutations
     • gRNA integration strategy: union
-    • Fit parametric curve: TRUE
+    • Resampling approximation: skew normal
     • Multiple testing adjustment: BH at level 0.1
     • N nonzero treatment cells threshold: not specified
     • N nonzero control cells threshold: not specified

@@ -446,7 +446,7 @@ process.queue = 'name of queue'</code></pre>
 </div>
 <p>We then can pass this formula object as an argument to the pipeline via <code>--formula_object $HOME"/formula_object.rds"</code>.</p>
 <ul>
-<li><p><code>--fit_parametric_curve</code>: a boolean (i.e., <code>true</code> or <code>false</code>) value indicating whether to fit a parametric curve to the null distribution of test statistics (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_parametric_curve" class="quarto-xref"><span>Section 2.8</span></a>).</p></li>
+<li><p><code>--resampling_approximation</code>: the approximation to use to the null distribution of test statistics, one of <code>skew_normal</code> or <code>no_approximation</code> (see <a href="set-analysis-parameters.html#sec-set_analysis_parameters_parametric_curve" class="quarto-xref"><span>Section 2.8</span></a>).</p></li>
 <li><p><code>--multiple_testing_method</code>: the multiple testing correction procedure to adjust the p-values, one of <code>BH</code>, <code>bonferroni</code>, <code>holm</code>, <code>hochberg</code>, <code>hommel</code>, <code>BY</code>, <code>fdr</code>, or <code>none</code> (see <a href="set-analysis-parameters.html#sec-multiple_testing" class="quarto-xref"><span>Section 2.9</span></a>).</p></li>
 <li><p><code>--multiple_testing_alpha</code>: the nominal level of the multiple testing procedure. <code>multiple_testing_alpha</code> should a number in the interval [0,1] (for example <code>0.1</code> or <code>0.05</code>; see <a href="set-analysis-parameters.html#sec-multiple_testing" class="quarto-xref"><span>Section 2.9</span></a>).</p></li>
 <li>
@@ -472,10 +472,13 @@ process.queue = 'name of queue'</code></pre>
 <li><p><code>--probability_threshold</code>: the value at which the posterior perturbation probability of each cell is thresholded to assign the gRNA to cells. <code>probability_threshold</code> should be a number in the interval [0,1] (for example <code>0.5</code> or <code>0.8</code>).</p></li>
 <li><p><code>--grna_assignment_formula</code>: the formula to adjust for covariates in the gRNA mixture model. This argument works similarly to the <code>formula_object</code> argument (described above).</p></li>
 </ul>
-<p>Next, <code>umi_fraction_threshold</code> and <code>threshold</code> relate to the “maximum” (<a href="assign-grnas.html#sec-maximum_method" class="quarto-xref"><span>Section 3.3.2</span></a>) and “thresholding” (<a href="assign-grnas.html#sec-thresholding_method" class="quarto-xref"><span>Section 3.3.3</span></a>) assignment method, respectively.</p>
+<p>The following two arguments relate to the “maximum” assignment strategy (<a href="assign-grnas.html#sec-maximum_method" class="quarto-xref"><span>Section 3.3.2</span></a>).</p>
 <ul>
-<li>
-<code>--umi_fraction_threshold</code>: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. <code>umi_fraction_threshold</code> should be a number in the interval [0,1].</li>
+<li><p><code>--umi_fraction_threshold</code>: a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes less than <code>umi_fraction_threshold</code> of the UMIs in that cell. <code>umi_fraction_threshold</code> should be a number in the interval [0,1].</p></li>
+<li><p><code>--min_grna_n_umis_threshold</code>: a cell is flagged as containing zero gRNAs if the total UMI count across gRNAs (i.e., <code>n_grna_umis</code>) in that cell is less than <code>min_grna_n_umis_threshold</code>. <code>min_grna_n_umis_threshold</code> should be a non-negative integer.</p></li>
+</ul>
+<p>The final argument relates to the “thresholding” assignment method (<a href="assign-grnas.html#sec-thresholding_method" class="quarto-xref"><span>Section 3.3.3</span></a>).</p>
+<ul>
 <li>
 <code>--threshold</code>: the threshold used to assign gRNAs to cells in the context of the thresholding method. <code>threshold</code> should be a positive integer.</li>
 </ul>
@@ -580,7 +583,7 @@ process.queue = 'name of queue'</code></pre>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span>discovery_pairs <span class="op">=</span> <span class="va">discovery_pairs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_discovery_analysis.html">run_discovery_analysis</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>See <a href="import-data.html#sec-import_data_odm_ch_1" class="quarto-xref"><span>Section 1.4</span></a> for more information about creating an <code>ondisc</code>-backed <code>sceptre_object</code>.</p>
+<p>See <a href="import-data.html#sec-import_data_odm_ch_1" class="quarto-xref"><span>Section 1.5</span></a> for more information about creating an <code>ondisc</code>-backed <code>sceptre_object</code>.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">

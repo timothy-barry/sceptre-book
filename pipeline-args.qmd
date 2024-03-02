@@ -153,7 +153,7 @@ Rscript -e "x <- formula(~response_n_umis + response_n_nonzero);
 
 We then can pass this formula object as an argument to the pipeline via `--formula_object $HOME"/formula_object.rds"`.
 
--   `--fit_parametric_curve`: a boolean (i.e., `true` or `false`) value indicating whether to fit a parametric curve to the null distribution of test statistics (see @sec-set_analysis_parameters_parametric_curve).
+-   `--resampling_approximation`: the approximation to use to the null distribution of test statistics, one of `skew_normal` or `no_approximation` (see @sec-set_analysis_parameters_parametric_curve).
 
 -   `--multiple_testing_method`: the multiple testing correction procedure to adjust the p-values, one of `BH`, `bonferroni`, `holm`, `hochberg`, `hommel`, `BY`, `fdr`, or `none` (see @sec-multiple_testing).
 
@@ -189,9 +189,14 @@ The following arguments pertain to the "mixture" assignment strategy (see @sec-m
 
 -   `--grna_assignment_formula`: the formula to adjust for covariates in the gRNA mixture model. This argument works similarly to the `formula_object` argument (described above).
 
-Next, `umi_fraction_threshold` and `threshold` relate to the "maximum" (@sec-maximum_method) and "thresholding" (@sec-thresholding_method) assignment method, respectively.
+The following two arguments relate to the "maximum" assignment strategy (@sec-maximum_method).
 
--   `--umi_fraction_threshold`: the value below which a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes this fraction of the UMIs in the cell. `umi_fraction_threshold` should be a number in the interval \[0,1\].
+-   `--umi_fraction_threshold`: a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes less than `umi_fraction_threshold` of the UMIs in that cell. `umi_fraction_threshold` should be a number in the interval \[0,1\].
+
+-   `--min_grna_n_umis_threshold`: a cell is flagged as containing zero gRNAs if the total UMI count across gRNAs (i.e., `n_grna_umis`) in that cell is less than `min_grna_n_umis_threshold`. `min_grna_n_umis_threshold` should be a non-negative integer.
+
+The final argument relates to the "thresholding" assignment method (@sec-thresholding_method).
+
 -   `--threshold`: the threshold used to assign gRNAs to cells in the context of the thresholding method. `threshold` should be a positive integer.
 
 **Run quality control**
