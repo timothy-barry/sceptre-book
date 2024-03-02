@@ -1,4 +1,4 @@
-# Run power check and discovery analysis
+# Run power check and discovery analysis {#sec-run_power_check_and_disc_analysis}
 
 The next steps of the pipeline are to run the power check and the discovery analysis. The power check entails applying `sceptre` to analyze positive control pairs --- pairs for which we know there is an association between the target and the response --- to ensure that `sceptre` is capable of detecting true associations. The discovery analysis, meanwhile, involves applying `sceptre` to analyze discovery pairs, or target-response pairs whose association status we do not know but seek to learn. Identifying associations among the discovery pairs is the primary objective of the single-cell CRISPR screen analysis. We explicate both the power check and discovery analysis in this chapter given the similarity of these two analyses.
 

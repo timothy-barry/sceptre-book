@@ -1,12 +1,20 @@
 # Welcome {.unnumbered}
 
-Single-cell CRISPR screens (e.g., perturb-seq) combine CRISPR genome engineering and single-cell sequencing to survey the effects of genetic perturbations on individual cells. Single-cell CRISPR screens pose enormous potential for unraveling mechanisms underlying disease and accelerating drug discovery. However, the analysis of these screens presents considerable statistical and computational challenges. *Hands-On Single-Cell CRISPR Screen Analysis* is a step-by-step guide to carrying out statistically rigorous and computationally efficient single-cell CRISPR screen data analysis using the [sceptre](https://katsevich-lab.github.io/sceptre/) R package. `sceptre` was developed by [Timothy Barry](https://timothy-barry.github.io/), [Joseph Deutsch](https://www.jld-stats.com/), and [Eugene Katsevich](https://ekatsevi.github.io/).
+Single-cell CRISPR screens (e.g., perturb-seq) combine CRISPR genome engineering and single-cell sequencing to survey the effects of genetic perturbations on individual cells. Single-cell CRISPR screens pose enormous potential for unraveling mechanisms underlying disease and accelerating drug discovery. However, the analysis of these screens presents considerable statistical and computational challenges. *Hands-On Single-Cell CRISPR Screen Analysis* is a step-by-step guide to carrying out statistically rigorous and massively scalable single-cell CRISPR screen data analysis using the [sceptre](https://katsevich-lab.github.io/sceptre/) R package.
 
-`sceptre` is compatible with a broad range of single-cell CRISPR screen experimental designs. In particular, datasets can vary along the following axes: multiplicity of infection (low or high), genomic element targeted (gene or noncoding regulatory element), CRISPR modality (CRISPRko, CRISPRi, CRISPRa, or CRISPR prime or base editing), and molecular readout (gene expression, protein expression, or chromatin accessibility). This book uses two real datasets to illustrate use of `sceptre`: a high-MOI CRISPRi screen of noncoding regulatory elements and a low-MOI CRISPRko screen of gene transcription start sites.
+`sceptre` is compatible with a broad range of single-cell CRISPR screen experimental designs. In particular, datasets can vary along the following axes: multiplicity of infection (low or high), genomic element targeted (gene or noncoding regulatory element), CRISPR modality (CRISPRko, CRISPRi, CRISPRa, or CRISPR prime or base editing), and molecular readout (gene expression, protein expression, or chromatin accessibility). Additionally, `sceptre` is compatible with massive-scale data that may be too large to fit into memory or that require a cluster or cloud to analyze.
 
 # Navigating this book {.unnumbered}
 
-Users should start by reading [The whole game](sceptre.qmd), which provides a high-level overview of `sceptre`. Users who wish to learn more about individual steps of the `sceptre` pipeline should read the subsequent chapters in order. Finally, we recommend that users consult the [Glossary](glossary.qmd) throughout to keep track of the terminology used in this book.
+We recommend that users work their way through the book in order.
+
+-    [The whole game](sceptre.qmd) provides a high-level overview of the `sceptre` analysis pipeline. First-time users can get started by reading this chapter only.
+
+-   Part I ([Chapter 1](import-data.qmd) --- [Chapter 6](run-power-check-and-discovery-analysis.qmd)) describes in greater detail how to carry out a `sceptre` analysis on a laptop or desktop.
+
+-   Part II ([Chapter 7](at-scale.qmd) --- [Chapter 9](pipeline-args.qmd)) describes how to conduct a massive-scale `sceptre` analysis on a cluster or cloud.
+
+Finally, we recommend that users consult the [Glossary](glossary.qmd) throughout to keep track of the terminology used in this book.
 
 # Acknowledgments {.unnumbered}
 

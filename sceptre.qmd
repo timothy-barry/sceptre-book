@@ -113,9 +113,9 @@ We describe each step of the pipeline in greater detail below.
 
 ## 1. Import data {#sec-whole_game_import_data}
 
-The first step is to import the data. **Data can be imported into `sceptre` from 10X Cell Ranger or Parse outputs, as well as from R matrices.** The simplest way to import the data is to read the output of one or more calls to `cellranger_count()` into `sceptre` via the function `import_data_from_cellranger()`. `import_data_from_cellranger()` requires three arguments: `directories`, `grna_target_data_frame`, and `moi`.
+The first step is to import the data. **Data can be imported into `sceptre` from 10X Cell Ranger or Parse outputs, as well as from R matrices.** The simplest way to import the data is to read the output of one or more calls to `cellranger_count` into `sceptre` via the function `import_data_from_cellranger()`. `import_data_from_cellranger()` requires three arguments: `directories`, `grna_target_data_frame`, and `moi`.
 
-1.  `directories` is a character vector specifying the locations of the directories outputted by one or more calls to `cellranger_count()`. Below, we set the variable `directories` to the (machine-dependent) location of the example CRISPRi data on disk.
+1.  `directories` is a character vector specifying the locations of the directories outputted by one or more calls to `cellranger_count`. Below, we set the variable `directories` to the (machine-dependent) location of the example CRISPRi data on disk.
 
     ```{r}
     directories <- paste0(
@@ -132,7 +132,7 @@ The first step is to import the data. **Data can be imported into `sceptre` from
     list.files(directories[2])
     ```
 
-2.  `grna_target_data_frame` is a data frame mapping each individual gRNA to the genomic element that the gRNA targets. `grna_target_data_frame` contains two required columns: `grna_id` and `grna_target`. `grna_id` is the ID of an individual gRNA, while `grna_target` is a label specifying the genomic element that the gRNA targets. (Typically, multiple gRNAs are designed to target a given genomic element in a single-cell CRISPR screen.) Non-targeting (NT) gRNAs are assigned a gRNA target label of "non-targeting". `grna_target_data_frame` optionally contains the columns `chr`, `start`, and `end`, which give the chromosome, start coordinate, and end coordinate, respectively, of the genomic region that each gRNA targets. Finally, `grna_target_data_frame` optionally can contain the column `vector_id` specifying the vector to which a given gRNA belongs. `vector_id` should be supplied in experiments in which each viral vector contains multiple distinct gRNAs (as in, e.g., [Replogle 2022](https://pubmed.ncbi.nlm.nih.gov/35688146/)). We load and examine the `grna_target_data_frame` corresponding to the example data.
+2.  `grna_target_data_frame` is a data frame mapping each individual gRNA to the genomic element that the gRNA targets. `grna_target_data_frame` contains two required columns: `grna_id` and `grna_target`. `grna_id` is the ID of an individual gRNA, while `grna_target` is a label specifying the genomic element that the gRNA targets. (Typically, multiple gRNAs are designed to target a given genomic element in a single-cell CRISPR screen.) Non-targeting (NT) gRNAs are assigned a gRNA target label of "non-targeting". `grna_target_data_frame` optionally contains the columns `chr`, `start`, and `end`, which give the chromosome, start coordinate, and end coordinate, respectively, of the genomic region that each gRNA targets. Finally, `grna_target_data_frame` optionally can contain the column `vector_id` specifying the vector to which a given gRNA belongs. `vector_id` should be supplied in experiments in which each viral vector contains two or more distinct gRNAs (as in, e.g., [Replogle 2022](https://pubmed.ncbi.nlm.nih.gov/35688146/)). We load and examine the `grna_target_data_frame` corresponding to the example data.
 
     ```{r}
     data(grna_target_data_frame_highmoi)
@@ -203,7 +203,7 @@ The second step is to set the analysis parameters. The most important analysis p
 
 3.  **gRNA integration strategy**. Typically, multiple gRNAs are designed to target a given genomic element. The parameter `grna_integration_strategy` controls if and how gRNAs that target the same genomic element are integrated. The default option, `"union"`, combines gRNAs that target the same element into a single "grouped gRNA;" this "grouped gRNA" is tested for association against the responses to which the element is paired. `grna_integration_strategy` also can be set to "singleton," in which case each gRNA targeting a given element is tested individually against the responses paired to that element. In our analysis we use the default "union" strategy.
 
-Finally, we set the analysis parameters by calling the function `set_analysis_parameters()`, passing `sceptre_object`, `discovery_pairs`, `positive_control_pairs`, and `side` as arguments. Note that `sceptre_object` and `discovery_pairs` are the only required arguments to this function.
+Finally, we set the analysis parameters by calling the function `set_analysis_parameters()`, passing `sceptre_object`, `discovery_pairs`, `positive_control_pairs`, and `side` as arguments. Note that `sceptre_object` is the only required arguments to this function.
 
 ```{r, message=FALSE,results='hide'}
 sceptre_object <- set_analysis_parameters(
@@ -232,11 +232,11 @@ ggplot2::ggsave(filename = "grna_count_distribution.png", plot = p, device = "pn
 knitr::include_graphics("grna_count_distribution.png")
 ```
 
-The gRNAs display fairly bimodal count distributions. Consider, for example, `gRNA_CCTGACA` (top left corner). This gRNA exhibits a UMI count of $\leq 1$ or $\geq 5$ in most cells and a UMI count of 2, 3, or 4 in only a handful of cells. The vast majority of cells with a UMI count of 1 likely do not actually contain `gRNA_CCTGACA`. This is an example of "background contamination," the phenomenon by which gRNA transcripts sometimes map to cells that do not contain the corresponding gRNA.
+The gRNAs display bimodal count distributions. Consider, for example, `gRNA_CCTGACA` (top left corner). This gRNA exhibits a UMI count of $\leq 1$ or $\geq 5$ in most cells and a UMI count of 2, 3, or 4 in only a handful of cells. The vast majority of cells with a UMI count of 1 likely do not actually contain `gRNA_CCTGACA`. This is an example of "background contamination," the phenomenon by which gRNA transcripts sometimes map to cells that do not contain the corresponding gRNA.
 
 **`sceptre` provides three methods for assigning gRNAs to cells (the "mixture method," the "maximum method," and the "thresholding method")**, all of which account for background contamination. The default method for high-MOI data is the "mixture method." The gRNA counts are regressed onto the (unobserved) gRNA presence/absence indicator and the cell-specific covariates (e.g., `grna_n_umis`, `batch`) via a latent variable Poisson GLM. The fitted model yields the probability that each cell contains the gRNA, and these probabilities are thresholded to assign the gRNA to cells. The default method in low-MOI is the simpler "maximum" approach: the gRNA that accounts for the greatest number of UMIs in a given cell is assigned to that cell. A backup option in both low- and high-MOI is the "thresholding" approach: a given gRNA is assigned to a given cell if the UMI count of that gRNA in that cell exceeds some integer threshold.
 
-We carry out the gRNA assignment step via a call to the function `assign_grnas()`. `assign_grnas()` takes arguments `sceptre_object` (required) and `method` (optional); the latter argument can be set to `"mixture"`, `"maximum"`, or `"thresholding"`. We parallelize execution of `assign_grnas()` by setting `parallel` to `TRUE`. (Windows users should remove the `parallel = TRUE` argument, as parallel execution is not yet configured for Windows. **Furthermore, parallel functionality is not yet configured for clusters.** )
+We carry out the gRNA assignment step via a call to the function `assign_grnas()`. `assign_grnas()` takes arguments `sceptre_object` (required) and `method` (optional); the latter argument can be set to `"mixture"`, `"maximum"`, or `"thresholding"`. We parallelize execution of `assign_grnas()` by setting `parallel` to `TRUE`. (Parallel execution is not yet configured for Windows. We recommend that Windows users seeking to parallelize their analysis leverage the [`sceptre` Nextflow pipeline](at-scale.qmd).)
 
 ```{r,results='hide'}
 sceptre_object <- assign_grnas(sceptre_object = sceptre_object, parallel = TRUE)
@@ -264,7 +264,7 @@ See @sec-assign_grnas for more information about assigning gRNAs to cells.
 
 The fourth step is to run quality control (QC). This step likewise can be skipped, in which case QC is applied automatically using default options. **`sceptre` implements two kinds of QC: cellwise QC and pairwise QC. The former aims to remove low-quality cells, while the latter aims to remove low-quality target-response pairs.**
 
-The cellwise QC that `sceptre` implements is standard in single-cell analysis. Cells for which `response_n_nonzero` (i.e., the number of expressed responses) or `response_n_umis` (i.e., the number of response UMIs) is extremely high or extremely low are removed. Likewise, cells for which `response_p_mito` (i.e., the fraction of UMIs mapping to mitochondrial genes) is excessively high are removed. Additionally, in low-MOI, cells that contain multiple gRNAs (as determined during the RNA-to-cell assignment step) are removed. Finally, users optionally can provide a list of additional cells to remove.
+The cellwise QC that `sceptre` implements is standard in single-cell analysis. Cells for which `response_n_nonzero` (i.e., the number of expressed responses) or `response_n_umis` (i.e., the number of response UMIs) are extremely high or extremely low are removed. Likewise, cells for which `response_p_mito` (i.e., the fraction of UMIs mapping to mitochondrial genes) is excessively high are removed. Additionally, in low-MOI, cells that contain zero or multiple gRNAs (as determined during the RNA-to-cell assignment step) are removed. Finally, users optionally can provide a list of additional cells to remove.
 
 `sceptre` also implements QC at the level of the target-response pair. For a given pair we define the "treatment cells" as those that contain a gRNA targeting the given target. Next, we define the "control cells" as the cells against which the treatment cells are compared to carry out the differential expression test. We define the "number of nonzero treatment cells" (`n_nonzero_trt`) as the number of *treatment* cells with nonzero expression of the response; similarly, we define the "number of nonzero control cells" (`n_nonzero_cntrl`) as the number of *control* cells with nonzero expression of the response. `sceptre` filters out pairs for which `n_nonzero_trt` or `n_nonzero_cntrl` falls below some threshold (by default 7).
 
@@ -416,4 +416,4 @@ head(result)
 
 Each step of the pipeline has its own dedicated chapter. We encourage interested users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with @sec-import_data.
 
-Also see complete worked examples for the low-MOI CRISPRko and high-MOI CRISPRi data by calling `?sceptre` in the console.
+Also, see complete worked examples for the low-MOI CRISPRko and high-MOI CRISPRi data by calling `?sceptre` in the console.
