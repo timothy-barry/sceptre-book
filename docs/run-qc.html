@@ -261,7 +261,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pipeline-args.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow intallation, pipeline arguments</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow installation, pipeline arguments</span></span></a>
   </div>
 </li>
       </ul>
@@ -336,7 +336,7 @@ window.Quarto = {
 
 </header><p>The fourth step of the pipeline is to run quality control (QC). We apply QC both at the level of the cell (a common step in most single-cell analyses) and at the level of the target-response pair (specific to single-cell CRISPR screens).</p>
 <ul>
-<li><p><strong>Cellwise QC</strong> involves filtering cells on the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. In low-MOI we additionally remove cells that contain multiple gRNAs.</p></li>
+<li><p><strong>Cellwise QC</strong> involves filtering cells on the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. In low-MOI we additionally remove cells that contain zero or multiple gRNAs.</p></li>
 <li><p><strong>Pairwise QC</strong> involves filtering out target-response pairs whose data are too sparse to be analyzed reliably <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref">Barry et al. 2023</a>)</span>. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.</p></li>
 </ul>
 <div class="cell" data-layout-align="center">
@@ -518,7 +518,7 @@ gRNA-to-cell assignment information:
     • Mean N gRNAs per cell (MOI): not computed when using "maximum" assignment method</code></pre>
 </div>
 </div>
-<p>Users may wonder why <code>sceptre</code> does not implement response-wise QC (e.g., filtering out lowly expressed responses). The reason is that pairwise QC is in some sense stronger than response-wise QC. Suppose for example that a given response exhibits zero expression across cells. Target-response pairs containing this response will have <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> values of zero and thus be filtered out, in effect filtering out the response as well.</p>
+<p>Some users might ask why <code>sceptre</code> does not implement response-wise QC (e.g., filtering out lowly expressed responses). The reason is that pairwise QC is in some sense stronger than response-wise QC. Suppose for example that a given response exhibits zero expression across cells. Target-response pairs containing this response will have <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> values of zero and thus be filtered out, in effect filtering out the response as well.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">

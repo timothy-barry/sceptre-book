@@ -261,7 +261,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pipeline-args.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow intallation, pipeline arguments</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow installation, pipeline arguments</span></span></a>
   </div>
 </li>
       </ul>
@@ -351,7 +351,7 @@ Note
 <p>This chapter is self-contained, and first-time users can get started with <code>sceptre</code> by reading this chapter only.</p>
 </div>
 </div>
-<p><code>sceptre</code> is an R package that facilitates statistically rigorous, computationally efficient, and user-friendly single-cell CRISPR screen data analysis. Users can install <code>sceptre</code> via the following command.</p>
+<p><code>sceptre</code> is an R package that facilitates statistically rigorous, massively scalable, and user-friendly single-cell CRISPR screen data analysis. Users can install <code>sceptre</code> via the following command.</p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"katsevich-lab/sceptre"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -466,7 +466,7 @@ Note
 <p>Some gRNAs (e.g., <code>grna_CCGGGCG</code> and <code>grna_TGGCGGC</code>) target gene transcription start sites and serve as positive controls; other gRNAs (e.g., <code>grna_TCTTGAC</code> and <code>grna_TGATCGC</code>) target candidate enhancers, while others still (e.g., <code>grna_TATTCGT</code> and <code>grna_GACCTCC</code>) are non-targeting. Each gene and candidate enhancer in this dataset is targeted by exactly two gRNAs.</p>
 </li>
 <li>
-<p><code>moi</code> is a string specifying the multiplicity-of-infection (MOI) of the data, taking values “high” or “low”. A high-MOI (respectively, low-MOI) dataset is one in which the experimenter has aimed to insert multiple gRNAs (respectively, a single gRNA) into each cell. (If a given cell is determined to contain multiple gRNAs in a low-MOI screen, that cell is removed as part of the quality control step, as discussed below.) The example dataset is a high MOI dataset, and so we set <code>moi</code> to “high”.</p>
+<p><code>moi</code> is a string specifying the multiplicity-of-infection (MOI) of the data, taking values <code>"high"</code> or <code>"low"</code>. A high-MOI (respectively, low-MOI) dataset is one in which the experimenter has aimed to insert multiple gRNAs (respectively, a single gRNA) into each cell. (If a given cell is determined to contain multiple gRNAs in a low-MOI screen, that cell is removed as part of the quality control step, as discussed below.) The example dataset is a high MOI dataset, and so we set <code>moi</code> to <code>"high"</code>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">moi</span> <span class="op">&lt;-</span> <span class="st">"high"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -693,7 +693,7 @@ Attributes of the data:
 <span>  directory <span class="op">=</span> <span class="st">"~/sceptre_outputs"</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code><a href="https://rdrr.io/pkg/sceptre/man/write_outputs_to_directory.html">write_outputs_to_directory()</a></code> writes several files to the specified directory: a text-based summary of the analysis (“analysis_summary.txt”), the various plots (“*.png”), the calibration check, power check, discovery analysis results (“results_run_calibration_check.rds,” “results_run_power_check.rds,” and “results_run_discovery_analysis.rds,” respectively), and the binary gRNA-to-cell assignment matrix (“grna_assignment_matrix.rds”).</p>
+<p><code><a href="https://rdrr.io/pkg/sceptre/man/write_outputs_to_directory.html">write_outputs_to_directory()</a></code> writes several files to the specified directory: a text-based summary of the analysis (<code>analysis_summary.txt</code>), the various plots (<code>*.png</code>), the calibration check, power check, discovery analysis results (<code>results_run_calibration_check.rds</code>, <code>results_run_power_check.rds</code>, and <code>results_run_discovery_analysis.rds</code>, respectively), and the binary gRNA-to-cell assignment matrix (<code>grna_assignment_matrix.rds</code>).</p>
 <div class="cell">
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"~/sceptre_outputs"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -707,7 +707,10 @@ Attributes of the data:
 </div>
 <p>We also can obtain the calibration check, power check, and discovery analysis results in R via a call to the function <code><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result()</a></code>, passing as arguments <code>sceptre_object</code> and <code>analysis</code>, where the latter is a string indicating the function whose results we are querying.</p>
 <div class="cell">
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span><span class="va">sceptre_object</span>, analysis <span class="op">=</span> <span class="st">"run_discovery_analysis"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span></span>
+<span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object</span>,</span>
+<span>  analysis <span class="op">=</span> <span class="st">"run_discovery_analysis"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The variable <code>result</code> is a data frame, the rows of which correspond to target-response pairs, and the columns of which are as follows: <code>response_id</code>, <code>grna_target</code>, <code>n_nonzero_trt</code>, <code>n_nonzero_cntrl</code>, <code>pass_qc</code> (a <code>TRUE</code>/<code>FALSE</code> value indicating whether the pair passes pairwise QC), <code>p_value</code>, <code>log_2_fold_change</code>, and <code>significant</code> (a <code>TRUE</code>/<code>FALSE</code> value indicating whether the pair is called as significant). The p-value contained within the <code>p_value</code> column is a raw (i.e., non-multiplicity-adjusted) p-value.</p>
 <div class="cell">
@@ -732,7 +735,7 @@ Attributes of the data:
 </div>
 </div>
 </section><section id="further-reading" class="level2"><h2 class="anchored" data-anchor-id="further-reading">Further reading</h2>
-<p>Each step of the pipeline has its own dedicated chapter. We encourage interested users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with <a href="import-data.html" class="quarto-xref"><span>1&nbsp; Import data</span></a>.</p>
+<p>Each step of the pipeline has its own dedicated chapter in Part I of this book. We encourage interested users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with <a href="import-data.html" class="quarto-xref"><span>1&nbsp; Import data</span></a>.</p>
 <p>Also, see complete worked examples for the low-MOI CRISPRko and high-MOI CRISPRi data by calling <code><a href="https://rdrr.io/pkg/sceptre/man/sceptre.html">?sceptre</a></code> in the console.</p>
 
 

@@ -12,7 +12,7 @@
 This chapter is self-contained, and first-time users can get started with `sceptre` by reading this chapter only.
 :::
 
-`sceptre` is an R package that facilitates statistically rigorous, computationally efficient, and user-friendly single-cell CRISPR screen data analysis. Users can install `sceptre` via the following command.
+`sceptre` is an R package that facilitates statistically rigorous, massively scalable, and user-friendly single-cell CRISPR screen data analysis. Users can install `sceptre` via the following command.
 
 ```{r, eval=FALSE}
 install.packages("devtools")
@@ -141,7 +141,7 @@ The first step is to import the data. **Data can be imported into `sceptre` from
 
     Some gRNAs (e.g., `grna_CCGGGCG` and `grna_TGGCGGC`) target gene transcription start sites and serve as positive controls; other gRNAs (e.g., `grna_TCTTGAC` and `grna_TGATCGC`) target candidate enhancers, while others still (e.g., `grna_TATTCGT` and `grna_GACCTCC`) are non-targeting. Each gene and candidate enhancer in this dataset is targeted by exactly two gRNAs.
 
-3.  `moi` is a string specifying the multiplicity-of-infection (MOI) of the data, taking values "high" or "low". A high-MOI (respectively, low-MOI) dataset is one in which the experimenter has aimed to insert multiple gRNAs (respectively, a single gRNA) into each cell. (If a given cell is determined to contain multiple gRNAs in a low-MOI screen, that cell is removed as part of the quality control step, as discussed below.) The example dataset is a high MOI dataset, and so we set `moi` to "high".
+3.  `moi` is a string specifying the multiplicity-of-infection (MOI) of the data, taking values `"high"` or `"low"`. A high-MOI (respectively, low-MOI) dataset is one in which the experimenter has aimed to insert multiple gRNAs (respectively, a single gRNA) into each cell. (If a given cell is determined to contain multiple gRNAs in a low-MOI screen, that cell is removed as part of the quality control step, as discussed below.) The example dataset is a high MOI dataset, and so we set `moi` to `"high"`.
 
     ```{r}
     moi <- "high"
@@ -394,7 +394,7 @@ write_outputs_to_directory(
 )
 ```
 
-`write_outputs_to_directory()` writes several files to the specified directory: a text-based summary of the analysis ("analysis_summary.txt"), the various plots ("\*.png"), the calibration check, power check, discovery analysis results ("results_run_calibration_check.rds," "results_run_power_check.rds," and "results_run_discovery_analysis.rds," respectively), and the binary gRNA-to-cell assignment matrix ("grna_assignment_matrix.rds").
+`write_outputs_to_directory()` writes several files to the specified directory: a text-based summary of the analysis (`analysis_summary.txt`), the various plots (`*.png`), the calibration check, power check, discovery analysis results (`results_run_calibration_check.rds`, `results_run_power_check.rds`, and `results_run_discovery_analysis.rds`, respectively), and the binary gRNA-to-cell assignment matrix (`grna_assignment_matrix.rds`).
 
 ```{r}
 list.files("~/sceptre_outputs")
@@ -403,7 +403,10 @@ list.files("~/sceptre_outputs")
 We also can obtain the calibration check, power check, and discovery analysis results in R via a call to the function `get_result()`, passing as arguments `sceptre_object` and `analysis`, where the latter is a string indicating the function whose results we are querying.
 
 ```{r}
-result <- get_result(sceptre_object, analysis = "run_discovery_analysis")
+result <- get_result(
+  sceptre_object = sceptre_object,
+  analysis = "run_discovery_analysis"
+)
 ```
 
 The variable `result` is a data frame, the rows of which correspond to target-response pairs, and the columns of which are as follows: `response_id`, `grna_target`, `n_nonzero_trt`, `n_nonzero_cntrl`, `pass_qc` (a `TRUE`/`FALSE` value indicating whether the pair passes pairwise QC), `p_value`, `log_2_fold_change`, and `significant` (a `TRUE`/`FALSE` value indicating whether the pair is called as significant). The p-value contained within the `p_value` column is a raw (i.e., non-multiplicity-adjusted) p-value.
@@ -414,6 +417,6 @@ head(result)
 
 ## Further reading
 
-Each step of the pipeline has its own dedicated chapter. We encourage interested users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with @sec-import_data.
+Each step of the pipeline has its own dedicated chapter in Part I of this book. We encourage interested users to read these additional chapters one-by-one to learn more about the various options available at each step of the pipeline, starting with @sec-import_data.
 
 Also, see complete worked examples for the low-MOI CRISPRko and high-MOI CRISPRi data by calling `?sceptre` in the console.

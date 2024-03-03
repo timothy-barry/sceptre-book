@@ -64,9 +64,9 @@ We set the analysis parameters by calling the function `set_analysis_parameters(
 -   `formula_object`
 -   `multiple_testing_method`
 -   `multiple_testing_alpha`
--   `fit_parametric_curve`
+-   `resampling_approximation`
 
-None of these arguments is required, and all are set to sensible defaults. We describe these arguments below.
+None of these arguments is required, and all are set to sensible defaults. However, we recommend that users specify `discovery_pairs` and `positive_control_pairs` in most analyses. We describe these arguments below.
 
 ## Positive control pairs {#sec-set_analysis_parameters_pc_pairs}
 
@@ -86,7 +86,7 @@ positive_control_pairs_lowmoi <- construct_positive_control_pairs(
 head(positive_control_pairs_lowmoi) # low MOI CRISPRko dataset
 ```
 
-Positive control pairs need not consist exclusively of gene transcription start sites paired to target genes. For example, enhancer-gene links that have been validated previously (through, e.g., an arrayed CRISPR screen with bulk RNA-seq readout, or a bulk CRISPR screen with cell sorting) also can serve as positive control pairs. Users can manually append additional positive control pairs to the positive control pair data frame via a call to `rbind()`. For example, suppose we know on the high-MOI CRISPRi data that `candidate_enh_1` regulates gene `ENSG00000069482` and that `candidate_enh_10` regulates gene `ENSG00000135821`. We can add these enhancer-gene links to the positive control pair data frame as follows.
+Positive control pairs need not consist exclusively of gene transcription start sites paired to target genes. For example, enhancer-gene links that have been validated previously (through, e.g., an arrayed CRISPR screen with bulk RNA-seq, or a bulk CRISPR screen with cell sorting) also can serve as positive control pairs. Users manually can append additional positive control pairs to the positive control pair data frame via a call to `rbind()`. For example, suppose we know on the high-MOI CRISPRi data that `candidate_enh_1` regulates gene `ENSG00000069482` and that `candidate_enh_10` regulates gene `ENSG00000135821`. We can add these enhancer-gene links to the positive control pair data frame as follows.
 
 ```{r}
 # construct data frame of additional positive control pairs
@@ -95,8 +95,10 @@ additional_positive_control_pairs <-
              response_id = c("ENSG00000069482", "ENSG00000135821"))
 
 # append additional pairs to positive control data frame
-positive_control_pairs_highmoi_updated <- rbind(positive_control_pairs_highmoi,
-                                                additional_positive_control_pairs)
+positive_control_pairs_highmoi_updated <- rbind(
+  positive_control_pairs_highmoi,
+  additional_positive_control_pairs
+)
 positive_control_pairs_highmoi_updated
 ```
 
@@ -108,7 +110,7 @@ Discovery pairs are target-response pairs whose association status we do not kno
 
 ### Construct *cis* pairs {#sec-set-analysis-parameters_construct_cis_pairs}
 
-`construct_cis_pairs()` returns the set of target-response pairs for which the target and response are located on the same chromosome and in close physical proximity to one another. `construct_cis_pairs()` is a useful pair constructor function for screens that aim to map noncoding regulatory elements (e.g., enhancers or noncoding GWAS variants) to target genes or proteins in *cis*. `construct_cis_pairs()` assumes that the columns `chr`, `start`, and `stop` are present in the `grna_target_data_frame`, giving the chromosome, start position, and end position of the region that each gRNA targets. `construct_cis_pairs()` takes several arguments: `sceptre_object` (required) `distance_threshold` (optional), `positive_control_pairs` (optional), and `response_position_data_frame` (optional). By default, `construct_cis_pairs()` pairs each gRNA target to the set of responses on the same chromosome as that target and within `distance_threshold` bases of that target. (The default value of `distance_threshold` is 500,000 bases, or half a megabase.)The `positive_control_pairs` data frame optionally can be passed to `construct_cis_pairs()`, in which case the positive control targets (i.e., the entries within the `grna_target` column of `positive_control_pairs`) are excluded from the *cis* pairs. One may want to exclude these from the discovery analysis if these targets are intended for positive control purposes only.
+`construct_cis_pairs()` returns the set of target-response pairs for which the target and response are located on the same chromosome and in close physical proximity to one another. `construct_cis_pairs()` is a useful pair constructor function for screens that aim to map noncoding regulatory elements (e.g., enhancers or noncoding GWAS variants) to target genes or proteins in *cis*. `construct_cis_pairs()` assumes that the columns `chr`, `start`, and `stop` are present in the `grna_target_data_frame`, giving the chromosome, start position, and end position of the region that each gRNA targets. `construct_cis_pairs()` takes several arguments: `sceptre_object` (required) `distance_threshold` (optional), `positive_control_pairs` (optional), and `response_position_data_frame` (optional). By default, `construct_cis_pairs()` pairs each gRNA target to the set of responses on the same chromosome as that target and within `distance_threshold` bases of that target. (The default value of `distance_threshold` is 500,000 bases, or half a megabase.) The `positive_control_pairs` data frame optionally can be passed to `construct_cis_pairs()`, in which case the positive control targets (i.e., the entries within the `grna_target` column of `positive_control_pairs`) are excluded from the *cis* pairs. One may want to exclude these from the discovery analysis if these targets are intended for positive control purposes only.
 
 Finally, `response_position_data_frame` is an optional data frame containing the columns `response_id`, `chr`, and `position`, where `chr` and `position` give the genomic coordinate of each `response_id`. The default value of `response_position_data_frame` is `gene_position_data_frame_grch38`, which is a data frame that ships with `sceptre` that contains the genomic coordinate of the transcription start site of all genes in the human genome. We print several rows of `gene_position_data_frame_grch38` below.
 
@@ -116,7 +118,7 @@ Finally, `response_position_data_frame` is an optional data frame containing the
 gene_position_data_frame_grch38[c(1:4, 8001:8004),]
 ```
 
-`gene_position_data_frame_grch38` was derived from the GrCh38 (hg19) reference genome, which is the reference genome that all versions of `cellranger count` released since 2021 have used for alignment. Users can pass their own `response_position_data_frame` to `construct_cis_pairs()` if the `gene_position_data_frame_grch38` data frame included within `sceptre` is inadequate for their analysis. For example, some users may wish to map enhancers to proteins in *cis*. Such users could construct the discovery set by coupling each enhancer to the set of proteins whose corresponding gene is in close physical proximity to that enhancer. In such an analysis `response_position_data_frame` would be a data frame mapping each protein to the chromosomal position of the transcription start site of its corresponding gene. Note that `response_position_data_frame` and the `chr`, `start`, and `stop` columns of the `grna_target_data_frame` should be defined with respect to the same reference genome, as `construct_cis_pairs()` proceeds by intersecting `response_position_data_frame` with `grna_target_data_frame`.
+`gene_position_data_frame_grch38` was derived from the GrCh38 (hg19) reference genome, which is the reference genome that all versions of `cellranger count` released since 2021 have used for alignment. Users can pass their own `response_position_data_frame` to `construct_cis_pairs()` if the `gene_position_data_frame_grch38` data frame included within `sceptre` is inadequate for their analysis. For example, some users may wish to map enhancers to proteins in *cis*. Such users could construct the discovery set by coupling each enhancer to the set of proteins whose corresponding gene is in close physical proximity to that enhancer. In such an analysis `response_position_data_frame` would be a data frame mapping each protein to the chromosomal position of the transcription start site of its corresponding gene. Note that `response_position_data_frame` and the `chr`, `start`, and `stop` columns of the `grna_target_data_frame` should be defined with respect to the same reference genome, as `construct_cis_pairs()` implements its functionality by intersecting `response_position_data_frame` with `grna_target_data_frame`.
 
 We use `construct_cis_pairs()` to construct the discovery pairs for the high-MOI CRISPRi dataset. We set `distance_threshold` to `5e6` (i.e., 5 megabases) so as to increase the number of pairs in the discovery set for illustration purposes. 
 
@@ -138,7 +140,7 @@ discovery_pairs_highmoi[c(1, 10, 20, 30, 40, 50),]
 
 `construct_trans_pairs()` returns the entire set of possible target-response pairs. `construct_trans_pairs()` is a useful pair constructor function for analyses in which we seek to conduct a *trans* analysis, testing each target against each response. `construct_trans_pairs()` takes as arguments `sceptre_object` (required), `positive_control_pairs` (optional), and `pairs_to_exclude` (optional). By default `construct_trans_pairs()` returns a data frame with columns `grna_target` and `response_id`, where each gRNA target is mapped to each response ID.
 
-The optional argument `pairs_to_exclude` enables the user to remove specific pairs from the *trans* set and takes values `"none"`, `"pc_pairs"`, or `"pairs_containing_pc_targets"`. If `pairs_to_exclude` is set to `"none"` (the default), then no pairs are removed from the *trans* set. Next, if `pairs_to_exclude` is set to `"pc_pairs"` (and the `positive_control_pairs` data frame is passed), then then the positive control target-response pairs are excluded from the *trans* set. Finally, if `pairs_to_exclude` is set to `"pairs_containing_pc_targets"` (and `positive_control_pairs` is passed), then *all* pairs containing a positive control gRNA target are excluded from the *trans* pairs. (In this sense setting `pairs_to_exclude` to `"pairs_containing_pc_targets"` is stronger than setting `pairs_to_exclude` to `"pc_pairs"`.) Typically, in gene-targeting (resp., noncoding-regulatory-element-targeting) screens, we want to set `pairs_to_exclude` to `"pc_pairs"` (resp., `"pairs_containing_pc_targets"`). Below, we call `construct_trans_pairs()` to construct the discovery set for the low-MOI CRISPRko data.
+The optional argument `pairs_to_exclude` enables the user to remove specific pairs from the *trans* set and takes values `"none"`, `"pc_pairs"`, or `"pairs_containing_pc_targets"`. If `pairs_to_exclude` is set to `"none"` (the default), then no pairs are removed from the *trans* set. Next, if `pairs_to_exclude` is set to `"pc_pairs"` (and the `positive_control_pairs` data frame is passed), then then the positive control target-response pairs are excluded from the *trans* set. Finally, if `pairs_to_exclude` is set to `"pairs_containing_pc_targets"` (and `positive_control_pairs` is passed), then *all* pairs containing a positive control gRNA target are excluded from the *trans* pairs. (In this sense setting `pairs_to_exclude` to `"pairs_containing_pc_targets"` is stronger than setting `pairs_to_exclude` to `"pc_pairs"`.) Typically, in gene-targeting (resp., noncoding-regulatory-element-targeting) screens, we set `pairs_to_exclude` to `"pc_pairs"` (resp., `"pairs_containing_pc_targets"`). Below, we call `construct_trans_pairs()` to construct the discovery set for the low-MOI CRISPRko data.
 
 ```{r}
 discovery_pairs_lowmoi <- construct_trans_pairs(
@@ -167,7 +169,7 @@ head(discovery_pairs_highmoi_trans)
 
 Some users may wish to run both *cis* and *trans* analyses on their data. We recommend that such users carry out the `sceptre` pipeline twice: once using a *cis* discovery set and once using a *trans* discovery set. See @sec-multiple_analyses for more details.
 
-The discovery pairs data frame is optional and need not be specified. Users may refrain from passing a discovery pairs data frame when runing a *control analysis*, i.e. an analysis of negative control data and positive control data exclusively. 
+The discovery pairs data frame is optional and need not be specified. Users may want to refrain from passing a discovery pairs data frame when runing a *control analysis*, i.e. an analysis of the negative control pairs and/or positive control pairs exclusively. 
 
 ### Reducing the multiplicity burden
 
@@ -193,7 +195,7 @@ The discovery pairs data frame is optional and need not be specified. Users may 
 
 ## gRNA integration strategy {#sec-grna_integration_strategy}
 
-Multiple gRNAs typically are designed to target a given genomic element. The parameter `grna_integration_strategy` controls if and how gRNAs that target the same genomic element are combined. In most cases, users wish to test whether perturbation of a target impacts the responses to which the target is paired. In these cases, users need to choose a strategy for integrating information across gRNAs that share a given target. If users expect that gRNAs sharing a target will have similar effects, then users should choose `grna_integration_strategy = "union"`. If, on the other hand, users expect that gRNAs sharing a target will have substantially different effects (e.g. due to variable gRNA effectiveness), then users should choose `grna_integration_strategy = "bonferroni"`. In some cases, users may wish to test each individual gRNA against the responses to which its target is paired. For example, users may wish to assess the variability in the effects of different gRNAs with the same target. In these cases, users should choose `grna_integration_strategy = "singleton"`.
+Multiple gRNAs typically are designed to target a given genomic element. The parameter `grna_integration_strategy` controls if and how gRNAs that target the same genomic element are combined. In most cases, users wish to test whether perturbation of a target impacts the responses to which the target is paired. In these cases, users need to choose a strategy for integrating information across gRNAs that share a given target. If users expect that gRNAs sharing a target will have broadly similar effects, then users should choose `grna_integration_strategy = "union"`. If, on the other hand, users expect that gRNAs sharing a target will have substantially different effects (e.g. due to variable gRNA effectiveness), then users should choose `grna_integration_strategy = "bonferroni"`. In some cases users may wish to test each individual gRNA against the responses to which its target is paired. For example, users may wish to assess the variability in the effects of different gRNAs with the same target. In these cases, users should choose `grna_integration_strategy = "singleton"`.
 
 ```{r, out.width = "350px", fig.align="center", echo = FALSE, fig.cap="Schematic of the choices for gRNA integration strategy."}
 knitr::include_graphics("grna_integration_strategy_dec_tree.png")

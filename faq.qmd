@@ -28,8 +28,6 @@ rm -rf sceptre
 
 Now, try to install `sceptre` again.
 
-If this does not work, try to delete and reinstall the dependencies of `sceptre`. `sceptre` has the following dependencies: `BH`, `cowplot`, `crayon`, `data.table`, `dplyr`, `ggplot2`, `Matrix`, `Rcpp`. Using the method described above, delete and reinstall each of these dependencies one-by-one.
-
 ## How can I install a previous version of `sceptre`?
 
 See the instructions [here](https://katsevich-lab.github.io/sceptre/articles/install.html).
@@ -55,9 +53,9 @@ This line tells the C++ compiler to use aggressive optimization in compiling C++
 devtools::install_github("katsevich-lab/sceptre")
 ```
 
-## `sceptre` unexpectedly crashed, or `sceptre` is using an unexpectedly large amount of memory or taking an unexpectedly long amount of time to run. What should I do?
+## `sceptre` crashed, or `sceptre` is using an unexpectedly large amount of memory or taking an unexpectedly long amount of time to run. What should I do?
 
-The most likely explanation is that something is going wrong with the parallel functionality of the package. Consider setting `parallel = FALSE` and then trying again. If the situation improves, consider setting `parallel = TRUE` and setting `n_processors` to a small number, such as `2` or `3`. 
+The most likely explanation is that something is going wrong with the parallel functionality of the package. Consider setting `parallel = FALSE` and then trying again. If the situation improves, consider setting `parallel = TRUE` and setting `n_processors` to a small number, such as `2` or `3`. Note that the `parallel = TRUE` option fails on clusters and Windows machines; to run `sceptre` in parallel on one of these platforms, use the Nextflow pipeline.
 
 ## My negative control p-values are miscalibrated. What should I do?
 

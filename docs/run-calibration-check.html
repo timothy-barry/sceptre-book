@@ -261,7 +261,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pipeline-args.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow intallation, pipeline arguments</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow installation, pipeline arguments</span></span></a>
   </div>
 </li>
       </ul>
@@ -526,7 +526,7 @@ Table&nbsp;5.1: Calibration quality as a (rough) function of the number of false
 </div>
 </figure>
 </div>
-<p><code>sceptre</code> could demonstrate miscalibration on a single-cell CRISPR screen dataset due to three main reasons: sparsity, the omission of relevant covariates, and model misspecification. Sparsity — the presence of a large proportion of zeros in the response UMI count matrix — can cause the skew-normal approximation to the distribution of the null test statistics to break down, resulting in miscalibrated p-values. Additionally, the omission of important covariates (such as batch or biological replicate) from the model or misspecification of the underlying negative binomial GLM (due, for example, to the presence of outlier cells) also can lead to miscalibration. Pairwise and cellwise QC (<a href="run-qc.html" class="quarto-xref"><span>Chapter 4</span></a>) provide the first line of defense against sparsity and model misspecification, respectively. Furthermore, the resampling methodology of <code>sceptre</code> protects against misspecification of the negative binomial GLM. In spite of these safeguards, <code>sceptre</code> may still exhibit miscalibration on some datasets.</p>
+<p>There are three main sources of miscalibration in single-cell CRISPR screen analysis <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref">Barry et al. 2023</a>)</span>: sparsity, the omission of relevant covariates, and misspecification of the negative binomial model. Sparsity — the presence of a large proportion of zeros in the response UMI count matrix — can cause the skew-normal approximation to the distribution of the null test statistics to break down, resulting in miscalibrated p-values. Additionally, the omission of important covariates (such as batch or biological replicate) from the model or misspecification of the underlying negative binomial GLM (due, for example, to the presence of outlier cells) also can lead to miscalibration. Pairwise and cellwise QC (<a href="run-qc.html" class="quarto-xref"><span>Chapter 4</span></a>) provide the first line of defense against sparsity and model misspecification, respectively. Furthermore, the resampling methodology of <code>sceptre</code> protects against misspecification of the negative binomial GLM. In spite of these safeguards, <code>sceptre</code> may still exhibit miscalibration on some datasets.</p>
 <p>To provide an example of miscalibration, we again run the calibration check on the high-MOI CRISPRi data, this time setting <code>formula_object</code> to <code>formula(~log(grna_n_umis))</code>, thereby excluding <code>batch</code>, <code>response_n_umis</code>, and other important covariates.</p>
 <div class="cell">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
@@ -587,7 +587,7 @@ Table&nbsp;5.1: Calibration quality as a (rough) function of the number of false
 </li>
 <li><p><strong>Add additional covariates</strong>. <code>sceptre</code> may be miscalibrated because important covariates are missing. Users should consider whether any additional covariates are relevant and, if so, add these covariates to the <code>sceptre_object</code> via <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> or <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code>. For example, cell type should be included as a covariate if the data contain multiple cell types. Batch, biological replicate, and cell cycle also may be relevant. (<code>sceptre</code> does not currently provide functionality for imputing cell type or cycle.)</p></li>
 <li>
-<p><strong>Tighten the QC thresholds</strong>. Users can tighten the cellwise and pairwise QC thresholds to remove outlier cells and target-response pairs with a low effective sample size, respectively, thereby ameliorating challenges to calibration due to sparsity and model misspecification. Below, we increase <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl_thresh</code> to 15; the default value for these parameters is 10. We additionally set <code>response_n_umis_range</code> to <code>c(0.05, 0.95)</code>, which clips the <code>response_n_umis</code> distribution at the fifth and ninety-fifth percentiles (as opposed the the first and ninety-ninth percentiles, which is the default).</p>
+<p><strong>Tighten the QC thresholds</strong>. Users can tighten the cellwise and pairwise QC thresholds to remove outlier cells and target-response pairs with a low effective sample size, respectively, thereby ameliorating challenges to calibration due to sparsity and model misspecification. Below, we increase <code>n_nonzero_trt_thresh</code> and <code>n_nonzero_cntrl_thresh</code> to 15; the default value for these parameters is 7. We additionally set <code>response_n_umis_range</code> to <code>c(0.05, 0.95)</code>, which clips the <code>response_n_umis</code> distribution at the fifth and ninety-fifth percentiles (as opposed the the first and ninety-ninth percentiles, which is the default).</p>
 <div class="cell">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_qc.html">run_qc</a></span><span class="op">(</span></span>
@@ -624,25 +624,32 @@ Table&nbsp;5.1: Calibration quality as a (rough) function of the number of false
 <span>    side <span class="op">=</span> <span class="st">"left"</span></span>
 <span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Users also could more aggressively prioritize pairs for inclusion in the discovery set by leveraging orthogonal information, such as (single-cell) ATAC-seq or ChIP-seq data.</p>
+<p>Users also could more aggressively prioritize pairs for inclusion in the discovery set by leveraging orthogonal information, such as ATAC-seq or ChIP-seq data.</p>
 </li>
 </ol></section><section id="sec-run_calibration_check_output_amount" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="sec-run_calibration_check_output_amount">
 <span class="header-section-number">5.5</span> The <code>output_amount</code> argument</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Most users can safely skip this section.</p>
+</div>
+</div>
 <p>The function <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> has the optional argument <code>output_amount</code>, which controls the amount of information that <code><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check()</a></code> returns. <code>output_amount</code> can be set to <code>1</code>, <code>2</code>, or <code>3</code>, with <code>1</code> (the default) returning the least information, <code>2</code> returning an intermediate amount of information, and <code>3</code> returning the most information. Setting <code>output_amount</code> to <code>2</code> causes several additional columns to be appended to the calibration check result data frame. To illustrate, we again run the calibration check on the low-MOI CRISPRko data, this time setting <code>output_amount</code> to 2.</p>
 <div class="cell">
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  output_amount <span class="op">=</span> <span class="fl">2</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Constructing negative control pairs. ✓
-Generating permutation resamples. ✓
-Running calibration_check in parallel. Change directories to /var/folders/7v/5sqjgh8j28lgf8qx3gbtq1h00000gp/T//RtmpYHvOfe/sceptre_logs/ and view the files calibration_check_*.out for progress updates.
- ✓</code></pre>
-</div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_result.html">get_result</a></span><span class="op">(</span>analysis <span class="op">=</span> <span class="st">"run_calibration_check"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -676,7 +683,7 @@ Running calibration_check in parallel. Change directories to /var/folders/7v/5sq
 <p>The columns appended to the result data frame when <code>output_amount</code> is set to <code>2</code> are as follows: <code>z_orig</code>, <code>stage</code>, <code>xi</code>, <code>omega</code>, and <code>alpha</code>. <code>z_orig</code> is the original z-score. <code>stage</code> is the stage at which the p-value was computed, either 1, 2, or 3. And <code>xi</code>, <code>omega</code>, and <code>alpha</code> are the fitted values of the skew-normal distribution. (The latter three parameters are relevant only when <code>stage</code> is 2; when <code>stage</code> is 1 or 3, these parameters are set to <code>NA</code>.)</p>
 <p>Finally, we can set <code>output_amount</code> to <code>3</code>, which causes the null z-scores to be appended to the result data frame. The null z-scores are labeled <code>z_null_1</code>, <code>z_null_2</code>, <code>z_null_3</code>, etc.</p>
 <div class="cell">
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span>,</span>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/run_calibration_check.html">run_calibration_check</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span>,</span>
 <span>  parallel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  output_amount <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span>
@@ -686,7 +693,7 @@ Running calibration_check in parallel. Change directories to /var/folders/7v/5sq
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">calibration_result</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">calibration_result</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -701,7 +708,7 @@ Running calibration_check in parallel. Change directories to /var/folders/7v/5sq
 </div>
 <p>Finally, we can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on the updated <code>sceptre_object</code> to print a summary of the status of the analysis.</p>
 <div class="cell">
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
 
@@ -729,7 +736,7 @@ Analysis parameters:
     • Control group: non-targeting cells
     • Resampling mechanism: permutations
     • gRNA integration strategy: union
-    • Fit parametric curve: TRUE
+    • Resampling approximation: skew normal
     • Multiple testing adjustment: BH at level 0.1
     • N nonzero treatment cells threshold: 7
     • N nonzero control cells threshold: 7

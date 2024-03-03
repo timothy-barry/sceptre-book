@@ -156,7 +156,7 @@ The negative control p-values may demonstrate *miscalibration*, which is a devia
 
 : Calibration quality as a (rough) function of the number of false discoveries made on the negative control data in the calibration check analysis. {#tbl-calibration_quality}
 
-`sceptre` could demonstrate miscalibration on a single-cell CRISPR screen dataset due to three main reasons: sparsity, the omission of relevant covariates, and model misspecification. Sparsity --- the presence of a large proportion of zeros in the response UMI count matrix --- can cause the skew-normal approximation to the distribution of the null test statistics to break down, resulting in miscalibrated p-values. Additionally, the omission of important covariates (such as batch or biological replicate) from the model or misspecification of the underlying negative binomial GLM (due, for example, to the presence of outlier cells) also can lead to miscalibration. Pairwise and cellwise QC (@sec-run_qc) provide the first line of defense against sparsity and model misspecification, respectively. Furthermore, the resampling methodology of `sceptre` protects against misspecification of the negative binomial GLM. In spite of these safeguards, `sceptre` may still exhibit miscalibration on some datasets.
+There are three main sources of miscalibration in single-cell CRISPR screen analysis [@barry2023]: sparsity, the omission of relevant covariates, and misspecification of the negative binomial model. Sparsity --- the presence of a large proportion of zeros in the response UMI count matrix --- can cause the skew-normal approximation to the distribution of the null test statistics to break down, resulting in miscalibrated p-values. Additionally, the omission of important covariates (such as batch or biological replicate) from the model or misspecification of the underlying negative binomial GLM (due, for example, to the presence of outlier cells) also can lead to miscalibration. Pairwise and cellwise QC (@sec-run_qc) provide the first line of defense against sparsity and model misspecification, respectively. Furthermore, the resampling methodology of `sceptre` protects against misspecification of the negative binomial GLM. In spite of these safeguards, `sceptre` may still exhibit miscalibration on some datasets.
 
 To provide an example of miscalibration, we again run the calibration check on the high-MOI CRISPRi data, this time setting `formula_object` to `formula(~log(grna_n_umis))`, thereby excluding `batch`, `response_n_umis`, and other important covariates.
 
@@ -224,7 +224,7 @@ There are several concrete steps that users can take to improve the calibration 
 
 2.  **Add additional covariates**. `sceptre` may be miscalibrated because important covariates are missing. Users should consider whether any additional covariates are relevant and, if so, add these covariates to the `sceptre_object` via `import_data()` or `import_data_from_cellranger()`. For example, cell type should be included as a covariate if the data contain multiple cell types. Batch, biological replicate, and cell cycle also may be relevant. (`sceptre` does not currently provide functionality for imputing cell type or cycle.)
 
-3.  **Tighten the QC thresholds**. Users can tighten the cellwise and pairwise QC thresholds to remove outlier cells and target-response pairs with a low effective sample size, respectively, thereby ameliorating challenges to calibration due to sparsity and model misspecification. Below, we increase `n_nonzero_trt_thresh` and `n_nonzero_cntrl_thresh` to 15; the default value for these parameters is 10. We additionally set `response_n_umis_range` to `c(0.05, 0.95)`, which clips the `response_n_umis` distribution at the fifth and ninety-fifth percentiles (as opposed the the first and ninety-ninth percentiles, which is the default).
+3.  **Tighten the QC thresholds**. Users can tighten the cellwise and pairwise QC thresholds to remove outlier cells and target-response pairs with a low effective sample size, respectively, thereby ameliorating challenges to calibration due to sparsity and model misspecification. Below, we increase `n_nonzero_trt_thresh` and `n_nonzero_cntrl_thresh` to 15; the default value for these parameters is 7. We additionally set `response_n_umis_range` to `c(0.05, 0.95)`, which clips the `response_n_umis` distribution at the fifth and ninety-fifth percentiles (as opposed the the first and ninety-ninth percentiles, which is the default).
 
     ```{r, eval=FALSE}
     sceptre_object_highmoi <- sceptre_object_highmoi |>
@@ -263,13 +263,17 @@ There are several concrete steps that users can take to improve the calibration 
       )
     ```
 
-    Users also could more aggressively prioritize pairs for inclusion in the discovery set by leveraging orthogonal information, such as (single-cell) ATAC-seq or ChIP-seq data.
+    Users also could more aggressively prioritize pairs for inclusion in the discovery set by leveraging orthogonal information, such as ATAC-seq or ChIP-seq data.
 
 ## The `output_amount` argument {#sec-run_calibration_check_output_amount}
 
+::: callout-note
+Most users can safely skip this section.
+:::
+
 The function `run_calibration_check()` has the optional argument `output_amount`, which controls the amount of information that `run_calibration_check()` returns. `output_amount` can be set to `1`, `2`, or `3`, with `1` (the default) returning the least information, `2` returning an intermediate amount of information, and `3` returning the most information. Setting `output_amount` to `2` causes several additional columns to be appended to the calibration check result data frame. To illustrate, we again run the calibration check on the low-MOI CRISPRko data, this time setting `output_amount` to 2.
 
-```{r,message = FALSE}
+```{r,message = FALSE,results="hide"}
 sceptre_object_lowmoi <- run_calibration_check(sceptre_object_lowmoi,
   parallel = TRUE,
   output_amount = 2

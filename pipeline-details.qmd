@@ -1,6 +1,6 @@
 # A deeper dive into the Nextflow pipeline
 
-In this chapter we discuss several technical aspects of the `sceptre` Nextflow pipeline. First, we review computing clusters and explain how information flows through the `sceptre` Nextflow pipeline on a cluster. Next, we describe the structure of a `sceptre` Nextflow submission script. Finally, we provide a few examples of common analysis workflows in the context of the Nextflow pipeline.
+In this chapter we delve deeper into the `sceptre` Nextflow pipeline. First, we review clusters and explain how information flows through the `sceptre` Nextflow pipeline on a cluster. Next, we describe the structure of a typical `sceptre` Nextflow submission script. Then, we provide a few examples of common analysis workflows in the context of the Nextflow pipeline. Finally, we describe how to run a massive-scale *trans* analysis using the Nextflow pipeline.
 
 ## Cluster architecture and Nextflow pipeline structure
 

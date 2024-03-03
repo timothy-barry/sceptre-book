@@ -2,7 +2,7 @@
 
 The fourth step of the pipeline is to run quality control (QC). We apply QC both at the level of the cell (a common step in most single-cell analyses) and at the level of the target-response pair (specific to single-cell CRISPR screens).
 
--   **Cellwise QC** involves filtering cells on the covariates `response_n_nonzero`, `response_n_umis`, and `response_p_mito`. In low-MOI we additionally remove cells that contain multiple gRNAs.
+-   **Cellwise QC** involves filtering cells on the covariates `response_n_nonzero`, `response_n_umis`, and `response_p_mito`. In low-MOI we additionally remove cells that contain zero or multiple gRNAs.
 
 -   **Pairwise QC** involves filtering out target-response pairs whose data are too sparse to be analyzed reliably [@barry2023]. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.
 
@@ -156,4 +156,4 @@ We additionally can call `plot_covariates()` on a `sceptre_object` *after* `run_
 print(sceptre_object_lowmoi)
 ```
 
-Users may wonder why `sceptre` does not implement response-wise QC (e.g., filtering out lowly expressed responses). The reason is that pairwise QC is in some sense stronger than response-wise QC. Suppose for example that a given response exhibits zero expression across cells. Target-response pairs containing this response will have `n_nonzero_trt` and `n_nonzero_cntrl` values of zero and thus be filtered out, in effect filtering out the response as well.
+Some users might ask why `sceptre` does not implement response-wise QC (e.g., filtering out lowly expressed responses). The reason is that pairwise QC is in some sense stronger than response-wise QC. Suppose for example that a given response exhibits zero expression across cells. Target-response pairs containing this response will have `n_nonzero_trt` and `n_nonzero_cntrl` values of zero and thus be filtered out, in effect filtering out the response as well.
