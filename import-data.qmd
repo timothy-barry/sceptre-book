@@ -10,10 +10,11 @@ This chapter describes how to import single-cell CRISPR screen data into `sceptr
 knitr::include_graphics("pipeline_schematic_step_1.png")
 ```
 
-Users either can import data directly from the output of an existing software package (e.g., 10X Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the `sceptre` package.
+Users either can import data directly from the output of an existing software package (e.g., 10X Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the `sceptre` and `sceptredata` packages.
 
 ```{r,message = FALSE}
 library(sceptre)
+library(sceptredata)
 ```
 
 ## Import data from an existing software package
@@ -26,7 +27,7 @@ library(sceptre)
 
 ```{r,results='hide'}
 directories <- paste0(
-  system.file("extdata", package = "sceptre"),
+  system.file("extdata", package = "sceptredata"),
   "/highmoi_example/gem_group_", 1:2)
 data(grna_target_data_frame_highmoi)
 sceptre_object <- import_data_from_cellranger(
