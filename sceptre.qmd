@@ -317,7 +317,7 @@ The visualization consists of four panels, which we describe below.
 
 -   The lower left panel is a histogram of the estimated log-2 fold changes. The histogram should be roughly symmetric and centered around zero.
 
--   Finally, the bottom right panel is a text box displaying (i) the number of false discoveries that `sceptre` has made on the negative control data and (ii) the mean estimated log-fold change. The number of false discoveries should be a small integer like zero, one, two, or three, with zero being ideal. The mean estimated log-fold change, meanwhile, should be a numeric value close to zero; a number in the range \[-0.1, 0.1\] is adequate.
+-   Finally, the bottom right panel is a text box displaying (i) the number of false discoveries that `sceptre` has made on the negative control data and (ii) the mean estimated log-fold change. The number of false discoveries should be a small integer like zero, one, two, or three, with zero being ideal. The mean estimated log-fold change, meanwhile, should be a numeric value close to zero; a number in the range [-0.1, 0.1] is adequate.
 
 `sceptre` may not exhibit good calibration initially, which is OK. See @sec-run_calibration_check for more information about the calibration check analysis, including concrete strategies for improving calibration.
 
