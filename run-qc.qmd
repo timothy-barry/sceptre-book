@@ -10,10 +10,11 @@ The fourth step of the pipeline is to run quality control (QC). We apply QC both
 knitr::include_graphics("pipeline_schematic_step_4.png")
 ```
 
-We begin by loading the `sceptre` package.
+We begin by loading the `sceptre` and `sceptredata` packages.
 
 ```{r,message = FALSE}
 library(sceptre)
+library(sceptredata)
 ```
 
 We initialize `sceptre_object`s corresponding to the high-MOI CRISPRi and low-MOI CRISPRko data. We call the first three pipeline functions on both datasets: `import_data()`, `set_analysis_parameters()`, and `assign_grnas()`.
@@ -21,6 +22,7 @@ We initialize `sceptre_object`s corresponding to the high-MOI CRISPRi and low-MO
 ```{r}
 # low-MOI CRISPRko data
 # 1. import data
+data(lowmoi_example_data)
 sceptre_object_lowmoi <- import_data(
   response_matrix = lowmoi_example_data$response_matrix,
   grna_matrix = lowmoi_example_data$grna_matrix,
@@ -47,6 +49,7 @@ sceptre_object_lowmoi <- sceptre_object_lowmoi |>
 ```{r, results='hide'}
 # high-MOI CRISPRi data
 # 1. import data
+data(highmoi_example_data); data(grna_target_data_frame_highmoi)
 sceptre_object_highmoi <- import_data(
   response_matrix = highmoi_example_data$response_matrix,
   grna_matrix = highmoi_example_data$grna_matrix,

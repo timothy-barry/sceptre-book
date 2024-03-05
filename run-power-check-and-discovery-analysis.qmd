@@ -6,10 +6,11 @@ The next steps of the pipeline are to run the power check and the discovery anal
 knitr::include_graphics("pipeline_schematic_step_6_7.png")
 ```
 
-We load the `sceptre`, `dplyr`, and `cowplot` packages.
+We load the `sceptre`, `sceptredata`, `dplyr`, and `cowplot` packages.
 
 ```{r,message = FALSE}
 library(sceptre)
+library(sceptredata)
 library(dplyr)
 library(cowplot)
 ```
@@ -23,6 +24,7 @@ We initialize `sceptre_object`s corresponding to the high-MOI CRISPRi data and l
 ```{r,results='hide'}
 # low-MOI CRISPRko data
 # 1. import data
+data(lowmoi_example_data)
 sceptre_object_lowmoi <- import_data(
   response_matrix = lowmoi_example_data$response_matrix,
   grna_matrix = lowmoi_example_data$grna_matrix,
@@ -53,6 +55,7 @@ sceptre_object_lowmoi <- sceptre_object_lowmoi |>
 ```{r, results='hide'}
 # high-MOI CRISPRi data
 # 1. import data
+data(highmoi_example_data); data(grna_target_data_frame_highmoi)
 sceptre_object_highmoi <- import_data(
   response_matrix = highmoi_example_data$response_matrix,
   grna_matrix = highmoi_example_data$grna_matrix,

@@ -6,10 +6,11 @@ The fifth step of the pipeline is to run the calibration check. The calibration 
 knitr::include_graphics("pipeline_schematic_step_5.png")
 ```
 
-We begin by loading `sceptre`.
+We begin by loading `sceptre` and `sceptredata`.
 
 ```{r,message = FALSE}
 library(sceptre)
+library(sceptredata)
 ```
 
 We initialize `sceptre_object`s corresponding to the low-MOI CRISPRko data and high-MOI CRISPRi data. We call the pipeline functions that precede `run_calibration_check()` (namely, `import_data()`, `set_analysis_parameters()`, `assign_grnas()`, and `run_qc()`) on both datasets.
@@ -17,6 +18,7 @@ We initialize `sceptre_object`s corresponding to the low-MOI CRISPRko data and h
 ```{r}
 # low-MOI CRISPRko data
 # 1. import data
+data(lowmoi_example_data)
 sceptre_object_lowmoi <- import_data(
   response_matrix = lowmoi_example_data$response_matrix,
   grna_matrix = lowmoi_example_data$grna_matrix,
@@ -44,6 +46,7 @@ sceptre_object_lowmoi <- sceptre_object_lowmoi |>
 ```{r, results='hide'}
 # high-MOI CRISPRi data
 # 1. import data
+data(highmoi_example_data); data(grna_target_data_frame_highmoi)
 sceptre_object_highmoi <- import_data(
   response_matrix = highmoi_example_data$response_matrix,
   grna_matrix = highmoi_example_data$grna_matrix,

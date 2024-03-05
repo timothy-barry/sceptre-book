@@ -6,10 +6,11 @@ This chapter explicates the "set analysis parameters" step of the `sceptre` pipe
 knitr::include_graphics("pipeline_schematic_step_2.png")
 ```
 
-We begin by loading the `sceptre` package.
+We begin by loading the `sceptre` and `sceptredata` packages.
 
 ```{r,message = FALSE}
 library(sceptre)
+library(sceptredata)
 ```
 
 Throughout, we examine two example datasets. First, we examine the example high-MOI CRISPRi screen of candidate enhancers in K562 cells. This is the example dataset that we used in *The whole game* and in @sec-import_data. We initialize a `sceptre_object` called `sceptre_object_highmoi` to represent these data.
@@ -66,7 +67,7 @@ We set the analysis parameters by calling the function `set_analysis_parameters(
 -   `multiple_testing_alpha`
 -   `resampling_approximation`
 
-None of these arguments is required, and all are set to sensible defaults. However, we recommend that users specify `discovery_pairs` and `positive_control_pairs` in most analyses. We describe these arguments below.
+None of these arguments is required, and all are set to sensible defaults. However, users will specify `discovery_pairs` and `positive_control_pairs` in most analyses. We describe these arguments below.
 
 ## Positive control pairs {#sec-set_analysis_parameters_pc_pairs}
 

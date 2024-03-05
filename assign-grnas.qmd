@@ -12,10 +12,11 @@ The third step of the pipeline is to assign gRNAs to cells. This step entails us
 knitr::include_graphics("pipeline_schematic_step_3.png")
 ```
 
-We begin by loading `sceptre`.
+We begin by loading the `sceptre` and `sceptredata` packages.
 
 ```{r,message = FALSE}
 library(sceptre)
+library(sceptredata)
 ```
 
 ## Initialize the CRISPRi and CRISPRko `sceptre_object`s
@@ -25,6 +26,7 @@ We use the high-MOI CRISPRi and low-MOI CRISPRko data as running examples. We ca
 ```{r}
 # low-MOI CRISPRko data setup
 # 1. import data
+data(lowmoi_example_data)
 sceptre_object_lowmoi <- import_data(
   response_matrix = lowmoi_example_data$response_matrix,
   grna_matrix = lowmoi_example_data$grna_matrix,
@@ -52,6 +54,7 @@ We do the same for the high-MOI CRISPRi data, creating `sceptre_object_highmoi`.
 ```{r}
 # high-MOI CRISPRi setup
 # 1. import data
+data(highmoi_example_data); data(grna_target_data_frame_highmoi)
 sceptre_object_highmoi <- import_data(
   response_matrix = highmoi_example_data$response_matrix,
   grna_matrix = highmoi_example_data$grna_matrix,
