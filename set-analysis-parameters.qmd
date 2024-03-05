@@ -31,6 +31,7 @@ sceptre_object_highmoi <- import_data(
 We additionally examine an example low-MOI CRISPRko screen of gene transcription start sites in immune cells [@papalexi2021]. We initialize a `sceptre_object` called `sceptre_object_lowmoi` to store this latter dataset.
 
 ```{r}
+data(lowmoi_example_data)
 sceptre_object_lowmoi <- import_data(
   response_matrix = lowmoi_example_data$response_matrix,
   grna_matrix = lowmoi_example_data$grna_matrix,
