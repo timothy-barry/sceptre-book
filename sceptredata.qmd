@@ -1,0 +1,132 @@
+# Example data in the `sceptredata` package {#sec-set_analysis_parameters}
+
+The `sceptredata` package contains three example single-cell CRISPR screen datasets for use in the examples of the `sceptre` and `ondisc` packages. We describe each of the example datasets here.
+
+## High-multiplicity-of-infection CRISPRi screen of candidate enhancers
+
+The first example dataset contained within `sceptredata` is a high-multiplicity-of-infection (MOI) CRISPRi screen of candidate enhancers in K562 cells [@gasperini2019]. The original authors aimed to link candidate enhancers to genes by testing for changes in gene expression in response to CRISPR perturbations of the candidate enhancers. The authors designed a library of gRNAs to target 5,779 candidate enhancers and 381 transcription start sites (TSSs). Each genomic element was targeted by two gRNAs (with a subset of the candidate enhancers targeted by four gRNAs). Additionally, the authors designed 100 negative control gRNAs, each of which targeted a gene desert or no location in the genome at all. The authors sequenced 207,324 single cells, measuring the gene and gRNA expression profile of each.
+
+The `sceptredata` package contains a downsampled version of the Gasperini data, which is stored within the `highmoi_example_data` list. Evaluating `data(highmoi_example_data)` in the console loads the example high-MOI CRISPRi data into the global namespace.
+
+```{r,echo=FALSE,results="hide"}
+library(Matrix)
+```
+
+```{r}
+library(sceptredata)
+data(highmoi_example_data)
+```
+
+The data consist of several pieces. First, `grna_matrix` is the gRNA-by-cell expression matrix. gRNAs and cells alike are downsampled: the matrix contains 95 gRNAs and 45,919 cells. The gRNAs are downsampled such that there are 50 candidate-enhancer-targeting gRNAs (targeting 25 distinct candidate enhancers), 20 positive control gRNAs (targeting 10 TSSs), and 25 negative control gRNAs. The cells are downsampled such that each contains at least one gRNA.
+
+```{r}
+grna_matrix <- highmoi_example_data$grna_matrix
+dim(grna_matrix)
+```
+
+Second, `response_matrix` is the gene-by-cell expression matrix. This matrix is also downsampled, containing 526 genes and the same 45,919 cells as the gRNA matrix. The target gene of each TSS-targeting gRNA is included in the matrix. Moreover, the matrix contains about 500 genes in close physical proximity to the target locations of the (downsampled) candidate-enhancer-targeting gRNAs. Finally, two randomly-selected mitochondrial genes are included in the matrix.
+
+```{r}
+response_matrix <- highmoi_example_data$response_matrix
+dim(response_matrix)
+```
+
+Third, `extra_covariates` is a data frame containing one column, namely `batch`, which indicates the batch (`b1` or `b2`) in which each cell was sequenced.
+
+```{r}
+extra_covariates <- highmoi_example_data$extra_covariates
+head(extra_covariates)
+```
+
+Fourth, `gene_names` is a vector giving the human-readable name of each gene. Genes prepended with the string "MT-" or "mt-" are taken as mitochondrial genes and used to compute the `response_p_mito` covariate in `sceptre`.
+
+```{r}
+gene_names <- highmoi_example_data$gene_names
+head(gene_names)
+```
+
+Finally, `grna_target_data_frame_highmoi` is a data frame containing information about the target of each gRNA.
+
+```{r}
+data(grna_target_data_frame_highmoi)
+head(grna_target_data_frame_highmoi)
+```
+
+`grna_target_data_frame_highmoi` contains the columns `grna_id` (the ID of an individual gRNA), `grna_target` (the genomic target of the given gRNA), and `chr`, `start`, and `end` (the chromosome, start coordinate, and end coordinate, respectively, of the target location of the given gRNA). Non-targeting gRNAs are assigned a `grna_target` of `"non-targeting"`.
+
+The `sceptredata` package also stores the example high-MOI CRISPRi data in 10X Cell Ranger format. The data are contained in two directories (namely, `gem_group_1` and `gem_group_2`), which correspond to cells sequenced in different batches. One can determine the location of these directories on her computer as follows.
+
+```{r}
+directories <- paste0(
+  system.file("extdata", package = "sceptredata"), 
+  "/highmoi_example/gem_group_", 1:2
+)
+directories # file paths to the example data on your computer
+```
+
+Each of these directories contains three files: `barcodes.tsv.gz`, `features.tsv.gz`, and `matrix.mtx.gz`.
+
+```{r}
+list.files(directories[1])
+```
+
+```{r}
+list.files(directories[2])
+```
+
+The expression data are stored in "feature barcode matrix" format. Users can learn more about this file format by consulting the 10X Genomics [documentation](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-mex-matrices).
+
+## Low-MOI CRISPRko screen of gene transcription start sites
+
+The second example dataset contained within `sceptredata` is a low-MOI CRISPRko screen of gene TSSs in THP1 cells [@papalexi2021]. The original authors aimed to link perturbations of genes to changes in the expression of *other* genes. The authors designed 101 targeting gRNAs to target 26 gene TSSs (with four gRNAs per TSS, on average). The authors additionally designed nine non-targeting gRNAs. The authors profiled the gene and gRNA expression profiles of 20,729 single cells. (The authors additionally measured the expression level of four cell-surface proteins; the protein expressions are not included as part of the example data.) The low-MOI CRISPRko data are stored in the `lowmoi_example_data` list; we can load this list into the global namespace via a call to `data()`.
+
+```{r}
+data(lowmoi_example_data)
+```
+
+The data consist of four pieces. First, `grna_matrix` is the gRNA-by-cell matrix of gRNA UMI counts. `grna_matrix` is unaltered; it contains all 110 gRNAs and 20,729 cells.
+
+```{r}
+grna_matrix <- lowmoi_example_data$grna_matrix
+dim(grna_matrix)
+```
+
+Next, `response_matrix` is the gene-by-cell expression matrix. The gene expression matrix is downsampled to contain 299 genes. Nine of these genes (namely, *STAT1*, *JAK2*, *CMTM6*, *STAT2*, *UBE2L6*, *STAT3*, *TNFRSF14*, *IFNGR2*, *NFKBIA*) are among the genes targeted by the targeting gRNAs. Next, one of the genes is a randomly-selected mitochondrial gene. The remaining genes are randomly sampled from the set of remaining genes.
+
+```{r}
+response_matrix <- lowmoi_example_data$response_matrix
+dim(response_matrix)
+```
+
+Additionally, `extra_covariates` is a data frame containing a single column --- `bio_rep` --- indicating the biological replicate in which a given cell was sequenced (`rep_1`, `rep_2`, or `rep_3`).
+
+```{r}
+extra_covariates <- lowmoi_example_data$extra_covariates
+head(extra_covariates)
+```
+
+Finally, `grna_target_data_frame` is a data frame mapping each individual gRNA (`grna_id`) to the gene that it targets (`grna_target`). Again, non-targeting gRNAs are assigned a `grna_target` string of `"non-targeting"`.
+
+```{r}
+grna_target_data_frame <- lowmoi_example_data$grna_target_data_frame
+head(grna_target_data_frame)
+```
+
+## Parse data
+
+The third dataset is an example single-cell CRISPR screen of LN18 cells produced by [Parse Biosciences](https://www.parsebiosciences.com). The example dataset included in the `sceptredata` package is a subset of the [sample single-cell CRISPR screen dataset](https://www.parsebiosciences.com/datasets/technical-performance-of-crispr-detect-in-cell-lines/) available on the Parse website. The sample dataset containins 50,470 cells, 58,395 genes, and three gRNAs. Unfortunately, the genomic target of the gRNAs in the dataset is not indicated. The example Parse data are stored in the following machine-specific directory.
+
+```{r}
+directory <- paste0(system.file("extdata", package = "sceptredata"), "/parse_example/")
+directory # location of the data on your computer
+```
+
+This directory contains four files: `all_grnas.csv`, `grna_mat.mtx`, `all_genes.csv`, and `gene_mat.mtx`.
+
+```{r}
+list.files(directory)
+```
+
+`grna_mat.mtx` is a matrix market (`.mtx`) file containing the gRNA expression data. The matrix contains data on 5,000 (downsampled) cells and the three gRNAs. The name of the `grna_mat.mtx` file on the Parse website is `CRISPR: Digital Gene Expression (DGE) Matrix`. Next, `all_grnas.csv` is a `.csv` file with three columns: "gene_id", "gene_name", and "genome". (The column names are misnomers.) The column "gene_id" gives the ID of each gRNA. Next, the column "gene_name" gives the name of each gRNA. Finally, the column "genome" indicates the "genome" with which each gRNA is associated. In the case of `all_grnas.csv`, the "genome" column contains the string "gRNA" across all rows. The name of the file of `all_grnas.csv` on the Parse website is `CRISPR: All Gene (CSV)`.
+
+Next, `gene_mat.mtx` is a matrix market file containing the gene expression data. The matrix contains data on 266 downsampled genes and the same 5,000 (downsampled) cells as the gRNA matrix. The name of `gene_mat.mtx` on the Parse website is `Whole Transcriptome: Digital Gene Expression (DGE) Matrix`. Finally, `all_genes.csv` is a `.csv` file containing the columns "gene_id", "gene_name", and "genome". The columns "gene_id" and "gene_name" give the ID and human-readable name, respectively, of each gene. The column "genome", meanwhile, indicates the reference genome to which the transcripts from each gene are mapped. In `all_genes.csv` the "genome" column contains the string "hg38" across all rows. Unfortunately, the file `all_genes.csv` is not contained on the Parse website. We (i.e., the maintainers of the `sceptredata` package) obtained `all_genes.csv` directly from Parse.

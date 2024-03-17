@@ -1,4 +1,4 @@
-# Addendum: Nextflow installation, pipeline arguments {#sec-pipeline_args}
+# Nextflow installation, pipeline arguments {#sec-pipeline_args}
 
 This chapter provides instructions on downloading, installing, and configuring Nextflow. It also enumerates and describes each of the arguments that can be passed to the Nextflow pipeline.
 

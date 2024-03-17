@@ -8,7 +8,7 @@ Single-cell CRISPR screens (e.g., perturb-seq) combine CRISPR genome engineering
 
 We recommend that users read through the chapters of the book in order. 
 
--    [The whole game](sceptre.qmd) provides a high-level overview of analyzing single-cell CRISPR screen data using `sceptre`. First-time users can get started by reading this chapter only.
+-    [The whole game](sceptre.qmd) provides a high-level overview of `sceptre`. First-time users can get started by reading this chapter only.
 
 -   Part I ([Chapter 1](import-data.qmd) --- [Chapter 6](run-power-check-and-discovery-analysis.qmd)) describes in greater detail how to carry out a `sceptre` analysis on a laptop or desktop.
 

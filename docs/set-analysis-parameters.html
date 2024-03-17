@@ -261,7 +261,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pipeline-args.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Addendum: Nextflow installation, pipeline arguments</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Nextflow installation, pipeline arguments</span></span></a>
   </div>
 </li>
       </ul>
@@ -281,20 +281,26 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./sceptredata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">References</span></span></a>
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
       </ul>
@@ -353,7 +359,7 @@ window.Quarto = {
 </div>
 <p>We begin by loading the <code>sceptre</code> and <code>sceptredata</code> packages.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptre</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">sceptredata</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Throughout, we examine two example datasets. First, we examine the example high-MOI CRISPRi screen of candidate enhancers in K562 cells. This is the example dataset that we used in <em>The whole game</em> and in <a href="import-data.html" class="quarto-xref"><span>Chapter 1</span></a>. We initialize a <code>sceptre_object</code> called <code>sceptre_object_highmoi</code> to represent these data.</p>
@@ -576,7 +582,7 @@ Attributes of the data:
 6: candidate_enh_14 ENSG00000069275</code></pre>
 </div>
 </div>
-<p>Some users may wish to run both <em>cis</em> and <em>trans</em> analyses on their data. We recommend that such users carry out the <code>sceptre</code> pipeline twice: once using a <em>cis</em> discovery set and once using a <em>trans</em> discovery set. See <a href="faq.html#sec-multiple_analyses" class="quarto-xref"><span>Section B.7</span></a> for more details.</p>
+<p>Some users may wish to run both <em>cis</em> and <em>trans</em> analyses on their data. We recommend that such users carry out the <code>sceptre</code> pipeline twice: once using a <em>cis</em> discovery set and once using a <em>trans</em> discovery set. See <a href="faq.html#sec-multiple_analyses" class="quarto-xref"><span>Section C.7</span></a> for more details.</p>
 <p>The discovery pairs data frame is optional and need not be specified. Users may want to refrain from passing a discovery pairs data frame when runing a <em>control analysis</em>, i.e.&nbsp;an analysis of the negative control pairs and/or positive control pairs exclusively.</p>
 </section><section id="reducing-the-multiplicity-burden" class="level3" data-number="2.2.3"><h3 data-number="2.2.3" class="anchored" data-anchor-id="reducing-the-multiplicity-burden">
 <span class="header-section-number">2.2.3</span> Reducing the multiplicity burden</h3>
@@ -644,7 +650,7 @@ Attributes of the data:
 </div>
 </div>
 </div>
-<p>Users who wish to run <em>both</em> a singleton analysis and a grouped analysis should consult <a href="faq.html#sec-multiple_analyses" class="quarto-xref"><span>Section B.7</span></a>.</p>
+<p>Users who wish to run <em>both</em> a singleton analysis and a grouped analysis should consult <a href="faq.html#sec-multiple_analyses" class="quarto-xref"><span>Section C.7</span></a>.</p>
 </section><section id="sec-set-analysis-parameters_control_group" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="sec-set-analysis-parameters_control_group">
 <span class="header-section-number">2.5</span> Control group</h2>
 <p>The primary goal of <code>sceptre</code> is to test for association between a given gRNA target and response. <code>control_group</code> is a parameter related to the set of cells used to carry out this test of association. Suppose for simplicity that we are carrying out a singleton analysis, i.e.&nbsp;suppose that we are testing for association between an individual targeting gRNA and a response. We define the “treatment group” as the set of cells that contain the given targeting gRNA, and we define the “control group” as the set of cells against which the treatment group is compared to conduct the association test. There are two choices for the control group: the “complement set” and the “non-targeting (NT) cells.” The complement set consists of the cells that <em>do not</em> contain the given targeting gRNA; the NT cells, by contrast, consist of the cells that contain a non-targeting gRNA. (See schematic below.) <code>sceptre</code> tests for association between the given targeting gRNA and the response by testing for differential expression of the response across the treatment group and the control group. Users can select the control group to use by passing either <code>"complement"</code> or <code>"nt_cells"</code> to <code>control_group</code>.</p>

@@ -39,6 +39,7 @@ book:
     - part: Part III. Methods and algorithms
 
   appendices:
+    - sceptredata.qmd
     - glossary.qmd
     - faq.qmd
     - references.qmd
