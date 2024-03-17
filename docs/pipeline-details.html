@@ -242,9 +242,22 @@ div.csl-indent {
       </ul>
 </li>
         <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Part III. Methods and algorithms</span></span>
-  </li>
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Part III. Methods and algorithms</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Overview of methods</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
@@ -288,7 +301,7 @@ div.csl-indent {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#cluster-architecture-and-nextflow-pipeline-structure" id="toc-cluster-architecture-and-nextflow-pipeline-structure" class="nav-link active" data-scroll-target="#cluster-architecture-and-nextflow-pipeline-structure"><span class="header-section-number">8.1</span> Cluster architecture and Nextflow pipeline structure</a></li>
+<li><a href="#sec-cluster_architecture" id="toc-sec-cluster_architecture" class="nav-link active" data-scroll-target="#sec-cluster_architecture"><span class="header-section-number">8.1</span> Cluster architecture and Nextflow pipeline structure</a></li>
   <li><a href="#sec-anatomy_of_launch_script" id="toc-sec-anatomy_of_launch_script" class="nav-link" data-scroll-target="#sec-anatomy_of_launch_script"><span class="header-section-number">8.2</span> Anatomy of a pipeline launch script</a></li>
   <li>
 <a href="#example-workflows" id="toc-example-workflows" class="nav-link" data-scroll-target="#example-workflows"><span class="header-section-number">8.3</span> Example workflows</a>
@@ -328,7 +341,7 @@ div.csl-indent {
 
 
 </header><p>In this chapter we delve deeper into the <code>sceptre</code> Nextflow pipeline. First, we review clusters and explain how information flows through the <code>sceptre</code> Nextflow pipeline on a cluster. Next, we describe the structure of a typical <code>sceptre</code> Nextflow submission script. Then, we provide a few examples of common analysis workflows in the context of the Nextflow pipeline. Finally, we describe how to run a massive-scale <em>trans</em> analysis using the Nextflow pipeline.</p>
-<section id="cluster-architecture-and-nextflow-pipeline-structure" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="cluster-architecture-and-nextflow-pipeline-structure">
+<section id="sec-cluster_architecture" class="level2" data-number="8.1"><h2 data-number="8.1" class="anchored" data-anchor-id="sec-cluster_architecture">
 <span class="header-section-number">8.1</span> Cluster architecture and Nextflow pipeline structure</h2>
 <p>A computing cluster is of a collection of computers, also known as <em>nodes</em>, that work in concert to carry out a large computation. <a href="#fig-cluster_structure" class="quarto-xref">Figure&nbsp;<span>8.1</span></a> illustrates the structure of a typical computing cluster. The cluster contains dozens or even hundreds of nodes, with each node harboring multiple <em>processors</em>. Processors are the core units that execute code. Furthermore, all nodes are linked to a common storage area where files are kept. For instance, specific data files like <code>gene.odm</code>, <code>grna.odm</code>, and <code>sceptre_object.rds</code> are stored in this shared space.</p>
 <p>The process of performing a computation on a cluster involves several steps. Initially, each processor loads only the part of the data that it needs for its portion of the overall computation. Then, each processor processes this part of the data and saves the results back to the shared storage area. Once all processors complete their tasks, another processor retrieves these results from the shared space and merges them into a final result. Typically, the processors are spread across different nodes and thus do not directly interact with each other; rather, they coordinate through the shared storage space. This method of distributing tasks among independent processors and later combining their outputs is known as a <em>scatter-gather</em> operation. The <code>sceptre</code> Nextflow pipeline consists of multiple scatter-gather chained together.</p>

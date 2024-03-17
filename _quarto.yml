@@ -37,6 +37,8 @@ book:
         - pipeline-args.qmd
 
     - part: Part III. Methods and algorithms
+      chapters:
+        - methods.qmd
 
   appendices:
     - sceptredata.qmd

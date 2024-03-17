@@ -7,3 +7,8 @@ citeproc: true
 
 ::: {#refs}
 :::
+
+```         
+```
+
+*Chat GPT usage*. We used Chat GPT to help us write two small portions of this book: the first two paragraphs of @sec-cluster_architecture and the [Glossary](glossary.qmd). The rest of this book was written without assistance from Chat GPT.
