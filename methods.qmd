@@ -188,7 +188,7 @@ for some $\epsilon > 0$ (by default $\epsilon = 0.5 \cdot 10^{-4}$). We set the 
 
 As is standard, we run the EM algorithm several times over random starting estimates for $\pi$ and $\gamma$ to improve chances of converging to the global maximizer of the incomplete-data likelihood. We use the run whose estimates yield the greatest incomplete-data log-likelihood to assign gRNAs to cells.
 
-## Definition of "treatment group" and "control group"
+## Definition of "treatment group" and "control group" {#sec-defn_trt_cntrl_grp}
 
 To test for association between a given gRNA (or gRNA target) and a response, `sceptre` divides the cells into two groups: the "treatment group" and the "control group." `sceptre` tests for differential expression of the response across these two groups of cells, yielding a p-value for the test of association between the gRNA and response. Defining the cells that constitute the treatment group and control group is somewhat subtle and depends on the analysis parameters of gRNA integration strategy (i.e., union, singleton, or Bonferroni), control group (i.e., complement set or NT cells), and analysis type (i.e., discovery analysis or calibration check). (See [Set analysis parameters](set-analysis-parameters.qmd) for a discussion of these parameters.) This section aims to carefully define "treatment group" and "control group," in particular as a function of the aforementioned analysis parameters.
 
@@ -273,9 +273,9 @@ W = \textrm{diag}\left\{\frac{\hat{\mu}_1}{1 + \hat{\mu}_1/\hat{\theta}}, \dots,
 \end{split}
 $$
 
-We compute the score test statistic $z_k$ corresponding to the $k$th resampled treatment vector for $k \in \{1, \dots, B\}$ by replacing $X$ with $\tilde{X}_k$ in (@eq-score_stat_formula). 
+We compute the score test statistic $z_k$ corresponding to the $k$th resampled treatment vector for $k \in \{1, \dots, B\}$ by replacing $X$ with $\tilde{X}_k$ in (@eq-score_stat_formula).
 
-Note that the score test statistic $z$ is asymptotically equivalent to a Wald statistic. In other words, we instead could compute the $z$-score by regressing $Y$ onto the matrix $[X, Z]$ and testing the hypothesis that the coefficient corresponding to $X$ is equal to zero via a Wald test. This latter approach is asymptotically equivalent to the score statistic approach outlined above but is much less computationally efficient.
+Note that the score test statistic is asymptotically equivalent to a Wald statistic. In other words, we instead could compute the $z$-score by regressing $Y$ onto the matrix $[X, Z]$ and testing the hypothesis that the coefficient corresponding to $X$ is equal to zero via a Wald test. This latter approach is asymptotically equivalent to the score statistic approach outlined above but is much less computationally efficient.
 
 ### Computing the p-value
 
@@ -305,11 +305,12 @@ $$
 
 ## Integrating information across gRNAs
 
-An additional statistical task is to integrate information across gRNAs that target the same site. `sceptre` offers three gRNA integration strategies:
+`sceptre` provides three strategies for integrating information across gRNAs that target the same site: `"singleton"`, `"union"`, `"bonferroni"`. (One can select between these strategies by specifying the `grna_integration_strategy` argument in the `set_analysis_parameters()` function.) The "singleton" and "union" strategies are straightforward; see @sec-grna_integration_strategy and @sec-defn_trt_cntrl_grp for more information. The Bonferroni strategy is slightly more complicated. Consider a given target-response pair. Suppose that $k$ gRNAs $\textrm{gRNA}_1 \dots \textrm{gRNA}_k$ target this target. Moreover, suppose that, upon testing for association between each of these gRNAs and the response, we obtain gRNA-wise p-values $p_1, \dots, p_k$. The Bonferroni p-value is defined as follows:
 
-Suppose that gRNAs $1, \dots, k$ target the same site. Testing each of these gRNAs individually against a given response yields p-values $p_1, \dots, p_k$.
+$$ p = k \cdot \min\{p_1, \dots, p_k\}.$$
+The Bonferroni p-value is valid in the following sense: if $p_1, \dots, p_k$ are valid (i.e., uniformly distributed) p-values, then $p$ too is a valid (i.e., uniformly distributed) p-value. (Note that gRNA-wise p-values $p_1, \dots, p_k$ can be arbitrarily dependent.) Below, we state this result in a slightly more precise way and prove its correctness.
 
-**Theorem**: Suppose that $p_1, \dots, p_k$ are superuniform, i.e. $\mathbb{P}(p_i \leq \alpha) \leq \alpha$ for all $i \in \{1, \dots, k\}$ and all $\alpha \in [0,1]$. Then $p = k \cdot \min\{p_1, \dots, p_k\}$ also is superuniform and is thus a valid p-value.
+**Theorem**: Suppose that $p_1, \dots, p_k$ are superuniform, i.e. $\mathbb{P}(p_i \leq \alpha) \leq \alpha$ for all $i \in \{1, \dots, k\}$ and all $\alpha \in [0,1]$. Then $p = k \cdot \min\{p_1, \dots, p_k\}$ also is superuniform.
 
 **Proof**:
 

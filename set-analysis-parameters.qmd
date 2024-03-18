@@ -171,7 +171,7 @@ head(discovery_pairs_highmoi_trans)
 
 Some users may wish to run both *cis* and *trans* analyses on their data. We recommend that such users carry out the `sceptre` pipeline twice: once using a *cis* discovery set and once using a *trans* discovery set. See @sec-multiple_analyses for more details.
 
-The discovery pairs data frame is optional and need not be specified. Users may want to refrain from passing a discovery pairs data frame when runing a *control analysis*, i.e. an analysis of the negative control pairs and/or positive control pairs exclusively. 
+The discovery pairs data frame is optional and need not be specified. Users may want to refrain from passing a discovery pairs data frame when runing a *control analysis*, i.e. an analysis of the negative control pairs and/or positive control pairs exclusively.
 
 ### Reducing the multiplicity burden
 
