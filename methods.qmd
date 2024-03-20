@@ -34,7 +34,7 @@ $$
 
 Then cell $j$ is flagged as containing zero gRNAs. Cells containing zero gRNAs or multiple gRNAs are removed as part of the cellwise QC step in low-MOI. (Note that if multiple gRNAs are tied for most highly expressed in a given cell, and if $u > 0.5$, then that cell is flagged as containing multiple gRNAs, per the above rule.)
 
-### Mixture method
+### Mixture method {#sec-mixture_method}
 
 The mixture method assigns gRNAs to cells using a latent variable generalized linear model (GLM). Consider a given gRNA $i$. Let $g_j$ be the UMI count of gRNA $i$ in cell $j$, and let $x_j$ be the (unobserved) variable indicating whether gRNA $i$ is present ($x_j = 1$) or absent ($x_j = 0$) in cell $j$. (We drop the $i$ subscript for notational compactness.) Additionally, let $z_j$ be the vector of cell-specific covariates in cell $j.$ (We assume that the count-based covariates, such as `grna_n_nonzero` and `grna_n_umis`, have been log-transformed.) We model the gRNA UMI counts using a latent variable Poisson GLM:
 
@@ -230,7 +230,7 @@ Next, suppose that we are running a calibration check analysis (again using the 
 Finally, suppose that we are running a calibration check using the singleton or Bonferroni gRNA integration strategy. Let $l \in \mathcal{N}$ be a non-targeting gRNA. The treatment group, complement set control group, and NT cells control group are defined relative to $l$ as follows.
 
 |                 |                              |                                                    |
-|:-----------------:|:------------------:|:--------------------------------:|
+|:-----------------:|:------------------:|:-------------------------------:|
 | Treatment group | Complement set control group |               NT cells control group               |
 |      $G_l$      | $\mathcal{S} \setminus G_l$  | $\cup_{i \in (\mathcal{N}\setminus \{ l \} )} G_i$ |
 
@@ -244,9 +244,9 @@ We next explicate the differential expression testing paradigm of `sceptre`. `sc
 
 ### Resampling the treatment vector
 
-The first step is to "resample" the treatment vector $X$ to form $B$ "null" treatment vectors $\tilde{X}_1, \dots, \tilde{X}_B$. The "null" treatment vectors are constructed such that they are not associated with the response vector $Y$, enabling a natural comparison to the original treatment vector. `sceptre` provides two methods for resampling the original treatment vector: permutations and conditional resampling. In the context of the software, one can set the `resampling_mechanism` argument of `set_analysis_parameters()` to `"permutations"` and `"crt"` to select between permutations and conditional resampling, respectively.
+The first step is to "resample" the treatment vector $X$ to form $B$ "null" treatment vectors $\tilde{X}_1, \dots, \tilde{X}_B$. The "null" treatment vectors are constructed such that they are not associated with the response vector $Y$, enabling a natural comparison to the original treatment vector. `sceptre` provides two methods for resampling the original treatment vector: permutations and conditional resampling. Within the software one can set the `resampling_mechanism` argument of `set_analysis_parameters()` to `"permutations"` and `"crt"` to select between permutations and conditional resampling, respectively.
 
-The permutation strategy simply involves permuting the $X$ vector $B$ times. More precisely, among the $n!$ possible permutations of $X$, we sample $B$ permutations randomly (with replacement and uniformly over the set of all permutations), yielding $\tilde{X}_1, \dots, \tilde{X}_B$. The conditional resampling strategy, on the other hand, constructs resamples $\tilde{X}_1, \dots, \tilde{X}_B$ while accounting for the cell-specific covariates $Z_1, \dots, Z_n$. We proceed as follows. First, we model $X_j$ as a function of $Z_j$ using a logistic regression GLM:
+The permutation strategy simply involves permuting the $X$ vector $B$ times. More precisely, among the $n!$ possible permutations of $X$, we sample $B$ permutations randomly (with replacement and uniformly over the set of all permutations), yielding $\tilde{X}_1, \dots, \tilde{X}_B$. Next, the conditional resampling strategy constructs resamples $\tilde{X}_1, \dots, \tilde{X}_B$ while accounting for the cell-specific covariates $Z_1, \dots, Z_n$. We proceed as follows. First, we model $X_j$ as a function of $Z_j$ using a logistic regression GLM:
 
 $$
 X_j \sim \textrm{Bern}(\mu_i); \quad \textrm{logit}(\mu_i) = \delta^TZ_j.
@@ -258,17 +258,19 @@ We produce an estimate $\hat{\delta}$ for $\delta$ by regressing $X$ onto $Z$ vi
 
 ### Computing the test statistics
 
-The second step is to evaluate a test statistic on the original treatment vector $X$ and the resampled treatment vectors $\tilde{X}_1, \dots, \tilde{X}_B$, enabling us to compare the original treatment vector to the resampled treatment vectors (via their test statistics). The test statistic that we use for this purpose is based on a negative binomial GLM. We proceed as follows. First, we propose the following working model for the response UMI count $Y_j$ as a function of the cell-specific covariates $Z_j$: $$ Y_j \sim \textrm{NB}_{\theta}(\mu_j); \quad \log(\mu_j) = \beta^T Z_j.$$ {#eq-nb_glm} Here, $\theta$ is the (unknown) negative binomial size parameter, and $\beta^T \in \mathbb{R}^d$ is an (unknown) regression coefficient. We use the parameterization of the negative binomial distribution in which the variance $\mathbb{V}(Y_i | \mu_i)$ of $Y_i$ given mean $\mu_i$ is $$\mathbb{V}(Y_i | \mu_i) = \mu_i + \mu_i^2 / \theta.$$ The model (@eq-nb_glm) corresponds to the null hypothesis of no association between the response $Y$ and the treatment $X$.
+The second step is to evaluate a test statistic on the original treatment vector $X$ and the resampled treatment vectors $\tilde{X}_1, \dots, \tilde{X}_B$, enabling us to compare the original treatment vector to the resampled treatment vectors (via their test statistics). The test statistic that we use for this purpose is based on a negative binomial GLM. We proceed as follows. First, we propose the following working model for the response UMI count $Y_j$ as a function of the cell-specific covariates $Z_j$: $$ Y_j \sim \textrm{NB}_{\theta}(\mu_j); \quad \log(\mu_j) = \tau^T Z_j.$$ {#eq-nb_glm} Here, $\theta$ is the (unknown) negative binomial size parameter, and $\tau^T \in \mathbb{R}^d$ is an (unknown) regression coefficient. We use the parameterization of the negative binomial distribution in which the variance $\mathbb{V}(Y_i | \mu_i)$ of $Y_i$ given mean $\mu_i$ is $$\mathbb{V}(Y_i | \mu_i) = \mu_i + \mu_i^2 / \theta.$$ The model (@eq-nb_glm) corresponds to the null hypothesis of no association between the response $Y$ and the treatment $X$.
 
-We regress $Y$ onto $Z$ via a negative binomial GLM, yielding estimates $\hat{\beta}^T$ and $\hat{\theta}$ for $\beta$ and $\theta$, respectively. Next, we test the original treatment vector $X$ and resampled treatment vectors $\tilde{X}_1, \dots, \tilde{X}_B$ for inclusion in the fitted GLM by computing a GLM score test on each of these vectors. The GLM score test statistic $z_\textrm{orig}$ for the original treatment vector $X$ is given by $$
+We regress $Y$ onto $Z$ via a negative binomial GLM, yielding estimates $\hat{\tau}^T$ and $\hat{\theta}$ for $\tau$ and $\theta$, respectively.[^methods-1] Next, we test the original treatment vector $X$ and resampled treatment vectors $\tilde{X}_1, \dots, \tilde{X}_B$ for inclusion in the fitted GLM by computing a GLM score test on each of these vectors. The GLM score test statistic $z_\textrm{orig}$ for the original treatment vector $X$ is given by $$
 z_\textrm{orig} = \frac{X^T W M (Y - \hat{\mu})}{\sqrt{X^T W X - X^T W Z (Z^T W Z)^{-1} Z^T W X}},
 $$ {#eq-score_stat_formula}
+
+[^methods-1]: We fit the negative binomial GLM by fitting a Poisson GLM to the data, taking as the negative binomial GLM coefficients the Poisson GLM coefficients, and then estimating the negative binomial size parameter using the residuals of the fitted Poisson GLM. This procedure is faster than standard procedures for fitting a negative binomial GLM. A more detailed description of this procedure will appear in a subsequent chapter.
 
 where $W$ and $M(Y - \hat{\mu})$ are a matrix and vector, respectively, that depend on the fitted means $\hat{\mu}$, response expression vector $Y$, and estimated size parameter $\hat{\theta}$:
 
 $$
 \begin{split}
-\hat{\mu} = \left[\exp(\hat{\beta}^T Z_1), \dots, \exp(\hat{\beta}^T Z_n)\right]^T; \\
+\hat{\mu} = \left[\exp(\hat{\tau}^T Z_1), \dots, \exp(\hat{\tau}^T Z_n)\right]^T; \\
 W = \textrm{diag}\left\{\frac{\hat{\mu}_1}{1 + \hat{\mu}_1/\hat{\theta}}, \dots, \frac{\hat{\mu}_n}{1 + \hat{\mu}_n/\hat{\theta}} \right\}; \\ M(Y - \hat{\mu}) = \left[\frac{Y_1}{\hat{\mu}_1} - 1, \dots, \frac{Y_n}{\hat{\mu}_n} - 1\right]^T.
 \end{split}
 $$
@@ -279,8 +281,7 @@ Note that the score test statistic is asymptotically equivalent to a Wald statis
 
 ### Computing the p-value
 
-The third and final step is to compute a p-value. The standard negative binomial GLM p-value $p_\textrm{NB}$ is obtained by evaluating the tail probability of a standard Gaussian distribution at $z_\textrm{orig}$. For example, the left-tailed negative binomial p-value is given by
-$p_\textrm{NB} = F(z_\textrm{orig}),$ where $F$ is the standard Gaussian distribution. We instead propose to compute the p-value by comparing the original test statistic $z_\textrm{orig}$ to the null test statistics $z_1, \dots, z_B$; this latter approach is more robust. The "exact" left-, right-, and two-tailed permutation test p-values (which also are valid for a conditional randomization test) are given below.
+The third and final step is to compute a p-value. The standard negative binomial GLM p-value $p_\textrm{NB}$ is obtained by evaluating the tail probability of a standard Gaussian distribution at $z_\textrm{orig}$. For example, the left-tailed negative binomial p-value is given by $p_\textrm{NB} = F(z_\textrm{orig}),$ where $F$ is the standard Gaussian distribution. We instead propose to compute the p-value by comparing the original test statistic $z_\textrm{orig}$ to the null test statistics $z_1, \dots, z_B$; this latter approach is more robust. The "exact" left-, right-, and two-tailed permutation test p-values (which also are valid for a conditional randomization test) are given below.
 
 $$
 \begin{split}
@@ -288,10 +289,9 @@ p_\textrm{left} = \frac{1}{B+1}\left(1 + \sum_{i=1}^B \mathbb{I}(z_\textrm{orig}
 p_\textrm{right} = \frac{1}{B+1} \left(1 + \sum_{i=1}^B \mathbb{I}(z_\textrm{orig} \leq z_i)\right), \\
 p_\textrm{both} = 2 \cdot \textrm{min}\left\{ p_\textrm{left}, p_\textrm{right} \right\}.
 \end{split}
-$$
-`sceptre` returns the exact permutation test p-value when `resampling_approximation` is set to `"no_approximation"` in `set_analysis_parameters()`.
+$$ `sceptre` returns the exact permutation test p-value when `resampling_approximation` is set to `"no_approximation"` in `set_analysis_parameters()`.
 
-Unfortunately, computing an exact permutation test p-value can be slow, especially when the number of hypotheses to be tested is large. Thus, `sceptre` provides the option of approximating the null distribution of the test statistics via a skew-normal distribution. A skew-normal distribution is a bell-shaped distribution that generalizes a Gaussian distribution by allowing for skew (i.e., asymmetry) about the mode of the distribution. A skew-normal distribution has three paramters: $\mu$ (the mean), $\sigma$ (the standard deviation), and $\alpha$ (the skew; setting $\alpha = 0$ recovers a Gaussian distribution with parameters $\mu$ and $\sigma$). When the user activates the skew-normal functionality of `sceptre` (which the user can do by setting `resampling_approximation` to `"skew_normal"` in `set_analysis_parameters()`), `sceptre` fits a skew-normal distribution to the null test statistics $z_1, \dots, z_B$ via a method of moments estimator, yielding estimates $\hat{\mu}, \hat{\sigma}$ and $\hat{\alpha}$ for $\mu$, $\sigma$, and $\alpha$, respectively. Next, `sceptre` computes the p-value by evaluating the tail probability of the fitted skew-normal distribution at the original test statistic $z_\textrm{orig}$. In particular, letting $f_{\hat{\mu}, \hat{\sigma}, \hat{\alpha}}$ denote the probability density function of the skew-normal distribution with parameters $\hat{\mu}, \hat{\sigma}$, and $\hat{\alpha}$, the left-, right-, and two-tailed p-values are given as follows.
+Unfortunately, computing an exact permutation test p-value can be slow, especially when the number of hypotheses to be tested is large. Thus, `sceptre` provides the option of approximating the null distribution of the test statistics via a skew-normal distribution. A skew-normal distribution is a bell-shaped distribution that generalizes a Gaussian distribution by allowing for skew (i.e., asymmetry) about the mode of the distribution. A skew-normal distribution has three paramters: $\mu$ (the mean), $\sigma$ (the standard deviation), and $\alpha$ (the skew; setting $\alpha = 0$ recovers a Gaussian distribution with parameters $\mu$ and $\sigma$). One can activate the skew-normal functionality of `sceptre` by setting `resampling_approximation` to `"skew_normal"` in `set_analysis_parameters()`. In this case `sceptre` fits a skew-normal distribution to the null test statistics $z_1, \dots, z_B$ via a method of moments estimator, yielding estimates $\hat{\mu}, \hat{\sigma}$ and $\hat{\alpha}$ for $\mu$, $\sigma$, and $\alpha$, respectively. Next, `sceptre` computes the p-value by evaluating the tail probability of the fitted skew-normal distribution at the original test statistic $z_\textrm{orig}$. In particular, letting $f_{\hat{\mu}, \hat{\sigma}, \hat{\alpha}}$ denote the probability density function of the skew-normal distribution with parameters $\hat{\mu}, \hat{\sigma}$, and $\hat{\alpha}$, the left-, right-, and two-tailed p-values are given as follows.
 
 $$
 \begin{split}
@@ -303,12 +303,48 @@ $$
 
 ## Estimating the log-fold change
 
+`sceptre` employs a simple strategy for estimating log-fold change. Recall that, before computing the test statistics $z, z_1, \dots, z_B$, we fit the negative binomial GLM (@eq-nb_glm), yielding parameter estimates $\hat{\tau}$ and $\hat{\theta}$ for $\tau$ and $\theta$, respectively. To estimate the log-fold change, we posit the simplified model $$Y_i \sim \textrm{NB}_{\theta}(\mu_j); \quad \log(\mu_j) = \xi X_j + o_j,$$ {#eq-simplified_nb_model} where $o_j = \hat{\tau}^T Z_j$ is the $j$th fitted value of the negative binomial GLM (@eq-nb_glm). (This simplification is analogous to the simplification employed in the context of fitting the gRNA mixture model; @sec-mixture_method.) Under this approximation estimating the log fold change reduces to estimating $\xi$. We treat the terms $o_1, \dots, o_n$ as i.i.d. draws from some distribution $P$; this approximation is reasoanble for large $n$.
+
+Let $f_\theta(y_j; \mu_j)$ denote the probability mass function of the negative binomial distribution with mean $\mu_j$ and size parameter $\theta$ evaluated at $y_j$:
+
+$$ f_\theta(y_j; \mu_j) = \binom{y_j + \theta - 1}{y_j} \left(\frac{\mu_j}{\mu_j+\theta} \right)^{y_j} \left(\frac{\theta}{\mu_j + \theta}\right)^\theta.$$ The log-likelihood of the model (@eq-simplified_nb_model) is
+
+$$
+\begin{multline*}
+L(\xi) = \sum_{j : x_j = 0 }^n \log\left[f_\theta(y_j; \exp[o_j])\right] + \sum_{j : x_j = 1 }^n \log\left[f_\theta(y_j; \exp[\xi + o_j])\right] \\ = C + \sum_{j : x_j = 1 }^n \log\left[f_\theta(y_j; \exp[\xi + o_j])\right],
+\end{multline*}
+$$
+
+where $C$ is a constant in the unknown parameter $\xi$. Observe that, among the set of observations $\{(Y_1, X_1), \dots, (Y_n, X_n)\}$, we can ignore the observations for which $X_i = 0$, as these observations do not contribute to the log likelihood. Relabel the observations for which $X_i = 1$ as $\{(Y_1, X_1), \dots, (Y_s, X_s)\}$, where $s = \sum_{i=1}^n X_i$ is the number of observations for which $X_i = 1$. Using this notation, the log-likelihood of (@eq-simplified_nb_model) can be expressed as
+
+$$
+\begin{multline*}
+L(\xi) = \xi \sum_{j=1}^s y_j - \sum_{j=1}^s y_j \log(\theta + \exp[\xi + o_j]) - \theta \sum_{j=1}^s \log(\theta + \exp[\xi + o_j]) \\ = - \xi \sum_{j=1}^s y_j - \sum_{j=1}^s (y_j + \theta) \log(\theta + \exp[\xi + o_j]).
+\end{multline*}
+$$
+
+Differentiating the above in $\xi$ and setting to zero yields the MLE equation: $$ L'(\xi) = \exp(\xi) \sum_{j=1}^s \frac{(y_j + \theta) \exp(o_j)}{\theta + \exp(\xi + o_j)} = \sum_{j=1}^s y_j,$$
+
+or
+
+$$
+\xi = \log\left\{\frac{(1/n)\sum_{j=1}^s y_j }{(1/n)\sum_{j=1}^s (y_j + \theta)\exp(o_j)/[\theta + \exp(\xi + o_j)]}\right\}.
+$$ {#eq-mle_eqn}
+
+The unknown parameter $\xi$ appears on both sides of (@eq-mle_eqn). Thus, we cannot solve for the MLE analytically. However, we can derive an approximate solution for the MLE. Notice that both numerator and denominator of (@eq-mle_eqn) are the mean of i.i.d. random variables. The expectation of the numerator is $\mathbb{E}[Y_j]$, and that of the denominator is $\mathbb{E}[\exp(o_j)].$ Thus, by the law of large numbers and the continuous mapping theorem, the MLE $\hat{\xi}$ for $\xi$ converges in probability to $$\hat{\xi} \xrightarrow{P} \log\left(\frac{\mathbb{E}[Y_j]}{\mathbb{E}[\exp(o_j)]}\right).$$ However, the following quantity converges in probability to the same limit: $$\log\left(\frac{(1/n) \sum_{j=1}^s Y_j }{ (1/n) \sum_{j=1}^s \exp[o_j] }\right) \xrightarrow{P} \log\left(\frac{\mathbb{E}[Y_j]}{\mathbb{E}[\exp(o_j)]}\right).$$ {#eq-approximate_mle}
+
+Thus, we can approximate the MLE $\hat{\xi}$ with @eq-approximate_mle:
+$$
+\hat{\xi} \approx \log\left(\frac{\sum_{j=1}^s Y_j }{\sum_{j=1}^s \exp[o_j] }\right).
+$$
+
+`sceptre` estimates the log fold change using this simple expression. An advantage to this estimator is that it is quite fast to compute using the fitted GLM (@eq-nb_glm).
+
 ## Integrating information across gRNAs
 
 `sceptre` provides three strategies for integrating information across gRNAs that target the same site: `"singleton"`, `"union"`, `"bonferroni"`. (One can select between these strategies by specifying the `grna_integration_strategy` argument in the `set_analysis_parameters()` function.) The "singleton" and "union" strategies are straightforward; see @sec-grna_integration_strategy and @sec-defn_trt_cntrl_grp for more information. The Bonferroni strategy is slightly more complicated. Consider a given target-response pair. Suppose that $k$ gRNAs $\textrm{gRNA}_1 \dots \textrm{gRNA}_k$ target this target. Moreover, suppose that, upon testing for association between each of these gRNAs and the response, we obtain gRNA-wise p-values $p_1, \dots, p_k$. The Bonferroni p-value is defined as follows:
 
-$$ p = k \cdot \min\{p_1, \dots, p_k\}.$$
-The Bonferroni p-value is valid in the following sense: if $p_1, \dots, p_k$ are valid (i.e., uniformly distributed) p-values, then $p$ too is a valid (i.e., uniformly distributed) p-value. (Note that gRNA-wise p-values $p_1, \dots, p_k$ can be arbitrarily dependent.) Below, we state this result in a slightly more precise way and prove its correctness.
+$$ p = k \cdot \min\{p_1, \dots, p_k\}.$$ The Bonferroni p-value is valid in the following sense: if $p_1, \dots, p_k$ are valid (i.e., uniformly distributed) p-values, then $p$ too is a valid (i.e., uniformly distributed) p-value. (The gRNA-wise p-values $p_1, \dots, p_k$ can be arbitrarily dependent.) Below, we state this result in a slightly more precise way and prove its correctness. "Superuniformity" is more general than uniformity and is sufficient for p-value validity.
 
 **Theorem**: Suppose that $p_1, \dots, p_k$ are superuniform, i.e. $\mathbb{P}(p_i \leq \alpha) \leq \alpha$ for all $i \in \{1, \dots, k\}$ and all $\alpha \in [0,1]$. Then $p = k \cdot \min\{p_1, \dots, p_k\}$ also is superuniform.
 
