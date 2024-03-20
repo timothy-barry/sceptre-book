@@ -8,7 +8,7 @@ Several statistical tasks are involved in the analysis of single-cell CRISPR scr
 
 ## Notation
 
-We begin by introducing some notation that we use throughout the chapter. Let $\mathbb{N} = \{1, 2, \dots\}$ denote the set of positive integers. For a given single-cell CRISPR screen dataset, let $d\in\mathbb{N}$ denote the number of responses, $r\in\mathbb{N}$ the number of gRNAs, and $n\in\mathbb{N}$ the number of cells in the dataset. Next, let $Y\in \mathbb{N}^{d \times n}$ be the matrix of response UMI counts, where responses are in the rows and cells in the columns. A given entry $y_{ij}$ of $Y$ indicates the number of UMIs from response $i$ sequenced in cell $j$. Similarly, let $G \in \mathbb{N}^{r \times n}$ be the matrix of gRNA UMI counts; a given entry $g_{ij}$ of $G$ indicates the number of UMIs from gRNA $i$ sequenced in cell $j$. Finally, let $Z \in \mathbb{N}^{n\times p}$ be the matrix of cell-specific covariates, which can include variables such as `response_n_umis`, `response_n_nonzero`, `response_p_mito`, `grna_n_umis`, `grna_n_nonzero`, `batch`, etc.
+We begin by introducing some notation that we use throughout the chapter. Let $\mathbb{N} = \{1, 2, \dots\}$ denote the set of positive integers. For a given single-cell CRISPR screen dataset, let $d\in\mathbb{N}$ denote the number of responses, $r\in\mathbb{N}$ the number of gRNAs, and $n\in\mathbb{N}$ the number of cells in the dataset. Next, let $Y\in \mathbb{N}^{d \times n}$ be the matrix of response UMI counts, where responses are in the rows and cells in the columns. A given entry $Y_{ij}$ of $Y$ indicates the number of UMIs from response $i$ sequenced in cell $j$. Similarly, let $G \in \mathbb{N}^{r \times n}$ be the matrix of gRNA UMI counts; a given entry $G_{ij}$ of $G$ indicates the number of UMIs from gRNA $i$ sequenced in cell $j$. Finally, let $Z \in \mathbb{N}^{n\times p}$ be the matrix of cell-specific covariates, which can include variables such as `response_n_umis`, `response_n_nonzero`, `response_p_mito`, `grna_n_umis`, `grna_n_nonzero`, `batch`, etc.
 
 ## Assigning gRNAs to cells {#sec-methods_assign_grnas}
 
@@ -303,7 +303,7 @@ $$
 
 ## Estimating the log-fold change
 
-`sceptre` employs a simple strategy for estimating log-fold change. Recall that, before computing the test statistics $z, z_1, \dots, z_B$, we fit the negative binomial GLM (@eq-nb_glm), yielding parameter estimates $\hat{\tau}$ and $\hat{\theta}$ for $\tau$ and $\theta$, respectively. To estimate the log-fold change, we posit the simplified model $$Y_i \sim \textrm{NB}_{\theta}(\mu_j); \quad \log(\mu_j) = \xi X_j + o_j,$$ {#eq-simplified_nb_model} where $o_j = \hat{\tau}^T Z_j$ is the $j$th fitted value of the negative binomial GLM (@eq-nb_glm). (This simplification is analogous to the simplification employed in the context of fitting the gRNA mixture model; @sec-mixture_method.) Under this approximation estimating the log fold change reduces to estimating $\xi$. We treat the terms $o_1, \dots, o_n$ as i.i.d. draws from some distribution $P$; this approximation is reasoanble for large $n$.
+`sceptre` employs a simple and fast strategy for estimating log-fold change. Recall that, before computing the test statistics $z, z_1, \dots, z_B$, we fit the negative binomial GLM (@eq-nb_glm), yielding parameter estimates $\hat{\tau}$ and $\hat{\theta}$ for $\tau$ and $\theta$, respectively. To estimate the log-fold change, we posit the simplified model $$Y_j \sim \textrm{NB}_{\theta}(\mu_j); \quad \log(\mu_j) = \xi X_j + o_j,$$ {#eq-simplified_nb_model} where $o_j = \hat{\tau}^T Z_j$ is the $j$th fitted value of the negative binomial GLM (@eq-nb_glm). (This simplification is analogous to the simplification employed in the context of fitting the gRNA mixture model; @sec-mixture_method.) Estimating the log fold change reduces to estimating $\xi$. We treat the terms $o_1, \dots, o_n$ as i.i.d. draws from some distribution $P$; this approximation is reasoanble for large $n$.
 
 Let $f_\theta(y_j; \mu_j)$ denote the probability mass function of the negative binomial distribution with mean $\mu_j$ and size parameter $\theta$ evaluated at $y_j$:
 
@@ -319,7 +319,7 @@ where $C$ is a constant in the unknown parameter $\xi$. Observe that, among the 
 
 $$
 \begin{multline*}
-L(\xi) = \xi \sum_{j=1}^s y_j - \sum_{j=1}^s y_j \log(\theta + \exp[\xi + o_j]) - \theta \sum_{j=1}^s \log(\theta + \exp[\xi + o_j]) \\ = - \xi \sum_{j=1}^s y_j - \sum_{j=1}^s (y_j + \theta) \log(\theta + \exp[\xi + o_j]).
+L(\xi) = \xi \sum_{j=1}^s y_j - \sum_{j=1}^s y_j \log(\theta + \exp[\xi + o_j]) - \theta \sum_{j=1}^s \log(\theta + \exp[\xi + o_j]) \\ = \xi \sum_{j=1}^s y_j - \sum_{j=1}^s (y_j + \theta) \log(\theta + \exp[\xi + o_j]).
 \end{multline*}
 $$
 
@@ -333,12 +333,13 @@ $$ {#eq-mle_eqn}
 
 The unknown parameter $\xi$ appears on both sides of (@eq-mle_eqn). Thus, we cannot solve for the MLE analytically. However, we can derive an approximate solution for the MLE. Notice that both numerator and denominator of (@eq-mle_eqn) are the mean of i.i.d. random variables. The expectation of the numerator is $\mathbb{E}[Y_j]$, and that of the denominator is $\mathbb{E}[\exp(o_j)].$ Thus, by the law of large numbers and the continuous mapping theorem, the MLE $\hat{\xi}$ for $\xi$ converges in probability to $$\hat{\xi} \xrightarrow{P} \log\left(\frac{\mathbb{E}[Y_j]}{\mathbb{E}[\exp(o_j)]}\right).$$ However, the following quantity converges in probability to the same limit: $$\log\left(\frac{(1/n) \sum_{j=1}^s Y_j }{ (1/n) \sum_{j=1}^s \exp[o_j] }\right) \xrightarrow{P} \log\left(\frac{\mathbb{E}[Y_j]}{\mathbb{E}[\exp(o_j)]}\right).$$ {#eq-approximate_mle}
 
-Thus, we can approximate the MLE $\hat{\xi}$ with @eq-approximate_mle:
+Thus, we can approximate the MLE $\hat{\xi}$ with the right-hand side of (@eq-approximate_mle):
+
 $$
 \hat{\xi} \approx \log\left(\frac{\sum_{j=1}^s Y_j }{\sum_{j=1}^s \exp[o_j] }\right).
 $$
 
-`sceptre` estimates the log fold change using this simple expression. An advantage to this estimator is that it is quite fast to compute using the fitted GLM (@eq-nb_glm).
+This is the simple estimator that `sceptre` uses for the log fold change. An advantage to this estimator is that it is quite fast to compute using the fitted GLM (@eq-nb_glm).
 
 ## Integrating information across gRNAs
 
