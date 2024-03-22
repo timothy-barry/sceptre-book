@@ -1,7 +1,7 @@
 # Overview of methods {#sec-methods_overview}
 
 ::: callout-tip
-Part III of this book describes the statistical and algorithmic methods that underlie `sceptre`. Part III primarily is oriented towards methods developers. Users who wish to apply `sceptre` to analyze their data --- but are not so concerned about the specifics of the methods contained within the software --- safely can skip this part.
+Part III of this book describes the statistical and algorithmic methods that underlie `sceptre`. Part III primarily is oriented towards methods developers. Users who wish to apply `sceptre` to analyze their data --- but do not need to know about the specifics of the methods contained within the software --- safely can skip this part.
 :::
 
 Several statistical tasks are involved in the analysis of single-cell CRISPR screen data, including assigning gRNAs to cells, testing for association between gRNAs and the expression of responses (such as genes), and integrating information across gRNAs that target the same site. This chapter provides a high-level overview of the statistical methods that `sceptre` employs to carry out these analysis tasks.
@@ -44,7 +44,7 @@ X_j \sim \textrm{Bernoulli}(\pi).
 \end{cases}
 $$ {#eq-latent-variable-glm}
 
-Here, $\mu_j$ is the mean expression level of gRNA $i$ in cell $j$ (given the covariates); $\gamma \in \mathbb{R}$ and $\beta \in \mathbb{R}^{d}$ are the (unknown) regression coefficients; and $\pi \in [0,1]$ is the (unknown) probability that gRNA $i$ is present in a given cell. We fit the model @eq-latent-variable-glm using an EM algorithm, producing estimates $\hat{\beta}$, $\hat{\gamma}$ and $\hat{\pi}$ for the model coefficients $\beta$, $\gamma$, and $\pi$. Using these estimates, we can compute the probability $T_{ij} := \mathbb{P}(X_{ij} = 1)$ that a given cell $j$ contains gRNA $i$. (The probabilities $T_{i1}, \dots, T_{in}$ are sometimes called "posterior probabilities.") Finally, we threshold the posterior probabilities at some threshold $u$ (default value 0.8) to assign gRNA $i$ to the cells, i.e. we set $X_{ij} = 1$ if $T_{ij} > u$ and $X_{ij} = 0$ if $T_{ij} \leq u$. An advantage of the Poisson GLM framework is that it enables us to account for cell-specific covariates that might affect the level of background contamination, such as the number of gRNA UMIs sequenced in a given cell or batch. Formulating the model @eq-latent-variable-glm is fairly straightforward; fitting the model to data in a fast and numerically stable way is more challenging. `sceptre` leverages a novel variant of the EM algorithm for this purpose, which we describe below.
+Here, $\mu_j$ is the mean expression level of gRNA $i$ in cell $j$ (given the covariates); $\gamma \in \mathbb{R}$ and $\beta \in \mathbb{R}^{d}$ are the (unknown) regression coefficients; and $\pi \in [0,1]$ is the (unknown) probability that gRNA $i$ is present in a given cell. We fit the model @eq-latent-variable-glm using an EM algorithm, producing estimates $\hat{\beta}$, $\hat{\gamma}$ and $\hat{\pi}$ for the model coefficients $\beta$, $\gamma$, and $\pi$. Using these estimates, we can compute the probability $T_{ij} := \mathbb{P}(X_{ij} = 1)$ that a given cell $j$ contains gRNA $i$. (The probabilities $T_{i1}, \dots, T_{in}$ are sometimes called "posterior probabilities.") Finally, we threshold the posterior probabilities at some threshold $u$ (default value 0.8) to assign gRNA $i$ to the cells, i.e. we set $X_{ij} = 1$ if $T_{ij} > u$ and $X_{ij} = 0$ if $T_{ij} \leq u$. An advantage of the Poisson GLM framework is that it enables us to account for cell-specific covariates that might affect the expression level of the gRNA, such as the number of gRNA UMIs sequenced in a given cell or batch. Formulating the model @eq-latent-variable-glm is fairly straightforward; fitting the model to data in a fast and numerically stable way is more challenging. `sceptre` leverages a novel variant of the EM algorithm for this purpose, which we describe below.
 
 **Approximating the model @eq-latent-variable-glm with a simpler model**. We begin by approximating the latent variable model @eq-latent-variable-glm with a simpler latent variable model that is easier to estimate. First, we obtain accurate estimates for the parameter $\beta$ by exploiting the fact that the gRNA is present in only a small fraction (typically $< 2\%$) of cells. Let $f(g_j; \mu_j)$ denote the probability mass function of the Poisson distribution with mean $\mu_j$ evaluated at $g_j$, i.e.,
 
@@ -336,13 +336,14 @@ $$
 \hat{\xi} \approx \log\left(\frac{\sum_{j=1}^s Y_j }{\sum_{j=1}^s \exp[o_j] }\right).
 $$
 
-This is the simple estimator that `sceptre` uses for the log fold change. An advantage to this estimator is that it is quite fast to compute using the fitted GLM (@eq-nb_glm).
+This is the simple estimator that `sceptre` uses for the log fold change. An advantage to this estimator is that it is quite fast to compute using the fitted GLM (@eq-nb_glm). Interestingly, this estimator circumvents estimation of the size parameter $\theta$.
 
 ## Integrating information across gRNAs
 
 `sceptre` provides three strategies for integrating information across gRNAs that target the same site: `"singleton"`, `"union"`, `"bonferroni"`. (One can select between these strategies by specifying the `grna_integration_strategy` argument in the `set_analysis_parameters()` function.) The "singleton" and "union" strategies are straightforward; see @sec-grna_integration_strategy and @sec-defn_trt_cntrl_grp for more information. The Bonferroni strategy is slightly more complicated. Consider a given target-response pair. Suppose that $k$ gRNAs $\textrm{gRNA}_1 \dots \textrm{gRNA}_k$ target this target. Moreover, suppose that, upon testing for association between each of these gRNAs and the response, we obtain gRNA-wise p-values $p_1, \dots, p_k$. The Bonferroni p-value is defined as follows:
 
-$$ p = k \cdot \min\{p_1, \dots, p_k\}.$$ The Bonferroni p-value is valid in the following sense: if $p_1, \dots, p_k$ are valid (i.e., uniformly distributed) p-values, then $p$ too is a valid (i.e., uniformly distributed) p-value. (The gRNA-wise p-values $p_1, \dots, p_k$ can be arbitrarily dependent.) Below, we state this result in a slightly more precise way and prove its correctness. "Superuniformity" is more general than uniformity and is sufficient for p-value validity.
+$$ p = k \cdot \min\{p_1, \dots, p_k\}.$$ The Bonferroni p-value is valid in the following sense: if $p_1, \dots, p_k$ are valid (i.e., uniformly distributed) p-values, then $p$ too is a valid (i.e., uniformly distributed) p-value. (The gRNA-wise p-values $p_1, \dots, p_k$ can be arbitrarily dependent.) Below, we state this result in a slightly more precise way and prove its correctness. "Superuniformity" is more general than uniformity and is sufficient for p-value validity. This proof is standard; see, e.g., the 
+Bonferroni correction [Wikipedia page](https://en.wikipedia.org/wiki/Bonferroni_correction).
 
 **Theorem**: Suppose that $p_1, \dots, p_k$ are superuniform, i.e. $\mathbb{P}(p_i \leq \alpha) \leq \alpha$ for all $i \in \{1, \dots, k\}$ and all $\alpha \in [0,1]$. Then $p = k \cdot \min\{p_1, \dots, p_k\}$ also is superuniform.
 
@@ -355,3 +356,7 @@ $$
 $$
 
 The penultimate inequality follows from the union bound, while the final inequality follows from the superuniformity of $p_i$. $\square$
+
+## Accelerations
+
+`sceptre` leverages several statistical and algorithmic accelerations to considerably improve the speed of the methods described above, including a sparsity-exploiting algorithm for computing GLM score tests and a strategy for recycling computation across permutation tests. We plan to describe these accelerations in a subsequent chapter.
