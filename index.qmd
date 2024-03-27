@@ -20,4 +20,4 @@ Finally, the [Appendix](appendix.qmd) contains several sections, including a glo
 
 # Acknowledgments {.unnumbered}
 
-We gratefully acknowledge Kathryn Roeder, Xihong Lin,  Xuran Wang, John Morris, Kaishu Mason, Ziang Niu, Yixuan Qiu, and Songcheng Dai for contributing to the research and development underlying `sceptre` and `ondisc`. We additionally thank the many `sceptre` users who have provided and continue to provide valuable feedback on the package.
+We gratefully acknowledge Kathryn Roeder, Xihong Lin, Xuran Wang, John Morris, Kaishu Mason, Ziang Niu, Yixuan Qiu, and Songcheng Dai for contributing to the research and development underlying `sceptre` and `ondisc`. We additionally thank the many `sceptre` users who have provided and continue to provide valuable feedback on the package.

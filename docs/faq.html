@@ -298,9 +298,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header><nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do" id="toc-i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do"><span class="header-section-number">C.1</span> I am trying to install <code>sceptre</code>, but I am getting an error. What should I do?</a></li>
-  <li><a href="#how-can-i-install-a-previous-version-of-sceptre" id="toc-how-can-i-install-a-previous-version-of-sceptre"><span class="header-section-number">C.2</span> How can I install a previous version of <code>sceptre</code>?</a></li>
-  <li><a href="#how-can-i-improve-the-speed-of-sceptre" id="toc-how-can-i-improve-the-speed-of-sceptre"><span class="header-section-number">C.3</span> How can I improve the speed of <code>sceptre</code>?</a></li>
+<li><a href="#how-can-i-improve-the-speed-of-sceptre" id="toc-how-can-i-improve-the-speed-of-sceptre"><span class="header-section-number">C.1</span> How can I improve the speed of <code>sceptre</code>?</a></li>
+  <li><a href="#i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do" id="toc-i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do"><span class="header-section-number">C.2</span> I am trying to install <code>sceptre</code>, but I am getting an error. What should I do?</a></li>
+  <li><a href="#how-can-i-install-a-previous-version-of-sceptre" id="toc-how-can-i-install-a-previous-version-of-sceptre"><span class="header-section-number">C.3</span> How can I install a previous version of <code>sceptre</code>?</a></li>
   <li><a href="#sceptre-crashed-or-sceptre-is-using-an-unexpectedly-large-amount-of-memory-or-taking-an-unexpectedly-long-amount-of-time-to-run.-what-should-i-do" id="toc-sceptre-crashed-or-sceptre-is-using-an-unexpectedly-large-amount-of-memory-or-taking-an-unexpectedly-long-amount-of-time-to-run.-what-should-i-do"><span class="header-section-number">C.4</span> <code>sceptre</code> crashed, or <code>sceptre</code> is using an unexpectedly large amount of memory or taking an unexpectedly long amount of time to run. What should I do?</a></li>
   <li><a href="#my-negative-control-p-values-are-miscalibrated.-what-should-i-do" id="toc-my-negative-control-p-values-are-miscalibrated.-what-should-i-do"><span class="header-section-number">C.5</span> My negative control p-values are miscalibrated. What should I do?</a></li>
   <li><a href="#how-many-negative-control-grnas-do-i-need" id="toc-how-many-negative-control-grnas-do-i-need"><span class="header-section-number">C.6</span> How many negative control gRNAs do I need?</a></li>
@@ -315,11 +315,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    if (new URLSearchParams(window.location.search).get('iframe') === 'true') {
        document.body.setAttribute('data-iframe', 'true');
    }
-</script><section id="i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do" class="level2" data-number="C.1"><h2 data-number="C.1" class="anchored" data-anchor-id="i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do">
-<span class="header-section-number">C.1</span> I am trying to install <code>sceptre</code>, but I am getting an error. What should I do?</h2>
+</script><section id="how-can-i-improve-the-speed-of-sceptre" class="level2" data-number="C.1"><h2 data-number="C.1" class="anchored" data-anchor-id="how-can-i-improve-the-speed-of-sceptre">
+<span class="header-section-number">C.1</span> How can I improve the speed of <code>sceptre</code>?</h2>
+<p>Create the file <code>Makevars</code> inside of your <code>~/.R</code> directory (if it does not yet exist):</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>Terminal</strong></pre>
+</div>
+<div class="sourceCode" id="cb1" data-filename="Terminal"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">touch</span> ~/.R/Makevars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Add the following line to your <code>Makevars</code> file:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>~/.R/Makevars</strong></pre>
+</div>
+<div class="sourceCode" id="cb2" data-filename="~/.R/Makevars"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">CXXFLAGS</span> = <span class="at">-O3</span> <span class="at">-Wall</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This line tells the C++ compiler to use aggressive optimization in compiling C++ code contained within an R package. Finally, reinstall <code>sceptre</code> from source.</p>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>R</strong></pre>
+</div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"katsevich-lab/sceptre"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section><section id="i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do" class="level2" data-number="C.2"><h2 data-number="C.2" class="anchored" data-anchor-id="i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do">
+<span class="header-section-number">C.2</span> I am trying to install <code>sceptre</code>, but I am getting an error. What should I do?</h2>
 <p>The first thing to do is to remove any previous installations of <code>sceptre</code> and then try again. First, determine the directory on your computer in which R packages are stored by executing <code><a href="https://rdrr.io/r/base/libPaths.html">.libPaths()</a></code> in the R console.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html">.libPaths</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/libPaths.html">.libPaths</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library"</code></pre>
 </div>
@@ -329,38 +354,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-with-filename-file">
 <pre><strong>Terminal</strong></pre>
 </div>
-<div class="sourceCode" id="cb3" data-filename="Terminal"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /Library/Frameworks/R.framework/Versions/4.2/Resources/library <span class="co"># change me!</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> sceptre</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6" data-filename="Terminal"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /Library/Frameworks/R.framework/Versions/4.2/Resources/library <span class="co"># change me!</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> sceptre</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, try to install <code>sceptre</code> again.</p>
-</section><section id="how-can-i-install-a-previous-version-of-sceptre" class="level2" data-number="C.2"><h2 data-number="C.2" class="anchored" data-anchor-id="how-can-i-install-a-previous-version-of-sceptre">
-<span class="header-section-number">C.2</span> How can I install a previous version of <code>sceptre</code>?</h2>
+</section><section id="how-can-i-install-a-previous-version-of-sceptre" class="level2" data-number="C.3"><h2 data-number="C.3" class="anchored" data-anchor-id="how-can-i-install-a-previous-version-of-sceptre">
+<span class="header-section-number">C.3</span> How can I install a previous version of <code>sceptre</code>?</h2>
 <p>See the instructions <a href="https://katsevich-lab.github.io/sceptre/articles/install.html">here</a>.</p>
-</section><section id="how-can-i-improve-the-speed-of-sceptre" class="level2" data-number="C.3"><h2 data-number="C.3" class="anchored" data-anchor-id="how-can-i-improve-the-speed-of-sceptre">
-<span class="header-section-number">C.3</span> How can I improve the speed of <code>sceptre</code>?</h2>
-<p>Create the file <code>Makevars</code> inside of your <code>~/.R</code> directory (if it does not yet exist):</p>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>Terminal</strong></pre>
-</div>
-<div class="sourceCode" id="cb4" data-filename="Terminal"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">touch</span> ~/.R/Makevars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Add the following line to your <code>Makevars</code> file:</p>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>~/.R/Makevars</strong></pre>
-</div>
-<div class="sourceCode" id="cb5" data-filename="~/.R/Makevars"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">CXXFLAGS</span> += <span class="at">-O3</span> <span class="at">-Wall</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>This line tells the C++ compiler to use aggressive optimization in compiling C++ code contained within an R package. Finally, reinstall <code>sceptre</code> from source.</p>
-<div class="cell">
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>R</strong></pre>
-</div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"katsevich-lab/sceptre"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
 </section><section id="sceptre-crashed-or-sceptre-is-using-an-unexpectedly-large-amount-of-memory-or-taking-an-unexpectedly-long-amount-of-time-to-run.-what-should-i-do" class="level2" data-number="C.4"><h2 data-number="C.4" class="anchored" data-anchor-id="sceptre-crashed-or-sceptre-is-using-an-unexpectedly-large-amount-of-memory-or-taking-an-unexpectedly-long-amount-of-time-to-run.-what-should-i-do">
 <span class="header-section-number">C.4</span> <code>sceptre</code> crashed, or <code>sceptre</code> is using an unexpectedly large amount of memory or taking an unexpectedly long amount of time to run. What should I do?</h2>
 <p>The most likely explanation is that something is going wrong with the parallel functionality of the package. Consider setting <code>parallel = FALSE</code> and then trying again. If the situation improves, consider setting <code>parallel = TRUE</code> and setting <code>n_processors</code> to a small number, such as <code>2</code> or <code>3</code>. Note that the <code>parallel = TRUE</code> option fails on clusters and Windows machines; to run <code>sceptre</code> in parallel on one of these platforms, use the Nextflow pipeline.</p>

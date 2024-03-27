@@ -4,7 +4,7 @@
 This chapter is self-contained, and first-time users can get started with `sceptre` by reading this chapter only.
 :::
 
-`sceptre` is an R package that facilitates statistically rigorous, massively scalable, and user-friendly single-cell CRISPR screen data analysis. First, users should install `sceptre`. Users also should install the `sceptredata` package, which contains the example data used in this book.
+`sceptre` is an R package that facilitates statistically rigorous, massively scalable, and user-friendly single-cell CRISPR screen data analysis. To get started, users should install `sceptre`. Users also should install the `sceptredata` package, which contains the example data used in this book.
 
 ```{r, eval=FALSE}
 install.packages("devtools")
@@ -18,6 +18,8 @@ Users can load `sceptre` and `sceptredata` via a call to `library()`.
 library(sceptre)
 library(sceptredata)
 ```
+
+Note: The [frequently asked questions page](https://timothy-barry.github.io/sceptre-book/faq.html) contains tips for installing `sceptre` such that it runs as fast as possible on your computer.
 
 The standard pipeline involved in applying `sceptre` to analyze a dataset consists of several steps, which we summarize in the following schematic.
 
