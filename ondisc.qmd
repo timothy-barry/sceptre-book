@@ -14,3 +14,10 @@ The user interface to `ondisc` is simple and minimal. The main class within `ond
 
 ## Initializing an `odm` object
 
+The primary
+
+| Cell Ranger modality name | `ondisc` modality name |
+|---------------------------|------------------------|
+|                           |                        |
+|                           |                        |
+|                           |                        |
