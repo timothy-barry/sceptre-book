@@ -1,0 +1,16 @@
+# The `ondisc` package {#sec-ondisc}
+
+[`ondisc`](https://timothy-barry.github.io/ondisc/) is a companion R package to `sceptre` that enables users to compute on large-scale single-cell data out-of-core on a laptop or distributed across multiple processors on a cluster or cloud. In both of these settings `ondisc` requires only a few gigabytes of memory, even if the input data are tens of gigabytes in size. `ondisc` is mainly oriented toward single-cell CRISPR screen analysis, but `ondisc` also can be used for single-cell differential expression and single-cell co-expression analysis. `ondisc` is powered by several new, efficient algorithms for manipulating and querying large, sparse expression matrices. Although `ondisc` and `sceptre` work best in conjunction, `ondisc` can be used independently of `sceptre` (and conversely, `sceptre` can be used independently of `ondisc`).
+
+Users can install `ondisc` as follows. `ondisc` depends on the Bioconductor package `Rhdf5lib`, which should be installed from source.
+
+```{r,eval=FALSE}
+# install.packages("BiocManager")
+BiocManager::install("Rhdf5lib", type = "source") # Rhdf5lib
+devtools::install_github("timothy-barry/ondisc") # ondisc
+```
+
+The user interface to `ondisc` is simple and minimal. The main class within `ondisc` is `odm` (short for "`ondisc` matrix"). An `odm` object represents a single-cell expression matrix stored *on disk* (as opposed to *in memory*). `odm` objects can be used to store and operate on large expression matrices that might not fit into memory. Users can create an `odm` object via one of two functions: `create_odm_from_cellranger()` or `create_odm_from_r_matrix()`. The former takes the output of one or more calls to Cell Ranger count as input, while the latter takes an R matrix (stored in standard format or sparse format) as input. Next, users can interact with an `odm` object via several functions, including the bracket (`[,]`) operator, which enables the user to load a specified subset of the expression matrix into memory.
+
+## Initializing an `odm` object
+

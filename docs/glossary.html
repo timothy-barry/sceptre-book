@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
-<title>Hands-On Single-Cell CRISPR Screen Analysis - Appendix B — Glossary</title>
+<title>Hands-On Single-Cell CRISPR Screen Analysis - Appendix C — Glossary</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -107,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sceptredata.html">Appendices</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ondisc.html">Appendices</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -249,26 +249,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./ondisc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">The <code>ondisc</code> package</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./sceptredata.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">References</span></span></a>
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
       </ul>
@@ -281,15 +287,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#assay-design" id="toc-assay-design" class="nav-link active" data-scroll-target="#assay-design"><span class="header-section-number">B.1</span> Assay design</a></li>
-  <li><a href="#hypothesis-construction" id="toc-hypothesis-construction" class="nav-link" data-scroll-target="#hypothesis-construction"><span class="header-section-number">B.2</span> Hypothesis construction</a></li>
-  <li><a href="#statistical-methodologies" id="toc-statistical-methodologies" class="nav-link" data-scroll-target="#statistical-methodologies"><span class="header-section-number">B.3</span> Statistical methodologies</a></li>
-  <li><a href="#statistical-properties-and-their-assessment" id="toc-statistical-properties-and-their-assessment" class="nav-link" data-scroll-target="#statistical-properties-and-their-assessment"><span class="header-section-number">B.4</span> Statistical properties and their assessment</a></li>
+<li><a href="#assay-design" id="toc-assay-design" class="nav-link active" data-scroll-target="#assay-design"><span class="header-section-number">C.1</span> Assay design</a></li>
+  <li><a href="#hypothesis-construction" id="toc-hypothesis-construction" class="nav-link" data-scroll-target="#hypothesis-construction"><span class="header-section-number">C.2</span> Hypothesis construction</a></li>
+  <li><a href="#statistical-methodologies" id="toc-statistical-methodologies" class="nav-link" data-scroll-target="#statistical-methodologies"><span class="header-section-number">C.3</span> Statistical methodologies</a></li>
+  <li><a href="#statistical-properties-and-their-assessment" id="toc-statistical-properties-and-their-assessment" class="nav-link" data-scroll-target="#statistical-properties-and-their-assessment"><span class="header-section-number">C.4</span> Statistical properties and their assessment</a></li>
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sceptredata.html">Appendices</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Glossary</span></a></li></ol></nav><div class="quarto-title">
-<h1 class="title"><span id="sec-glossary" class="quarto-section-identifier">Appendix B — Glossary</span></h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ondisc.html">Appendices</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-glossary" class="quarto-section-identifier">Appendix C — Glossary</span></h1>
 </div>
 
 
@@ -303,8 +309,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="assay-design" class="level2" data-number="B.1"><h2 data-number="B.1" class="anchored" data-anchor-id="assay-design">
-<span class="header-section-number">B.1</span> Assay design</h2>
+</header><section id="assay-design" class="level2" data-number="C.1"><h2 data-number="C.1" class="anchored" data-anchor-id="assay-design">
+<span class="header-section-number">C.1</span> Assay design</h2>
 <p>The following terms describe the design of pooled single-cell CRISPR screen assays, where the goal is to perturb a set of genomic targets and measure the effects of these perturbations on a set of molecular phenotypes.</p>
 <ul>
 <li><p><strong>Perturbation</strong>: A change to the genome of a cell carried out by the CRISPR-Cas9 system or one of its variants. Common perturbations include CRISPRko (knockout via nuclease-active Cas9), CRISPRi (inactivation via dCas9 tethered to a repressive domain), CRISPRa (activation via dCas9 tethered to an activating domain).</p></li>
@@ -314,8 +320,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><strong>Non-targeting gRNA:</strong> A gRNA whose barcode sequence either does not map anywhere in the genome or maps to a location whose perturbation is known to have no effect. Non-targeting gRNAs serve as negative controls.</p></li>
 <li><p><strong>Response:</strong> A molecular phenotype readout in the single-cell CRISPR screen, whose response to CRISPR perturbation is of interest. Possible responses include genes, proteins, and chromatin-derived features.</p></li>
 <li><p><strong>Multiplicity of infection (MOI):</strong> The MOI of a screen can be categorized as low or high and also can also be numerically quantified. A high-MOI (respectively, low-MOI) dataset is one in which the experimenter has aimed to insert multiple gRNAs (respectively, a single gRNA) into each cell. Quantitatively, the MOI of a screen is the average number of gRNAs delivered per cell. For example, an MOI of 10 means that on average each cell receives 10 gRNAs.</p></li>
-</ul></section><section id="hypothesis-construction" class="level2" data-number="B.2"><h2 data-number="B.2" class="anchored" data-anchor-id="hypothesis-construction">
-<span class="header-section-number">B.2</span> Hypothesis construction</h2>
+</ul></section><section id="hypothesis-construction" class="level2" data-number="C.2"><h2 data-number="C.2" class="anchored" data-anchor-id="hypothesis-construction">
+<span class="header-section-number">C.2</span> Hypothesis construction</h2>
 <p>The main statistical task in single-cell CRISPR screen analysis is to test hypotheses of the form: Does perturbing a target impact a response? We use the following terminology to describe the construction of such hypotheses.</p>
 <!-- -   **gRNA group:** Two or more gRNAs whose effects one wishes to study together. In particular, one wishes to test whether any gRNA in the group has an effect on a response of interest. Typically, gRNAs with the same target are grouped together. -->
 <ul>
@@ -327,8 +333,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><strong><em>Trans</em></strong> <strong>pair:</strong> A target-response pair for which the target and response are not necessarily located in close proximity or on the same chromosome as one another.</p></li>
 <li><p><strong>Pairwise quality control:</strong> A procedure for filtering out target-response pairs whose data are too sparse to be analyzed reliably. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.</p></li>
 <li><p><strong>Cellwise quality control:</strong> A procedure for filtering out cells whose data suggest aberrations in the library preparation or sequencing processes. This common step in single-cell sequencing analyses (not just CRISPR screens) is based on metrics like the total number of UMIs detected in a cell and the percentage of UMIs mapping to mitochondrial genes.</p></li>
-</ul></section><section id="statistical-methodologies" class="level2" data-number="B.3"><h2 data-number="B.3" class="anchored" data-anchor-id="statistical-methodologies">
-<span class="header-section-number">B.3</span> Statistical methodologies</h2>
+</ul></section><section id="statistical-methodologies" class="level2" data-number="C.3"><h2 data-number="C.3" class="anchored" data-anchor-id="statistical-methodologies">
+<span class="header-section-number">C.3</span> Statistical methodologies</h2>
 <p>The following terms describe the statistical methodologies used in single-cell CRISPR screen analysis. Their main focus is to compare the responses of cells that have been perturbed with those that have not.</p>
 <ul>
 <li><p><strong>Treatment group:</strong> The group of cells for which a given target has been perturbed.</p></li>
@@ -347,8 +353,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><strong>Conditional randomization test:</strong> A resampling procedure for estimating the null distribution of a test statistic based on randomly reassigning the treatment and control labels of the cells based on their covariate values.</p></li>
 <li><p><strong>Skew-normal distribution</strong>: A generalization of the Gaussian distribution that has three parameters: a mean parameter, a variance parameter, and a skew parameter. The skew parameter controls the extent to which the distribution is asymmetric relative to a Gaussian distribution.</p></li>
 <li><p><strong>Multiple testing procedure:</strong> A procedure that inputs a list of p-values for a set of target-response pairs and outputs a subset of these pairs that are deemed to have a statistically significant relationship. The most common multiple testing procedure is the <em>Benjamini-Hochberg procedure</em>, which aims to control the <em>false discovery rate</em> (see below) at a prespecified level, such as 0.1.</p></li>
-</ul></section><section id="statistical-properties-and-their-assessment" class="level2" data-number="B.4"><h2 data-number="B.4" class="anchored" data-anchor-id="statistical-properties-and-their-assessment">
-<span class="header-section-number">B.4</span> Statistical properties and their assessment</h2>
+</ul></section><section id="statistical-properties-and-their-assessment" class="level2" data-number="C.4"><h2 data-number="C.4" class="anchored" data-anchor-id="statistical-properties-and-their-assessment">
+<span class="header-section-number">C.4</span> Statistical properties and their assessment</h2>
 <p>The following terms describe the statistical properties of an analysis method (whether <code>sceptre</code> or otherwise) and how they are assessed. These statistical properties are essential to making reliable conclusions based on single-cell CRISPR screen data.</p>
 <ul>
 <li><p><strong>False discovery rate (FDR):</strong> The proportion of the statistically significant target-response pairs returned by a multiple testing procedure that are false positives. A high FDR indicates significant contamination by false positives, making the underlying statistical methodology unreliable.</p></li>
@@ -748,12 +754,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./sceptredata.html" class="pagination-link  aria-label=" data="" in="" the="" package="">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./faq.html" class="pagination-link" aria-label="<span class='chapter-number'>C</span>&nbsp; <span class='chapter-title'>Frequently asked questions</span>">
-        <span class="nav-page-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./faq.html" class="pagination-link" aria-label="<span class='chapter-number'>D</span>&nbsp; <span class='chapter-title'>Frequently asked questions</span>">
+        <span class="nav-page-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
-<title>Hands-On Single-Cell CRISPR Screen Analysis - Appendix B — Example data in the sceptredata package</title>
+<title>Hands-On Single-Cell CRISPR Screen Analysis - Appendix A — The ondisc package</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -52,27 +52,7 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-  margin-bottom: 0em;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -81,8 +61,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./glossary.html" rel="next">
-<link href="./ondisc.html" rel="prev">
+<link href="./sceptredata.html" rel="next">
+<link href="./methods.html" rel="prev">
 <link href="./book_cover.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -127,7 +107,7 @@ div.csl-indent {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ondisc.html">Appendices</a></li><li class="breadcrumb-item"><a href="./sceptredata.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ondisc.html">Appendices</a></li><li class="breadcrumb-item"><a href="./ondisc.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">The <code>ondisc</code> package</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -269,13 +249,13 @@ div.csl-indent {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ondisc.html" class="sidebar-item-text sidebar-link">
+  <a href="./ondisc.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">The <code>ondisc</code> package</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sceptredata.html" class="sidebar-item-text sidebar-link active">
+  <a href="./sceptredata.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></span></a>
   </div>
 </li>
@@ -307,14 +287,12 @@ div.csl-indent {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#high-multiplicity-of-infection-crispri-screen-of-candidate-enhancers" id="toc-high-multiplicity-of-infection-crispri-screen-of-candidate-enhancers" class="nav-link active" data-scroll-target="#high-multiplicity-of-infection-crispri-screen-of-candidate-enhancers"><span class="header-section-number">B.1</span> High-multiplicity-of-infection CRISPRi screen of candidate enhancers</a></li>
-  <li><a href="#low-moi-crisprko-screen-of-gene-transcription-start-sites" id="toc-low-moi-crisprko-screen-of-gene-transcription-start-sites" class="nav-link" data-scroll-target="#low-moi-crisprko-screen-of-gene-transcription-start-sites"><span class="header-section-number">B.2</span> Low-MOI CRISPRko screen of gene transcription start sites</a></li>
-  <li><a href="#parse-data" id="toc-parse-data" class="nav-link" data-scroll-target="#parse-data"><span class="header-section-number">B.3</span> Parse data</a></li>
+<li><a href="#initializing-an-odm-object" id="toc-initializing-an-odm-object" class="nav-link active" data-scroll-target="#initializing-an-odm-object"><span class="header-section-number">A.1</span> Initializing an <code>odm</code> object</a></li>
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ondisc.html">Appendices</a></li><li class="breadcrumb-item"><a href="./sceptredata.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></a></li></ol></nav><div class="quarto-title">
-<h1 class="title"><span id="sec-sceptre_data" class="quarto-section-identifier">Appendix B — Example data in the <code>sceptredata</code> package</span></h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ondisc.html">Appendices</a></li><li class="breadcrumb-item"><a href="./ondisc.html"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">The <code>ondisc</code> package</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-ondisc" class="quarto-section-identifier">Appendix A — The <code>ondisc</code> package</span></h1>
 </div>
 
 
@@ -328,173 +306,18 @@ div.csl-indent {
   
 
 
-</header><p>The <code>sceptredata</code> package contains three example single-cell CRISPR screen datasets for use in the examples of the <code>sceptre</code> and <code>ondisc</code> packages. We describe each of the example datasets here.</p>
-<section id="high-multiplicity-of-infection-crispri-screen-of-candidate-enhancers" class="level2" data-number="B.1"><h2 data-number="B.1" class="anchored" data-anchor-id="high-multiplicity-of-infection-crispri-screen-of-candidate-enhancers">
-<span class="header-section-number">B.1</span> High-multiplicity-of-infection CRISPRi screen of candidate enhancers</h2>
-<p>The first example dataset contained within <code>sceptredata</code> is a high-multiplicity-of-infection (MOI) CRISPRi screen of candidate enhancers in K562 cells <span class="citation" data-cites="gasperini2019">(<a href="references.html#ref-gasperini2019" role="doc-biblioref">Gasperini et al. 2019</a>)</span>. The original authors aimed to link candidate enhancers to genes by testing for changes in gene expression in response to CRISPR perturbations of the candidate enhancers. The authors designed a library of gRNAs to target 5,779 candidate enhancers and 381 transcription start sites (TSSs). Each genomic element was targeted by two gRNAs (with a subset of the candidate enhancers targeted by four gRNAs). Additionally, the authors designed 100 negative control gRNAs, each of which targeted a gene desert or no location in the genome at all. The authors sequenced 207,324 single cells, measuring the gene and gRNA expression profile of each.</p>
-<p>The <code>sceptredata</code> package contains a downsampled version of the Gasperini data, which is stored within the <code>highmoi_example_data</code> list. Evaluating <code>data(highmoi_example_data)</code> in the console loads the example high-MOI CRISPRi data into the global namespace.</p>
+</header><p><a href="https://timothy-barry.github.io/ondisc/"><code>ondisc</code></a> is a companion R package to <code>sceptre</code> that enables users to compute on large-scale single-cell data out-of-core on a laptop or distributed across multiple processors on a cluster or cloud. In both of these settings <code>ondisc</code> requires only a few gigabytes of memory, even if the input data are tens of gigabytes in size. <code>ondisc</code> is mainly oriented toward single-cell CRISPR screen analysis, but <code>ondisc</code> also can be used for single-cell differential expression and single-cell co-expression analysis. <code>ondisc</code> is powered by several new, efficient algorithms for manipulating and querying large, sparse expression matrices. Although <code>ondisc</code> and <code>sceptre</code> work best in conjunction, <code>ondisc</code> can be used independently of <code>sceptre</code> (and conversely, <code>sceptre</code> can be used independently of <code>ondisc</code>).</p>
+<p>Users can install <code>ondisc</code> as follows. <code>ondisc</code> depends on the Bioconductor package <code>Rhdf5lib</code>, which should be installed from source.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">sceptredata</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">highmoi_example_data</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># install.packages("BiocManager")</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html">install</a></span><span class="op">(</span><span class="st">"Rhdf5lib"</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span> <span class="co"># Rhdf5lib</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span> <span class="co"># ondisc</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The data consist of several pieces. First, <code>grna_matrix</code> is the gRNA-by-cell expression matrix. gRNAs and cells alike are downsampled: the matrix contains 95 gRNAs and 45,919 cells. The gRNAs are downsampled such that there are 50 candidate-enhancer-targeting gRNAs (targeting 25 distinct candidate enhancers), 20 positive control gRNAs (targeting 10 TSSs), and 25 negative control gRNAs. The cells are downsampled such that each contains at least one gRNA.</p>
-<div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_matrix</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">grna_matrix</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]    95 45919</code></pre>
-</div>
-</div>
-<p>Second, <code>response_matrix</code> is the gene-by-cell expression matrix. This matrix is also downsampled, containing 526 genes and the same 45,919 cells as the gRNA matrix. The target gene of each TSS-targeting gRNA is included in the matrix. Moreover, the matrix contains about 500 genes in close physical proximity to the target locations of the (downsampled) candidate-enhancer-targeting gRNAs. Finally, two randomly-selected mitochondrial genes are included in the matrix.</p>
-<div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">response_matrix</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">response_matrix</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]   526 45919</code></pre>
-</div>
-</div>
-<p>Third, <code>extra_covariates</code> is a data frame containing one column, namely <code>batch</code>, which indicates the batch (<code>b1</code> or <code>b2</code>) in which each cell was sequenced.</p>
-<div class="cell">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">extra_covariates</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">extra_covariates</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  batch
-1    b1
-2    b1
-3    b1
-4    b1
-5    b1
-6    b1</code></pre>
-</div>
-</div>
-<p>Fourth, <code>gene_names</code> is a vector giving the human-readable name of each gene. Genes prepended with the string “MT-” or “mt-” are taken as mitochondrial genes and used to compute the <code>response_p_mito</code> covariate in <code>sceptre</code>.</p>
-<div class="cell">
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gene_names</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">gene_names</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">gene_names</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "NUCKS1"  "RBBP5"   "CDK18"   "RAB29"   "DSTYK"   "SLC41A1"</code></pre>
-</div>
-</div>
-<p>Finally, <code>grna_target_data_frame_highmoi</code> is a data frame containing information about the target of each gRNA.</p>
-<div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">grna_target_data_frame_highmoi</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">grna_target_data_frame_highmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       grna_id     grna_target   chr    start      end
-1 grna_CCGGGCG ENSG00000069482 chr11 68451943 68451958
-2 grna_TGGCGGC ENSG00000069482 chr11 68451958 68451974
-3 grna_AAGGCCG ENSG00000100316 chr22 39715775 39715790
-4 grna_GACGCCG ENSG00000100316 chr22 39715790 39715806
-5 grna_CACACCC ENSG00000104131 chr15 44829255 44829270
-6 grna_GCTCACA ENSG00000104131 chr15 44829270 44829286</code></pre>
-</div>
-</div>
-<p><code>grna_target_data_frame_highmoi</code> contains the columns <code>grna_id</code> (the ID of an individual gRNA), <code>grna_target</code> (the genomic target of the given gRNA), and <code>chr</code>, <code>start</code>, and <code>end</code> (the chromosome, start coordinate, and end coordinate, respectively, of the target location of the given gRNA). Non-targeting gRNAs are assigned a <code>grna_target</code> of <code>"non-targeting"</code>.</p>
-<p>The <code>sceptredata</code> package also stores the example high-MOI CRISPRi data in 10X Cell Ranger format. The data are contained in two directories (namely, <code>gem_group_1</code> and <code>gem_group_2</code>), which correspond to cells sequenced in different batches. One can determine the location of these directories on her computer as follows.</p>
-<div class="cell">
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">directories</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"sceptredata"</span><span class="op">)</span>, </span>
-<span>  <span class="st">"/highmoi_example/gem_group_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">directories</span> <span class="co"># file paths to the example data on your computer</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sceptredata/extdata/highmoi_example/gem_group_1"
-[2] "/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sceptredata/extdata/highmoi_example/gem_group_2"</code></pre>
-</div>
-</div>
-<p>Each of these directories contains three files: <code>barcodes.tsv.gz</code>, <code>features.tsv.gz</code>, and <code>matrix.mtx.gz</code>.</p>
-<div class="cell">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">directories</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "barcodes.tsv.gz" "features.tsv.gz" "matrix.mtx.gz"  </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">directories</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "barcodes.tsv.gz" "features.tsv.gz" "matrix.mtx.gz"  </code></pre>
-</div>
-</div>
-<p>The expression data are stored in “feature barcode matrix” format. Users can learn more about this file format by consulting the 10X Genomics <a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-mex-matrices">documentation</a>.</p>
-</section><section id="low-moi-crisprko-screen-of-gene-transcription-start-sites" class="level2" data-number="B.2"><h2 data-number="B.2" class="anchored" data-anchor-id="low-moi-crisprko-screen-of-gene-transcription-start-sites">
-<span class="header-section-number">B.2</span> Low-MOI CRISPRko screen of gene transcription start sites</h2>
-<p>The second example dataset contained within <code>sceptredata</code> is a low-MOI CRISPRko screen of gene TSSs in THP1 cells <span class="citation" data-cites="papalexi2021">(<a href="references.html#ref-papalexi2021" role="doc-biblioref">Papalexi et al. 2021</a>)</span>. The original authors aimed to link perturbations of genes to changes in the expression of <em>other</em> genes. The authors designed 101 targeting gRNAs to target 26 gene TSSs (with four gRNAs per TSS, on average). The authors additionally designed nine non-targeting gRNAs. The authors profiled the gene and gRNA expression profiles of 20,729 single cells. (The authors additionally measured the expression level of four cell-surface proteins; the protein expressions are not included as part of the example data.) The low-MOI CRISPRko data are stored in the <code>lowmoi_example_data</code> list; we can load this list into the global namespace via a call to <code><a href="https://rdrr.io/r/utils/data.html">data()</a></code>.</p>
-<div class="cell">
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">lowmoi_example_data</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The data consist of four pieces. First, <code>grna_matrix</code> is the gRNA-by-cell matrix of gRNA UMI counts. <code>grna_matrix</code> is unaltered; it contains all 110 gRNAs and 20,729 cells.</p>
-<div class="cell">
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_matrix</span> <span class="op">&lt;-</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">grna_matrix</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]   110 20729</code></pre>
-</div>
-</div>
-<p>Next, <code>response_matrix</code> is the gene-by-cell expression matrix. The gene expression matrix is downsampled to contain 299 genes. Nine of these genes (namely, <em>STAT1</em>, <em>JAK2</em>, <em>CMTM6</em>, <em>STAT2</em>, <em>UBE2L6</em>, <em>STAT3</em>, <em>TNFRSF14</em>, <em>IFNGR2</em>, <em>NFKBIA</em>) are among the genes targeted by the targeting gRNAs. Next, one of the genes is a randomly-selected mitochondrial gene. The remaining genes are randomly sampled from the set of remaining genes.</p>
-<div class="cell">
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">response_matrix</span> <span class="op">&lt;-</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">response_matrix</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]   299 20729</code></pre>
-</div>
-</div>
-<p>Additionally, <code>extra_covariates</code> is a data frame containing a single column — <code>bio_rep</code> — indicating the biological replicate in which a given cell was sequenced (<code>rep_1</code>, <code>rep_2</code>, or <code>rep_3</code>).</p>
-<div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">extra_covariates</span> <span class="op">&lt;-</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">extra_covariates</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  bio_rep
-1   rep_1
-2   rep_1
-3   rep_1
-4   rep_1
-5   rep_1
-6   rep_1</code></pre>
-</div>
-</div>
-<p>Finally, <code>grna_target_data_frame</code> is a data frame mapping each individual gRNA (<code>grna_id</code>) to the gene that it targets (<code>grna_target</code>). Again, non-targeting gRNAs are assigned a <code>grna_target</code> string of <code>"non-targeting"</code>.</p>
-<div class="cell">
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_target_data_frame</span> <span class="op">&lt;-</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_target_data_frame</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">grna_target_data_frame</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  grna_id grna_target
-1  ATF2g1        ATF2
-2  ATF2g2        ATF2
-3  ATF2g3        ATF2
-4  ATF2g4        ATF2
-5  BRD4g1        BRD4
-6  BRD4g2        BRD4</code></pre>
-</div>
-</div>
-</section><section id="parse-data" class="level2" data-number="B.3"><h2 data-number="B.3" class="anchored" data-anchor-id="parse-data">
-<span class="header-section-number">B.3</span> Parse data</h2>
-<p>The third dataset is an example single-cell CRISPR screen of LN18 cells produced by <a href="https://www.parsebiosciences.com">Parse Biosciences</a>. The example dataset included in the <code>sceptredata</code> package is a subset of the <a href="https://www.parsebiosciences.com/datasets/technical-performance-of-crispr-detect-in-cell-lines/">sample single-cell CRISPR screen dataset</a> available on the Parse website. The sample dataset containins 50,470 cells, 58,395 genes, and three gRNAs. Unfortunately, the genomic target of the gRNAs in the dataset is not indicated. The example Parse data are stored in the following machine-specific directory.</p>
-<div class="cell">
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"sceptredata"</span><span class="op">)</span>, <span class="st">"/parse_example/"</span><span class="op">)</span></span>
-<span><span class="va">directory</span> <span class="co"># location of the data on your computer</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sceptredata/extdata/parse_example/"</code></pre>
-</div>
-</div>
-<p>This directory contains four files: <code>all_grnas.csv</code>, <code>grna_mat.mtx</code>, <code>all_genes.csv</code>, and <code>gene_mat.mtx</code>.</p>
-<div class="cell">
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">directory</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "all_genes.csv" "all_grnas.csv" "gene_mat.mtx"  "grna_mat.mtx" </code></pre>
-</div>
-</div>
-<p><code>grna_mat.mtx</code> is a matrix market (<code>.mtx</code>) file containing the gRNA expression data. The matrix contains data on 5,000 (downsampled) cells and the three gRNAs. The name of the <code>grna_mat.mtx</code> file on the Parse website is <code>CRISPR: Digital Gene Expression (DGE) Matrix</code>. Next, <code>all_grnas.csv</code> is a <code>.csv</code> file with three columns: “gene_id”, “gene_name”, and “genome”. (The column names are misnomers.) The column “gene_id” gives the ID of each gRNA. Next, the column “gene_name” gives the name of each gRNA. Finally, the column “genome” indicates the “genome” with which each gRNA is associated. In the case of <code>all_grnas.csv</code>, the “genome” column contains the string “gRNA” across all rows. The name of the file of <code>all_grnas.csv</code> on the Parse website is <code>CRISPR: All Gene (CSV)</code>.</p>
-<p>Next, <code>gene_mat.mtx</code> is a matrix market file containing the gene expression data. The matrix contains data on 266 downsampled genes and the same 5,000 (downsampled) cells as the gRNA matrix. The name of <code>gene_mat.mtx</code> on the Parse website is <code>Whole Transcriptome: Digital Gene Expression (DGE) Matrix</code>. Finally, <code>all_genes.csv</code> is a <code>.csv</code> file containing the columns “gene_id”, “gene_name”, and “genome”. The columns “gene_id” and “gene_name” give the ID and human-readable name, respectively, of each gene. The column “genome”, meanwhile, indicates the reference genome to which the transcripts from each gene are mapped. In <code>all_genes.csv</code> the “genome” column contains the string “hg38” across all rows. Unfortunately, the file <code>all_genes.csv</code> is not contained on the Parse website. We (i.e., the maintainers of the <code>sceptredata</code> package) obtained <code>all_genes.csv</code> directly from Parse.</p>
+<p>The user interface to <code>ondisc</code> is simple and minimal. The main class within <code>ondisc</code> is <code>odm</code> (short for “<code>ondisc</code> matrix”). An <code>odm</code> object represents a single-cell expression matrix stored <em>on disk</em> (as opposed to <em>in memory</em>). <code>odm</code> objects can be used to store and operate on large expression matrices that might not fit into memory. Users can create an <code>odm</code> object via one of two functions: <code>create_odm_from_cellranger()</code> or <code>create_odm_from_r_matrix()</code>. The former takes the output of one or more calls to Cell Ranger count as input, while the latter takes an R matrix (stored in standard format or sparse format) as input. Next, users can interact with an <code>odm</code> object via several functions, including the bracket (<code>[,]</code>) operator, which enables the user to load a specified subset of the expression matrix into memory.</p>
+<section id="initializing-an-odm-object" class="level2" data-number="A.1"><h2 data-number="A.1" class="anchored" data-anchor-id="initializing-an-odm-object">
+<span class="header-section-number">A.1</span> Initializing an <code>odm</code> object</h2>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
-<div id="ref-gasperini2019" class="csl-entry" role="listitem">
-Gasperini, Molly, Andrew J. Hill, José L. McFaline-Figueroa, Beth Martin, Seungsoo Kim, Melissa D. Zhang, Dana Jackson, et al. 2019. <span>“<span class="nocase">A Genome-wide Framework for Mapping Gene Regulation via Cellular Genetic Screens</span>.”</span> <em>Cell</em> 176 (1): 377–90.
-</div>
-<div id="ref-papalexi2021" class="csl-entry" role="listitem">
-Papalexi, Efthymia, Eleni Mimitou, Andrew W. Butler, Samantha Foster, Bernadette Bracken, William M. Mauck III, Hans-Hermann Wessels, Bertrand Z. Yeung, Peter Smibert, and Rahul Satija. 2021. <span>“<span class="nocase">Characterizing the molecular regulation of inhibitory immune checkpoints with multi-modal single-cell screens</span>.”</span> <em>Nature Genetics</em> 53 (3): 322–31.
-</div>
-</div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -882,13 +705,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./ondisc.html" class="pagination-link  aria-label=" package="">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">The <code>ondisc</code> package</span></span>
+      <a href="./methods.html" class="pagination-link  aria-label=" of="" methods="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Overview of methods</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./glossary.html" class="pagination-link" aria-label="<span class='chapter-number'>C</span>&nbsp; <span class='chapter-title'>Glossary</span>">
-        <span class="nav-page-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./sceptredata.html" class="pagination-link" aria-label="<span class='chapter-number'>B</span>&nbsp; <span class='chapter-title'>Example data in the `sceptredata` package</span>">
+        <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

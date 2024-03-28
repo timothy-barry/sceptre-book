@@ -16,7 +16,7 @@ This book contains an introductory chapter and three parts.
 
 -   Part III ([Chapter 10](methods.qmd) --- ongoing) explicates the methods and algorithms that underlie `sceptre`.
 
-Finally, the [Appendix](appendix.qmd) contains several sections, including a glossary and FAQs.
+Finally, the Appendix contains several sections, including a glossary and FAQs.
 
 # Acknowledgments {.unnumbered}
 
