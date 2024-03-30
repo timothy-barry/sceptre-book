@@ -1,4 +1,4 @@
-# Example data in the `sceptredata` package {#sec-sceptre_data}
+# The `sceptredata` package {#sec-sceptre_data}
 
 The `sceptredata` package contains three example single-cell CRISPR screen datasets for use in the examples of the `sceptre` and `ondisc` packages. We describe each of the example datasets here.
 

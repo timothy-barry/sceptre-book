@@ -1,7 +1,7 @@
 # Overview of methods {#sec-methods_overview}
 
 ::: callout-tip
-Part III of this book describes the statistical and algorithmic methods that underlie `sceptre`. Part III primarily is oriented towards methods developers. Users who wish to apply `sceptre` to analyze their data --- but do not need to know about the specifics of the methods contained within the software --- safely can skip this part.
+Part III of this book describes the statistical and algorithmic methods that underlie `sceptre`. Users who wish to apply `sceptre` to analyze their data --- but do not need to know about the specifics of the methods contained within the software --- safely can skip this part.
 :::
 
 Several statistical tasks are involved in the analysis of single-cell CRISPR screen data, including assigning gRNAs to cells, testing for association between gRNAs and the expression of responses (such as genes), and integrating information across gRNAs that target the same site. This chapter provides a high-level overview of the statistical methods that `sceptre` employs to carry out these analysis tasks.

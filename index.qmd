@@ -12,7 +12,7 @@ This book contains an introductory chapter and three parts.
 
 -   Part I ([Chapter 1](import-data.qmd) --- [Chapter 6](run-power-check-and-discovery-analysis.qmd)) describes in greater detail how to carry out a `sceptre` analysis on a laptop or desktop.
 
--   Part II ([Chapter 7](at-scale.qmd) --- [Chapter 9](pipeline-args.qmd)) describes how leverage `sceptre` in conjunction with the companion R package [`ondisc`](https://timothy-barry.github.io/ondisc/) to analyze data at-scale on a cluster or cloud.
+-   Part II ([Chapter 7](at-scale.qmd) --- [Chapter 9](pipeline-args.qmd)) describes how to apply `sceptre` to analyze large-scale data on a cluster or cloud.
 
 -   Part III ([Chapter 10](methods.qmd) --- ongoing) explicates the methods and algorithms that underlie `sceptre`.
 
@@ -20,4 +20,4 @@ Finally, the Appendix contains several sections, including a glossary and FAQs.
 
 # Acknowledgments {.unnumbered}
 
-We gratefully acknowledge Kathryn Roeder, Xihong Lin, Xuran Wang, John Morris, Kaishu Mason, Ziang Niu, Yixuan Qiu, and Songcheng Dai for contributing to the research and development underlying `sceptre` and `ondisc`. We additionally thank the many `sceptre` users who have provided and continue to provide valuable feedback on the package.
+We gratefully acknowledge Kathryn Roeder, Xihong Lin, Xuran Wang, John Morris, Kaishu Mason, Ziang Niu, Yixuan Qiu, and Songcheng Dai for contributing to the research and development underlying `sceptre` and the companion package `ondisc`. We additionally thank the many `sceptre` users who have provided and continue to provide valuable feedback on the package.

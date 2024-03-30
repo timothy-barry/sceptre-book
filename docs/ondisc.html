@@ -256,7 +256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sceptredata.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">The <code>sceptredata</code> package</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -287,7 +287,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#initializing-an-odm-object" id="toc-initializing-an-odm-object" class="nav-link active" data-scroll-target="#initializing-an-odm-object"><span class="header-section-number">A.1</span> Initializing an <code>odm</code> object</a></li>
+<li><a href="#initializing-an-odm-object-via-create_odm_from_cellranger" id="toc-initializing-an-odm-object-via-create_odm_from_cellranger" class="nav-link active" data-scroll-target="#initializing-an-odm-object-via-create_odm_from_cellranger"><span class="header-section-number">A.1</span> Initializing an <code>odm</code> object via <code>create_odm_from_cellranger()</code></a></li>
+  <li><a href="#interacting-with-the-odm-object" id="toc-interacting-with-the-odm-object" class="nav-link" data-scroll-target="#interacting-with-the-odm-object"><span class="header-section-number">A.2</span> Interacting with the <code>odm</code> object</a></li>
+  <li><a href="#supported-modalities" id="toc-supported-modalities" class="nav-link" data-scroll-target="#supported-modalities"><span class="header-section-number">A.3</span> Supported modalities</a></li>
+  <li><a href="#the-cell-wise-covariate-data-frame" id="toc-the-cell-wise-covariate-data-frame" class="nav-link" data-scroll-target="#the-cell-wise-covariate-data-frame"><span class="header-section-number">A.4</span> The cell-wise covariate data frame</a></li>
+  <li><a href="#reading-an-.odm-file-into-r" id="toc-reading-an-.odm-file-into-r" class="nav-link" data-scroll-target="#reading-an-.odm-file-into-r"><span class="header-section-number">A.5</span> Reading an <code>.odm</code> file into R</a></li>
+  <li><a href="#initializing-an-odm-object-via-create_odm_from_r_matrix" id="toc-initializing-an-odm-object-via-create_odm_from_r_matrix" class="nav-link" data-scroll-target="#initializing-an-odm-object-via-create_odm_from_r_matrix"><span class="header-section-number">A.6</span> Initializing an <code>odm</code> object via <code>create_odm_from_r_matrix()</code></a></li>
+  <li><a href="#notes-on-compression" id="toc-notes-on-compression" class="nav-link" data-scroll-target="#notes-on-compression"><span class="header-section-number">A.7</span> Notes on compression</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -306,16 +312,296 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><p><a href="https://timothy-barry.github.io/ondisc/"><code>ondisc</code></a> is a companion R package to <code>sceptre</code> that enables users to compute on large-scale single-cell data out-of-core on a laptop or distributed across multiple processors on a cluster or cloud. In both of these settings <code>ondisc</code> requires only a few gigabytes of memory, even if the input data are tens of gigabytes in size. <code>ondisc</code> is mainly oriented toward single-cell CRISPR screen analysis, but <code>ondisc</code> also can be used for single-cell differential expression and single-cell co-expression analysis. <code>ondisc</code> is powered by several new, efficient algorithms for manipulating and querying large, sparse expression matrices. Although <code>ondisc</code> and <code>sceptre</code> work best in conjunction, <code>ondisc</code> can be used independently of <code>sceptre</code> (and conversely, <code>sceptre</code> can be used independently of <code>ondisc</code>).</p>
-<p>Users can install <code>ondisc</code> as follows. <code>ondisc</code> depends on the Bioconductor package <code>Rhdf5lib</code>, which should be installed from source.</p>
+</header><p><a href="https://timothy-barry.github.io/ondisc/"><code>ondisc</code></a> is a companion R package to <code>sceptre</code> that facilitates the analysis of large-scale single-cell data out-of-core on a laptop or distributed across multiple processors on a cluster or cloud. In both of these settings, <code>ondisc</code> requires only a few gigabytes of memory, even if the input data are tens of gigabytes in size. <code>ondisc</code> mainly is oriented toward single-cell CRISPR screen analysis, but <code>ondisc</code> also can be used for single-cell differential expression and single-cell co-expression analyses. <code>ondisc</code> is powered by several new, efficient algorithms for manipulating and querying large, sparse expression matrices. Although <code>ondisc</code> and <code>sceptre</code> work best in conjunction, <code>ondisc</code> can be used independently of <code>sceptre</code> (and conversely, <code>sceptre</code> can be used independently of <code>ondisc</code>).</p>
+<p>Users can install <code>ondisc</code> using the code below. <code>ondisc</code> depends on the Bioconductor package <code>Rhdf5lib</code>, which should be installed from source before installing <code>ondisc</code>. Users also should install <code>sceptredata</code>, which contains example data used in this vignette.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># install.packages("BiocManager")</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># install.packages("BiocManager"); install.packages("devtools")</span></span>
 <span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html">install</a></span><span class="op">(</span><span class="st">"Rhdf5lib"</span>, type <span class="op">=</span> <span class="st">"source"</span><span class="op">)</span> <span class="co"># Rhdf5lib</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span> <span class="co"># ondisc</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span> <span class="co"># ondisc</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"katsevich-lab/sceptredata"</span><span class="op">)</span> <span class="co"># sceptredata</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The user interface to <code>ondisc</code> is simple and minimal. The main class within <code>ondisc</code> is <code>odm</code> (short for “<code>ondisc</code> matrix”). An <code>odm</code> object represents a single-cell expression matrix stored <em>on disk</em> (as opposed to <em>in memory</em>). <code>odm</code> objects can be used to store and operate on large expression matrices that might not fit into memory. Users can create an <code>odm</code> object via one of two functions: <code>create_odm_from_cellranger()</code> or <code>create_odm_from_r_matrix()</code>. The former takes the output of one or more calls to Cell Ranger count as input, while the latter takes an R matrix (stored in standard format or sparse format) as input. Next, users can interact with an <code>odm</code> object via several functions, including the bracket (<code>[,]</code>) operator, which enables the user to load a specified subset of the expression matrix into memory.</p>
-<section id="initializing-an-odm-object" class="level2" data-number="A.1"><h2 data-number="A.1" class="anchored" data-anchor-id="initializing-an-odm-object">
-<span class="header-section-number">A.1</span> Initializing an <code>odm</code> object</h2>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/ondisc/">ondisc</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptredata</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The interface to <code>ondisc</code> is simple and minimal. The package contains only one class: <code>odm</code> (short for “<code>ondisc</code> matrix”). An <code>odm</code> object represents a single-cell expression matrix stored <em>on disk</em> (as opposed to <em>in memory</em>). <code>odm</code> objects can be used to store expression matrices that are too large to fit in memory. Users can create an <code>odm</code> object via one of two functions: <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger()</a></code> or <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_r_matrix.html">create_odm_from_r_matrix()</a></code>. The former takes the output of one or more calls to Cell Ranger count as input, while the latter takes an R matrix (stored in standard format or sparse format) as input. Users can interface with an <code>odm</code> object using several functions, including the bracket (<code>[,]</code>) operator, which loads a specified subset of the expression matrix into memory.</p>
+<section id="initializing-an-odm-object-via-create_odm_from_cellranger" class="level2" data-number="A.1"><h2 data-number="A.1" class="anchored" data-anchor-id="initializing-an-odm-object-via-create_odm_from_cellranger">
+<span class="header-section-number">A.1</span> Initializing an <code>odm</code> object via <code>create_odm_from_cellranger()</code>
+</h2>
+<p><code>ondisc</code> provides two functions for initializing an <code>odm</code> object: <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger()</a></code> and <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_r_matrix.html">create_odm_from_r_matrix()</a></code>. The former is considerably more scalable and memory-efficient than the latter; thus, we recommend that users employ <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger()</a></code> when possible. We illustrate use of <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger()</a></code> on an example single-cell CRISPR screen dataset stored in the <code>sceptredata</code> package. The example data contain two modalities, namely a gene modality and a CRISPR gRNA modality. There are 526 genes, 95 gRNAs, and 45,919 cells in the data. Users can read more about the example data by evaluating <code><a href="https://bioconductor.org/packages/release/bioc/vignettes/sceptredata/inst/doc/sceptredata.html">vignette("sceptredata")</a></code> or <code><a href="https://rdrr.io/pkg/sceptredata/man/highmoi_example_data.html">?highmoi_example_data</a></code> in the console. <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger()</a></code> takes several arguments: <code>directories_to_load</code>, <code>directory_to_write</code>, <code>write_cellwise_covariates</code>, <code>chunk_size</code>, <code>compression_level</code>, and <code>grna_target_data_frame</code>. Only the first two of these arguments are required; the rest are set to reasonable defaults. We describe the <code>directories_to_load</code> and <code>directory_to_write</code> arguments below.</p>
+<p><code>directories_to_load</code> is a character vector specifying the locations of one or more directories outputted by Cell Ranger count. Below, we set <code>directories_to_load</code> to the (machine-specific) location of the example data on disk.</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">directories_to_load</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"sceptredata"</span><span class="op">)</span>, </span>
+<span>  <span class="st">"/highmoi_example/gem_group_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">directories_to_load</span> <span class="co"># file paths to the example data on your computer</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sceptredata/extdata/highmoi_example/gem_group_1"
+[2] "/Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library/sceptredata/extdata/highmoi_example/gem_group_2"</code></pre>
+</div>
+</div>
+<p><code>directories_to_load</code> contains the file paths to two directories, which contain data on cells sequenced across two batches. The data are stored in <a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-mex-matrices">feature barcode format</a>; each directory contains the files <code>barcodes.tsv.gz</code>, <code>features.tsv.gz</code>, and <code>matrix.mtx.gz</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">directories_to_load</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "barcodes.tsv.gz" "features.tsv"    "matrix.mtx"     </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">directories_to_load</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "barcodes.tsv.gz" "features.tsv.gz" "matrix.mtx.gz"  </code></pre>
+</div>
+</div>
+<p>Next, <code>directory_to_write</code> is a file path to the directory in which to write the backing <code>.odm</code> file, which is the file that will store the expression data on disk. <code>.odm</code> files contain the same information as <code>.mtx</code> files but stored in a more efficient format for CRISPR screen analysis, differential expression analysis, and gene co-expression analysis. <code>.odm</code> files simply are HDF5 files with special structure. We set <code>directory_to_write</code> to <code>temp_dir</code> (i.e., the temporary directory) in this example. The remaining arguments are optional, and most users will not need to specify them; see <code>?create_odm_from_cellranger()</code> for more information. Below, we call <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger()</a></code> on the example data, saving the output of the function to the variable <code>out_list</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">out_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger</a></span><span class="op">(</span></span>
+<span>  directories_to_load <span class="op">=</span> <span class="va">directories_to_load</span>,</span>
+<span>  directory_to_write <span class="op">=</span> <span class="va">temp_dir</span> </span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>out_list</code> contains three entries: <code>gene</code>, <code>grna</code>, and <code>cellwise_covariates</code>. <code>gene</code> and <code>grna</code> contain the <code>odm</code> objects corresponding to the gene and gRNA modalities, respectively. Meanwhile, <code>cellwise_covariates</code> is a data frame that contains the cell-wise covariates. (More on the cell-wise covariates later.) An inspection of <code>temp_dir</code> reveals that the files <code>gene.odm</code> and <code>grna.odm</code> have been written to this directory.</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">temp_dir</span>, pattern <span class="op">=</span> <span class="st">"*.odm"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "gene.odm" "grna.odm"</code></pre>
+</div>
+</div>
+</section><section id="interacting-with-the-odm-object" class="level2" data-number="A.2"><h2 data-number="A.2" class="anchored" data-anchor-id="interacting-with-the-odm-object">
+<span class="header-section-number">A.2</span> Interacting with the <code>odm</code> object</h2>
+<p>We extract the <code>odm</code> object corresponding to the gene modality as follows.</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gene_odm</span> <span class="op">&lt;-</span> <span class="va">out_list</span><span class="op">[[</span><span class="st">"gene"</span><span class="op">]</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Evaluating an <code>odm</code> object in the console prints information about the matrix, including the number of features and cells contained within the matrix, as well as the file path to the (machine-specific) backing <code>.odm</code> file.</p>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gene_odm</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An object of class odm with the following attributes:
+    • 526 features
+    • 45919 cells
+    • Backing file: /var/folders/7v/5sqjgh8j28lgf8qx3gbtq1h00000gp/T//RtmpmiQpuB/gene.odm</code></pre>
+</div>
+</div>
+<p><code>odm</code> objects support several key matrix operations, including <code><a href="https://rdrr.io/r/base/nrow.html">ncol()</a></code>, <code><a href="https://rdrr.io/r/base/nrow.html">nrow()</a></code>, <code><a href="https://rdrr.io/r/base/colnames.html">rownames()</a></code>, and <code>[,]</code>. <code><a href="https://rdrr.io/r/base/nrow.html">ncol()</a></code> and <code><a href="https://rdrr.io/r/base/nrow.html">nrow()</a></code> return the number of rows (i.e., features) and columns (i.e., cells) contained within the matrix, respectively.</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">n_features</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">gene_odm</span><span class="op">)</span></span>
+<span><span class="va">n_features</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 526</code></pre>
+</div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">n_cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">gene_odm</span><span class="op">)</span></span>
+<span><span class="va">n_cells</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 45919</code></pre>
+</div>
+</div>
+<p>Next, <code><a href="https://rdrr.io/r/base/colnames.html">rownames()</a></code> returns the feature IDs.</p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">feature_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">gene_odm</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">feature_ids</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ENSG00000069275" "ENSG00000117222" "ENSG00000117266" "ENSG00000117280"
+[5] "ENSG00000133059" "ENSG00000133065"</code></pre>
+</div>
+</div>
+<p>Finally, the bracket operator (<code>[,]</code>) loads a specified row of the expression matrix into memory. One can index into the rows by integer index or feature ID, as follows.</p>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">expression_vector</span> <span class="op">&lt;-</span> <span class="va">gene_odm</span><span class="op">[</span><span class="fl">2</span>,<span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">expression_vector</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2 1 0 1 1 0</code></pre>
+</div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">expression_vector</span> <span class="op">&lt;-</span> <span class="va">gene_odm</span><span class="op">[</span><span class="st">"ENSG00000117222"</span>,<span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">expression_vector</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2 1 0 1 1 0</code></pre>
+</div>
+</div>
+<p>Indexing into an <code>odm</code> object by column is not supported. Finally, <code>odm</code> objects take up very little space, as the data are stored on-disk rather than in-memory. For example, <code>gene_odm</code> takes up only 40 kilobytes of memory.</p>
+<div class="cell">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span><span class="op">(</span><span class="va">gene_odm</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span><span class="op">(</span>units <span class="op">=</span> <span class="st">"Kb"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "38.7 Kb"</code></pre>
+</div>
+</div>
+</section><section id="supported-modalities" class="level2" data-number="A.3"><h2 data-number="A.3" class="anchored" data-anchor-id="supported-modalities">
+<span class="header-section-number">A.3</span> Supported modalities</h2>
+<p><code>ondisc</code> supports the following Cell Ranger modalities: <code>Gene Expression</code>, <code>CRISPR Guide Capture</code> (i.e., gRNA expression), and <code>Antibody Capture</code> (i.e., protein expression). (The modality of a given feature is listed within the third column of the unzipped <code>features.tsv</code> file; see the <a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-mex-matrices">Cell Ranger documentation</a> for more information.) The table below maps the modality name used by Cell Ranger to the corresponding name used by <code>ondisc</code>.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Cell Ranger modality name</th>
+<th>
+<code>ondisc</code> modality name</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>Gene Expression</code></td>
+<td><code>gene</code></td>
+</tr>
+<tr class="even">
+<td><code>CRISPR Guide Capture</code></td>
+<td><code>grna</code></td>
+</tr>
+<tr class="odd">
+<td><code>Antibody Capture</code></td>
+<td><code>protein</code></td>
+</tr>
+</tbody>
+</table>
+<p>We provide an example of using <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger()</a></code> to import a dataset containing three modalities: gene expression, gRNA expression, and protein expression. We use a synthetic dataset for this purpose (so as to reduce the amount of data stored within the <code>sceptredata</code> package). To this end we call the function <code><a href="https://timothy-barry.github.io/ondisc/reference/write_example_cellranger_dataset.html">write_example_cellranger_dataset()</a></code>, which creates a synthetic single-cell dataset, writing the dataset to disk in Cell Ranger feature barcode format. (See <code>?write_example_cellranger_dataset()</code> for more information about this function.) We create a synthetic single-cell dataset consisting of 500 genes, 50 gRNAs, 20 proteins, and 10,000 cells. Furthermore, we specify that the cells be sequenced across three batches. We write the synthetic dataset to the directory <code>temp_dir</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">example_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://timothy-barry.github.io/ondisc/reference/write_example_cellranger_dataset.html">write_example_cellranger_dataset</a></span><span class="op">(</span></span>
+<span>  n_features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">50</span>, <span class="fl">20</span><span class="op">)</span>,</span>
+<span>  n_cells <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  n_batch <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  modalities <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"gene"</span>, <span class="st">"grna"</span>, <span class="st">"protein"</span><span class="op">)</span>,</span>
+<span>  directory_to_write <span class="op">=</span> <span class="va">temp_dir</span> ,</span>
+<span>  p_set_col_zero <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The synthetic data are contain in the directories <code>batch_1</code>, <code>batch_2</code>, and <code>batch_3</code> within <code>temp_dir</code>:</p>
+<div class="cell">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">directories_to_load</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span></span>
+<span>  <span class="va">temp_dir</span>,</span>
+<span>  pattern <span class="op">=</span> <span class="st">"batch_"</span>,</span>
+<span>  full.names <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">directories_to_load</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "/var/folders/7v/5sqjgh8j28lgf8qx3gbtq1h00000gp/T//RtmpmiQpuB/batch_1"
+[2] "/var/folders/7v/5sqjgh8j28lgf8qx3gbtq1h00000gp/T//RtmpmiQpuB/batch_2"
+[3] "/var/folders/7v/5sqjgh8j28lgf8qx3gbtq1h00000gp/T//RtmpmiQpuB/batch_3"</code></pre>
+</div>
+</div>
+<p>Each of these directories contains the files <code>matrix.mtx.gz</code>, <code>features.tsv.gz</code>, and <code>barcodes.tsv.gz</code>. For example, the contents of the <code>batch_1</code> are as follows.</p>
+<div class="cell">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">directories_to_load</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "barcodes.tsv.gz" "features.tsv.gz" "matrix.mtx.gz"  </code></pre>
+</div>
+</div>
+<p>We call <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger()</a></code> to import these data, saving the output of the function in the variable <code>out_list</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">out_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger</a></span><span class="op">(</span></span>
+<span>  directories_to_load <span class="op">=</span> <span class="va">directories_to_load</span>,</span>
+<span>  directory_to_write <span class="op">=</span> <span class="va">temp_dir</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>out_list</code> contains the cell-wise covariate data frame alongside <code>odm</code> objects corresponding to the gene, gRNA, and protein modalities.</p>
+<div class="cell">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">out_list</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "gene"                "grna"                "protein"            
+[4] "cellwise_covariates"</code></pre>
+</div>
+</div>
+<p>Moreover, the files <code>gene.odm</code>, <code>grna.odm</code>, and <code>protein.odm</code> have been written to disk. (The previous <code>gene.odm</code> and <code>grna.odm</code> files are overwritten.)</p>
+<div class="cell">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="va">temp_dir</span>, pattern <span class="op">=</span> <span class="st">"*.odm"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "gene.odm"    "grna.odm"    "protein.odm"</code></pre>
+</div>
+</div>
+</section><section id="the-cell-wise-covariate-data-frame" class="level2" data-number="A.4"><h2 data-number="A.4" class="anchored" data-anchor-id="the-cell-wise-covariate-data-frame">
+<span class="header-section-number">A.4</span> The cell-wise covariate data frame</h2>
+<p>As part of importing the data, <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_r_matrix.html">create_odm_from_r_matrix()</a></code> computes the cell-wise covariates. We print the first few rows of the cell-wise covariate data frame corresponding to the synthetic data below.</p>
+<div class="cell">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cellwise_covariates</span> <span class="op">&lt;-</span> <span class="va">out_list</span><span class="op">[[</span><span class="st">"cellwise_covariates"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">cellwise_covariates</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   gene_n_umis gene_n_nonzero gene_p_mito grna_n_umis grna_n_nonzero
+         &lt;int&gt;          &lt;int&gt;       &lt;num&gt;       &lt;int&gt;          &lt;int&gt;
+1:        1030            196   0.4330097         131             22
+2:        1034            187   0.4197292         126             24
+3:        1142            203   0.4168126         126             20
+4:        1177            217   0.4188615         119             21
+5:        1083            207   0.4524469         118             24
+6:        1095            193   0.4000000          89             17
+   grna_feature_w_max_expression grna_frac_umis_max_feature protein_n_umis
+                          &lt;char&gt;                      &lt;num&gt;          &lt;int&gt;
+1:                       grna_33                 0.07633588             64
+2:                        grna_6                 0.07936508             46
+3:                       grna_31                 0.07936508             51
+4:                       grna_22                 0.08403361             44
+5:                       grna_20                 0.08474576             31
+6:                       grna_11                 0.11235955             56
+   protein_n_nonzero   batch
+               &lt;int&gt;  &lt;fctr&gt;
+1:                 9 batch_1
+2:                 9 batch_1
+3:                 8 batch_1
+4:                 8 batch_1
+5:                 7 batch_1
+6:                 9 batch_1</code></pre>
+</div>
+</div>
+<p>The modality to which a given covariate corresponds (“gene”, “grna”, or “protein”) is prepended to the name of the covariate. We describe each covariate below.</p>
+<ul>
+<li><p><code>gene_n_umis</code>: the number of gene UMIs sequenced in a given cell.</p></li>
+<li><p><code>gene_n_nonzero</code>: the number of genes that exhibit nonzero expression in a given cell.</p></li>
+<li><p><code>gene_p_mito</code>: the fraction of gene transcripts that map to mitochondrial genes in a given cell. (Mitochondrial genes are identified as genes whose name starts with <code>"MT-"</code> or <code>"mt-"</code>.)</p></li>
+<li><p><code>grna_n_umis</code>: similar to <code>gene_n_umis</code> but for the gRNA modality.</p></li>
+<li><p><code>grna_n_nonzero</code>: similar to <code>gene_n_nonzero</code> but for the gRNA modality.</p></li>
+<li><p><code>grna_feature_w_max_expression</code>: the ID of the gRNA that exhibits the maximum UMI count in a given cell.</p></li>
+<li><p><code>grna_frac_umis_max_feature</code>: the fraction of UMIs that the maximally expressed gRNA in a given cell constitutes.</p></li>
+<li><p><code>protein_n_umis</code>: similar to <code>gene_n_umis</code> but for the protein modality.</p></li>
+<li><p><code>protein_n_nonzero</code>: similar to <code>gene_n_nonzero</code> but for the protein modality.</p></li>
+<li><p><code>batch</code>: the batch in which a given cell was sequenced. Cells loaded from different directories are assumed to belong to different batches.</p></li>
+</ul>
+<p>The covariates <code>grna_feature_w_max_expression</code> and <code>grna_frac_umis_max_feature</code> are used by <code>sceptre</code> to assign gRNAs to cells.</p>
+</section><section id="reading-an-.odm-file-into-r" class="level2" data-number="A.5"><h2 data-number="A.5" class="anchored" data-anchor-id="reading-an-.odm-file-into-r">
+<span class="header-section-number">A.5</span> Reading an <code>.odm</code> file into R</h2>
+<p>Users can read an <code>.odm</code> file into R by calling the function <code><a href="https://timothy-barry.github.io/ondisc/reference/initialize_odm_from_backing_file.html">initialize_odm_from_backing_file()</a></code>, which creates an <code>odm</code> object. Below, we delete all variables from the global namespace. Then, we call <code><a href="https://timothy-barry.github.io/ondisc/reference/initialize_odm_from_backing_file.html">initialize_odm_from_backing_file()</a></code> on the file <code>gene.odm</code> stored within <code>temp_dir</code>, which loads the gene expression matrix that we created in the previous step.</p>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span>list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ls.html">ls</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co"># delete all variables</span></span>
+<span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">gene_odm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://timothy-barry.github.io/ondisc/reference/initialize_odm_from_backing_file.html">initialize_odm_from_backing_file</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"/gene.odm"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">gene_odm</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An object of class odm with the following attributes:
+    • 500 features
+    • 10000 cells
+    • Backing file: /var/folders/7v/5sqjgh8j28lgf8qx3gbtq1h00000gp/T//RtmpmiQpuB/gene.odm</code></pre>
+</div>
+</div>
+<p><code>.odm</code> files are portable. Thus, users can create an <code>.odm</code> file on one computer, move the <code>.odm</code> file to another computer, and then open the <code>.odm</code> file on the second computer.</p>
+</section><section id="initializing-an-odm-object-via-create_odm_from_r_matrix" class="level2" data-number="A.6"><h2 data-number="A.6" class="anchored" data-anchor-id="initializing-an-odm-object-via-create_odm_from_r_matrix">
+<span class="header-section-number">A.6</span> Initializing an <code>odm</code> object via <code>create_odm_from_r_matrix()</code>
+</h2>
+<p>We recommend that users create an <code>odm</code> object via <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger()</a></code>, as this function is highly scalable and typically requires only a few gigabytes of memory. However, users also can create an <code>odm</code> object from an R matrix input via the function <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_r_matrix.html">create_odm_from_r_matrix()</a></code>. <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_r_matrix.html">create_odm_from_r_matrix()</a></code> takes two main arguments: <code>mat</code> and <code>file_to_write</code>. <code>mat</code> is a standard R matrix (of type <code>"matrix"</code>) or a sparse R matrix (of type <code>"dgCMatrix"</code>, <code>"dgRMatrix"</code>, or <code>"dgTMatrix"</code>). <code>mat</code> should contain row names giving the ID of each feature. Next, <code>file_to_write</code> is a fully-qualified file path specifying the location in which to write the backing <code>.odm</code> file. We provide an example of calling <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_r_matrix.html">create_odm_from_r_matrix()</a></code> on a gene-by-cell expression matrix contained in the <code>sceptredata</code> package.</p>
+<div class="cell">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">lowmoi_example_data</span><span class="op">)</span></span>
+<span><span class="va">gene_mat</span> <span class="op">&lt;-</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>gene_mat</code> is a gene expression matrix containing 299 genes and 20,729 cells. (Users can evaluate <code><a href="https://rdrr.io/pkg/sceptredata/man/lowmoi_example_data.html">?lowmoi_example_data</a></code> to see more information about this matrix.) We pass this matrix to <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_r_matrix.html">create_odm_from_r_matrix()</a></code>, setting <code>file_to_write</code> to <code>paste0(temp_dir, "/gene.odm")</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">file_to_write</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">temp_dir</span>, <span class="st">"/gene.odm"</span><span class="op">)</span></span>
+<span><span class="va">gene_odm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_r_matrix.html">create_odm_from_r_matrix</a></span><span class="op">(</span></span>
+<span>  mat <span class="op">=</span> <span class="va">gene_mat</span>,</span>
+<span>  file_to_write <span class="op">=</span> <span class="va">file_to_write</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>gene_odm</code> is a standard <code>odm</code> object.</p>
+<div class="cell">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gene_odm</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An object of class odm with the following attributes:
+    • 299 features
+    • 20729 cells
+    • Backing file: /var/folders/7v/5sqjgh8j28lgf8qx3gbtq1h00000gp/T//RtmpmiQpuB/gene.odm</code></pre>
+</div>
+</div>
+<p>Moreover, the file <code>gene.odm</code> has been written to <code>temp_dir</code>. (The previous <code>gene.odm</code> file is overwritten.)</p>
+</section><section id="notes-on-compression" class="level2" data-number="A.7"><h2 data-number="A.7" class="anchored" data-anchor-id="notes-on-compression">
+<span class="header-section-number">A.7</span> Notes on compression</h2>
+<p><code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_cellranger.html">create_odm_from_cellranger()</a></code> and <code><a href="https://timothy-barry.github.io/ondisc/reference/create_odm_from_r_matrix.html">create_odm_from_r_matrix()</a></code> both take optional arguments <code>chunk_size</code> and <code>compression_level</code> (which are set to reasonable defaults). <code>chunk_size</code> and <code>compression_level</code> control the extent to which the backing <code>.odm</code> file is compressed. <code>chunk_size</code> should be a positive integer, and <code>compression_level</code> should be an integer in the range of 0 to 9. Increasing the value of these arguments <em>increases</em> the level of compression, thereby leading to a smaller file size for the backing <code>.odm</code> file.</p>
 
 
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
@@ -710,8 +996,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./sceptredata.html" class="pagination-link" aria-label="<span class='chapter-number'>B</span>&nbsp; <span class='chapter-title'>Example data in the `sceptredata` package</span>">
-        <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./sceptredata.html" class="pagination-link" aria-label="<span class='chapter-number'>B</span>&nbsp; <span class='chapter-title'>The `sceptredata` package</span>">
+        <span class="nav-page-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">The <code>sceptredata</code> package</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -256,7 +256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sceptredata.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">The <code>sceptredata</code> package</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -370,7 +370,7 @@ Tip
 <p>The first step is to import the data into an <code>ondisc</code>-backed <code>sceptre</code> object. To import data outputted by one or more calls to <code>cellranger count</code>, we call the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code>, setting the argument <code>use_ondisc</code> to <code>TRUE</code>. Additionally, we set <code>directory_to_write</code> to a string indicating the directory in which to write the backing <code>.odm</code> files, which are the files that will contain the gene and gRNA expression matrices. In the example below we set <code>directory_to_write</code> to <code>"~/sceptre_data"</code>, although any valid file path will do. Finally, we set <code>moi</code> to the MOI of the dataset, <code>grna_target_data_frame</code> to the gRNA target data frame, and <code>directories</code> to the set of directories outputted by one or more calls to <code>cellranger count</code>. (The latter three arguments were described in depth in <a href="sceptre.html#sec-whole_game_import_data" class="quarto-xref"><span>Section 1</span></a> of <em>The whole game</em>.)</p>
 <div class="cell">
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptre</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">sceptredata</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptredata</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># set the arguments</span></span>
 <span><span class="va">directories</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span></span>

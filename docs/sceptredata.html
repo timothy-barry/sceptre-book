@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
-<title>Hands-On Single-Cell CRISPR Screen Analysis - Appendix B — Example data in the sceptredata package</title>
+<title>Hands-On Single-Cell CRISPR Screen Analysis - Appendix B — The sceptredata package</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -127,7 +127,7 @@ div.csl-indent {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ondisc.html">Appendices</a></li><li class="breadcrumb-item"><a href="./sceptredata.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ondisc.html">Appendices</a></li><li class="breadcrumb-item"><a href="./sceptredata.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">The <code>sceptredata</code> package</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -276,7 +276,7 @@ div.csl-indent {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sceptredata.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">The <code>sceptredata</code> package</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -313,8 +313,8 @@ div.csl-indent {
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ondisc.html">Appendices</a></li><li class="breadcrumb-item"><a href="./sceptredata.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Example data in the <code>sceptredata</code> package</span></a></li></ol></nav><div class="quarto-title">
-<h1 class="title"><span id="sec-sceptre_data" class="quarto-section-identifier">Appendix B — Example data in the <code>sceptredata</code> package</span></h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ondisc.html">Appendices</a></li><li class="breadcrumb-item"><a href="./sceptredata.html"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">The <code>sceptredata</code> package</span></a></li></ol></nav><div class="quarto-title">
+<h1 class="title"><span id="sec-sceptre_data" class="quarto-section-identifier">Appendix B — The <code>sceptredata</code> package</span></h1>
 </div>
 
 
@@ -334,7 +334,7 @@ div.csl-indent {
 <p>The first example dataset contained within <code>sceptredata</code> is a high-multiplicity-of-infection (MOI) CRISPRi screen of candidate enhancers in K562 cells <span class="citation" data-cites="gasperini2019">(<a href="references.html#ref-gasperini2019" role="doc-biblioref">Gasperini et al. 2019</a>)</span>. The original authors aimed to link candidate enhancers to genes by testing for changes in gene expression in response to CRISPR perturbations of the candidate enhancers. The authors designed a library of gRNAs to target 5,779 candidate enhancers and 381 transcription start sites (TSSs). Each genomic element was targeted by two gRNAs (with a subset of the candidate enhancers targeted by four gRNAs). Additionally, the authors designed 100 negative control gRNAs, each of which targeted a gene desert or no location in the genome at all. The authors sequenced 207,324 single cells, measuring the gene and gRNA expression profile of each.</p>
 <p>The <code>sceptredata</code> package contains a downsampled version of the Gasperini data, which is stored within the <code>highmoi_example_data</code> list. Evaluating <code>data(highmoi_example_data)</code> in the console loads the example high-MOI CRISPRi data into the global namespace.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">sceptredata</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptredata</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">highmoi_example_data</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The data consist of several pieces. First, <code>grna_matrix</code> is the gRNA-by-cell expression matrix. gRNAs and cells alike are downsampled: the matrix contains 95 gRNAs and 45,919 cells. The gRNAs are downsampled such that there are 50 candidate-enhancer-targeting gRNAs (targeting 25 distinct candidate enhancers), 20 positive control gRNAs (targeting 10 TSSs), and 25 negative control gRNAs. The cells are downsampled such that each contains at least one gRNA.</p>
