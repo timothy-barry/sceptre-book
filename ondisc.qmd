@@ -1,8 +1,8 @@
 # The `ondisc` package {#sec-ondisc}
 
-[`ondisc`](https://timothy-barry.github.io/ondisc/) is a companion R package to `sceptre` that facilitates the analysis of large-scale single-cell data out-of-core on a laptop or distributed across tens to hundreds processors on a cluster or cloud. In both of these settings, `ondisc` requires only a few gigabytes of memory, even if the input data are tens of gigabytes in size. `ondisc` mainly is oriented toward single-cell CRISPR screen analysis, but `ondisc` also can be used for single-cell differential expression and single-cell co-expression analyses. `ondisc` is powered by several new, efficient algorithms for manipulating and querying large, sparse expression matrices. Although `ondisc` and `sceptre` work best in conjunction, `ondisc` can be used independently of `sceptre` (and conversely, `sceptre` can be used independently of `ondisc`).
+[`ondisc`](https://timothy-barry.github.io/ondisc/) is a companion R package to `sceptre` that facilitates analysis of large-scale single-cell data out-of-core on a laptop or distributed across tens to hundreds processors on a cluster or cloud. In both of these settings, `ondisc` requires only a few gigabytes of memory, even if the input data are tens of gigabytes in size. `ondisc` mainly is oriented toward single-cell CRISPR screen analysis, but `ondisc` also can be used for single-cell differential expression and single-cell co-expression analyses. `ondisc` is powered by several new, efficient algorithms for manipulating and querying large, sparse expression matrices. Although `ondisc` and `sceptre` work best in conjunction, `ondisc` can be used independently of `sceptre` (and conversely, `sceptre` can be used independently of `ondisc`).
 
-Users can install `ondisc` using the code below. `ondisc` depends on the Bioconductor package `Rhdf5lib`, which should be installed from source before installing `ondisc`. Users also should install `sceptredata`, which contains example data used in this vignette.
+Users can install `ondisc` using the code below. `ondisc` depends on the Bioconductor package `Rhdf5lib`, which should be installed from source before installing `ondisc`. Users also should install `sceptredata`, which contains the example data used in this vignette.
 
 ```{r,eval=FALSE}
 # install.packages("BiocManager"); install.packages("devtools")
@@ -32,7 +32,7 @@ directories_to_load <- paste0(
 directories_to_load # file paths to the example data on your computer
 ```
 
-`directories_to_load` contains the file paths to two directories, which contain data on cells sequenced across two batches. The data are stored in [feature barcode format](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-mex-matrices); each directory contains the files `barcodes.tsv.gz`, `features.tsv.gz`, and `matrix.mtx.gz`.
+`directories_to_load` contains the file paths to two directories, which correspond to cells sequenced across two batches. The data are stored in [feature barcode format](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-mex-matrices); each directory contains the files `barcodes.tsv.gz`, `features.tsv.gz`, and `matrix.mtx.gz`.
 
 ```{r}
 list.files(directories_to_load[1])
@@ -53,7 +53,7 @@ out_list <- create_odm_from_cellranger(
 )
 ```
 
-`out_list` contains three entries: `gene`, `grna`, and `cellwise_covariates`. `gene` and `grna` contain the `odm` objects corresponding to the gene and gRNA modalities, respectively. Meanwhile, `cellwise_covariates` is a data frame that contains the cell-wise covariates. (More on the cell-wise covariates later.) An inspection of `temp_dir ` reveals that the files `gene.odm` and `grna.odm` have been written to this directory.
+`out_list` contains three entries: `gene`, `grna`, and `cellwise_covariates`. `gene` and `grna` are the `odm` objects corresponding to the gene and gRNA modalities, respectively. Meanwhile, `cellwise_covariates` is a data frame that contains the cell-wise covariates. (More on the cell-wise covariates later.) An inspection of `temp_dir ` reveals that the files `gene.odm` and `grna.odm` have been written to this directory.
 
 ```{r}
 list.files(temp_dir, pattern = "*.odm")
@@ -108,7 +108,7 @@ object.size(gene_odm) |> format(units = "Kb")
 
 ## Supported modalities
 
-`ondisc` supports the following Cell Ranger modalities: `Gene Expression`, `CRISPR Guide Capture` (i.e., gRNA expression), and `Antibody Capture` (i.e., protein expression). (The modality of a given feature is listed within the third column of the unzipped `features.tsv` file; see the [Cell Ranger documentation](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-mex-matrices) for more information.) The table below maps the modality name used by Cell Ranger to the corresponding name used by `ondisc`.
+`ondisc` supports the following Cell Ranger modalities: `Gene Expression`, `CRISPR Guide Capture` (i.e., gRNA expression), and `Antibody Capture` (i.e., protein expression). (The modality of a given feature is listed within the third column of the unzipped `features.tsv` file; see the [Cell Ranger documentation](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-mex-matrices) for more information.) The table below maps the modality name used by Cell Ranger to that used by `ondisc`.
 
 | Cell Ranger modality name | `ondisc` modality name |
 |---------------------------|------------------------|
@@ -116,7 +116,7 @@ object.size(gene_odm) |> format(units = "Kb")
 | `CRISPR Guide Capture`    | `grna`                 |
 | `Antibody Capture`        | `protein`              |
 
-We provide an example of using `create_odm_from_cellranger()` to import a dataset containing three modalities: gene expression, gRNA expression, and protein expression. We use a synthetic dataset for this purpose (so as to reduce the amount of data stored within the `sceptredata` package). To this end we call the function `write_example_cellranger_dataset()`, which creates a synthetic single-cell dataset, writing the dataset to disk in Cell Ranger feature barcode format. (See `?write_example_cellranger_dataset()` for more information about this function.) We create a synthetic single-cell dataset consisting of 500 genes, 50 gRNAs, 20 proteins, and 10,000 cells. Furthermore, we specify that the cells be sequenced across three batches. We write the synthetic dataset to the directory `temp_dir`.
+We provide an example of using `create_odm_from_cellranger()` to import a dataset containing three modalities: gene expression, gRNA expression, and protein expression. We use a synthetic dataset for this purpose (so as to reduce the amount of data stored within the `sceptredata` package). To this end we call the function `write_example_cellranger_dataset()`, which creates a synthetic single-cell dataset, writing the dataset to disk in Cell Ranger feature barcode format. (See `?write_example_cellranger_dataset()` for more information about this function.) We create a synthetic single-cell dataset consisting of 500 genes, 50 gRNAs, 20 proteins, and 10,000 cells. Furthermore, we specify that the cells are sequenced across three batches. We write the synthetic dataset to the directory `temp_dir`.
 
 ```{r}
 set.seed(4)
@@ -130,7 +130,7 @@ example_data <- write_example_cellranger_dataset(
 )
 ```
 
-The synthetic data are contain in the directories `batch_1`, `batch_2`, and `batch_3` within `temp_dir `:
+The synthetic data are contained in the directories `batch_1`, `batch_2`, and `batch_3` within `temp_dir `:
 
 ```{r}
 directories_to_load <- list.files(
@@ -199,11 +199,11 @@ The modality to which a given covariate corresponds ("gene", "grna", or "protein
 
 -   `batch`: the batch in which a given cell was sequenced. Cells loaded from different directories are assumed to belong to different batches.
 
-The covariates `grna_feature_w_max_expression` and `grna_frac_umis_max_feature` are used by `sceptre` to assign gRNAs to cells.
+`sceptre` uses the covariates `grna_feature_w_max_expression` and `grna_frac_umis_max_feature` to assign gRNAs to cells.
 
 ## Reading an `.odm` file into R
 
-Users can read an `.odm` file into R by calling the function `initialize_odm_from_backing_file()`, which creates an `odm` object. Below, we delete all variables from the global namespace. Then, we call `initialize_odm_from_backing_file()` on the file `gene.odm` stored within `temp_dir`, which loads the gene expression matrix that we created in the previous step.
+Users can read an `.odm` file into R by calling the function `initialize_odm_from_backing_file()`. Below, we delete all variables from the global namespace. Then, we call `initialize_odm_from_backing_file()` on the file `gene.odm` stored within `temp_dir`, which loads the gene expression matrix that we created in the previous step.
 
 ```{r}
 rm(list = ls()) # delete all variables
@@ -214,11 +214,11 @@ gene_odm <- initialize_odm_from_backing_file(
 gene_odm
 ```
 
-`.odm` files are portable. Thus, users can create an `.odm` file on one computer, move the `.odm` file to another computer, and then open the `.odm` file on the second computer.
+`.odm` files are portable. Thus, a user can create an `.odm` file on one computer, move the `.odm` file to another computer, and then open the `.odm` file on the second computer.
 
 ## Initializing an `odm` object via `create_odm_from_r_matrix()`
 
-We recommend that users create an `odm` object via `create_odm_from_cellranger()`, as this function is highly scalable and typically requires only a few gigabytes of memory. However, users also can create an `odm` object from an R matrix input via the function `create_odm_from_r_matrix()`. `create_odm_from_r_matrix()` takes two main arguments: `mat` and `file_to_write`. `mat` is a standard R matrix (of type `"matrix"`) or a sparse R matrix (of type `"dgCMatrix"`, `"dgRMatrix"`, or `"dgTMatrix"`). `mat` should contain row names giving the ID of each feature. Next, `file_to_write` is a fully-qualified file path specifying the location in which to write the backing `.odm` file. We provide an example of calling `create_odm_from_r_matrix()` on a gene-by-cell expression matrix contained in the `sceptredata` package.
+We recommend that users create an `odm` object via `create_odm_from_cellranger()`, as this function is highly scalable and typically requires only a couple gigabytes of memory. However, users also can convert an R matrix into an `odm` object via the function `create_odm_from_r_matrix()`. `create_odm_from_r_matrix()` takes two main arguments: `mat` and `file_to_write`. `mat` is a standard R matrix (of type `"matrix"`) or a sparse R matrix (of type `"dgCMatrix"`, `"dgRMatrix"`, or `"dgTMatrix"`). `mat` should contain row names giving the ID of each feature. Next, `file_to_write` is a fully-qualified file path specifying the location in which to write the backing `.odm` file. We provide an example of calling `create_odm_from_r_matrix()` on a gene-by-cell expression matrix contained in the `sceptredata` package.
 
 ```{r}
 data(lowmoi_example_data)
@@ -245,4 +245,4 @@ Moreover, the file `gene.odm` has been written to `temp_dir`. (The previous `gen
 
 ## Notes on compression
 
-`create_odm_from_cellranger()` and `create_odm_from_r_matrix()` both take optional arguments `chunk_size` and `compression_level` (which are set to reasonable defaults). `chunk_size` and `compression_level`  control the extent to which the backing `.odm` file is compressed. `chunk_size` should be a positive integer, and `compression_level` should be an integer in the range of 0 to 9. Increasing the value of these arguments *increases* the level of compression, thereby leading to a smaller file size for the backing `.odm` file. 
+`create_odm_from_cellranger()` and `create_odm_from_r_matrix()` take optional arguments `chunk_size` and `compression_level` (which are set to reasonable defaults). `chunk_size` and `compression_level`  control the extent to which the backing `.odm` file is compressed. `chunk_size` should be a positive integer, and `compression_level` should be an integer in the range of 0 to 9. Increasing the value of these arguments *increases* the level of compression, thereby leading to a smaller file size for the backing `.odm` file (but possibly longer read and write times). 

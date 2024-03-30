@@ -10,5 +10,3 @@ citeproc: true
 
 ```         
 ```
-
-*Chat GPT usage*. We used Chat GPT to help us write two portions of this book: the first two paragraphs of @sec-cluster_architecture and the [Glossary](glossary.qmd).
