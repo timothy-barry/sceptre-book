@@ -24,7 +24,7 @@ The main statistical task in single-cell CRISPR screen analysis is to test hypot
 
 <!-- -   **gRNA group:** Two or more gRNAs whose effects one wishes to study together. In particular, one wishes to test whether any gRNA in the group has an effect on a response of interest. Typically, gRNAs with the same target are grouped together. -->
 
--   **Target-response pair:** A pair consisting of a target and a response. For example, a target-response pair could be a specific enhancer couppled to a specific gene. Each target-response pair corresponds to a hypothesis to be tested: Does perturbing the target impact the response?
+-   **Target-response pair:** A pair consisting of a target and a response. For example, a target-response pair could be a specific enhancer coupled to a specific gene. Each target-response pair corresponds to a hypothesis to be tested: Does perturbing the target impact the response?
 
 -   **Negative control pair:** A target-response pair in which the target consits of one or more non-targeting gRNAs. Negative control pairs are used to assess the calibration of a statistical analysis method.
 
