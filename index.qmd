@@ -20,4 +20,4 @@ Finally, the Appendix contains several sections, including a glossary and FAQs.
 
 # Acknowledgments {.unnumbered}
 
-We gratefully acknowledge Kathryn Roeder, Xihong Lin, Xuran Wang, John Morris, Kaishu Mason, Ziang Niu, Yixuan Qiu, and Songcheng Dai for contributing to the research and development underlying `sceptre` and `ondisc`. We additionally thank the many `sceptre` users who have provided and continue to provide valuable feedback on the package.
+We gratefully acknowledge Kathryn Roeder, Xihong Lin, Xuran Wang, John Morris, Kaishu Mason, Ziang Niu, Yixuan Qiu, and Songcheng Dai for contributing to the research and development underlying `sceptre` and `ondisc`. We additionally thank the many `sceptre` users who have provided and continue to provide valuable feedback on the package. Finally, we acknowledge generous funding from Analytics at Wharton, NSF grants DMS 2113072 and DMS 2310654, and NIH grant R01MH123184.

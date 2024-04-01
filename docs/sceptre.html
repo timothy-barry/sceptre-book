@@ -378,12 +378,11 @@ Note
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"katsevich-lab/sceptre"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"katsevich-lab/sceptredata"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Users can load <code>sceptre</code> and <code>sceptredata</code> via a call to <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>.</p>
+<p>See the <a href="./faq.html">frequently asked questions page</a> for tips on installing <code>sceptre</code> such that it runs as fast as possible. Users can load <code>sceptre</code> and <code>sceptredata</code> via a call to <code><a href="https://rdrr.io/r/base/library.html">library()</a></code>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptre</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptredata</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The <a href="https://timothy-barry.github.io/sceptre-book/faq.html">frequently asked questions page</a> contains tips for installing <code>sceptre</code> such that it runs as fast as possible on the user’s computer.</p>
 <p>The standard pipeline involved in applying <code>sceptre</code> to analyze a dataset consists of several steps, which we summarize in the following schematic.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
@@ -439,7 +438,7 @@ Note
 </div>
 <p>We describe each step of the pipeline in greater detail below.</p>
 <section id="sec-whole_game_import_data" class="level2"><h2 class="anchored" data-anchor-id="sec-whole_game_import_data">1. Import data</h2>
-<p>The first step is to import the data. <strong>Data can be imported into <code>sceptre</code> from 10X Cell Ranger or Parse outputs, as well as from R matrices.</strong> The simplest way to import the data is to read the output of one or more calls to <code>cellranger_count</code> into <code>sceptre</code> via the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> requires three arguments: <code>directories</code>, <code>grna_target_data_frame</code>, and <code>moi</code>.</p>
+<p>The first step is to import the data. <strong>Data can be imported into <code>sceptre</code> from 10x Cell Ranger or Parse outputs, as well as from R matrices.</strong> The simplest way to import the data is to read the output of one or more calls to <code>cellranger_count</code> into <code>sceptre</code> via the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> requires three arguments: <code>directories</code>, <code>grna_target_data_frame</code>, and <code>moi</code>.</p>
 <ol type="1">
 <li>
 <p><code>directories</code> is a character vector specifying the locations of the directories outputted by one or more calls to <code>cellranger_count</code>. Below, we set the variable <code>directories</code> to the (machine-dependent) location of the example CRISPRi data on disk.</p>

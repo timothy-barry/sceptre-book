@@ -304,7 +304,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header><nav id="TOC" role="doc-toc"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#how-can-i-improve-the-speed-of-sceptre" id="toc-how-can-i-improve-the-speed-of-sceptre"><span class="header-section-number">D.1</span> How can I improve the speed of <code>sceptre</code>?</a></li>
+<li><a href="#how-can-i-improve-the-speed-of-sceptre-and-ondisc" id="toc-how-can-i-improve-the-speed-of-sceptre-and-ondisc"><span class="header-section-number">D.1</span> How can I improve the speed of <code>sceptre</code> (and <code>ondisc</code>)?</a></li>
   <li><a href="#i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do" id="toc-i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do"><span class="header-section-number">D.2</span> I am trying to install <code>sceptre</code>, but I am getting an error. What should I do?</a></li>
   <li><a href="#how-can-i-install-a-previous-version-of-sceptre" id="toc-how-can-i-install-a-previous-version-of-sceptre"><span class="header-section-number">D.3</span> How can I install a previous version of <code>sceptre</code>?</a></li>
   <li><a href="#sceptre-crashed-or-sceptre-is-using-an-unexpectedly-large-amount-of-memory-or-taking-an-unexpectedly-long-amount-of-time-to-run.-what-should-i-do" id="toc-sceptre-crashed-or-sceptre-is-using-an-unexpectedly-large-amount-of-memory-or-taking-an-unexpectedly-long-amount-of-time-to-run.-what-should-i-do"><span class="header-section-number">D.4</span> <code>sceptre</code> crashed, or <code>sceptre</code> is using an unexpectedly large amount of memory or taking an unexpectedly long amount of time to run. What should I do?</a></li>
@@ -321,8 +321,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    if (new URLSearchParams(window.location.search).get('iframe') === 'true') {
        document.body.setAttribute('data-iframe', 'true');
    }
-</script><section id="how-can-i-improve-the-speed-of-sceptre" class="level2" data-number="D.1"><h2 data-number="D.1" class="anchored" data-anchor-id="how-can-i-improve-the-speed-of-sceptre">
-<span class="header-section-number">D.1</span> How can I improve the speed of <code>sceptre</code>?</h2>
+</script><section id="how-can-i-improve-the-speed-of-sceptre-and-ondisc" class="level2" data-number="D.1"><h2 data-number="D.1" class="anchored" data-anchor-id="how-can-i-improve-the-speed-of-sceptre-and-ondisc">
+<span class="header-section-number">D.1</span> How can I improve the speed of <code>sceptre</code> (and <code>ondisc</code>)?</h2>
 <p>Create the file <code>Makevars</code> inside of your <code>~/.R</code> directory (if it does not yet exist):</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
@@ -337,13 +337,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="sourceCode" id="cb2" data-filename="~/.R/Makevars"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">CXXFLAGS</span> = <span class="at">-O3</span> <span class="at">-Wall</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This line tells the C++ compiler to use aggressive optimization in compiling C++ code contained within an R package. Finally, reinstall <code>sceptre</code> from source.</p>
+<p>This line tells the C++ compiler to use aggressive optimization in compiling C++ code contained within an R package. Finally, reinstall <code>sceptre</code> (and <code>ondisc</code>) from source.</p>
 <div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"katsevich-lab/sceptre"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"katsevich-lab/sceptre"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"timothy-barry/ondisc"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section><section id="i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do" class="level2" data-number="D.2"><h2 data-number="D.2" class="anchored" data-anchor-id="i-am-trying-to-install-sceptre-but-i-am-getting-an-error.-what-should-i-do">

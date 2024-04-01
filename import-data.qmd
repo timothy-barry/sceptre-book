@@ -10,7 +10,7 @@ This chapter describes how to import single-cell CRISPR screen data into `sceptr
 knitr::include_graphics("pipeline_schematic_step_1.png")
 ```
 
-Users either can import data directly from the output of an existing software package (e.g., 10X Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the `sceptre` and `sceptredata` packages.
+Users either can import data directly from the output of an existing software package (e.g., 10x Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the `sceptre` and `sceptredata` packages.
 
 ```{r,message = FALSE}
 library(sceptre)
@@ -19,11 +19,11 @@ library(sceptredata)
 
 ## Import data from an existing software package
 
-`sceptre` links up with two programs for upstream processing of single-cell CRISPR screen data: 10X Cell Ranger and the analogous software tool developed by Parse Biosciences. (We refer to the latter program as the "Parse program.") We describe how to import data from each of these tools below.
+`sceptre` links up with two programs for upstream processing of single-cell CRISPR screen data: 10x Cell Ranger and the analogous software tool developed by Parse Biosciences. (We refer to the latter program as the "Parse program.") We describe how to import data from each of these tools below.
 
-### Import from 10X Cell Ranger
+### Import from 10x Cell Ranger
 
-@sec-whole_game_import_data of *The whole game* describes how to import data from 10X Cell Ranger. We include a minimal working example here.
+@sec-whole_game_import_data of *The whole game* describes how to import data from 10x Cell Ranger. We include a minimal working example here.
 
 ```{r,results='hide'}
 directories <- paste0(
@@ -205,7 +205,7 @@ cell_covariates <- get_cell_covariates(sceptre_object)
 |                 |                             | )                                |
 |                 |                             | ```                              |
 +-----------------+-----------------------------+----------------------------------+
-| 10X Cell Ranger | ```                         | ```                              |
+| 10x Cell Ranger | ```                         | ```                              |
 |                 | import_data_from_cellranger | import_data_from_cellranger(     |
 |                 | ```                         |   use_ondisc = TRUE,             |
 |                 |                             |   directory_to_write = "/path/"  |

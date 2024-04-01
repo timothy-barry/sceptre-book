@@ -310,7 +310,7 @@ div.csl-indent {
 <li>
 <a href="#import-data-from-an-existing-software-package" id="toc-import-data-from-an-existing-software-package" class="nav-link active" data-scroll-target="#import-data-from-an-existing-software-package"><span class="header-section-number">1.1</span> Import data from an existing software package</a>
   <ul class="collapse">
-<li><a href="#import-from-10x-cell-ranger" id="toc-import-from-10x-cell-ranger" class="nav-link" data-scroll-target="#import-from-10x-cell-ranger"><span class="header-section-number">1.1.1</span> Import from 10X Cell Ranger</a></li>
+<li><a href="#import-from-10x-cell-ranger" id="toc-import-from-10x-cell-ranger" class="nav-link" data-scroll-target="#import-from-10x-cell-ranger"><span class="header-section-number">1.1.1</span> Import from 10x Cell Ranger</a></li>
   <li><a href="#import-from-the-parse-program-experimental" id="toc-import-from-the-parse-program-experimental" class="nav-link" data-scroll-target="#import-from-the-parse-program-experimental"><span class="header-section-number">1.1.2</span> Import from the Parse program (experimental)</a></li>
   <li><a href="#add-extra-covariates" id="toc-add-extra-covariates" class="nav-link" data-scroll-target="#add-extra-covariates"><span class="header-section-number">1.1.3</span> Add extra covariates</a></li>
   </ul>
@@ -359,17 +359,17 @@ Tip
 </div>
 </div>
 </div>
-<p>Users either can import data directly from the output of an existing software package (e.g., 10X Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the <code>sceptre</code> and <code>sceptredata</code> packages.</p>
+<p>Users either can import data directly from the output of an existing software package (e.g., 10x Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the <code>sceptre</code> and <code>sceptredata</code> packages.</p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptre</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptredata</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="import-data-from-an-existing-software-package" class="level2" data-number="1.1"><h2 data-number="1.1" class="anchored" data-anchor-id="import-data-from-an-existing-software-package">
 <span class="header-section-number">1.1</span> Import data from an existing software package</h2>
-<p><code>sceptre</code> links up with two programs for upstream processing of single-cell CRISPR screen data: 10X Cell Ranger and the analogous software tool developed by Parse Biosciences. (We refer to the latter program as the “Parse program.”) We describe how to import data from each of these tools below.</p>
+<p><code>sceptre</code> links up with two programs for upstream processing of single-cell CRISPR screen data: 10x Cell Ranger and the analogous software tool developed by Parse Biosciences. (We refer to the latter program as the “Parse program.”) We describe how to import data from each of these tools below.</p>
 <section id="import-from-10x-cell-ranger" class="level3" data-number="1.1.1"><h3 data-number="1.1.1" class="anchored" data-anchor-id="import-from-10x-cell-ranger">
-<span class="header-section-number">1.1.1</span> Import from 10X Cell Ranger</h3>
-<p><a href="sceptre.html#sec-whole_game_import_data" class="quarto-xref"><span>Section 1</span></a> of <em>The whole game</em> describes how to import data from 10X Cell Ranger. We include a minimal working example here.</p>
+<span class="header-section-number">1.1.1</span> Import from 10x Cell Ranger</h3>
+<p><a href="sceptre.html#sec-whole_game_import_data" class="quarto-xref"><span>Section 1</span></a> of <em>The whole game</em> describes how to import data from 10x Cell Ranger. We include a minimal working example here.</p>
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">directories</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"sceptredata"</span><span class="op">)</span>,</span>
@@ -623,7 +623,7 @@ Figure&nbsp;1.1: Example gRNA target data frame for multi-guide vector data.
 )</code></pre></td>
 </tr>
 <tr class="even">
-<td>10X Cell Ranger</td>
+<td>10x Cell Ranger</td>
 <td><pre><code>import_data_from_cellranger</code></pre></td>
 <td><pre><code>import_data_from_cellranger(
   use_ondisc = TRUE,

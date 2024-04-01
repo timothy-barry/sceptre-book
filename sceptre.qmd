@@ -12,14 +12,13 @@ devtools::install_github("katsevich-lab/sceptre")
 devtools::install_github("katsevich-lab/sceptredata")
 ```
 
-Users can load `sceptre` and `sceptredata` via a call to `library()`.
+See the [frequently asked questions page](faq.qmd) for tips on installing `sceptre` such that it runs as fast as possible. Users can load `sceptre` and `sceptredata` via a call to `library()`.
 
 ```{r,message = FALSE}
 library(sceptre)
 library(sceptredata)
 ```
 
-The [frequently asked questions page](https://timothy-barry.github.io/sceptre-book/faq.html) contains tips for installing `sceptre` such that it runs as fast as possible on the user's computer.
 
 The standard pipeline involved in applying `sceptre` to analyze a dataset consists of several steps, which we summarize in the following schematic.
 
@@ -109,7 +108,7 @@ We describe each step of the pipeline in greater detail below.
 
 ## 1. Import data {#sec-whole_game_import_data}
 
-The first step is to import the data. **Data can be imported into `sceptre` from 10X Cell Ranger or Parse outputs, as well as from R matrices.** The simplest way to import the data is to read the output of one or more calls to `cellranger_count` into `sceptre` via the function `import_data_from_cellranger()`. `import_data_from_cellranger()` requires three arguments: `directories`, `grna_target_data_frame`, and `moi`.
+The first step is to import the data. **Data can be imported into `sceptre` from 10x Cell Ranger or Parse outputs, as well as from R matrices.** The simplest way to import the data is to read the output of one or more calls to `cellranger_count` into `sceptre` via the function `import_data_from_cellranger()`. `import_data_from_cellranger()` requires three arguments: `directories`, `grna_target_data_frame`, and `moi`.
 
 1.  `directories` is a character vector specifying the locations of the directories outputted by one or more calls to `cellranger_count`. Below, we set the variable `directories` to the (machine-dependent) location of the example CRISPRi data on disk.
 

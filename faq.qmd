@@ -11,7 +11,7 @@ toc-location: body
 ```
 # Frequently asked questions {#sec-faq}
 
-## How can I improve the speed of `sceptre`?
+## How can I improve the speed of `sceptre` (and `ondisc`)?
 
 Create the file `Makevars` inside of your `~/.R` directory (if it does not yet exist):
 
@@ -25,10 +25,11 @@ Add the following line to your `Makevars` file:
 CXXFLAGS = -O3 -Wall
 ```
 
-This line tells the C++ compiler to use aggressive optimization in compiling C++ code contained within an R package. Finally, reinstall `sceptre` from source.
+This line tells the C++ compiler to use aggressive optimization in compiling C++ code contained within an R package. Finally, reinstall `sceptre` (and `ondisc`) from source.
 
 ```{R, filename = "R", eval=FALSE}
 devtools::install_github("katsevich-lab/sceptre")
+devtools::install_github("timothy-barry/ondisc")
 ```
 
 ## I am trying to install `sceptre`, but I am getting an error. What should I do?

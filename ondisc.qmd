@@ -11,6 +11,8 @@ devtools::install_github("timothy-barry/ondisc") # ondisc
 devtools::install_github("katsevich-lab/sceptredata") # sceptredata
 ```
 
+See the [frequently asked questions page](faq.qmd) for tips on installing `ondisc` such that it runs as fast as possible. We can load `ondisc` and `sceptredata` by calling `library()`.
+
 ```{r}
 library(ondisc)
 library(sceptredata)
