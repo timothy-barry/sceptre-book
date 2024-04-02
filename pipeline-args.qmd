@@ -1,0 +1,336 @@
+# Nextflow installation, pipeline arguments {#sec-pipeline_args}
+
+This chapter provides instructions on downloading, installing, and configuring Nextflow. It also enumerates and describes each of the arguments that can be passed to the Nextflow pipeline.
+
+## Downloading, installing, and configuring Nextflow {#sec-install_nextflow}
+
+Nextflow is a powerful and increasingly popular tool for orchestrating complex bioinformatic workflows. Users will need to install Nextflow on their local machine and on their cluster to work through the examples in this book. We encourage users to consult the extensive and high-quality [Nextflow documentation](https://www.nextflow.io/docs/latest/index.html) for guidance on using Nextflow. Here, we briefly describe how to download, install, and configure Nextflow. Users should carry out the following sequence of steps twice: once on their local machine and once on their cluster.
+
+### Download and installation
+
+1.  Install SDKMAN!, a system for installing and managing software.
+
+``` {.terminal filename="terminal"}
+curl -s "https://get.sdkman.io" | bash
+```
+
+2.  Close and open a new instance of terminal. Install Java. Nextflow requires a specific distribution of Java, which can be installed as follows.
+
+``` {.terminal filename="terminal"}
+sdk install java 17.0.6-amzn
+```
+
+If this fails, try the following instead.
+
+``` {.terminal filename="terminal"}
+sdk install java 17.0.6-tem
+```
+
+You can ensure that Java is installed via the following command.
+
+``` {.terminal filename="terminal"}
+java -version 
+```
+
+You should see something like the output below. Ensure that the version of Java (as printed on the first line of the output) is greater than or equal to 17.0.0. (Note: the minimum version of Java required by Nextflow may have increased since the time of writing.)
+
+``` {.terminal filename="terminal"}
+openjdk version "17.0.6" 2023-01-17 LTS
+OpenJDK Runtime Environment Corretto-17.0.6.10.1 (build 17.0.6+10-LTS)
+OpenJDK 64-Bit Server VM Corretto-17.0.6.10.1 (build 17.0.6+10-LTS, mixed mode, sharing)
+```
+
+3.  Create a directory in which to store the Nextflow executable. We create a directory called `bin` in our home directory for this purpose, although the Nextflow executable can be stored in any directory.
+
+``` {.terminal filename="terminal"}
+mkdir -p ~/bin
+```
+
+4.  Close and open a new instance of terminal. Change directories to `~/bin` and intall the Nextflow binary.
+
+``` {.terminal filename="terminal"}
+cd ~/bin
+wget -qO- https://get.nextflow.io | bash
+# alternately: curl -s https://get.nextflow.io | bash
+```
+
+This creates a binary called `nextflow` in the current directory.
+
+5.  Make the `nextflow` binary an executable by running the following command.
+
+``` {.terminal filename="terminal"}
+chmod +x nextflow
+```
+
+(Note: The installed binary may already be executable; in this case `chmod` does nothing.)
+
+6.  Add `nextflow` to your linux path. One way to do this is as follows. First, open `.bash_profile` (via, for example, `nano ~/.bash_profile`). Next, add the following line to `.bash_profile`: `export PATH="~/bin/:$PATH"`. Finally, save `.bash_profile`, close the terminal, and open a new terminal. When you enter `nextflow -version` on the command line, you should see an output similar to the following.
+
+``` {.terminal filename="terminal"}
+N E X T F L O W
+version 23.10.1 build 5891
+created 12-01-2024 22:01 UTC (17:01 EDT)
+cite doi:10.1038/nbt.3820
+http://nextflow.io
+```
+
+This indicates that Nextflow has been installed successfully.
+
+### Configuration
+
+Nextflow should work without further configuration on a local machine. Configuring Nextflow to run on a cluster is somewhat more involved. First, create a Nextflow config file, which is a file that specifies how Nextflow is to interact with the scheduler on your cluster.
+
+``` {.terminal filename="terminal, cluster"}
+touch ~/.nextflow/config
+```
+
+The following is an example of a basic Nextflow config file.
+
+``` {.terminal filename="~/.nextflow/config"}
+process.executor = 'sge' # or 'slurm', etc.
+executor.queueSize = 100
+executor.submitRateLimit = '25 sec'
+workDir = 'path/to/directory/work'
+process.queue = 'name of queue'
+```
+
+`process.executor` specifies the type of scheduler that your cluster uses. Options include `'sge'` for a Sun Grid Engine (i.e., `qsub`-based) scheduler and `'slurm'` for a SLURM (i.e., `sbatch`-based) scheduler. Next, `executor.queueSize` specifies the maximum number of jobs that can be queued simultaneously. Moreover, `executor.submitRateLimit` specifies the maximum number of jobs that can be submitted per unit time to the scheduler. For example, `'25 sec'` limits the submission rate to 25 jobs per second. Additionally, `workDir` is a file path to the "work" directory, which is a directory that stores intermediate files. It is reasonable to create the "work" directory as a subdirectory of the dedicated "data" directory on your cluster. Finally, it may be necessary to specify a the name of a queue (or partition) in which to run the jobs via the `process.queue` option.
+
+Like many Nextflow pipelines, the `sceptre` Nextflow pipeline uses the `time` and `memory` process directives to request a given amount of wall time and memory per process. Not all schedulers require that the user issue a wall time and/or memory allocation request when submitting a job. However, if your scheduler has this requirement, then Nextflow should be configured on your cluster such that the scheduler recognizes the `time` and `memory` process directives within a Nextflow script. It may be necessary to manually configure these directives using the `process.clusterOptions` setting within your Nextflow config file. For example, on an SGE scheduler, you may need to add the following line to your `~/.nextflow/config` file to ensure that the scheduler correctly handles memory allocation requests.
+
+```         
+process.clusterOptions = { task.memory ? "-l m_mem_free=${task.memory.toGiga()}G" : "" }
+```
+
+The corresponding command for a SLURM scheduler is as follows.
+
+```         
+process.clusterOptions = { task.memory ? "--mem=${task.memory.toGiga()}G" : "" }
+```
+
+Configuring Nextflow on a given cluster often takes a bit of effort, but fortunately, this task only needs to be completed once. For help with Nextflow configuration, we recommend reading through the Nextflow documentation, contacting a cluster administrator, pinging the (very helpful and responsive) Nextflow community (for example on [Github issues](https://github.com/nextflow-io/nextflow/issues)), or consulting with ChatGPT (seriously; it seems to know a lot about Nextflow). Finally, a couple helpful blog posts on the Nextflow website are located [here](https://www.nextflow.io/blog/2021/5_tips_for_hpc_users.html) and [here](https://nextflow.io/blog/2024/optimizing-nextflow-for-hpc-and-cloud-at-scale.html).
+
+## Arguments to the Nextflow pipeline {#sec-nf_pipeline_args}
+
+We enumerate and describe each of the command line arguments that can be passed to the `sceptre` Nextflow pipeline. We partition the arguments into "statistical" (@sec-pipeline_statistical_args) and "computational" (@sec-pipeline_computational_args) categories.
+
+### Statistical arguments {#sec-pipeline_statistical_args}
+
+Within the "statistical" category, we further divide the arguments into subcategories based on the step within the pipeline to which the argument applies.
+
+**Input/output parameters**
+
+These basic parameters relate to the inputs and outputs of the pipeline. File paths should be absolute rather than relative. (Thus, users should specify file paths in terms of `$HOME` rather than the shorthand `~`.)
+
+-   `--sceptre_object_fp`: file path to the `sceptre_object.rds` file.
+
+-   `–-response_odm_fp`: file path to the `.odm` file corresponding to the response modality (typically `gene.odm`).
+
+-   `–-grna_odm_fp`: file path to the `grna.odm` file.
+
+-   `–-output_directory`: file path to the directory in which to write the outputs.
+
+-   `--pipeline_stop`: the step at which to stop the pipeline, one of `set_analysis_parameters`, `assign_grnas`, `run_qc`, `run_calibration_check`, `run_power_check`, or `run_discovery_analysis`. If not supplied, defaults to `run_discovery_analysis`, causing the pipeline to run through to completion. (The available options in the context of a massive-scale *trans* analysis are `set_analysis_parameters`, `assign_grnas`, `run_qc`, and `run_discovery_analysis`.)
+
+-   `--trial`: a flag that tells Nextflow to run the trial pipeline (as opposed to the full pipeline).
+
+**Set analysis parameters**
+
+Users can set the analysis parameters within the R console as part of the data import step (@sec-at_scale_set_analysis_parameters) or on the command line via the following arguments. Analysis parameters set on the command line take precedence over those set within the R console.
+
+-   `--side`: the sidedness of the statistical test, one of `left`, `right`, or `both` (see @sec-set_analysis_parameters_side).
+
+-   `--grna_integration_strategy`: the gRNA integration strategy, one of `union`, `singleton`, or `bonferroni` (see @sec-grna_integration_strategy).
+
+-   `--control_group`: the control group for the association test, one of `nt_cells` or `complement` (see @sec-set-analysis-parameters_control_group).
+
+-   `--formula_object`: the formula to adjust for the covariates in the association analysis (see @sec-set_analysis_parameters_formula). `formula_object` should be a file path to an RDS file containing a formula object. For example, below, we create the formula object `formula(~response_n_umis + response_n_nonzero)` and save this formula object to the file `~/formula_object.rds`.
+
+``` {.terminal filename="terminal"}
+Rscript -e "x <- formula(~response_n_umis + response_n_nonzero);
+            saveRDS(x, '~/formula_object.rds')"
+```
+
+We then can pass this formula object as an argument to the pipeline via `--formula_object $HOME"/formula_object.rds"`.
+
+-   `--resampling_approximation`: the approximation to use to the null distribution of test statistics, one of `skew_normal` or `no_approximation` (see @sec-set_analysis_parameters_parametric_curve).
+
+-   `--multiple_testing_method`: the multiple testing correction procedure to adjust the p-values, one of `BH`, `bonferroni`, `holm`, `hochberg`, `hommel`, `BY`, `fdr`, or `none` (see @sec-multiple_testing).
+
+-   `--multiple_testing_alpha`: the nominal level of the multiple testing procedure. `multiple_testing_alpha` should a number in the interval \[0,1\] (for example `0.1` or `0.05`; see @sec-multiple_testing).
+
+-   `--discovery_pairs`: the discovery pairs to analyze (see @sec-set_analysis_parameters_discovery_pairs). `discovery_pairs` should be a file path to an RDS file containing the discovery pairs. Below, we create a discovery pairs data frame and save this data frame to the file `~/discovery_pairs.rds`.
+
+    ```         
+      Rscript -e "x <- data.frame(grna_target = c('candidate_enh_1', 'candidate_enh_2'),
+                                  response_id = c('ENSG00000174529', 'ENSG00000143493'));
+                  saveRDS(x, '~/discovery_pairs.rds')"
+    ```
+
+    We then can pass this argument to the pipeline via `--discovery_pairs $HOME"/discovery_pairs.rds"`. To run a massive-scale *trans* analysis, users should pass `--discovery_pairs trans`; see @sec-massive_scale_trans_analysis for details.
+
+-   `--positive_control_pairs`: the positive control pairs to analyze (see @sec-set_analysis_parameters_pc_pairs). This argument works similarly to the `discovery_pairs` argument.
+
+**Assign gRNAs**
+
+The most important argument related to gRNA assignment is `grna_assignment_method`:
+
+-   `--grna_assignment_method`: a string indicating the gRNA assignment method (one of `mixture`, `maximum`, or `thresholding`).
+
+The following arguments pertain to the "mixture" assignment strategy (see @sec-mixture_method).
+
+-   `--n_em_rep`: the number of times to run the EM algorithm over randomly initialized starting values. `n_em_rep` should be a positive integer (e.g., `5` or `15`).
+
+-   `--n_nonzero_cells_cutoff`: the number of cells that must contain nonzero expression of the gRNA to attempt fitting the mixture model. `n_nonzero_cells_cutoff` should be a positive integer.
+
+-   `--backup_threshold`: the threshold to use to assign the gRNA to cells if the mixture model fails. `backup_threshold` should be a positive integer.
+
+-   `--probability_threshold`: the value at which the posterior perturbation probability of each cell is thresholded to assign the gRNA to cells. `probability_threshold` should be a number in the interval \[0,1\] (for example `0.5` or `0.8`).
+
+-   `--grna_assignment_formula`: the formula to adjust for covariates in the gRNA mixture model. This argument works similarly to the `formula_object` argument (described above).
+
+The following two arguments relate to the "maximum" assignment strategy (@sec-maximum_method).
+
+-   `--umi_fraction_threshold`: a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes less than `umi_fraction_threshold` of the UMIs in that cell. `umi_fraction_threshold` should be a number in the interval \[0,1\].
+
+-   `--min_grna_n_umis_threshold`: a cell is flagged as containing zero gRNAs if the total UMI count across gRNAs (i.e., `n_grna_umis`) in that cell is less than `min_grna_n_umis_threshold`. `min_grna_n_umis_threshold` should be a non-negative integer.
+
+The final argument relates to the "thresholding" assignment method (@sec-thresholding_method).
+
+-   `--threshold`: the threshold used to assign gRNAs to cells in the context of the thresholding method. `threshold` should be a positive integer.
+
+**Run quality control**
+
+The following five arguments relate to cellwise QC (see @sec-qc_cellwise_qc). All of these arguments should be supplied as a number in the interval \[0,1\] (for example `0.01` or `0.05`).
+
+-   `--response_n_umis_range_lower`: a percentile indicating the location at which to clip the *left* tail of the `response_n_umis` distribution.
+
+-   `--response_n_umis_range_upper`: a percentile indicating the location at which to clip the *right* tail of the `response_n_umis` distribution.
+
+-   `--response_n_nonzero_range_lower`: a percentile indicating the location at which to clip the *left* tail of the `response_n_nonzero` distribution.
+
+-   `--response_n_nonzero_range_upper`: a percentile indicating the location at which to clip the *right* tail of the `response_n_nonzero` distribution.
+
+-   `--p_mito_threshold`: an absolute number (i.e., not a percentile) indicating the location at which to clip the right tail of the `response_p_mito` distribution.
+
+The following two arguments relate to pairwise QC (see @sec-qc_pairwise_qc). Both arguments should be supplied as a non-negative integer (for example `7` or `10`).
+
+-   `--n_nonzero_trt_thresh`: the minimum number of nonzero *treatment* cells that a pair must contain to be retained.
+
+-   `--n_nonzero_cntrl_thresh`: the minimum number of nonzero *control* cells that a pair must contain to be retained.
+
+**Run calibration check**
+
+Two arguments control the calibration check analysis (see @sec-run-calibration-check_running_the_calibration_check).
+
+-   `n_calibration_pairs`: the number of negative control target-response pairs to analyze within the calibration check. `n_calibration_pairs` should be a non-negative integer. Setting `n_calibration_pairs` to `0` skips the calibration check.
+
+-   `calibration_group_size`: the number of individual negative control gRNAs to combine to form a negative control target. `calibration_group_size` should be a positive integer.
+
+### Computational arguments {#sec-pipeline_computational_args}
+
+Within the "computational" category, we further divide the arguments into subcategories based on whether the argument relates to parallelization, wall time requests, or memory requests.
+
+**Degree of parallelization**
+
+Two arguments that control the degree of parallelization: `grna_pod_size` and `pair_pod_size`. The former argument relates to the gRNA-to-cell assignment step, and the latter argument relates to the target-to-response association testing steps (i.e., the calibration check, the power check, and the discovery analysis).
+
+-   `--grna_pod_size`: the number of gRNAs to assign to each pod. Setting `grna_pod_size` to a large number (e.g., `500`) reduces the amount of parallelization, while setting `grna_pod_size` to a small number (e.g., `10`) increases the amount of parallelization. By default `grna_pod_size` is set to 150. `grna_pod_size` should be a positive integer.
+
+-   `--pair_pod_size`: the number of target-response pairs to assign to each pod for each of the association analyses (i.e., calibration check, power check, and discovery analysis). Setting `pair_pod_size` to a large (resp., small) number reduces (resp., increases) the amount of parallelization. By default `pair_pod_size` is set to `25000` (`500000` for a massive-scale *trans* analysis). `pair_pod_size` should be a positive integer.
+
+**Wall time requests**
+
+Each process within the `sceptre` Nextflow pipeline submits a wall time request to the scheduler. The wall time requests are set to conservative defaults, and most users will not need to interact with parameters related to time allocation. However, users may need to increase the wall time request of a given process if that process has been killed by the scheduler because it exceeded its time limit. Conversely, users might find that a given process spends too much time in the queue, in which case users might consider *decreasing* the wall time request of that process so as to increase its priority. All arguments related to time allocation should be supplied in the format `Xu`, where `X` is a positive number and `u` is a unit of time. For example `5s`, `5m`, and `5h` indicate five seconds, five minutes, and five hours, respectively.
+
+-   `--set_analysis_parameters_time`: the amount of time requested for the "Set analysis parameters" process; default `15m` (i.e., 15 minutes).
+
+-   `--prepare_assign_grnas_time`: the amount of time requested for the "Prepare assign gRNAs" process; default `15m`.
+
+-   `--assign_grnas_time_per_grna`: the amount of time requested *per gRNA* for the "Assign gRNAs" process; default `2s`. `assign_grnas_time_per_grna` and `grna_pod_size` are multiplied to calculate the total amount of time requested for the "Assign gRNAs" process. For example, if `assign_grnas_time_per_grna` is set to `5s`, and if `grna_pod_size` is set to `200`, then 1000 seconds (i.e., \~17 minutes) is requested for the "Assign gRNAs" process.
+
+-   `--combine_assign_grnas_time`: the amount of time requested for the "Combine assign gRNAs" process; default `15m`.
+
+-   `--run_qc_time`: the amount of time requested for the "Run QC" process; default `60m`.
+
+-   `--prepare_association_analysis_time`: the amount of time requested for the "Prepare association analysis" process; default `15m`.
+
+-   `--run_association_analysis_time_per_pair`: the amount of time requested *per pair* for the "Run calibration check," "Run power check," and "Run discovery analysis" processes; default `0.05s`. `run_association_analysis_time_per_pair` and `pair_pod_size` are multiplied to calculate the total amount of time requested for the association analysis processes.
+
+-   `--combine_association_analysis_time`: the amount of time requested for the "Combine calibration check," "Combine power check," and "Combine discovery analysis" processes; default `15m`.
+
+**Memory requests**
+
+Each process within the Nextflow pipeline likewise submits a memory request to the scheduler. Again, the memory requests are set to conservative defaults. However, users may need to increase the memory request of a given process if that process has been killed because it ran out of memory. Arguments related to memory allocation should be provided in the format `Yu`, where `Y` is a number and `u` is a unit of data size. For example, `5GB` and `5MB` denote five gigabytes and five megabytes, respectively.
+
+-   `--set_analysis_parameters_memory`: the amount of memory requested for the "Set analysis parameters" process; default `4GB` (i.e., four gigabytes).
+
+-   `--prepare_assign_grnas_memory`: the amount of memory requested for the "Prepare assign gRNAs" process; default `4GB`.
+
+-   `--assign_grnas_memory`: the amount of memory requested for the "Assign gRNAs" process; default `4GB`.
+
+-   `--combine_assign_grnas_memory`: the amount of memory requested for the "Combine assign gRNAs" process; default `4GB`.
+
+-   `--run_qc_memory`: the amount of memory requested for the "Run QC" process; default `8GB` (`4GB` when running a massive-scale *trans* analysis).
+
+-   `--prepare_association_analysis_memory`: the amount of memory requested for the "Prepare association analysis" process; default `4GB`.
+
+-   `--run_association_analysis_memory`: the amount of memory requested for the "Run association analysis" processes; default `4GB`.
+
+-   `--combine_association_analysis_memory`: the amount of memory requested for the "Combine association analysis" processes; default `4GB`.
+
+**Miscellaneous**
+
+-   `--use_parquet`: a boolean (i.e., `true` or `false`) indicating whether to write the results as `parquet` files (`true`) or `RDS` files (`false`) in the context of a massive-scale *trans* analysis (@sec-massive_scale_trans_analysis).
+
+## Analyzing an `ondisc`-backed `sceptre_object` within the R console {#sec-analyze_odm_within_r}
+
+Users can analyze an `ondisc`-backed `sceptre_object` within the R console (as opposed to via the Nextflow pipeline). This solution is most appropriate when the data are big but the number of target-response pairs to be analyzed is not too large. Below, we use the function `import_data_from_cellranger()` (setting `use_ondisc` to `TRUE`) to create an `ondisc`-backed `sceptre_object` containing the example high-MOI data. We then proceed through a minimal version of the pipeline normally.
+
+```{r, results="hide",message=FALSE,warning=FALSE}
+# create an ondisc-backed sceptre object
+library(sceptre)
+library(sceptredata)
+directories <- paste0(
+  system.file("extdata", package = "sceptredata"),
+  "/highmoi_example/gem_group_", 1:2
+)
+data(grna_target_data_frame_highmoi)
+sceptre_object <- import_data_from_cellranger(
+  directories = directories,
+  moi = "high",
+  grna_target_data_frame = grna_target_data_frame_highmoi,
+  use_ondisc = TRUE,
+  directory_to_write = tempdir()
+)
+
+# apply the pipeline functions to the sceptre_object in order
+discovery_pairs <- construct_cis_pairs(sceptre_object)
+sceptre_object <- sceptre_object |>
+  set_analysis_parameters(discovery_pairs = discovery_pairs,
+                          resampling_mechanism = "permutations") |>
+  run_discovery_analysis()
+```
+
+Next, to analyze the example low-MOI CRISPRko data, we first create an `ondisc`-backed `sceptre_object` from a collection of R objects via the function `import_data()` (setting `use_ondisc` to `TRUE`). We then proceed through the pipeline in the standard way.
+
+```{r, results="hide",message=FALSE,warning=FALSE}
+data(lowmoi_example_data)
+sceptre_object <- import_data(
+  response_matrix = lowmoi_example_data$response_matrix,
+  grna_matrix = lowmoi_example_data$grna_matrix,
+  extra_covariates = lowmoi_example_data$extra_covariates,
+  grna_target_data_frame = lowmoi_example_data$grna_target_data_frame,
+  moi = "low",
+  use_ondisc = TRUE,
+  directory_to_write = tempdir()
+)
+
+# apply the pipeline functions to the sceptre_object in order
+discovery_pairs <- construct_trans_pairs(sceptre_object)
+sceptre_object <- sceptre_object |>
+  set_analysis_parameters(discovery_pairs = discovery_pairs) |>
+  run_discovery_analysis()
+```
+
+See @sec-import_data_odm_ch_1 for more information about creating an `ondisc`-backed `sceptre_object`.

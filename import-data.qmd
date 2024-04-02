@@ -1,28 +1,33 @@
 # Import data {#sec-import_data}
 
+::: callout-tip
+Part I of this book describes how to apply `sceptre` to analyze single-cell CRISPR screen data on a laptop or desktop. Part I assumes knowledge of R at a beginner level.
+:::
+
 This chapter describes how to import single-cell CRISPR screen data into `sceptre`, which is the first step of the `sceptre` pipeline.
 
 ```{r, out.width = "650px", fig.align="center", echo = FALSE}
 knitr::include_graphics("pipeline_schematic_step_1.png")
 ```
 
-Users either can import data directly from the output of an existing software package (e.g., 10X Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the `sceptre` package.
+Users either can import data directly from the output of an existing software package (e.g., 10x Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the `sceptre` and `sceptredata` packages.
 
 ```{r,message = FALSE}
 library(sceptre)
+library(sceptredata)
 ```
 
 ## Import data from an existing software package
 
-`sceptre` links up with two programs for upstream processing of single-cell CRISPR screen data: 10X Cell Ranger and the analogous software tool developed by Parse Biosciences. (We refer to the latter program as the "Parse program.") We describe how to import data from each of these tools below.
+`sceptre` links up with two programs for upstream processing of single-cell CRISPR screen data: 10x Cell Ranger and the analogous software tool developed by Parse Biosciences. (We refer to the latter program as the "Parse program.") We describe how to import data from each of these tools below.
 
-### Import from 10X Cell Ranger
+### Import from 10x Cell Ranger
 
-@sec-whole_game_import_data of *The whole game* describes how to import data from 10X Cell Ranger. We include a minimal working example here.
+@sec-whole_game_import_data of *The whole game* describes how to import data from 10x Cell Ranger. We include a minimal working example here.
 
 ```{r,results='hide'}
 directories <- paste0(
-  system.file("extdata", package = "sceptre"),
+  system.file("extdata", package = "sceptredata"),
   "/highmoi_example/gem_group_", 1:2)
 data(grna_target_data_frame_highmoi)
 sceptre_object <- import_data_from_cellranger(
@@ -34,9 +39,30 @@ sceptre_object <- import_data_from_cellranger(
 
 ### Import from the Parse program (experimental)
 
-Users also can import data from the output of the Parse CRISPR Detect platform via the function `import_data_from_parse()`. `import_data_from_parse()` takes the arguments `gene_mat_fp`, `grna_mat_fp`, `all_genes_fp`, `all_grnas_fp`, `moi`, `grna_target_data_frame`, and `extra_covariates`. (Only the latter argument is optional; all others are required.) `gene_mat_fp` (resp., `grna_mat_fp`) is a file path to the `.mtx` file storing the gene (resp., gRNA) expression data. Next, `all_genes_fp` is a file path to the `all_genes.csv` file. `all_genes.csv` is assumed to have columns "gene_id," "gene_name," and "genome;" the first two columns are assumed to give the ID and human readable name, respectively, of each gene, and the last column (indicating the genome to which each gene belongs) is ignored. Additionally, `all_grnas_fp` is a file path to the `all_grnas.csv` file. `all_grnas.csv` is assumed to contain columns "gene_id," "gene_name," and "genome." The column "gene_name" is assumed to give the ID of each gRNA; the remaining two columns are ignored. Furthermore, `moi` is a string indicating the MOI of the dataset and can take values `"low"` or `"high"`. Finally, `extra_covariates` is an optional data frame of extra covariates to pass to `sceptre` (see below). It is assumed that the data are stored in a single set of files (as opposed to multiple sets of files corresponding to, e.g., different samples).
+Users also can import data from the output of the Parse CRISPR Detect platform via the function `import_data_from_parse()`. `import_data_from_parse()` takes the arguments `gene_mat_fp`, `grna_mat_fp`, `all_genes_fp`, `all_grnas_fp`, `moi`, `grna_target_data_frame`, and `extra_covariates`. (Only the latter argument is optional; all others are required.) `gene_mat_fp` (resp., `grna_mat_fp`) is a file path to the `.mtx` file storing the gene (resp., gRNA) expression data. Next, `all_genes_fp` is a file path to the `all_genes.csv` file. `all_genes.csv` is assumed to have columns "gene_id," "gene_name," and "genome;" the first two columns are assumed to give the ID and human readable name, respectively, of each gene, and the last column (indicating the genome to which each gene belongs) is ignored. Next, `all_grnas_fp` is a file path to the `all_grnas.csv` file. `all_grnas.csv` is assumed to contain columns "gene_id," "gene_name," and "genome." The column "gene_name" is assumed to give the ID of each gRNA; the remaining two columns are ignored. Additionally, `moi` is a string indicating the MOI of the dataset and can take values `"low"` or `"high"`. Finally, `extra_covariates` is an optional data frame of extra covariates to pass to `sceptre` (see below). It is assumed that the data are stored in a single set of files (as opposed to multiple sets of files corresponding to, e.g., different samples). Below, we provide an example of initializing a `sceptre_object` from a set of Parse outputs.
 
-`import_data_from_parse()` is an experimental function, and the API of this function is subject to change. We expect the API of `import_data_from_parse()` to solidify as we learn more about the Parse CRISPR detect platform and the structure of the Parse program output. Furthermore, given that the Parse platform is fairly young, we anticipate that the format of the output of the Parse program itself might change.
+```{r}
+directory <- paste0(system.file("extdata", package = "sceptredata"),
+                    "/parse_example/")
+gene_mat_fp <- paste0(directory, "gene_mat.mtx")
+grna_mat_fp <- paste0(directory, "grna_mat.mtx")
+all_genes_fp <- paste0(directory, "all_genes.csv")
+all_grnas_fp <- paste0(directory, "all_grnas.csv")
+grna_target_data_frame <- data.frame(
+   grna_id = c("guide_A", "guide_B", "guide_C"),
+   grna_target = c("target-A", "target-B", "non-targeting")
+)
+sceptre_object <- import_data_from_parse(
+  gene_mat_fp = gene_mat_fp,
+  grna_mat_fp = grna_mat_fp,
+  all_genes_fp = all_genes_fp,
+  all_grnas_fp = all_grnas_fp,
+  moi = "low",
+  grna_target_data_frame = grna_target_data_frame
+)
+```
+
+We encourage Parse users to examine the example Parse data to ensure that their data match the example data. `import_data_from_parse()` is an experimental function, and the API of this function is subject to change. We expect the API of `import_data_from_parse()` to solidify as we learn more about the Parse CRISPR detect platform and the structure of the Parse program output.
 
 ### Add extra covariates
 
@@ -44,8 +70,11 @@ Users also can import data from the output of the Parse CRISPR Detect platform v
 
 ```{r,results='hide'}
 # simulate an extra covariate, namely cell type
-cell_type <- sample(x = paste0("type_", 1:3), size = 45919, replace = TRUE) |> 
-  factor()
+cell_type <- sample(
+  x = paste0("type_", 1:3),
+  size = 45919,
+  replace = TRUE
+) |> factor()
 extra_covariates <- data.frame(cell_type = cell_type)
 
 # import data, passing the the extra covariates as an argument
@@ -65,15 +94,20 @@ sceptre_object
 
 ## Import data from a collection of R objects
 
-Users also can import data into `sceptre` from a specified set of R objects. This data import strategy is most appropriate for users employing less standard data preprocessing pipelines to generate the response and gRNA count matrices. We use the high-MOI CRISPRi data as a working example. We can obtain these data in R matrix and data frame format as follows.
+Users also can import data into `sceptre` from a specified set of R objects. This data import strategy is most appropriate for users employing less standard data preprocessing pipelines for generating the response and gRNA count matrices. We use the high-MOI CRISPRi data as a working example. We can obtain these data in R matrix and data frame format as follows.
 
 ```{r}
 data(highmoi_example_data)
-response_matrix <- highmoi_example_data$response_matrix   # response matrix
-grna_matrix <- highmoi_example_data$grna_matrix           # grna matrix
-extra_covariates <- highmoi_example_data$extra_covariates # batch information
-response_names <- highmoi_example_data$gene_names         # response names
-grna_target_data_frame <- grna_target_data_frame_highmoi  # gRNA target data frame
+# response matrix
+response_matrix <- highmoi_example_data$response_matrix
+# grna matrix
+grna_matrix <- highmoi_example_data$grna_matrix
+# batch information
+extra_covariates <- highmoi_example_data$extra_covariates
+# response names
+response_names <- highmoi_example_data$gene_names
+# gRNA target data frame
+grna_target_data_frame <- grna_target_data_frame_highmoi
 ```
 
 We call the function `import_data()` to import the data from a collection of R objects. `import_data()` takes several arguments: `response_matrix`, `grna_matrix`, `grna_target_data_frame`, `moi`, `extra_covariates`, and `response_names`. The following figure summarizes the main inputs to this function.
@@ -110,7 +144,7 @@ We describe the inputs below.
     moi <- "high"
     ```
 
--   `extra_covariates` (optional) is a data frame specifying cell-specific covariates beyond those that `sceptre` can compute. `import_data()` computes the covariates `grna_n_nonzero`, `grna_n_umis`, `response_n_nonzero`, `response_n_umis`, and `response_p_mito`. `import_data()` does *not* compute `batch`, as `import_data()` does not have access to batch information. Thus, `batch` --- alongside any other relevant covariates, such as cell type --- should be included in the `extra_covariates` data frame. **Note:** The rows of `extra_covariates` are assumed to be in the same order as the columns of `response_matrix` and `grna_matrix`. We recommend users add cell barcodes as row names of `extra_covariates`, in which case `sceptre` will check the consistency of cell ordering on their behalf.
+-   `extra_covariates` (optional) is a data frame specifying cell-specific covariates beyond those that `sceptre` can compute. `import_data()` computes the covariates `grna_n_nonzero`, `grna_n_umis`, `response_n_nonzero`, `response_n_umis`, and `response_p_mito`. `import_data()` does *not* compute `batch`, as `import_data()` does not have access to batch information. Thus, `batch` --- alongside any other relevant covariates, such as cell type --- should be included in the `extra_covariates` data frame. Note that the rows of `extra_covariates` are assumed to be in the same order as the columns of `response_matrix` and `grna_matrix`. We recommend users add cell barcodes as row names of `extra_covariates`, in which case `sceptre` will check the consistency of cell ordering.
 
     ```{r}
     extra_covariates[c(1:3, 30001:30003),,drop = FALSE]
@@ -135,6 +169,64 @@ sceptre_object <- import_data(
 )
 ```
 
+## Multi-guide vector data
+
+gRNAs are delivered to cells via a viral vector. In low-MOI screens the experimenter aims to deliver one viral vector to each cell; in high-MOI screens, by contrast, the experimenter aims to deliver *multiple* viral vectors (each harboring a different gRNA) to each cell. Some recent single-cell CRISPR screens involve a special design in which each viral vector harbors multiple gRNAs. For example, @replogle2022 conducted a screen in which each viral vector contained two gRNAs, each targeting the same site. In such "multi-guide vector" screens, the user should account for the vector that harbors each gRNA so as to ensure that the cellwise QC and association testing steps are carried out correctly. Users can pass vector information to `sceptre` by including a `vector_id` column in the `grna_target_data_frame`, which specifies the vector on which a given gRNA is located (@fig-multi_guide_vector_table).
+
+```{r, out.width = "330px", fig.align="center",echo=FALSE}
+#| label: fig-multi_guide_vector_table
+#| fig-cap: "Example gRNA target data frame for multi-guide vector data."
+knitr::include_graphics("grna_table_with_vector.png")
+```
+
+`sceptre` employs a simple strategy for handling multi-guide vector data: the UMI counts of gRNAs contained on the same vector are summed, and the resulting quantity is treated as if it were the expression vector of an individual gRNA. The vector IDs should be nested within the gRNA targets. (In other words, each gRNA target can map to multiple vector IDs, but each vector ID should map to a single gRNA target.) Finally, the genomic coordinate columns `chr`, `start`, and `end` optionally can be included the gRNA target data frame, but rows containing the same value for `vector_id` also should contain the same value for `chr`, `start`, and `end`.
+
 ## Accessing the fields of a `sceptre_object`
 
-A `sceptre_object` is an [S4 object](http://adv-r.had.co.nz/S4.html). Like all S4 objects, a `sceptre_object` contains data, both raw data inputted by the user and processed data that `sceptre` generates by operating on the raw data. The data stored within a `sceptre_object` can be accessed via the `@` operator (e.g., `sceptre_object@foo`). **We recommend against accessing the data stored within a `sceptre_object` in this way**. Instead, users should interact with a `sceptre_object` via the [functions exported by the package](https://katsevich-lab.github.io/sceptre/reference/index.html). Unfortunately, we are unable
+A `sceptre_object` is an [S4 object](http://adv-r.had.co.nz/S4.html). Like all S4 objects, a `sceptre_object` contains data, including raw data inputted by the user and processed data that `sceptre` generates by operating on the raw data. The data stored within a `sceptre_object` can be accessed via the `@` operator (e.g., `sceptre_object@foo`). We recommend against accessing the data stored within a `sceptre_object` in this way. Instead, users should interact with a `sceptre_object` via the [functions exported by the package](https://katsevich-lab.github.io/sceptre/reference/index.html). For example, the "getter" functions `get_response_matrix()`, `get_grna_matrix()`, and `get_cell_covariates()` return the response matrix, gRNA matrix, and cell covariates, respectively, of a `sceptre_object`.
+
+```{r,eval=FALSE}
+response_matrix <- get_response_matrix(sceptre_object)
+grna_matrix <- get_grna_matrix(sceptre_object)
+cell_covariates <- get_cell_covariates(sceptre_object)
+```
+
+## Initializing an `ondisc`-backed `sceptre`-object {#sec-import_data_odm_ch_1}
+
+`ondisc` is a companion R package to `sceptre` that --- in conjunction with `sceptre` --- enables users to analyze large-scale single-cell CRISPR screen data out-of-core on a laptop or distributed across multiple nodes on a computing cluster. An "`ondisc`-backed `sceptre_object`" is a special kind of `sceptre_object` in which the response and gRNA expression matrices are stored on disk rather than in memory. We defer a detailed discussion of the `ondisc` package and large-scale single-cell CRISPR screen data analysis to Part II of this book (i.e., @sec-at-scale — @sec-pipeline_args). Here, we briefly describe how to create an `ondisc`-backed `sceptre_object`. Users can create an `ondisc`-backed `sceptre_object` by calling a standard data import function (i.e., `import_data()` or `import_data_from_cellranger()`), setting the argument `use_ondisc` to `TRUE` and `directory_to_write` to the directory in which to write the disk-based gene and gRNA expression matrices. The table below summarizes which data import function one should call (and which arguments one should supply to that data import function) on the basis of the input data type and whether one wishes to create a standard `sceptre_object` or an `ondisc`-backed `sceptre_object`. (Note that initializing an `ondisc`-backed `sceptre_object` from the output of the Parse program is not yet implemented.)
+
++-----------------+-----------------------------+----------------------------------+
+| Input type      | Standard `sceptre_object`   | `ondisc`-backed `sceptre_object` |
++=================+=============================+==================================+
+| R matrices      | ```                         | ```                              |
+|                 | import_data                 | import_data(                     |
+|                 | ```                         |   use_ondisc = TRUE,             |
+|                 |                             |   directory_to_write = "/path/", |
+|                 |                             | )                                |
+|                 |                             | ```                              |
++-----------------+-----------------------------+----------------------------------+
+| 10x Cell Ranger | ```                         | ```                              |
+|                 | import_data_from_cellranger | import_data_from_cellranger(     |
+|                 | ```                         |   use_ondisc = TRUE,             |
+|                 |                             |   directory_to_write = "/path/"  |
+|                 |                             | )                                |
+|                 |                             | ```                              |
++-----------------+-----------------------------+----------------------------------+
+| Parse           | ```                         | Not implemented                  |
+|                 | import_data_from_parse      |                                  |
+|                 | ```                         |                                  |
++-----------------+-----------------------------+----------------------------------+
+
+For example, below, we create an `ondisc`-backed `sceptre_object` to represent the high-MOI CRISPRi data, taking as input the output directories from `cellranger count` and setting `directory_to_write` to the temporary directory `tempdir()`.
+
+```         
+sceptre_object <- import_data_from_cellranger(
+  directories = directories,
+  moi = "high",
+  grna_target_data_frame = grna_target_data_frame_highmoi,
+  use_ondisc = TRUE,
+  directory_to_write = tempdir()
+)
+```
+
+See @sec-import_data_into_odm_backed_sceptre_object and @sec-analyze_odm_within_r for more information.

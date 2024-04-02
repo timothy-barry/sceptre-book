@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
 <title>Hands-On Single-Cell CRISPR Screen Analysis - 1&nbsp; Import data</title>
@@ -20,7 +20,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -52,7 +52,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -78,7 +98,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -87,6 +113,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -97,25 +124,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./import-data.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
-    <a href="https://katsevich-lab.github.io/sceptre/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
+    <a href="https://katsevich-lab.github.io/sceptre/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
 </div>
     </div>
       </div>
@@ -138,46 +165,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">The whole game</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./import-data.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./set-analysis-parameters.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./assign-grnas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./run-qc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./run-calibration-check.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./run-power-check-and-discovery-analysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
- <span class="menu-text">Appendices</span></a>
+ <span class="menu-text">Part I. Introduction to sceptre</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -185,27 +176,132 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./import-data.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./set-analysis-parameters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./assign-grnas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./run-qc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./run-calibration-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./run-power-check-and-discovery-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Part II. At-scale sceptre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./at-scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to the Nextflow pipeline</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pipeline-details.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A deeper dive into the Nextflow pipeline</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pipeline-args.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Nextflow installation, pipeline arguments</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Part III. Methods and algorithms</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Overview of methods</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ondisc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">The <code>ondisc</code> package</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sceptredata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">The <code>sceptredata</code> package</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">References</span></span></a>
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
       </ul>
 </li>
     </ul>
 </div>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
@@ -214,17 +310,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>
 <a href="#import-data-from-an-existing-software-package" id="toc-import-data-from-an-existing-software-package" class="nav-link active" data-scroll-target="#import-data-from-an-existing-software-package"><span class="header-section-number">1.1</span> Import data from an existing software package</a>
   <ul class="collapse">
-<li><a href="#import-from-10x-cell-ranger" id="toc-import-from-10x-cell-ranger" class="nav-link" data-scroll-target="#import-from-10x-cell-ranger"><span class="header-section-number">1.1.1</span> Import from 10X Cell Ranger</a></li>
+<li><a href="#import-from-10x-cell-ranger" id="toc-import-from-10x-cell-ranger" class="nav-link" data-scroll-target="#import-from-10x-cell-ranger"><span class="header-section-number">1.1.1</span> Import from 10x Cell Ranger</a></li>
   <li><a href="#import-from-the-parse-program-experimental" id="toc-import-from-the-parse-program-experimental" class="nav-link" data-scroll-target="#import-from-the-parse-program-experimental"><span class="header-section-number">1.1.2</span> Import from the Parse program (experimental)</a></li>
   <li><a href="#add-extra-covariates" id="toc-add-extra-covariates" class="nav-link" data-scroll-target="#add-extra-covariates"><span class="header-section-number">1.1.3</span> Add extra covariates</a></li>
   </ul>
 </li>
   <li><a href="#import-data-from-a-collection-of-r-objects" id="toc-import-data-from-a-collection-of-r-objects" class="nav-link" data-scroll-target="#import-data-from-a-collection-of-r-objects"><span class="header-section-number">1.2</span> Import data from a collection of R objects</a></li>
-  <li><a href="#accessing-the-fields-of-a-sceptre_object" id="toc-accessing-the-fields-of-a-sceptre_object" class="nav-link" data-scroll-target="#accessing-the-fields-of-a-sceptre_object"><span class="header-section-number">1.3</span> Accessing the fields of a <code>sceptre_object</code></a></li>
+  <li><a href="#multi-guide-vector-data" id="toc-multi-guide-vector-data" class="nav-link" data-scroll-target="#multi-guide-vector-data"><span class="header-section-number">1.3</span> Multi-guide vector data</a></li>
+  <li><a href="#accessing-the-fields-of-a-sceptre_object" id="toc-accessing-the-fields-of-a-sceptre_object" class="nav-link" data-scroll-target="#accessing-the-fields-of-a-sceptre_object"><span class="header-section-number">1.4</span> Accessing the fields of a <code>sceptre_object</code></a></li>
+  <li><a href="#sec-import_data_odm_ch_1" id="toc-sec-import_data_odm_ch_1" class="nav-link" data-scroll-target="#sec-import_data_odm_ch_1"><span class="header-section-number">1.5</span> Initializing an <code>ondisc</code>-backed <code>sceptre</code>-object</a></li>
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./import-data.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></a></li></ol></nav><div class="quarto-title">
 <h1 class="title"><span id="sec-import_data" class="quarto-section-identifier"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></h1>
 </div>
 
@@ -238,28 +336,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
-</header><p>This chapter describes how to import single-cell CRISPR screen data into <code>sceptre</code>, which is the first step of the <code>sceptre</code> pipeline.</p>
-<div class="cell" data-layout-align="center" data-hash="import-data_cache/html/unnamed-chunk-1_1b7985bd8a056cb3bd559fab3e19cc48">
+
+</header><div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Part I of this book describes how to apply <code>sceptre</code> to analyze single-cell CRISPR screen data on a laptop or desktop. Part I assumes knowledge of R at a beginner level.</p>
+</div>
+</div>
+<p>This chapter describes how to import single-cell CRISPR screen data into <code>sceptre</code>, which is the first step of the <code>sceptre</code> pipeline.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="pipeline_schematic_step_1.png" class="img-fluid figure-img" width="650"></p>
+<figure class="figure"><p><img src="pipeline_schematic_step_1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Users either can import data directly from the output of an existing software package (e.g., 10X Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the <code>sceptre</code> package.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-2_c43ffed96f8904bb2d1006c296486b46">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Users either can import data directly from the output of an existing software package (e.g., 10x Cell Ranger or the Parse Biosciences count matrix generation program) or from a specified set of R objects. We recommend that users import data from the output of an existing software package, as doing so decreases the probability of error. We begin by loading the <code>sceptre</code> and <code>sceptredata</code> packages.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptre</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptredata</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="import-data-from-an-existing-software-package" class="level2" data-number="1.1"><h2 data-number="1.1" class="anchored" data-anchor-id="import-data-from-an-existing-software-package">
 <span class="header-section-number">1.1</span> Import data from an existing software package</h2>
-<p><code>sceptre</code> links up with two programs for upstream processing of single-cell CRISPR screen data: 10X Cell Ranger and the analogous software tool developed by Parse Biosciences. (We refer to the latter program as the “Parse program.”) We describe how to import data from each of these tools below.</p>
+<p><code>sceptre</code> links up with two programs for upstream processing of single-cell CRISPR screen data: 10x Cell Ranger and the analogous software tool developed by Parse Biosciences. (We refer to the latter program as the “Parse program.”) We describe how to import data from each of these tools below.</p>
 <section id="import-from-10x-cell-ranger" class="level3" data-number="1.1.1"><h3 data-number="1.1.1" class="anchored" data-anchor-id="import-from-10x-cell-ranger">
-<span class="header-section-number">1.1.1</span> Import from 10X Cell Ranger</h3>
-<p><a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> of <em>The whole game</em> describes how to import data from 10X Cell Ranger. We include a minimal working example here.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-3_166b438f44fed96658c28aff892f39e3">
+<span class="header-section-number">1.1.1</span> Import from 10x Cell Ranger</h3>
+<p><a href="sceptre.html#sec-whole_game_import_data" class="quarto-xref"><span>Section 1</span></a> of <em>The whole game</em> describes how to import data from 10x Cell Ranger. We include a minimal working example here.</p>
+<div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">directories</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"sceptre"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"sceptredata"</span><span class="op">)</span>,</span>
 <span>  <span class="st">"/highmoi_example/gem_group_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">grna_target_data_frame_highmoi</span><span class="op">)</span></span>
 <span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger</a></span><span class="op">(</span></span>
@@ -270,15 +383,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section><section id="import-from-the-parse-program-experimental" class="level3" data-number="1.1.2"><h3 data-number="1.1.2" class="anchored" data-anchor-id="import-from-the-parse-program-experimental">
 <span class="header-section-number">1.1.2</span> Import from the Parse program (experimental)</h3>
-<p>Users also can import data from the output of the Parse CRISPR Detect platform via the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_parse.html">import_data_from_parse()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_parse.html">import_data_from_parse()</a></code> takes the arguments <code>gene_mat_fp</code>, <code>grna_mat_fp</code>, <code>all_genes_fp</code>, <code>all_grnas_fp</code>, <code>moi</code>, <code>grna_target_data_frame</code>, and <code>extra_covariates</code>. (Only the latter argument is optional; all others are required.) <code>gene_mat_fp</code> (resp., <code>grna_mat_fp</code>) is a file path to the <code>.mtx</code> file storing the gene (resp., gRNA) expression data. Next, <code>all_genes_fp</code> is a file path to the <code>all_genes.csv</code> file. <code>all_genes.csv</code> is assumed to have columns “gene_id,” “gene_name,” and “genome;” the first two columns are assumed to give the ID and human readable name, respectively, of each gene, and the last column (indicating the genome to which each gene belongs) is ignored. Additionally, <code>all_grnas_fp</code> is a file path to the <code>all_grnas.csv</code> file. <code>all_grnas.csv</code> is assumed to contain columns “gene_id,” “gene_name,” and “genome.” The column “gene_name” is assumed to give the ID of each gRNA; the remaining two columns are ignored. Furthermore, <code>moi</code> is a string indicating the MOI of the dataset and can take values <code>"low"</code> or <code>"high"</code>. Finally, <code>extra_covariates</code> is an optional data frame of extra covariates to pass to <code>sceptre</code> (see below). It is assumed that the data are stored in a single set of files (as opposed to multiple sets of files corresponding to, e.g., different samples).</p>
-<p><code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_parse.html">import_data_from_parse()</a></code> is an experimental function, and the API of this function is subject to change. We expect the API of <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_parse.html">import_data_from_parse()</a></code> to solidify as we learn more about the Parse CRISPR detect platform and the structure of the Parse program output. Furthermore, given that the Parse platform is fairly young, we anticipate that the format of the output of the Parse program itself might change.</p>
+<p>Users also can import data from the output of the Parse CRISPR Detect platform via the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_parse.html">import_data_from_parse()</a></code>. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_parse.html">import_data_from_parse()</a></code> takes the arguments <code>gene_mat_fp</code>, <code>grna_mat_fp</code>, <code>all_genes_fp</code>, <code>all_grnas_fp</code>, <code>moi</code>, <code>grna_target_data_frame</code>, and <code>extra_covariates</code>. (Only the latter argument is optional; all others are required.) <code>gene_mat_fp</code> (resp., <code>grna_mat_fp</code>) is a file path to the <code>.mtx</code> file storing the gene (resp., gRNA) expression data. Next, <code>all_genes_fp</code> is a file path to the <code>all_genes.csv</code> file. <code>all_genes.csv</code> is assumed to have columns “gene_id,” “gene_name,” and “genome;” the first two columns are assumed to give the ID and human readable name, respectively, of each gene, and the last column (indicating the genome to which each gene belongs) is ignored. Next, <code>all_grnas_fp</code> is a file path to the <code>all_grnas.csv</code> file. <code>all_grnas.csv</code> is assumed to contain columns “gene_id,” “gene_name,” and “genome.” The column “gene_name” is assumed to give the ID of each gRNA; the remaining two columns are ignored. Additionally, <code>moi</code> is a string indicating the MOI of the dataset and can take values <code>"low"</code> or <code>"high"</code>. Finally, <code>extra_covariates</code> is an optional data frame of extra covariates to pass to <code>sceptre</code> (see below). It is assumed that the data are stored in a single set of files (as opposed to multiple sets of files corresponding to, e.g., different samples). Below, we provide an example of initializing a <code>sceptre_object</code> from a set of Parse outputs.</p>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">directory</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package <span class="op">=</span> <span class="st">"sceptredata"</span><span class="op">)</span>,</span>
+<span>                    <span class="st">"/parse_example/"</span><span class="op">)</span></span>
+<span><span class="va">gene_mat_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">directory</span>, <span class="st">"gene_mat.mtx"</span><span class="op">)</span></span>
+<span><span class="va">grna_mat_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">directory</span>, <span class="st">"grna_mat.mtx"</span><span class="op">)</span></span>
+<span><span class="va">all_genes_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">directory</span>, <span class="st">"all_genes.csv"</span><span class="op">)</span></span>
+<span><span class="va">all_grnas_fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">directory</span>, <span class="st">"all_grnas.csv"</span><span class="op">)</span></span>
+<span><span class="va">grna_target_data_frame</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span></span>
+<span>   grna_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"guide_A"</span>, <span class="st">"guide_B"</span>, <span class="st">"guide_C"</span><span class="op">)</span>,</span>
+<span>   grna_target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"target-A"</span>, <span class="st">"target-B"</span>, <span class="st">"non-targeting"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_parse.html">import_data_from_parse</a></span><span class="op">(</span></span>
+<span>  gene_mat_fp <span class="op">=</span> <span class="va">gene_mat_fp</span>,</span>
+<span>  grna_mat_fp <span class="op">=</span> <span class="va">grna_mat_fp</span>,</span>
+<span>  all_genes_fp <span class="op">=</span> <span class="va">all_genes_fp</span>,</span>
+<span>  all_grnas_fp <span class="op">=</span> <span class="va">all_grnas_fp</span>,</span>
+<span>  moi <span class="op">=</span> <span class="st">"low"</span>,</span>
+<span>  grna_target_data_frame <span class="op">=</span> <span class="va">grna_target_data_frame</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We encourage Parse users to examine the example Parse data to ensure that their data match the example data. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_parse.html">import_data_from_parse()</a></code> is an experimental function, and the API of this function is subject to change. We expect the API of <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_parse.html">import_data_from_parse()</a></code> to solidify as we learn more about the Parse CRISPR detect platform and the structure of the Parse program output.</p>
 </section><section id="add-extra-covariates" class="level3" data-number="1.1.3"><h3 data-number="1.1.3" class="anchored" data-anchor-id="add-extra-covariates">
 <span class="header-section-number">1.1.3</span> Add extra covariates</h3>
 <p><code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> and <code>input_data_from_parse()</code> compute the covariates <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_n_nonzero</code>, <code>response_n_umis</code>, <code>response_p_mito</code>, and <code>batch</code>. Users may wish to supply additional covariates (e.g., cell cycle or cell type) to <code>sceptre</code>. To do so, users can pass a data frame <code>extra_covariates</code> containing additional covariates to <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code> or <code>input_data_from_parse()</code>. Below, we simulate an additional covariate <code>cell_type</code> and pass this covariate as an argument to the data import function.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-4_d5449c56441293caaa8d1d8b98233c97">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># simulate an extra covariate, namely cell type</span></span>
-<span><span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"type_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">45919</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="op">)</span></span>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># simulate an extra covariate, namely cell type</span></span>
+<span><span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"type_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>,</span>
+<span>  size <span class="op">=</span> <span class="fl">45919</span>,</span>
+<span>  replace <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">extra_covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>cell_type <span class="op">=</span> <span class="va">cell_type</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># import data, passing the the extra covariates as an argument</span></span>
@@ -290,8 +426,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The additional covariate of <code>cell_type</code> is printed in the “covariates” field when we evaluate <code>sceptre_object</code> in the console.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-5_ad44022f685e71d42ffe930cd2684c3a">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
 
@@ -306,21 +442,26 @@ Attributes of the data:
 </div>
 </section></section><section id="import-data-from-a-collection-of-r-objects" class="level2" data-number="1.2"><h2 data-number="1.2" class="anchored" data-anchor-id="import-data-from-a-collection-of-r-objects">
 <span class="header-section-number">1.2</span> Import data from a collection of R objects</h2>
-<p>Users also can import data into <code>sceptre</code> from a specified set of R objects. This data import strategy is most appropriate for users employing less standard data preprocessing pipelines to generate the response and gRNA count matrices. We use the high-MOI CRISPRi data as a working example. We can obtain these data in R matrix and data frame format as follows.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-6_28faeca640c6351ca23f3aab119bde1f">
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">highmoi_example_data</span><span class="op">)</span></span>
-<span><span class="va">response_matrix</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>   <span class="co"># response matrix</span></span>
-<span><span class="va">grna_matrix</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>           <span class="co"># grna matrix</span></span>
-<span><span class="va">extra_covariates</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span> <span class="co"># batch information</span></span>
-<span><span class="va">response_names</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">gene_names</span>         <span class="co"># response names</span></span>
-<span><span class="va">grna_target_data_frame</span> <span class="op">&lt;-</span> <span class="va">grna_target_data_frame_highmoi</span>  <span class="co"># gRNA target data frame</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Users also can import data into <code>sceptre</code> from a specified set of R objects. This data import strategy is most appropriate for users employing less standard data preprocessing pipelines for generating the response and gRNA count matrices. We use the high-MOI CRISPRi data as a working example. We can obtain these data in R matrix and data frame format as follows.</p>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">highmoi_example_data</span><span class="op">)</span></span>
+<span><span class="co"># response matrix</span></span>
+<span><span class="va">response_matrix</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span></span>
+<span><span class="co"># grna matrix</span></span>
+<span><span class="va">grna_matrix</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span></span>
+<span><span class="co"># batch information</span></span>
+<span><span class="va">extra_covariates</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span></span>
+<span><span class="co"># response names</span></span>
+<span><span class="va">response_names</span> <span class="op">&lt;-</span> <span class="va">highmoi_example_data</span><span class="op">$</span><span class="va">gene_names</span></span>
+<span><span class="co"># gRNA target data frame</span></span>
+<span><span class="va">grna_target_data_frame</span> <span class="op">&lt;-</span> <span class="va">grna_target_data_frame_highmoi</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We call the function <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> to import the data from a collection of R objects. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> takes several arguments: <code>response_matrix</code>, <code>grna_matrix</code>, <code>grna_target_data_frame</code>, <code>moi</code>, <code>extra_covariates</code>, and <code>response_names</code>. The following figure summarizes the main inputs to this function.</p>
-<div class="cell" data-layout-align="center" data-hash="import-data_cache/html/unnamed-chunk-7_80283281bc360197ac8d5d29134a4db8">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="input_pieces.png" class="img-fluid figure-img" width="750"></p>
-<figcaption class="figure-caption">The main data objects involved in a single-cell CRISPR screen analysis: a response matrix, a gRNA matrix, a data frame of extra covariates (optional), and a gRNA target data frame.</figcaption></figure>
+<figure class="figure"><p><img src="input_pieces.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="750"></p>
+<figcaption>The main data objects involved in a single-cell CRISPR screen analysis: a response matrix, a gRNA matrix, a data frame of extra covariates (optional), and a gRNA target data frame.</figcaption></figure>
 </div>
 </div>
 </div>
@@ -328,8 +469,8 @@ Attributes of the data:
 <ul>
 <li>
 <p><code>response_matrix</code> is the matrix of response UMI counts. The responses should be in the rows and the cells in the columns. The row names of the <code>response_matrix</code> should be the response IDs. The first ten rows and columns of the example <code>response_matrix</code> are as follows.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-8_f5d1690b161d435a1c81aaa3709921e1">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">response_matrix</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">response_matrix</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>10 x 10 sparse Matrix of class "dgTMatrix"
 
@@ -348,8 +489,8 @@ ENSG00000162873 . .  . . .  . . .  . .</code></pre>
 </li>
 <li>
 <p><code>grna_matrix</code> is the matrix of gRNA UMI counts. The gRNAs should be in the rows and the cells in the columns. The row names of <code>grna_matrix</code> should be the gRNA IDs. The first ten rows and columns of the example <code>grna_matrix</code> are as follows.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-9_ffef9829c218b6b8c5faa48ab54b8dec">
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_matrix</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_matrix</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>10 x 10 sparse Matrix of class "dgTMatrix"
 
@@ -368,9 +509,9 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 <p><code>response_matrix</code> and <code>grna_matrix</code> should be stored in one of the following formats: <code>matrix</code>, <code>dgTMatrix</code>, <code>dgCMatrix</code>, or <code>dgRMatrix</code>. Note that the columns of <code>response_matrix</code> and <code>grna_matrix</code> are assumed to correspond to the same ordering of cells. Users should make sure to preserve the consistency of column ordering. We recommend that users add cell barcodes as column names for <code>response_matrix</code> and <code>grna_matrix</code>, in which case <code>sceptre</code> checks the consistency of cell ordering.</p>
 </li>
 <li>
-<p><code>grna_target_data_frame</code> is the data frame mapping each gRNA to its target. The <code>grna_target_data_frame</code> that we pass to <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> is exactly the same as the one that we pass to <code>import_data_from_cellranger</code>. See <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> of <em>The whole game</em> for more information about this argument.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-10_aed2b8f36068eb4811a5d01160fa9967">
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_target_data_frame</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">21</span><span class="op">:</span><span class="fl">24</span>, <span class="fl">80</span><span class="op">:</span><span class="fl">83</span><span class="op">)</span>,<span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>grna_target_data_frame</code> is the data frame mapping each gRNA to its target. The <code>grna_target_data_frame</code> that we pass to <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> is exactly the same as the one that we pass to <code>import_data_from_cellranger</code>. See <a href="sceptre.html#sec-whole_game_import_data" class="quarto-xref"><span>Section 1</span></a> of <em>The whole game</em> for more information about this argument.</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">grna_target_data_frame</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">21</span><span class="op">:</span><span class="fl">24</span>, <span class="fl">80</span><span class="op">:</span><span class="fl">83</span><span class="op">)</span>,<span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        grna_id      grna_target   chr     start       end
 1  grna_CCGGGCG  ENSG00000069482 chr11  68451943  68451958
@@ -389,15 +530,15 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 </div>
 </li>
 <li>
-<p><code>moi</code> is a string specifying the MOI of the dataset, either “high” or “low”. This argument serves the same function as it does in <code>import_data_from_cellranger</code>. See <a href="sceptre.html#sec-whole_game_import_data"><span>Section&nbsp;1</span></a> of <em>The whole game</em> for more information.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-11_63c321d3ba1df2c5efb3fb9eaba2a444">
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">moi</span> <span class="op">&lt;-</span> <span class="st">"high"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>moi</code> is a string specifying the MOI of the dataset, either “high” or “low”. This argument serves the same function as it does in <code>import_data_from_cellranger</code>. See <a href="sceptre.html#sec-whole_game_import_data" class="quarto-xref"><span>Section 1</span></a> of <em>The whole game</em> for more information.</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">moi</span> <span class="op">&lt;-</span> <span class="st">"high"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </li>
 <li>
-<p><code>extra_covariates</code> (optional) is a data frame specifying cell-specific covariates beyond those that <code>sceptre</code> can compute. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> computes the covariates <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> does <em>not</em> compute <code>batch</code>, as <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> does not have access to batch information. Thus, <code>batch</code> — alongside any other relevant covariates, such as cell type — should be included in the <code>extra_covariates</code> data frame. <strong>Note:</strong> The rows of <code>extra_covariates</code> are assumed to be in the same order as the columns of <code>response_matrix</code> and <code>grna_matrix</code>. We recommend users add cell barcodes as row names of <code>extra_covariates</code>, in which case <code>sceptre</code> will check the consistency of cell ordering on their behalf.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-12_71ef36bd22d133eb8cc245c8cbdea239">
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">extra_covariates</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">30001</span><span class="op">:</span><span class="fl">30003</span><span class="op">)</span>,,drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>extra_covariates</code> (optional) is a data frame specifying cell-specific covariates beyond those that <code>sceptre</code> can compute. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> computes the covariates <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> does <em>not</em> compute <code>batch</code>, as <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> does not have access to batch information. Thus, <code>batch</code> — alongside any other relevant covariates, such as cell type — should be included in the <code>extra_covariates</code> data frame. Note that the rows of <code>extra_covariates</code> are assumed to be in the same order as the columns of <code>response_matrix</code> and <code>grna_matrix</code>. We recommend users add cell barcodes as row names of <code>extra_covariates</code>, in which case <code>sceptre</code> will check the consistency of cell ordering.</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">extra_covariates</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">30001</span><span class="op">:</span><span class="fl">30003</span><span class="op">)</span>,,drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      batch
 1        b1
@@ -411,8 +552,8 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 </li>
 <li>
 <p><code>response_names</code> (optional) is a vector of human-readable response names. <code>response_names</code> is used to determine which of the responses (if any) are mitochondrial genes for the purpose of computing the <code>response_p_mito</code> covariate.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-13_7b00486dcdb3d792100bd6e4cdbcb257">
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">response_names</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">response_names</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "NUCKS1"  "RBBP5"   "CDK18"   "RAB29"   "DSTYK"   "SLC41A1"</code></pre>
 </div>
@@ -420,8 +561,8 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 </li>
 </ul>
 <p>We pass the arguments <code>response_matrix</code>, <code>grna_matrix</code>, <code>grna_target_data_frame</code>, <code>moi</code>, <code>extra_covariates</code>, and <code>response_names</code> to <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code>, which initializes a <code>sceptre_object</code>.</p>
-<div class="cell" data-hash="import-data_cache/html/unnamed-chunk-14_9516d4efc8d970aa85a3eb5793a61b95">
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
 <span>  response_matrix <span class="op">=</span> <span class="va">response_matrix</span>,</span>
 <span>  grna_matrix <span class="op">=</span> <span class="va">grna_matrix</span>,</span>
 <span>  grna_target_data_frame <span class="op">=</span> <span class="va">grna_target_data_frame</span>,</span>
@@ -430,12 +571,88 @@ grna_GCTCTGC . . . . .  . . . . .</code></pre>
 <span>  response_names <span class="op">=</span> <span class="va">response_names</span></span>
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section><section id="accessing-the-fields-of-a-sceptre_object" class="level2" data-number="1.3"><h2 data-number="1.3" class="anchored" data-anchor-id="accessing-the-fields-of-a-sceptre_object">
-<span class="header-section-number">1.3</span> Accessing the fields of a <code>sceptre_object</code>
+</section><section id="multi-guide-vector-data" class="level2" data-number="1.3"><h2 data-number="1.3" class="anchored" data-anchor-id="multi-guide-vector-data">
+<span class="header-section-number">1.3</span> Multi-guide vector data</h2>
+<p>gRNAs are delivered to cells via a viral vector. In low-MOI screens the experimenter aims to deliver one viral vector to each cell; in high-MOI screens, by contrast, the experimenter aims to deliver <em>multiple</em> viral vectors (each harboring a different gRNA) to each cell. Some recent single-cell CRISPR screens involve a special design in which each viral vector harbors multiple gRNAs. For example, <span class="citation" data-cites="replogle2022">Replogle et al. (<a href="references.html#ref-replogle2022" role="doc-biblioref">2022</a>)</span> conducted a screen in which each viral vector contained two gRNAs, each targeting the same site. In such “multi-guide vector” screens, the user should account for the vector that harbors each gRNA so as to ensure that the cellwise QC and association testing steps are carried out correctly. Users can pass vector information to <code>sceptre</code> by including a <code>vector_id</code> column in the <code>grna_target_data_frame</code>, which specifies the vector on which a given gRNA is located (<a href="#fig-multi_guide_vector_table" class="quarto-xref">Figure&nbsp;<span>1.1</span></a>).</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-multi_guide_vector_table" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-multi_guide_vector_table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="grna_table_with_vector.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="330">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-multi_guide_vector_table-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.1: Example gRNA target data frame for multi-guide vector data.
+</figcaption></figure>
+</div>
+</div>
+</div>
+<p><code>sceptre</code> employs a simple strategy for handling multi-guide vector data: the UMI counts of gRNAs contained on the same vector are summed, and the resulting quantity is treated as if it were the expression vector of an individual gRNA. The vector IDs should be nested within the gRNA targets. (In other words, each gRNA target can map to multiple vector IDs, but each vector ID should map to a single gRNA target.) Finally, the genomic coordinate columns <code>chr</code>, <code>start</code>, and <code>end</code> optionally can be included the gRNA target data frame, but rows containing the same value for <code>vector_id</code> also should contain the same value for <code>chr</code>, <code>start</code>, and <code>end</code>.</p>
+</section><section id="accessing-the-fields-of-a-sceptre_object" class="level2" data-number="1.4"><h2 data-number="1.4" class="anchored" data-anchor-id="accessing-the-fields-of-a-sceptre_object">
+<span class="header-section-number">1.4</span> Accessing the fields of a <code>sceptre_object</code>
 </h2>
-<p>A <code>sceptre_object</code> is an <a href="http://adv-r.had.co.nz/S4.html">S4 object</a>. Like all S4 objects, a <code>sceptre_object</code> contains data, both raw data inputted by the user and processed data that <code>sceptre</code> generates by operating on the raw data. The data stored within a <code>sceptre_object</code> can be accessed via the <code>@</code> operator (e.g., <code>sceptre_object@foo</code>). <strong>We recommend against accessing the data stored within a <code>sceptre_object</code> in this way</strong>. Instead, users should interact with a <code>sceptre_object</code> via the <a href="https://katsevich-lab.github.io/sceptre/reference/index.html">functions exported by the package</a>. Unfortunately, we are unable</p>
+<p>A <code>sceptre_object</code> is an <a href="http://adv-r.had.co.nz/S4.html">S4 object</a>. Like all S4 objects, a <code>sceptre_object</code> contains data, including raw data inputted by the user and processed data that <code>sceptre</code> generates by operating on the raw data. The data stored within a <code>sceptre_object</code> can be accessed via the <code>@</code> operator (e.g., <code>sceptre_object@foo</code>). We recommend against accessing the data stored within a <code>sceptre_object</code> in this way. Instead, users should interact with a <code>sceptre_object</code> via the <a href="https://katsevich-lab.github.io/sceptre/reference/index.html">functions exported by the package</a>. For example, the “getter” functions <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_response_matrix()</a></code>, <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_grna_matrix()</a></code>, and <code><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_cell_covariates()</a></code> return the response matrix, gRNA matrix, and cell covariates, respectively, of a <code>sceptre_object</code>.</p>
+<div class="cell">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">response_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_response_matrix</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span>
+<span><span class="va">grna_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_grna_matrix</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span>
+<span><span class="va">cell_covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/get_response_matrix.html">get_cell_covariates</a></span><span class="op">(</span><span class="va">sceptre_object</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section><section id="sec-import_data_odm_ch_1" class="level2" data-number="1.5"><h2 data-number="1.5" class="anchored" data-anchor-id="sec-import_data_odm_ch_1">
+<span class="header-section-number">1.5</span> Initializing an <code>ondisc</code>-backed <code>sceptre</code>-object</h2>
+<p><code>ondisc</code> is a companion R package to <code>sceptre</code> that — in conjunction with <code>sceptre</code> — enables users to analyze large-scale single-cell CRISPR screen data out-of-core on a laptop or distributed across multiple nodes on a computing cluster. An “<code>ondisc</code>-backed <code>sceptre_object</code>” is a special kind of <code>sceptre_object</code> in which the response and gRNA expression matrices are stored on disk rather than in memory. We defer a detailed discussion of the <code>ondisc</code> package and large-scale single-cell CRISPR screen data analysis to Part II of this book (i.e., <a href="at-scale.html" class="quarto-xref"><span>Chapter 7</span></a> — <a href="pipeline-args.html" class="quarto-xref"><span>Chapter 9</span></a>). Here, we briefly describe how to create an <code>ondisc</code>-backed <code>sceptre_object</code>. Users can create an <code>ondisc</code>-backed <code>sceptre_object</code> by calling a standard data import function (i.e., <code><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data()</a></code> or <code><a href="https://rdrr.io/pkg/sceptre/man/import_data_from_cellranger.html">import_data_from_cellranger()</a></code>), setting the argument <code>use_ondisc</code> to <code>TRUE</code> and <code>directory_to_write</code> to the directory in which to write the disk-based gene and gRNA expression matrices. The table below summarizes which data import function one should call (and which arguments one should supply to that data import function) on the basis of the input data type and whether one wishes to create a standard <code>sceptre_object</code> or an <code>ondisc</code>-backed <code>sceptre_object</code>. (Note that initializing an <code>ondisc</code>-backed <code>sceptre_object</code> from the output of the Parse program is not yet implemented.)</p>
+<table class="table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 35%">
+<col style="width: 41%">
+</colgroup>
+<thead><tr class="header">
+<th>Input type</th>
+<th>Standard <code>sceptre_object</code>
+</th>
+<th>
+<code>ondisc</code>-backed <code>sceptre_object</code>
+</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>R matrices</td>
+<td><pre><code>import_data</code></pre></td>
+<td><pre><code>import_data(
+  use_ondisc = TRUE,
+  directory_to_write = "/path/",
+)</code></pre></td>
+</tr>
+<tr class="even">
+<td>10x Cell Ranger</td>
+<td><pre><code>import_data_from_cellranger</code></pre></td>
+<td><pre><code>import_data_from_cellranger(
+  use_ondisc = TRUE,
+  directory_to_write = "/path/"
+)</code></pre></td>
+</tr>
+<tr class="odd">
+<td>Parse</td>
+<td><pre><code>import_data_from_parse</code></pre></td>
+<td>Not implemented</td>
+</tr>
+</tbody>
+</table>
+<p>For example, below, we create an <code>ondisc</code>-backed <code>sceptre_object</code> to represent the high-MOI CRISPRi data, taking as input the output directories from <code>cellranger count</code> and setting <code>directory_to_write</code> to the temporary directory <code><a href="https://rdrr.io/r/base/tempfile.html">tempdir()</a></code>.</p>
+<pre><code>sceptre_object &lt;- import_data_from_cellranger(
+  directories = directories,
+  moi = "high",
+  grna_target_data_frame = grna_target_data_frame_highmoi,
+  use_ondisc = TRUE,
+  directory_to_write = tempdir()
+)</code></pre>
+<p>See <a href="at-scale.html#sec-import_data_into_odm_backed_sceptre_object" class="quarto-xref"><span>Section 7.1</span></a> and <a href="pipeline-args.html#sec-analyze_odm_within_r" class="quarto-xref"><span>Section 9.3</span></a> for more information.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-replogle2022" class="csl-entry" role="listitem">
+Replogle, Joseph M, Reuben A Saunders, Angela N Pogson, Jeffrey A Hussmann, Alexander Lenail, Alina Guna, Lauren Mascibroda, et al. 2022. <span>“Mapping Information-Rich Genotype-Phenotype Landscapes with Genome-Scale Perturb-Seq.”</span> <em>Cell</em> 185 (14): 2559–75.
+</div>
+</div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -515,10 +732,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -528,8 +744,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -542,6 +767,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -585,6 +929,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -610,6 +955,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -669,23 +1040,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./sceptre.html" class="pagination-link">
+      <a href="./sceptre.html" class="pagination-link  aria-label=" the="" whole="" game="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">The whole game</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./set-analysis-parameters.html" class="pagination-link">
+      <a href="./set-analysis-parameters.html" class="pagination-link" aria-label="<span class='chapter-number'>2</span>&nbsp; <span class='chapter-title'>Set analysis parameters</span>">
         <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
-    <div class="nav-footer-left">Hands-On Single-Cell CRISPR Screen Analysis</div>   
+    <div class="nav-footer-left">
+<p>Hands-On Single-Cell CRISPR Screen Analysis</p>
+</div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>
-    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
   </div>
 </footer>
 

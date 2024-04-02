@@ -20,13 +20,29 @@ book:
   chapters:
     - index.qmd
     - sceptre.qmd
-    - import-data.qmd
-    - set-analysis-parameters.qmd
-    - assign-grnas.qmd
-    - run-qc.qmd
-    - run-calibration-check.qmd
-    - run-power-check-and-discovery-analysis.qmd
+
+    - part: Part I. Introduction to sceptre
+      chapters:
+        - import-data.qmd
+        - set-analysis-parameters.qmd
+        - assign-grnas.qmd
+        - run-qc.qmd
+        - run-calibration-check.qmd
+        - run-power-check-and-discovery-analysis.qmd
+
+    - part: Part II. At-scale sceptre
+      chapters:
+        - at-scale.qmd
+        - pipeline-details.qmd
+        - pipeline-args.qmd
+
+    - part: Part III. Methods and algorithms
+      chapters:
+        - methods.qmd
+
   appendices:
+    - ondisc.qmd
+    - sceptredata.qmd
     - glossary.qmd
     - faq.qmd
     - references.qmd

@@ -1,0 +1,364 @@
+# Overview of methods {#sec-methods_overview}
+
+::: callout-tip
+Part III of this book describes the statistical and algorithmic methods that underlie `sceptre`. Users who wish to apply `sceptre` to analyze their data --- but do not need to know about the specifics of the methods contained within the software --- safely can skip this part.
+:::
+
+Several statistical tasks are involved in the analysis of single-cell CRISPR screen data, including assigning gRNAs to cells, testing for association between gRNAs and the expression of responses (such as genes), and integrating information across gRNAs that target the same site. This chapter provides a high-level overview of the statistical methods that `sceptre` employs to carry out these analysis tasks.
+
+## Notation
+
+We begin by introducing some notation that we use throughout the chapter. Let $\mathbb{N} = \{0, 1, 2, \dots\}$ denote the set of nonnegative integers. For a given single-cell CRISPR screen dataset, let $p\in\mathbb{N}$ denote the number of responses, $r\in\mathbb{N}$ the number of gRNAs, and $n\in\mathbb{N}$ the number of cells in the dataset. Next, let $Y\in \mathbb{N}^{p \times n}$ be the matrix of response UMI counts, where responses are in the rows and cells in the columns. A given entry $Y_{ij}$ of $Y$ indicates the number of UMIs from response $i$ sequenced in cell $j$. Similarly, let $G \in \mathbb{N}^{r \times n}$ be the matrix of gRNA UMI counts; a given entry $G_{ij}$ of $G$ indicates the number of UMIs from gRNA $i$ sequenced in cell $j$. Finally, let $Z_1, \dots, Z_n \in \mathbb{R}^{d}$ be the cell-specific covariates (e.g., `response_n_umis`, `response_n_nonzero`, `response_p_mito`, `grna_n_umis`, `grna_n_nonzero`, `batch`, etc.), where we have included a "1" in each $Z_j$ to serve as an intercept term. (We assume that the count-based covariates, such as `grna_n_nonzero` and `grna_n_umis`, have been log-transformed.) Finally, let $Z \in \mathbb{R}^{n \times d}$ denote the vectors $Z_1, \dots, Z_n$ assembled into a matrix. Throughout, we use an uppercase letter (e.g., $G_{ij}$) to refer to a random variable and a lowercase letter (e.g., $g_{ij}$) to refer to the realized value of the random variable.
+
+The first statistical task involved in single-cell CRISPR screen analysis is to assign gRNAs to cells. The gRNA assignment task involves leveraging the gRNA count matrix $G$ (and possibly the covariate matrix $Z$) to impute the (unobserved) binary matrix $X \in \{0,1\}^{r \times n}$ of gRNA presences and absences, where a given entry $X_{ij}$ of $X$ is defined to be $1$ (resp., $0$) if gRNA $i$ is present (resp., absent) in cell $j$. `sceptre` implements three gRNA assignment strategies: the thresholding method, maximum method, and the mixture method. All three methods account for background contamination, the phenomenon by which gRNA reads sometimes map to cells that do not contain the corresponding gRNA. (See [Assign gRNAs](assign-grnas.qmd) for a real-data example of background contamination.) We describe each method in greater depth here.
+
+### Thresholding method
+
+The thresholding method assigns a gRNA to a cell if the UMI count of the gRNA in the cell exceeds some integer threshold $c \in \mathbb{N}$. Formally, the thresholding method sets $X_{ij}$ to $1$ if $G_{ij} \geq c$ and to $0$ if $G_{ij} < c$. The default value for $c$ is 5 (as proposed in @gasperini2019 and further validated by @barry2022c). An important special case involves setting $c$ to $1$, which implements the "naive" (but occasionally useful) strategy of assigning any gRNA expressed in a given cell to that cell (and thus ignoring background contamination).
+
+### Maximum method
+
+The maximum method assigns the gRNA that exhibits the greatest UMI count in a given cell to that cell. Formally, consider a given cell $j$. Let $i^* \in \{1, \dots, r\}$ be the index such that $$ G_{i^*j} = \max_{i \in \{1, \dots, r\}}{G_{ij}}.$$ (If multiple indices satisfy this criterion, select $i^*$ among these arbitrarily.) We assign gRNA $i^*$ to cell $j$, i.e. we set $X_{i^*j}$ to $1$ and $X_{ij}$ to $0$ for $i \neq i^*$. In carrying out the maximum assignment step, `sceptre` also flags cells that likely contain multiple gRNAs. Let $u \in [0,1]$ be a user-specified threshold (default value $0.8$). Suppose that the gRNA assigned to cell $j$ constitutes fewer than $u$ of the UMIs in that cell. In other words, suppose that
+
+$$
+ \frac{G_{i^*j}}{\sum_{i=1}^{r} G_{ij}} < u.
+$$
+
+Then cell $j$ is flagged as containing multiple gRNAs. Similarly, `scepre` flags cells that likely contain zero gRNAs. Suppose that the sum of the gRNA UMI counts in a given cell $j$ is less than $t \in \mathbb{N}$ (default value 5):
+
+$$
+\sum_{i = 1}^r G_{ij} < t.
+$$
+
+Then cell $j$ is flagged as containing zero gRNAs. Cells containing zero gRNAs or multiple gRNAs are removed as part of the cellwise QC step. (Note that if multiple gRNAs are tied for most highly expressed in a given cell, and if $u > 0.5$, then that cell is flagged as containing multiple gRNAs, per the above rule.)
+
+### Mixture method {#sec-mixture_method}
+
+The mixture method assigns gRNAs to cells using a latent variable generalized linear model (GLM). Consider a given gRNA $i$. Let $G_j$ be the UMI count of gRNA $i$ in cell $j$, and let $X_j$ be the (unobserved) variable indicating whether gRNA $i$ is present ($X_j = 1$) or absent ($X_j = 0$) in cell $j$. (We suppress the $i$ subscript for notational compactness.) We model the gRNA UMI counts using a latent variable Poisson GLM:
+
+$$
+\begin{cases}
+G_j | \mu_j \sim \textrm{Pois}(\mu_j) \\
+\log(\mu_j | X_j, Z_j) = \gamma X_j + \beta^T Z_j \\
+X_j \sim \textrm{Bernoulli}(\pi).
+\end{cases}
+$$ {#eq-latent-variable-glm}
+
+Here, $\mu_j$ is the mean expression level of gRNA $i$ in cell $j$ (given the covariates); $\gamma \in \mathbb{R}$ and $\beta \in \mathbb{R}^{d}$ are the (unknown) regression coefficients; and $\pi \in [0,1]$ is the (unknown) probability that gRNA $i$ is present in a given cell. We fit the model @eq-latent-variable-glm using an EM algorithm, producing estimates $\hat{\beta}$, $\hat{\gamma}$ and $\hat{\pi}$ for the model coefficients $\beta$, $\gamma$, and $\pi$. Using these estimates, we can compute the probability $T_{ij} := \mathbb{P}(X_{ij} = 1)$ that a given cell $j$ contains gRNA $i$. (The probabilities $T_{i1}, \dots, T_{in}$ are sometimes called "posterior probabilities.") Finally, we threshold the posterior probabilities at some threshold $u$ (default value 0.8) to assign gRNA $i$ to the cells, i.e. we set $X_{ij} = 1$ if $T_{ij} > u$ and $X_{ij} = 0$ if $T_{ij} \leq u$. An advantage of the Poisson GLM framework is that it enables us to account for cell-specific covariates that might affect the expression level of the gRNA, such as the number of gRNA UMIs sequenced in a given cell or batch. Formulating the model @eq-latent-variable-glm is fairly straightforward; fitting the model to data in a fast and numerically stable way is more challenging. `sceptre` leverages a novel variant of the EM algorithm for this purpose, which we describe below.
+
+**Approximating the model @eq-latent-variable-glm with a simpler model**. We begin by approximating the latent variable model @eq-latent-variable-glm with a simpler latent variable model that is easier to estimate. First, we obtain accurate estimates for the parameter $\beta$ by exploiting the fact that the gRNA is present in only a small fraction (typically $< 2\%$) of cells. Let $f(g_j; \mu_j)$ denote the probability mass function of the Poisson distribution with mean $\mu_j$ evaluated at $g_j$, i.e.,
+
+$$
+f(g_j; \mu_j) = \frac{\mu_j^{g_j} e^{-\mu_j}}{g_j!}.
+$$Conditioning on the covariates (i.e., treating $X_j = x_j$ and $Z_j = z_j$ as fixed), we can express the log-likelihood of the GLM in @eq-latent-variable-glm as follows:\
+$$
+\begin{multline}
+L(\beta, \gamma) = \sum_{j=1}^n \log \left[f(g_j;\mu_j)\right] = \sum_{j=1}^n \log \left[f(g_j; \exp(\gamma x_j + \beta^T z_j)) \right] \\ = \underbrace{\sum_{j:x_j = 1} \log \left[ f(g_j; \exp(\gamma + \beta^T z_j)) \right]}_{\textrm{few terms}} + \underbrace{\sum_{j: x_j = 0} \log \left[ f(g_j; \exp(\beta^T z_j)) \right]}_\textrm{many terms} \\ \approx \sum_{j=1}^n \log \left[f(g_j; \exp(\beta^T z_j)) \right].
+\end{multline}
+$$
+
+In words, the gRNA indicator $x_j$ is equal to zero in the large majority of cells, and so we can approximate the GLM in @eq-latent-variable-glm with the GLM that results from excluding $x_j$ from the model:
+
+$$
+\begin{cases}
+G_j | \mu_j \sim \textrm{Pois} (\mu_j) \\
+\log(\mu_j | z_j) = \beta^T Z_j.
+\end{cases}
+$$ {#eq-simplified_glm}
+
+We can estimate the GLM @eq-simplified_glm using standard maximum likelihood estimation, as all the variables in this GLM are observed. Doing so yields an estimate $\hat{\beta}$ for $\beta$. Assuming that $\hat{\beta} \approx \beta$ (which holds for large $n$ and small $\pi$), we can write
+
+$$\gamma X_j + \beta Z_j \approx \gamma X_j + \hat{\beta} Z_j = \gamma X_j + o_j,$$where we have set $o_j$ to $\hat{\beta}^TZ_j$, i.e. the $j$th fitted value (on the scale of the cannonical parameter) of the GLM @eq-simplified_glm. Finally, we propose a simplified model for expression of the gRNA:
+
+$$\begin{cases}
+G_j | \mu_j \sim \textrm{Pois}(\mu_j) \\
+\log(\mu_j | X_j) = \gamma X_j + o_j \\
+X_j \sim \textrm{Bernoulli}(\pi).
+\end{cases}
+$$ {#eq-simplified_glm_2}
+
+Here, the $o_j$s are offset terms in the GLM. Notice that the GLM in @eq-simplified_glm_2 does not include covariates or an intercept term; rather, all information about the covariates and the baseline expression level of the gRNA has been "encoded" into the offsets $o_1, \dots, o_n$. In summary we (i) estimated $\beta$ using the GLM @eq-simplified_glm and then (ii) replaced $\beta$ in @eq-latent-variable-glm with its estimate, yielding the model @eq-simplified_glm_2. The model @eq-simplified_glm_2 is a good approximation to @eq-latent-variable-glm in the sense that the maximum likelihood estimates for $\gamma$ and $\pi$ in @eq-simplified_glm_2 are close to the corresponding estimates for these parameters in @eq-latent-variable-glm when $n$ is large and $\pi$ is small (as is the case on most single-cell CRISPR screen datasets). We turn our attention to estimating the model @eq-simplified_glm_2, treating the offset terms $o_1, \dots, o_n$ as known and fixed.
+
+**EM algorithm**. We derive an EM algorithm to estimate the model @eq-simplified_glm_2. Let $\theta = (\gamma, \pi)$ denote the unknown model parameters. We begin by writing down the complete-data likelihood $l$ of this model, which is the likelihood that would result if $X_1, \dots, X_n$ *had* been observed.
+
+$$
+\begin{multline*}
+l(\theta) = \prod_{j=1}^n \mathbb{P}(G_j = g_j, X_j = x_j) = \prod_{j=1}^n\mathbb{P}(G_j = g_j | X_j = x_j) \mathbb{P}(X_j = x_j) \\ = \prod_{j=1}^n f(g_j; \exp( \gamma x_j + o_j))\left[\pi^{x_i} (1-\pi)^{1-x_i} \right].
+\end{multline*}
+$$
+
+We obtain the complete-data log-likelihood $L$ by taking the log of $l$:
+
+$$
+L(\theta) = \log(l(\theta)) = \sum_{j=1}^n \log\left[ f(g_j; \exp(\gamma x_j + o_j)\right] + \sum_{j=1}^n x_j \log(\pi) + (1-x_j)(1-\pi).
+$$
+
+We derive the E and M steps for the EM algorithm in this model.
+
+[E step]{.underline}: The E step entails computing the membership probability of each cell (i.e., the probability that each cell contains the gRNA given the current parameter estimates and the observed gRNA counts). Let $\theta^{(t)} = (\gamma^{(t)}, \pi^{(t)})$ be the parameter estimate for $\theta$ at the $t$th iteration of the algorithm. The $j$th membership probability at the $t$th iteration of the algorithm $T^{(t)}_j$ is defined as $T^{(t)}_j = \mathbb{P}(X_j = 1 | G_j = g_j, \theta^{(t)}).$ Let $[\mu_j(k)]^{(t)}$ be the mean gRNA UMI count in the $j$th cell at the $t$th iteration of the algorithm that results from setting $x_j$ to $k \in \{0,1\}$, i.e.,
+
+$$
+[\mu_j(k)]^{(t)} = \exp( \gamma^{(t)} \cdot k + o_j ).
+$$
+
+Applying Bayes rule, we can express the membership probability $T^{(t)}_j$ as
+
+$$
+\begin{multline*}
+T^{(t)}_j = \mathbb{P}(X_j = 1 | G_j = g_j, \theta^{(t)}) \\ = \frac{\mathbb{P}(G_j = g_j | X_j = 1, \theta^{(t)})\mathbb{P}(X_j = 1 | \theta^{(t)})}{ \sum_{k=0}^1 \mathbb{P}(G_j = g_j | X_j = k, \theta^{(t)}) \mathbb{P}(X_j = k | \theta^{(t)})} \\ = \left(\frac{\mathbb{P}(G_j = g_j | X_j = 0, \theta^{(t)}) \mathbb{P}(X_j = 0)}{\mathbb{P}( G_j = g_j | X_j = 1, \theta^{(t)}) \mathbb{P}(X_j = 1)} +1\right)^{-1}\\ = \left(\frac{f(g_j; [\mu_j(0)]^{(t)})(1-\pi^{(t)}))}{f(g_j; [\mu_j(1)]^{(t)})\pi^{(t)})} + 1 \right)^{-1} = \left(\exp(q_j^{(t)}) + 1 \right)^{-1},
+\end{multline*}
+$$ where we define $$q_j^{(t)} := \log\left( \frac{f(g_j; [\mu_j(0)]^{(t)})(1-\pi^{(t)})}{f(g_j; [\mu_j(1)]^{(t)})\pi^{(t)}} \right).$$
+
+Plugging in the Poisson probability mass function for $f$, we can express $q_j^{(t)}$ is follows.
+
+$$
+\begin{multline*}
+q_j^{(t)} := \log(1-\pi^{(t)}) - \log(\pi^{(t)}) + g_j \left(\log([\mu_j(0)]^{(t)}) - \log([\mu_j(1)]^{(t)}) \right) \\ + [\mu_j(1)]^{(t)} - [\mu_j(0)]^{(t)}.
+\end{multline*}
+$$ {#eq-q_j_expression}
+
+This expression @eq-q_j_expression for $q_j^{(t)}$ is numerically stable and fast to evaluate. In summary the M step consists of computing $T^{(t)}_j$ for all $j\in\{1, \dots, n\}$ by computing $q^{(t)}_j$ (using @eq-q_j_expression) and then evaluating $T^{(t)}_j = \exp(q_j^{(t)} + 1)^{-1}.$
+
+[M step]{.underline}: The M-step involves maximizing the so-called "Q function," which is the function that results from taking the expectation of the complete-data log-likelihood with respect to the $X_j$s while conditioning on the $G_j$s and the current parameter estimates $\theta^{(t)}$. Formally, the Q function $Q(\theta | \theta^{(t)})$ is defined as $Q(\theta|\theta^{(t)}) = \mathbb{E}_{X_1, \dots, X_n}[L(\theta) | G_1 = g_1, \dots, G_n = g_n \theta^{(t)}]$. We can express the Q function as
+
+$$
+\begin{multline*}
+Q(\theta|\theta^{(t)}) = \sum_{j=1}^n T^{(t)}_j \log(\pi) + \sum_{j=1}^n (1 - T_j^{(t)})\log(1-\pi) \\ + \sum_{j=1}^n T_j^{(t)} \log \left[ f\left(g_j; \exp[\gamma + o_j] \right) \right] + \sum_{j=1}^n (1 - T^{(t)}_j) \log \left[f(g_j; \exp(o_j) \right].
+\end{multline*}
+$$ {#eq-q_function}
+
+The goal of the M step to identify the parameter $\theta = (\pi, \gamma)$ that maximizes @eq-q_function. The first two terms of @eq-q_function are a function of $\pi$, and the last two terms are a function of $\gamma$. Thus, we can optimize these sets of terms separately.
+
+To find the maximizer in $\pi$, we differentiate the first two terms of @eq-q_function with respect to $\pi$, yielding
+
+$$
+\frac{\sum_{j=1}^n T_j^{(t)}}{\pi} - \frac{\sum_{j=1}^n (1 - T_j^{(t)})}{1 - \pi}.
+$$ {#eq-m_step_0}
+
+Setting @eq-m_step_0 to zero and solving for $\pi$ produces the maximizer $\pi^{(t+1)}$:
+
+$$\pi^{(t+1)} = (1/n) \sum_{j=1}^n T_j^{(t)}.$$ {#eq-pi_update}
+
+We turn our attention to the last two terms of @eq-q_function. The final term is not a function of $\gamma$ and thus can be ignored. We rewrite the penultimate term as follows:
+
+$$
+\begin{multline*}
+\sum_{j=1}^n T^{(t)}_j \log\left[ f(g_j; \exp[\gamma + o_j])\right] \\ = \sum_{j=1}^n T^{(t)}_j \log\left[ \frac{\exp(\gamma + o_j)^{g_j} \exp(-\exp[\gamma + o_j])}{g_j!} \right] \\ = 
+\sum_{j=1}^n T_j^{(t)}\left[ g_j(\gamma + o_j) - \exp(\gamma + o_j) - \log(g_j!) \right].
+\end{multline*}
+$$ {#eq-m_step_1}
+
+The derivative of @eq-m_step_1 with respect to $\gamma$ is
+
+$$
+\begin{multline*}
+\sum_{j=1}^n T^{(t)}_j g_j - T^{(t)}_j \exp(\gamma + o_j) = \sum_{j=1}^n T^{(t)}_j g_j - \exp(\gamma) \sum_{j=1}^n T_j^{(t)} \exp(o_j).
+\end{multline*}
+$$ {#eq-m_step_2}
+
+Finally, setting @eq-m_step_2 to zero and solving for $\gamma$ yields the maximizer
+
+$$
+\gamma^{(t+1)} = \log\left(\frac{\sum_{j=1}^n T^{(t)}_j y_j }{\sum_{j=1}^n T^{(t)}_j e^{o_j} }\right).
+$$ {#eq-gamma_update}
+
+In summary the M step entails computing the updated parameter estimates $\pi^{(t+1)}$ and $\gamma^{(t+1)}$ using the formulas @eq-pi_update and @eq-gamma_update, respectively.
+
+[Convergence]{.underline}: The incomplete-data likelihood (which we obtain by integrating the complete-data likelihood with respect to the $X_j$s) is
+
+$$
+l_\textrm{incomplete}(\theta) = \prod_{j=1}^n f(g_j; \gamma + o_j) \pi + f(g_j; o_j)(1-\pi).
+$$
+
+The incomplete-data log-likelihood is
+
+$$
+L_\textrm{incomplete}(\theta) = \log(l_\textrm{incomplete}(\theta)) = \sum_{j=1}^n \log\left[ f(g_j; \gamma + o_j) \pi + f(g_j; o_j)(1-\pi) \right].
+$$
+
+Note that the incomplete-data log-likelihood --- in contrast to the complete-data log-likelihood --- is computable (albeit hard to optimize directly). We iterate between E and M steps until $L_\textrm{incomplete}$ converges. We declare that the sequence of estimates $\theta^{(0)}, \theta^{(1)}, \theta^{(2)}, \dots$ has converged when
+
+$$
+\frac{|L_\textrm{incomplete}(\theta^{(t+1)}) - L_\textrm{incomplete}(\theta^{(t)})|}{ \min\left\{ |L_\textrm{incomplete}(\theta^{(t+1)})|, |L_\textrm{incomplete}(\theta^{(t)}) | \right\}} < \epsilon
+$$
+
+for some small $\epsilon > 0$ (in the code, $\epsilon = 0.5 \cdot 10^{-4}$). We set the final parameter estimates $\hat{\pi}$ and $\hat{\gamma}$ to $\pi^{(t+1)}$ and $\gamma^{(t+1)}$. Additionally, we use the final membership probabilities $T^{(t+1)}_1, \dots, T^{(t+1)}_n$ to assign the gRNA to cells.
+
+As is standard, we run the EM algorithm several times over random starting estimates for $\pi$ and $\gamma$ to improve chances of converging to the global maximizer of the incomplete-data likelihood. We use the run whose estimates yield the greatest incomplete-data log-likelihood to assign gRNAs to cells.
+
+## Definition of "treatment group" and "control group" {#sec-defn_trt_cntrl_grp}
+
+To test for association between a given gRNA (or gRNA target) and a response, `sceptre` divides the cells into two groups: the "treatment group" and the "control group." `sceptre` tests for differential expression of the response across these two groups of cells, yielding a p-value for the test of association between the gRNA and response. Defining the cells that constitute the treatment group and control group is somewhat subtle and depends on the analysis parameters of gRNA integration strategy (i.e., union, singleton, or Bonferroni), control group (i.e., complement set or NT cells), and analysis type (i.e., discovery analysis or calibration check). (See [Set analysis parameters](set-analysis-parameters.qmd) for a discussion of these parameters.) This section aims to carefully define "treatment group" and "control group," in particular as a function of the aforementioned analysis parameters.
+
+We first introduce some notation. Let $\mathcal{S} =\{1, \dots, n\}$ denote the entire set of cells. Let $X \in \{0,1\}^{r \times n}$ denote the matrix of imputed gRNA presences and absences (as determined in the gRNA assignment step). Index the gRNAs by $\{1, \dots, r\}$. For $i \in \{1, \dots, r\}$, let $G_i$ denote the set of cells that gRNA $i$ has infected, i.e. $G_i := \{j: X_{ij} = 1\}.$ Let $\mathcal{N} \subset \{1, \dots, r\}$ denote the set of non-targeting gRNAs, and let $\mathcal{T} = \{1,\dots,r\} \setminus \mathcal{N}$ denote the set of targeting gRNAs. (Typically, $\mathcal{T}$ consists of both discovery gRNAs and positive control gRNAs.) Note that in low MOI, after applying quality control, each cell contains a single gRNA, implying that the sets $G_1, \dots, G_r$ are disjoint, i.e.
+
+$$
+\bigcap_{i=1}^r G_i = \emptyset.
+$$
+
+This is not the case in high-MOI; in that setting the intersection of $G_{i_1}$ and $G_{i_2}$ for $i_1 \neq i_2$ is nonempty (in general). We proceed by taking cases on gRNA integration strategy, first considering the union integration strategy and then considering the singleton and Bonferroni integration strategies.
+
+**Union gRNA integration strategy.** We first consider the "union" gRNA integration strategy. The union integration strategy involves combining multiple gRNAs into a single "combined" gRNA and then testing this combined gRNA against responses as if it were a singleton gRNA. Suppose that we are running a discovery analysis, and let $\mathcal{I} \subset \mathcal{T}$ be a given set of gRNAs that targets the same site. The table below defines the treatment group, the complement set control group, and the NT cells control group relative to $\mathcal{I}$.
+
+|                                |                                                      |                                |
+|:------------------:|:------------------------------:|:------------------:|
+|        Treatment group         |             Complement set control group             |     NT cells control group     |
+| $\cup_{i \in \mathcal{I}} G_i$ | $\mathcal{S} \setminus \cup_{i \in \mathcal{I}} G_i$ | $\cup_{i \in \mathcal{N}} G_i$ |
+
+: Union gRNA integration strategy, discovery analysis.
+
+Next, suppose that we are running a calibration check analysis (again using the union gRNA integration strategy). Let $\mathcal{L} \subset \mathcal{N}$ be a set of non-targeting gRNAs that has been randomly combined into a "negative control" gRNA target. (By default, $|\mathcal{L}| = |\mathcal{I}|$, i.e., the discovery target and negative control target contain the same number of gRNAs.) The treatment group, complement set control group, and NT cells control group are defined relative to $\mathcal{L}$ as follows.
+
+|                                |                                                      |                                                        |
+|:-----------------:|:-------------------------:|:-------------------------:|
+|        Treatment group         |             Complement set control group             |                 NT cells control group                 |
+| $\cup_{l \in \mathcal{L}} G_l$ | $\mathcal{S} \setminus \cup_{l \in \mathcal{L}} G_l$ | $\cup_{l \in (\mathcal{N} \setminus \mathcal{L})} G_l$ |
+
+: Union gRNA integration strategy, calibration check.
+
+**Singleton and Bonferroni gRNA integration strategies**. Next, we consider the "singleton" and "Bonferroni" gRNA integration strategies. Both strategies involve testing singleton gRNAs for association against responses. Suppose that we are running a discovery analysis, and let $i \in \mathcal{T}$ be a given targeting gRNA. The table below defines the treatment group, complement set control group, and NT cells control group relative to $i$.
+
+|                 |                              |                                |
+|:-----------------:|:------------------------:|:--------------------------:|
+| Treatment group | Complement set control group |     NT cells control group     |
+|      $G_i$      | $\mathcal{S} \setminus G_i$  | $\cup_{i \in \mathcal{N}} G_i$ |
+
+: Singleton/Bonferroni gRNA integration strategy, discovery analysis.
+
+Finally, suppose that we are running a calibration check using the singleton or Bonferroni gRNA integration strategy. Let $l \in \mathcal{N}$ be a non-targeting gRNA. The treatment group, complement set control group, and NT cells control group are defined relative to $l$ as follows.
+
+|                 |                              |                                                    |
+|:-----------------:|:------------------:|:-------------------------------:|
+| Treatment group | Complement set control group |               NT cells control group               |
+|      $G_l$      | $\mathcal{S} \setminus G_l$  | $\cup_{i \in (\mathcal{N}\setminus \{ l \} )} G_i$ |
+
+: Singleton/Bonferroni gRNA integration strategy, calibration check.
+
+Note that the Bonferroni gRNA integration strategy combines p-values across gRNAs that target the same site into a single "target-wide" p-value via a Bonferroni correction. Note also that the complement set is available as a control group in both low- and high-MOI settings, while the NT cells are available as a control group only in the low-MOI setting.
+
+## Differential expression testing
+
+We next explicate the differential expression testing paradigm of `sceptre`. `sceptre` is based on the combination of a negative binomial model and a resampling framework for differential expression, improving its robustness relative to a standard negative binomial model. We begin by refining the notation introduced above. Consider a given target-response pair. Suppose that there are $n$ cells across the treatment and control groups. (We are abusing notation slightly here; in a low-MOI analysis in which we use the NT cells as our control group, the number of cells in a given pair is not equal to the number of cells in the whole dataset.) Let $Y = [Y_1, \dots, Y_n]^T$ be the vector of raw gene (or protein, etc.) UMI counts. Next, let $X = [X_1, \dots, X_n]^T$ be a binary vector indicating whether a given cell $j$ is in the treatment group ($X_j = 1$) or the control group ($X_j = 0$). Finally, let $Z_1, \dots, Z_n \in \mathbb{R}^{d}$ be the cell-specific covariates, where we have included a "1" in each $Z_j$ to serve as an intercept term. Finally, let $Z \in \mathbb{R}^{n \times d}$ denote the vectors $Z_1, \dots, Z_n$ assembled into a matrix, and let $[X, Z] \in \mathbb{R}^{n \times (d+1)}$ denote the matrix that results from concatenating $X$ and $Z$. Testing for association between a gRNA target and response involves three steps: first, "resampling" the treatment vector $B$ times to form "null" treatment vectors $\tilde{X}_1, \dots \tilde{X}_B$; second, evaluating a negative binomial test statistic on the original treatment vector $X$ and null treatment vectors $\tilde{X}_1, \dots, \tilde{X}_B$; and third, comparing the original test statistic to the null test statistics to compute a p-value. We describe each of these steps below.
+
+### Resampling the treatment vector
+
+The first step is to "resample" the treatment vector $X$ to form $B$ "null" treatment vectors $\tilde{X}_1, \dots, \tilde{X}_B$. The "null" treatment vectors are constructed such that they are not associated with the response vector $Y$, enabling a natural comparison to the original treatment vector. `sceptre` provides two methods for resampling the original treatment vector: permutations and conditional resampling. One can set the `resampling_mechanism` argument of `set_analysis_parameters()` to `"permutations"` and `"crt"` to select between these options.
+
+The permutation strategy simply involves permuting the $X$ vector $B$ times. More precisely, among the $n!$ possible permutations of $X$, we sample $B$ permutations randomly (with replacement and uniformly over the set of all permutations), yielding $\tilde{X}_1, \dots, \tilde{X}_B$. 
+
+The conditional resampling strategy involves resampling $\tilde{X}_1, \dots, \tilde{X}_B$ *conditional* on the values of the cell-specific covariates $Z_1, \dots, Z_n$. It involves several steps. First, we model $X_j$ as a function of $Z_j$ using a logistic regression GLM:
+
+$$
+X_j \sim \textrm{Bern}(\mu_i); \quad \textrm{logit}(\mu_i) = \delta^TZ_j.
+$$
+
+Here, $\delta^T \in \mathbb{R}^{d}$ is an unknown regression coefficient, and $\textrm{logit}$ is the logit function $$\textrm{logit}(\mu) = \log\left(\frac{\mu}{1 - \mu}\right).$$
+
+We produce an estimate $\hat{\delta}$ for $\delta$ by regressing $X$ onto $Z$ via a logistic GLM. Next, we estimate the conditional mean $\hat{\mu}_j$ of $X_j$ given $Z_j$ by evaluating the fitted mean of the GLM $\hat{\mu}_j = \sigma(\hat{\delta}^T Z_j)$, where $\sigma$ is the logistic function: $$ \sigma(\eta) = \frac{1}{1 + e^{-\eta}}.$$ Finally, for each $k \in \{1, \dots, B\}$, we sample the null treatment vector $\tilde{X}_k$ from the distribution $$\left[ \textrm{Bern}(\hat{\mu}_1), \textrm{Bern}(\hat{\mu}_2), \dots, \textrm{Bern}(\hat{\mu}_n)\right]^T,$$ yielding null treatment vectors $\tilde{X}_1, \dots, \tilde{X}_B$. The permutation and conditional resampling strategies pose distinct advantages and disadvantages; see @sec-set_analysis_parameters_resampling_mech for a discussion.
+
+### Computing the test statistics
+
+The second step is to evaluate a test statistic on the original treatment vector $X$ and the resampled treatment vectors $\tilde{X}_1, \dots, \tilde{X}_B$, enabling us to compare the original treatment vector to the resampled treatment vectors (via their test statistics). The test statistic that we use for this purpose is based on a negative binomial GLM. We propose the following working model for the response UMI count $Y_j$ as a function of the cell-specific covariates $Z_j$: $$ Y_j \sim \textrm{NB}_{\theta}(\mu_j); \quad \log(\mu_j) = \tau^T Z_j.$$ {#eq-nb_glm} Here, $\theta$ is the (unknown) negative binomial size parameter, and $\tau^T \in \mathbb{R}^d$ is an (unknown) regression coefficient. The probability mass function $f_\theta(y_j; \mu_j)$ of the negative binomial distribution with mean $\mu_j$ and size parameter $\theta$ evaluated at $y_j$ is as follows:
+$$ f_\theta(y_j; \mu_j) = \binom{y_j + \theta - 1}{y_j} \left(\frac{\mu_j}{\mu_j+\theta} \right)^{y_j} \left(\frac{\theta}{\mu_j + \theta}\right)^\theta.$$
+
+This is the parameterization of the negative binomial distribution in which the variance $\mathbb{V}(Y_i | \mu_i)$ of $Y_i$ given mean $\mu_i$ is $$\mathbb{V}(Y_i | \mu_i) = \mu_i + \mu_i^2 / \theta.$$ The model (@eq-nb_glm) corresponds to the null hypothesis of no association between the response $Y$ and the treatment $X$.
+
+We regress $Y$ onto $Z$ via a negative binomial GLM, yielding estimates $\hat{\tau}^T$ and $\hat{\theta}$ for $\tau$ and $\theta$, respectively.[^methods-1] Next, we test the original treatment vector $X$ and resampled treatment vectors $\tilde{X}_1, \dots, \tilde{X}_B$ for inclusion in the fitted GLM by computing a GLM score test on each of these vectors. The GLM score test statistic $T_\textrm{orig}$ for the original treatment vector $X$ is given by $$
+T_\textrm{orig} = \frac{X^T W M (Y - \hat{\mu})}{\sqrt{X^T W X - X^T W Z (Z^T W Z)^{-1} Z^T W X}},
+$$ {#eq-score_stat_formula}
+
+[^methods-1]: We fit the negative binomial GLM by fitting a Poisson GLM to the data, taking as the negative binomial GLM coefficients the Poisson GLM coefficients, and then estimating the negative binomial size parameter using the residuals of the fitted Poisson GLM. This procedure is faster than standard procedures for fitting a negative binomial GLM. A more detailed description of this procedure will appear in a subsequent chapter.
+
+where $W$ and $M(Y - \hat{\mu})$ are a matrix and vector, respectively, that depend on the fitted means $\hat{\mu}$, response expression vector $Y$, and estimated size parameter $\hat{\theta}$:
+
+$$
+\begin{split}
+\hat{\mu} = \left[\exp(\hat{\tau}^T z_1), \dots, \exp(\hat{\tau}^T z_n)\right]^T; \\
+W = \textrm{diag}\left\{\frac{\hat{\mu}_1}{1 + \hat{\mu}_1/\hat{\theta}}, \dots, \frac{\hat{\mu}_n}{1 + \hat{\mu}_n/\hat{\theta}} \right\}; \\ M(Y - \hat{\mu}) = \left[\frac{Y_1}{\hat{\mu}_1} - 1, \dots, \frac{Y_n}{\hat{\mu}_n} - 1\right]^T.
+\end{split}
+$$
+
+We compute the score test statistic $T_k$ corresponding to the $k$th resampled treatment vector for $k \in \{1, \dots, B\}$ by replacing $X$ with $\tilde{X}_k$ in (@eq-score_stat_formula).
+
+Note that the score test statistic is asymptotically equivalent to a Wald statistic. In other words, we instead could compute the test statistic regressing $Y$ onto the matrix $[X, Z]$ and testing the hypothesis that the coefficient corresponding to $X$ is equal to zero via a Wald test. This latter approach is asymptotically equivalent to the score statistic approach outlined above but is much less computationally efficient.
+
+### Computing the p-value
+
+The third and final step is to compute a p-value. The standard negative binomial GLM p-value $p_\textrm{NB}$ is obtained by evaluating the tail probability of a standard Gaussian distribution at $T_\textrm{orig}$. For example, the left-tailed negative binomial p-value is given by $p_\textrm{NB} = F(T_\textrm{orig}),$ where $F$ is the standard Gaussian distribution. We instead propose to compute the p-value by comparing the original test statistic $T_\textrm{orig}$ to the null test statistics $T_1, \dots, T_B$; this latter approach is more robust. The "exact" left-, right-, and two-tailed permutation test p-values (which also are valid for a conditional randomization test) are given below.
+
+$$
+\begin{split}
+p_\textrm{left} = \frac{1}{B+1}\left(1 + \sum_{i=1}^B \mathbb{I}(T_\textrm{orig} \geq T_i)\right), \\
+p_\textrm{right} = \frac{1}{B+1} \left(1 + \sum_{i=1}^B \mathbb{I}(T_\textrm{orig} \leq T_i)\right), \\
+p_\textrm{both} = 2 \cdot \textrm{min}\left\{ p_\textrm{left}, p_\textrm{right} \right\}.
+\end{split}
+$$ `sceptre` returns the exact permutation test p-value when `resampling_approximation` is set to `"no_approximation"` in `set_analysis_parameters()`.
+
+Unfortunately, computing an exact permutation test p-value can be slow, especially when the number of hypotheses to be tested is large. Thus, `sceptre` provides the option of approximating the null distribution of the test statistics via a skew-normal distribution. A skew-normal distribution is a bell-shaped distribution that generalizes a Gaussian distribution by allowing for skew (i.e., asymmetry) about the mode of the distribution. A skew-normal distribution has three paramters: $\mu$ (the mean), $\sigma$ (the standard deviation), and $\alpha$ (the skew; setting $\alpha = 0$ recovers a Gaussian distribution with parameters $\mu$ and $\sigma$). One can activate the skew-normal functionality of `sceptre` by setting `resampling_approximation` to `"skew_normal"` in `set_analysis_parameters()`. In this case `sceptre` fits a skew-normal distribution to the null test statistics $T_1, \dots, T_B$ via a method of moments estimator, yielding estimates $\hat{\mu}, \hat{\sigma}$ and $\hat{\alpha}$ for $\mu$, $\sigma$, and $\alpha$, respectively. Next, `sceptre` computes the p-value by evaluating the tail probability of the fitted skew-normal distribution at the original test statistic $z_\textrm{orig}$. In particular, letting $f_{\hat{\mu}, \hat{\sigma}, \hat{\alpha}}$ denote the probability density function of the skew-normal distribution with parameters $\hat{\mu}, \hat{\sigma}$, and $\hat{\alpha}$, the left-, right-, and two-tailed p-values are given as follows.
+
+$$
+\begin{split}
+p_\textrm{left} = \int_{-\infty}^{T_\textrm{orig}} f_{\hat{\mu}, \hat{\sigma}, \hat{\alpha}}(x) dx, \\
+p_\textrm{right} = \int_{T_\textrm{orig}}^{\infty} f_{\hat{\mu}, \hat{\sigma}, \hat{\alpha}}(x) dx,  \\
+p_\textrm{both} = 2 \cdot \textrm{min}\left\{ p_\textrm{right}, p_\textrm{left} \right\}.
+\end{split}
+$$
+
+## Estimating the log-fold change
+
+`sceptre` employs a simple and fast strategy for to estimate the log-fold change. Recall that, before computing the test statistics $T_\textrm{orig}, T_1, \dots, T_B$, we fit the negative binomial GLM (@eq-nb_glm), yielding parameter estimates $\hat{\tau}$ and $\hat{\theta}$ for $\tau$ and $\theta$, respectively. To estimate the log-fold change, we posit the simplified model $$Y_j \sim \textrm{NB}_{\theta}(\mu_j); \quad \log(\mu_j) = \xi X_j + o_j,$$ {#eq-simplified_nb_model} where $o_j = \hat{\tau}^T Z_j$ is the $j$th fitted value of the negative binomial GLM (@eq-nb_glm). (This simplification is analogous to the simplification employed in the context of fitting the gRNA mixture model; @sec-mixture_method.) Estimating the log fold change reduces to estimating $\xi$. We treat the terms $o_1, \dots, o_n$ as i.i.d. draws from some distribution $P$; this approximation is reasoanble for large $n$. The log-likelihood of the model (@eq-simplified_nb_model) is
+
+$$
+\begin{multline*}
+L(\xi) = \sum_{j : x_j = 0 }^n \log\left[f_\theta(y_j; \exp[o_j])\right] + \sum_{j : x_j = 1 }^n \log\left[f_\theta(y_j; \exp[\xi + o_j])\right] \\ = C + \sum_{j : x_j = 1 }^n \log\left[f_\theta(y_j; \exp[\xi + o_j])\right],
+\end{multline*}
+$$
+
+where $C$ is a constant in the unknown parameter $\xi$. Observe that, among the set of observations $\{(Y_1, X_1), \dots, (Y_n, X_n)\}$, we can ignore the observations for which $X_i = 0$, as these observations do not contribute to the log likelihood. Relabel the observations for which $X_i = 1$ as $\{(Y_1, X_1), \dots, (Y_s, X_s)\}$, where $s = \sum_{i=1}^n X_i$ is the number of observations for which $X_i = 1$. Using this notation, the log-likelihood of (@eq-simplified_nb_model) can be expressed as
+
+$$
+\begin{multline*}
+L(\xi) = \xi \sum_{j=1}^s y_j - \sum_{j=1}^s y_j \log(\theta + \exp[\xi + o_j]) - \theta \sum_{j=1}^s \log(\theta + \exp[\xi + o_j]) \\ = \xi \sum_{j=1}^s y_j - \sum_{j=1}^s (y_j + \theta) \log(\theta + \exp[\xi + o_j]).
+\end{multline*}
+$$
+
+Differentiating the above in $\xi$ and setting to zero yields the MLE equation: $$ L'(\xi) = \exp(\xi) \sum_{j=1}^s \frac{(y_j + \theta) \exp(o_j)}{\theta + \exp(\xi + o_j)} = \sum_{j=1}^s y_j,$$
+
+or
+
+$$
+\xi = \log\left\{\frac{(1/n)\sum_{j=1}^s y_j }{(1/n)\sum_{j=1}^s (y_j + \theta)\exp(o_j)/[\theta + \exp(\xi + o_j)]}\right\}.
+$$ {#eq-mle_eqn}
+
+The unknown parameter $\xi$ appears on both sides of (@eq-mle_eqn). Thus, we cannot solve for the MLE analytically. However, we can derive an approximate solution for the MLE. Notice that both numerator and denominator of (@eq-mle_eqn) are the mean of i.i.d. random variables. The expectation of the numerator is $\mathbb{E}[Y_j]$, and that of the denominator is $\mathbb{E}[\exp(o_j)].$ Thus, by the law of large numbers and the continuous mapping theorem, the MLE $\hat{\xi}$ for $\xi$ converges in probability to $$\hat{\xi} \xrightarrow{P} \log\left(\frac{\mathbb{E}[Y_j]}{\mathbb{E}[\exp(o_j)]}\right).$$ However, the following quantity converges in probability to the same limit: $$\log\left(\frac{(1/n) \sum_{j=1}^s Y_j }{ (1/n) \sum_{j=1}^s \exp[o_j] }\right) \xrightarrow{P} \log\left(\frac{\mathbb{E}[Y_j]}{\mathbb{E}[\exp(o_j)]}\right).$$ {#eq-approximate_mle}
+
+Thus, we can approximate the MLE $\hat{\xi}$ with the right-hand side of (@eq-approximate_mle):
+
+$$
+\hat{\xi} \approx \log\left(\frac{\sum_{j=1}^s Y_j }{\sum_{j=1}^s \exp[o_j] }\right).
+$$
+
+This is the simple estimator that `sceptre` uses for the log fold change. An advantage to this estimator is that it is quite fast to compute using the fitted GLM (@eq-nb_glm). Interestingly, this estimator circumvents estimation of the size parameter $\theta$.
+
+## Integrating information across gRNAs
+
+`sceptre` provides three strategies for integrating information across gRNAs that target the same site: `"singleton"`, `"union"`, `"bonferroni"`. (One can select between these strategies by specifying the `grna_integration_strategy` argument in the `set_analysis_parameters()` function.) The "singleton" and "union" strategies are straightforward; see @sec-grna_integration_strategy and @sec-defn_trt_cntrl_grp for more information. The Bonferroni strategy is slightly more complicated. Consider a given target-response pair. Suppose that $k$ gRNAs $\textrm{gRNA}_1 \dots \textrm{gRNA}_k$ target this target. Moreover, suppose that, upon testing for association between each of these gRNAs and the response, we obtain gRNA-wise p-values $p_1, \dots, p_k$. The Bonferroni p-value is defined as follows:
+
+$$ p = k \cdot \min\{p_1, \dots, p_k\}.$$ The Bonferroni p-value is valid in the following sense: if $p_1, \dots, p_k$ are valid (i.e., uniformly distributed) p-values, then $p$ too is a valid (i.e., uniformly distributed) p-value. (The gRNA-wise p-values $p_1, \dots, p_k$ can be arbitrarily dependent.) Below, we state this result in a slightly more precise way and prove its correctness. "Superuniformity" is more general than uniformity and is sufficient for p-value validity. This proof is standard; see, e.g., the 
+Bonferroni correction [Wikipedia page](https://en.wikipedia.org/wiki/Bonferroni_correction).
+
+**Theorem**: Suppose that $p_1, \dots, p_k$ are superuniform, i.e. $\mathbb{P}(p_i \leq \alpha) \leq \alpha$ for all $i \in \{1, \dots, k\}$ and all $\alpha \in [0,1]$. Then $p = k \cdot \min\{p_1, \dots, p_k\}$ also is superuniform.
+
+**Proof**:
+
+$$
+\begin{multline}
+\mathbb{P}( k \cdot \min\{p_1, \dots, p_k\} \leq \alpha) = \mathbb{P}( \min\{p_1, \dots, p_k\} \leq \alpha/k )\\ = \mathbb{P}\left( p_1 \leq \alpha/k \textrm{ or } \dots \textrm{ or } p_k \leq \alpha /k  \right) \leq \sum_{i=1}^k \mathbb{P}(p_i \leq \alpha/k) \leq \sum_{i=1}^k \alpha/k = \alpha.
+\end{multline}
+$$
+
+The penultimate inequality follows from the union bound, while the final inequality follows from the superuniformity of $p_i$. $\square$
+
+## Accelerations
+
+`sceptre` leverages several statistical and algorithmic accelerations to considerably improve the speed of the methods described above, including a sparsity-exploiting algorithm for computing GLM score tests and a strategy for recycling computation across permutation tests. We plan to describe these accelerations in a subsequent chapter.

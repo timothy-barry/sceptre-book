@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Timothy Barry, Eugene Katsevich">
 <title>Hands-On Single-Cell CRISPR Screen Analysis - 2&nbsp; Set analysis parameters</title>
@@ -20,7 +20,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -56,6 +56,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -97,7 +98,13 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -106,35 +113,61 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><link rel="stylesheet" href="custom.css">
+}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="custom.css">
 </head>
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./set-analysis-parameters.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./set-analysis-parameters.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
   </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       <img src="./hex.jpg" alt="" class="sidebar-logo py-0 d-lg-inline d-none"></a>
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Hands-On Single-Cell CRISPR Screen Analysis</a> 
         <div class="sidebar-tools-main">
-    <a href="https://katsevich-lab.github.io/sceptre/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
+    <a href="https://katsevich-lab.github.io/sceptre/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-git"></i></a>
 </div>
     </div>
       </div>
@@ -157,46 +190,10 @@ div.csl-indent {
  <span class="menu-text">The whole game</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./import-data.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./set-analysis-parameters.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./assign-grnas.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./run-qc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./run-calibration-check.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./run-power-check-and-discovery-analysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
- <span class="menu-text">Appendices</span></a>
+ <span class="menu-text">Part I. Introduction to sceptre</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -204,53 +201,158 @@ div.csl-indent {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./import-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./set-analysis-parameters.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./assign-grnas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./run-qc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Run quality control</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./run-calibration-check.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Run calibration check</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./run-power-check-and-discovery-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Run power check and discovery analysis</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Part II. At-scale sceptre</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./at-scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Introduction to the Nextflow pipeline</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pipeline-details.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">A deeper dive into the Nextflow pipeline</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pipeline-args.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Nextflow installation, pipeline arguments</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Part III. Methods and algorithms</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Overview of methods</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ondisc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">The <code>ondisc</code> package</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sceptredata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">The <code>sceptredata</code> package</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Glossary</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Frequently asked questions</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">References</span></span></a>
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
       </ul>
 </li>
     </ul>
 </div>
-</nav><div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#positive-control-pairs" id="toc-positive-control-pairs" class="nav-link active" data-scroll-target="#positive-control-pairs"><span class="header-section-number">2.1</span> Positive control pairs</a></li>
+<li><a href="#sec-set_analysis_parameters_pc_pairs" id="toc-sec-set_analysis_parameters_pc_pairs" class="nav-link active" data-scroll-target="#sec-set_analysis_parameters_pc_pairs"><span class="header-section-number">2.1</span> Positive control pairs</a></li>
   <li>
-<a href="#discovery-pairs" id="toc-discovery-pairs" class="nav-link" data-scroll-target="#discovery-pairs"><span class="header-section-number">2.2</span> Discovery pairs</a>
+<a href="#sec-set_analysis_parameters_discovery_pairs" id="toc-sec-set_analysis_parameters_discovery_pairs" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_discovery_pairs"><span class="header-section-number">2.2</span> Discovery pairs</a>
   <ul class="collapse">
 <li><a href="#sec-set-analysis-parameters_construct_cis_pairs" id="toc-sec-set-analysis-parameters_construct_cis_pairs" class="nav-link" data-scroll-target="#sec-set-analysis-parameters_construct_cis_pairs"><span class="header-section-number">2.2.1</span> Construct <em>cis</em> pairs</a></li>
   <li><a href="#sec-set-analysis-parameters_construct_trans_pairs" id="toc-sec-set-analysis-parameters_construct_trans_pairs" class="nav-link" data-scroll-target="#sec-set-analysis-parameters_construct_trans_pairs"><span class="header-section-number">2.2.2</span> Construct <em>trans</em> pairs</a></li>
   <li><a href="#reducing-the-multiplicity-burden" id="toc-reducing-the-multiplicity-burden" class="nav-link" data-scroll-target="#reducing-the-multiplicity-burden"><span class="header-section-number">2.2.3</span> Reducing the multiplicity burden</a></li>
   </ul>
 </li>
-  <li><a href="#side" id="toc-side" class="nav-link" data-scroll-target="#side"><span class="header-section-number">2.3</span> Side</a></li>
+  <li><a href="#sec-set_analysis_parameters_side" id="toc-sec-set_analysis_parameters_side" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_side"><span class="header-section-number">2.3</span> Side</a></li>
   <li><a href="#sec-grna_integration_strategy" id="toc-sec-grna_integration_strategy" class="nav-link" data-scroll-target="#sec-grna_integration_strategy"><span class="header-section-number">2.4</span> gRNA integration strategy</a></li>
   <li><a href="#sec-set-analysis-parameters_control_group" id="toc-sec-set-analysis-parameters_control_group" class="nav-link" data-scroll-target="#sec-set-analysis-parameters_control_group"><span class="header-section-number">2.5</span> Control group</a></li>
-  <li><a href="#formula" id="toc-formula" class="nav-link" data-scroll-target="#formula"><span class="header-section-number">2.6</span> Formula</a></li>
+  <li><a href="#sec-set_analysis_parameters_formula" id="toc-sec-set_analysis_parameters_formula" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_formula"><span class="header-section-number">2.6</span> Formula</a></li>
   <li><a href="#sec-set_analysis_parameters_resampling_mech" id="toc-sec-set_analysis_parameters_resampling_mech" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_resampling_mech"><span class="header-section-number">2.7</span> Resampling mechanism</a></li>
-  <li><a href="#sec-set_analysis_parameters_parametric_curve" id="toc-sec-set_analysis_parameters_parametric_curve" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_parametric_curve"><span class="header-section-number">2.8</span> Fit parametric curve</a></li>
+  <li><a href="#sec-set_analysis_parameters_parametric_curve" id="toc-sec-set_analysis_parameters_parametric_curve" class="nav-link" data-scroll-target="#sec-set_analysis_parameters_parametric_curve"><span class="header-section-number">2.8</span> Resampling approximation</a></li>
   <li><a href="#sec-multiple_testing" id="toc-sec-multiple_testing" class="nav-link" data-scroll-target="#sec-multiple_testing"><span class="header-section-number">2.9</span> Multiple testing method and multiple testing <span class="math inline">\(\alpha\)</span></a></li>
   <li><a href="#setting-the-analysis-parameters" id="toc-setting-the-analysis-parameters" class="nav-link" data-scroll-target="#setting-the-analysis-parameters"><span class="header-section-number">2.10</span> Setting the analysis parameters</a></li>
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./import-data.html">Part I. Introduction to sceptre</a></li><li class="breadcrumb-item"><a href="./set-analysis-parameters.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></a></li></ol></nav><div class="quarto-title">
 <h1 class="title"><span id="sec-set_analysis_parameters" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Set analysis parameters</span></span></h1>
 </div>
 
@@ -264,21 +366,23 @@ div.csl-indent {
   </div>
   
 
+
 </header><p>This chapter explicates the “set analysis parameters” step of the <code>sceptre</code> pipeline. The purpose of this step is to select the parameters that govern how the statistical analysis is to be carried out.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-1_dac7beb431b499a86e26f464f30cba3f">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="pipeline_schematic_step_2.png" class="img-fluid figure-img" width="650"></p>
+<figure class="figure"><p><img src="pipeline_schematic_step_2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>We begin by loading the <code>sceptre</code> package.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-2_a8d2d342d1a909a0661f305061e2ebd3">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Katsevich-Lab/sceptre">sceptre</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We begin by loading the <code>sceptre</code> and <code>sceptredata</code> packages.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptre</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://timothy-barry.github.io/sceptre-book/">sceptredata</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Throughout, we examine two example datasets. First, we examine the example high-MOI CRISPRi screen of candidate enhancers in K562 cells. This is the example dataset that we used in <em>The whole game</em> and in <a href="import-data.html"><span>Chapter&nbsp;1</span></a>. We initialize a <code>sceptre_object</code> called <code>sceptre_object_highmoi</code> to represent these data.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-3_0daf6459f0f07aebc8fd4d700943b983">
+<p>Throughout, we examine two example datasets. First, we examine the example high-MOI CRISPRi screen of candidate enhancers in K562 cells. This is the example dataset that we used in <em>The whole game</em> and in <a href="import-data.html" class="quarto-xref"><span>Chapter 1</span></a>. We initialize a <code>sceptre_object</code> called <code>sceptre_object_highmoi</code> to represent these data.</p>
+<div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">highmoi_example_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">grna_target_data_frame_highmoi</span><span class="op">)</span></span>
 <span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
@@ -291,8 +395,9 @@ div.csl-indent {
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We additionally examine an example low-MOI CRISPRko screen of gene transcription start sites in immune cells <span class="citation" data-cites="papalexi2021">(<a href="references.html#ref-papalexi2021" role="doc-biblioref">Papalexi et al. 2021</a>)</span>. We initialize a <code>sceptre_object</code> called <code>sceptre_object_lowmoi</code> to store this latter dataset.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-4_cb13cecb5b584df3386b18306d6183de">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
+<div class="cell">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">lowmoi_example_data</span><span class="op">)</span></span>
+<span><span class="va">sceptre_object_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/import_data.html">import_data</a></span><span class="op">(</span></span>
 <span>  response_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">response_matrix</span>,</span>
 <span>  grna_matrix <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_matrix</span>,</span>
 <span>  extra_covariates <span class="op">=</span> <span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">extra_covariates</span>,</span>
@@ -301,7 +406,7 @@ div.csl-indent {
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We print the details of the CRISPRko dataset below.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-5_13c16dda46906ab7ca789009db824129">
+<div class="cell">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_lowmoi</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
@@ -316,7 +421,7 @@ Attributes of the data:
 </div>
 </div>
 <p>The CRISPR perturbations target gene transcription start sites. Each gene is targeted by three or four gRNAs, and nine gRNAs in the dataset are non-targeting. The “responses” are genes. We print a few rows of the gRNA target data frame corresponding to this dataset below.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-6_b460ffaf3b6e3f2eeeb0bd485bd4e31b">
+<div class="cell">
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">lowmoi_example_data</span><span class="op">$</span><span class="va">grna_target_data_frame</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span>,<span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  grna_id grna_target
@@ -342,13 +447,13 @@ Attributes of the data:
 <li><code>formula_object</code></li>
 <li><code>multiple_testing_method</code></li>
 <li><code>multiple_testing_alpha</code></li>
-<li><code>fit_parametric_curve</code></li>
+<li><code>resampling_approximation</code></li>
 </ul>
-<p>Of these parameters, only <code>discovery_pairs</code> is required; the rest have sensible defaults. We describe these arguments below.</p>
-<section id="positive-control-pairs" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="positive-control-pairs">
+<p>None of these arguments is required, and all are set to sensible defaults. However, users will specify <code>discovery_pairs</code> and <code>positive_control_pairs</code> in most analyses. We describe these arguments below.</p>
+<section id="sec-set_analysis_parameters_pc_pairs" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="sec-set_analysis_parameters_pc_pairs">
 <span class="header-section-number">2.1</span> Positive control pairs</h2>
 <p>Positive control pairs are target-response pairs for which we know (or have strong reason to believe) that there is a regulatory relationship between the target and the response. We can use positive control pairs to verify that <code>sceptre</code> (or any association testing method for that matter) is sensitive (i.e., capable of detecting true associations) on the dataset under analysis. We use the function <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> to construct the positive control pairs. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> takes as an argument a <code>sceptre_object</code> and returns a data frame with columns <code>grna_target</code> and <code>response_id</code>, where gRNA targets and response IDs with matching names are paired. We call <code><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs()</a></code> on the high-MOI CRISPRi dataset and the low-MOI CRISPRko dataset. In both cases the positive control set consists of transcription start sites paired to the gene regulated by those transcription start sites.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-7_ef5464c545a3c298f2aa4e47c40fa98a">
+<div class="cell">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">positive_control_pairs_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span></span>
 <span><span class="op">)</span></span>
@@ -363,7 +468,7 @@ Attributes of the data:
 6 ENSG00000147669 ENSG00000147669</code></pre>
 </div>
 </div>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-8_61f48e1c069ca54f39405e9cd52211fd">
+<div class="cell">
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">positive_control_pairs_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_positive_control_pairs.html">construct_positive_control_pairs</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span></span>
 <span><span class="op">)</span></span>
@@ -378,16 +483,18 @@ Attributes of the data:
 6       STAT2       STAT2</code></pre>
 </div>
 </div>
-<p>Positive control pairs need not consist exclusively of gene transcription start sites paired to target genes. For example, enhancer-gene links that have been validated previously (through, e.g., arrayed CRISPR screens) also can serve as positive control pairs. Users can manually append additional positive control pairs to the positive control pair data frame via a call to <code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code>. For example, suppose we know on the high-MOI CRISPRi data that <code>candidate_enh_1</code> regulates gene <code>ENSG00000069482</code> and that <code>candidate_enh_10</code> regulates gene <code>ENSG00000135821</code>. We can add these enhancer-gene links to the positive control pair data frame as follows.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-9_75030f9167dc8cc15c1197c89fc2c155">
+<p>Positive control pairs need not consist exclusively of gene transcription start sites paired to target genes. For example, enhancer-gene links that have been validated previously (through, e.g., an arrayed CRISPR screen with bulk RNA-seq, or a bulk CRISPR screen with cell sorting) also can serve as positive control pairs. Users manually can append additional positive control pairs to the positive control pair data frame via a call to <code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code>. For example, suppose we know on the high-MOI CRISPRi data that <code>candidate_enh_1</code> regulates gene <code>ENSG00000069482</code> and that <code>candidate_enh_10</code> regulates gene <code>ENSG00000135821</code>. We can add these enhancer-gene links to the positive control pair data frame as follows.</p>
+<div class="cell">
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># construct data frame of additional positive control pairs</span></span>
 <span><span class="va">additional_positive_control_pairs</span> <span class="op">&lt;-</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>grna_target <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"candidate_enh_1"</span>, <span class="st">"candidate_enh_10"</span><span class="op">)</span>,</span>
 <span>             response_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ENSG00000069482"</span>, <span class="st">"ENSG00000135821"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># append additional pairs to positive control data frame</span></span>
-<span><span class="va">positive_control_pairs_highmoi_updated</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">positive_control_pairs_highmoi</span>,</span>
-<span>                                                <span class="va">additional_positive_control_pairs</span><span class="op">)</span></span>
+<span><span class="va">positive_control_pairs_highmoi_updated</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span></span>
+<span>  <span class="va">positive_control_pairs_highmoi</span>,</span>
+<span>  <span class="va">additional_positive_control_pairs</span></span>
+<span><span class="op">)</span></span>
 <span><span class="va">positive_control_pairs_highmoi_updated</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        grna_target     response_id
@@ -406,30 +513,31 @@ Attributes of the data:
 </div>
 </div>
 <p>We then could supply <code>positive_control_pairs_highmoi_updated</code> instead of <code>positive_control_pairs_highmoi</code> to <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>.</p>
-</section><section id="discovery-pairs" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="discovery-pairs">
+</section><section id="sec-set_analysis_parameters_discovery_pairs" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="sec-set_analysis_parameters_discovery_pairs">
 <span class="header-section-number">2.2</span> Discovery pairs</h2>
 <p>Discovery pairs are target-response pairs whose association status we do not know but seek to learn. Unlike positive control and negative control pairs, which serve a mainly technical purpose, discovery pairs are of primary scientific interest. <code>sceptre</code> provides two helper functions for constructing discovery pairs: <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> and <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>.</p>
 <section id="sec-set-analysis-parameters_construct_cis_pairs" class="level3" data-number="2.2.1"><h3 data-number="2.2.1" class="anchored" data-anchor-id="sec-set-analysis-parameters_construct_cis_pairs">
 <span class="header-section-number">2.2.1</span> Construct <em>cis</em> pairs</h3>
-<p><code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> returns the set of target-response pairs for which the target and response are located on the same chromosome and in close physical proximity to one another. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> is a useful pair constructor function for screens that aim to map noncoding regulatory elements (e.g., enhancers or noncoding GWAS variants) to target genes or proteins in <em>cis</em>. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> assumes that the columns <code>chr</code>, <code>start</code>, and <code>stop</code> are present in the <code>grna_target_data_frame</code>, giving the chromosome, start position, and end position of the region that each gRNA targets. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> takes several arguments: <code>sceptre_object</code> (required) <code>distance_threshold</code> (optional), <code>positive_control_pairs</code> (optional), and <code>response_position_data_frame</code> (optional). By default, <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> pairs each gRNA target to the set of responses on the same chromosome as that target and within <code>distance_threshold</code> bases of that target. (The default value of <code>distance_threshold</code> is 500,000 bases, or half a megabase.)The <code>positive_control_pairs</code> data frame optionally can be passed to <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code>, in which case the positive control targets (i.e., the entries within the <code>grna_target</code> column of <code>positive_control_pairs</code>) are excluded from the <em>cis</em> pairs. One may want to exclude these from the discovery analysis if these targets are intended for positive control purposes only.</p>
+<p><code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> returns the set of target-response pairs for which the target and response are located on the same chromosome and in close physical proximity to one another. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> is a useful pair constructor function for screens that aim to map noncoding regulatory elements (e.g., enhancers or noncoding GWAS variants) to target genes or proteins in <em>cis</em>. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> assumes that the columns <code>chr</code>, <code>start</code>, and <code>stop</code> are present in the <code>grna_target_data_frame</code>, giving the chromosome, start position, and end position of the region that each gRNA targets. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> takes several arguments: <code>sceptre_object</code> (required) <code>distance_threshold</code> (optional), <code>positive_control_pairs</code> (optional), and <code>response_position_data_frame</code> (optional). By default, <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> pairs each gRNA target to the set of responses on the same chromosome as that target and within <code>distance_threshold</code> bases of that target. (The default value of <code>distance_threshold</code> is 500,000 bases, or half a megabase.) The <code>positive_control_pairs</code> data frame optionally can be passed to <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code>, in which case the positive control targets (i.e., the entries within the <code>grna_target</code> column of <code>positive_control_pairs</code>) are excluded from the <em>cis</em> pairs. One may want to exclude these from the discovery analysis if these targets are intended for positive control purposes only.</p>
 <p>Finally, <code>response_position_data_frame</code> is an optional data frame containing the columns <code>response_id</code>, <code>chr</code>, and <code>position</code>, where <code>chr</code> and <code>position</code> give the genomic coordinate of each <code>response_id</code>. The default value of <code>response_position_data_frame</code> is <code>gene_position_data_frame_grch38</code>, which is a data frame that ships with <code>sceptre</code> that contains the genomic coordinate of the transcription start site of all genes in the human genome. We print several rows of <code>gene_position_data_frame_grch38</code> below.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-10_5d8edeec7ac04280873b6f9efd53d487">
+<div class="cell">
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gene_position_data_frame_grch38</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">8001</span><span class="op">:</span><span class="fl">8004</span><span class="op">)</span>,<span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       response_id   chr position
-1: ENSG00000243485  chr1    29554
-2: ENSG00000237613  chr1    36081
-3: ENSG00000186092  chr1    65419
-4: ENSG00000239945  chr1    91105
-5: ENSG00000127328 chr12 69738681
-6: ENSG00000166268 chr12 69825227
-7: ENSG00000257241 chr12 69947081
-8: ENSG00000257139 chr12 70180338</code></pre>
+<pre><code>       response_id    chr position
+            &lt;char&gt; &lt;fctr&gt;    &lt;int&gt;
+1: ENSG00000243485   chr1    29554
+2: ENSG00000237613   chr1    36081
+3: ENSG00000186092   chr1    65419
+4: ENSG00000239945   chr1    91105
+5: ENSG00000127328  chr12 69738681
+6: ENSG00000166268  chr12 69825227
+7: ENSG00000257241  chr12 69947081
+8: ENSG00000257139  chr12 70180338</code></pre>
 </div>
 </div>
-<p><code>gene_position_data_frame_grch38</code> was derived from the GrCh38 (hg19) reference genome, which is the reference genome that all versions of <code>cellranger count</code> released since 2021 have used for alignment. Users can pass their own <code>response_position_data_frame</code> to <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> if the <code>gene_position_data_frame_grch38</code> data frame included within <code>sceptre</code> is inadequate for their analysis. For example, some users may wish to map enhancers to proteins in <em>cis</em>. Such users could construct the discovery set by coupling each enhancer to the set of proteins whose corresponding gene is in close physical proximity to that enhancer. In such an analysis <code>response_position_data_frame</code> would be a data frame mapping each protein to the chromosomal position of the transcription start site of its corresponding gene. Note that <code>response_position_data_frame</code> and the <code>chr</code>, <code>start</code>, and <code>stop</code> columns of the <code>grna_target_data_frame</code> should be defined with respect to the same reference genome, as <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> proceeds by intersecting <code>response_position_data_frame</code> with <code>grna_target_data_frame</code>.</p>
+<p><code>gene_position_data_frame_grch38</code> was derived from the GrCh38 (hg19) reference genome, which is the reference genome that all versions of <code>cellranger count</code> released since 2021 have used for alignment. Users can pass their own <code>response_position_data_frame</code> to <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> if the <code>gene_position_data_frame_grch38</code> data frame included within <code>sceptre</code> is inadequate for their analysis. For example, some users may wish to map enhancers to proteins in <em>cis</em>. Such users could construct the discovery set by coupling each enhancer to the set of proteins whose corresponding gene is in close physical proximity to that enhancer. In such an analysis <code>response_position_data_frame</code> would be a data frame mapping each protein to the chromosomal position of the transcription start site of its corresponding gene. Note that <code>response_position_data_frame</code> and the <code>chr</code>, <code>start</code>, and <code>stop</code> columns of the <code>grna_target_data_frame</code> should be defined with respect to the same reference genome, as <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> implements its functionality by intersecting <code>response_position_data_frame</code> with <code>grna_target_data_frame</code>.</p>
 <p>We use <code><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs()</a></code> to construct the discovery pairs for the high-MOI CRISPRi dataset. We set <code>distance_threshold</code> to <code>5e6</code> (i.e., 5 megabases) so as to increase the number of pairs in the discovery set for illustration purposes.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-11_5ad3536021009ab6d44aa3c9e63681f1">
+<div class="cell">
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_cis_pairs.html">construct_cis_pairs</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
 <span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_highmoi</span>,</span>
@@ -437,7 +545,7 @@ Attributes of the data:
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>discovery_pairs_highmoi</code> is a data frame with columns <code>grna_target</code> and <code>response_id</code>; each candidate enhancer is mapped to the set of genes in close proximity to that candidate enhancer.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-12_5dcf0a18ead7232feb78b7dfae139205">
+<div class="cell">
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_highmoi</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span>, <span class="fl">50</span><span class="op">)</span>,<span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       grna_target     response_id
@@ -452,8 +560,8 @@ Attributes of the data:
 </section><section id="sec-set-analysis-parameters_construct_trans_pairs" class="level3" data-number="2.2.2"><h3 data-number="2.2.2" class="anchored" data-anchor-id="sec-set-analysis-parameters_construct_trans_pairs">
 <span class="header-section-number">2.2.2</span> Construct <em>trans</em> pairs</h3>
 <p><code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> returns the entire set of possible target-response pairs. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> is a useful pair constructor function for analyses in which we seek to conduct a <em>trans</em> analysis, testing each target against each response. <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> takes as arguments <code>sceptre_object</code> (required), <code>positive_control_pairs</code> (optional), and <code>pairs_to_exclude</code> (optional). By default <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> returns a data frame with columns <code>grna_target</code> and <code>response_id</code>, where each gRNA target is mapped to each response ID.</p>
-<p>The optional argument <code>pairs_to_exclude</code> enables the user to remove specific pairs from the <em>trans</em> set and takes values <code>"none"</code>, <code>"pc_pairs"</code>, or <code>"pairs_containing_pc_targets"</code>. If <code>pairs_to_exclude</code> is set to <code>"none"</code> (the default), then no pairs are removed from the <em>trans</em> set. Next, if <code>pairs_to_exclude</code> is set to <code>"pc_pairs"</code> (and the <code>positive_control_pairs</code> data frame is passed), then then the positive control target-response pairs are excluded from the <em>trans</em> set. Finally, if <code>pairs_to_exclude</code> is set to <code>"pairs_containing_pc_targets"</code> (and <code>positive_control_pairs</code> is passed), then <em>all</em> pairs containing a positive control gRNA target are excluded from the <em>trans</em> pairs. (In this sense setting <code>pairs_to_exclude</code> to <code>"pairs_containing_pc_targets"</code> is stronger than setting <code>pairs_to_exclude</code> to <code>"pc_pairs"</code>.) Typically, in gene-targeting (resp., noncoding-regulatory-element-targeting) screens, we want to set <code>pairs_to_exclude</code> to <code>"pc_pairs"</code> (resp., <code>"pairs_containing_pc_targets"</code>). Below, we call <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> to construct the discovery set for the low-MOI CRISPRko data.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-13_d928156be33f41f722f7736da3ef3143">
+<p>The optional argument <code>pairs_to_exclude</code> enables the user to remove specific pairs from the <em>trans</em> set and takes values <code>"none"</code>, <code>"pc_pairs"</code>, or <code>"pairs_containing_pc_targets"</code>. If <code>pairs_to_exclude</code> is set to <code>"none"</code> (the default), then no pairs are removed from the <em>trans</em> set. Next, if <code>pairs_to_exclude</code> is set to <code>"pc_pairs"</code> (and the <code>positive_control_pairs</code> data frame is passed), then then the positive control target-response pairs are excluded from the <em>trans</em> set. Finally, if <code>pairs_to_exclude</code> is set to <code>"pairs_containing_pc_targets"</code> (and <code>positive_control_pairs</code> is passed), then <em>all</em> pairs containing a positive control gRNA target are excluded from the <em>trans</em> pairs. (In this sense setting <code>pairs_to_exclude</code> to <code>"pairs_containing_pc_targets"</code> is stronger than setting <code>pairs_to_exclude</code> to <code>"pc_pairs"</code>.) Typically, in gene-targeting (resp., noncoding-regulatory-element-targeting) screens, we set <code>pairs_to_exclude</code> to <code>"pc_pairs"</code> (resp., <code>"pairs_containing_pc_targets"</code>). Below, we call <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> to construct the discovery set for the low-MOI CRISPRko data.</p>
+<div class="cell">
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_lowmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_lowmoi</span>,</span>
 <span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_lowmoi</span>,</span>
@@ -461,17 +569,18 @@ Attributes of the data:
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">discovery_pairs_lowmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  grna_target response_id
-1        ATF2       PCBP3
-2        BRD4       PCBP3
-3        CAV1       PCBP3
-4       CD274       PCBP3
-5        CD86       PCBP3
-6       CMTM6       PCBP3</code></pre>
+<pre><code>   grna_target response_id
+        &lt;char&gt;      &lt;char&gt;
+1:        ATF2       PCBP3
+2:        BRD4       PCBP3
+3:        CAV1       PCBP3
+4:       CD274       PCBP3
+5:        CD86       PCBP3
+6:       CMTM6       PCBP3</code></pre>
 </div>
 </div>
 <p>We also can use <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code> to construct a <em>trans</em> discovery set for the high-MOI, enhancer-targeting CRISPRi dataset. To this end we call <code><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs()</a></code>, setting <code>pairs_to_exclude</code> to <code>"pairs_containing_pc_targets"</code> so as to exclude all positive control gRNA targets from the <em>trans</em> pairs.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-14_fd54c2193386e79949f6df7536679e84">
+<div class="cell">
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">discovery_pairs_highmoi_trans</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/construct_trans_pairs.html">construct_trans_pairs</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
 <span>  positive_control_pairs <span class="op">=</span> <span class="va">positive_control_pairs_highmoi</span>,</span>
@@ -479,23 +588,25 @@ Attributes of the data:
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The resulting data frame, <code>discovery_pairs_highmoi_trans</code>, maps each candidate enhancer to the entire set of genes.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-15_11d60a8b071fa950973ae7e5b2d9102c">
+<div class="cell">
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">discovery_pairs_highmoi_trans</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       grna_target     response_id
-1  candidate_enh_1 ENSG00000069275
-2 candidate_enh_10 ENSG00000069275
-3 candidate_enh_11 ENSG00000069275
-4 candidate_enh_12 ENSG00000069275
-5 candidate_enh_13 ENSG00000069275
-6 candidate_enh_14 ENSG00000069275</code></pre>
+<pre><code>        grna_target     response_id
+             &lt;char&gt;          &lt;char&gt;
+1:  candidate_enh_1 ENSG00000069275
+2: candidate_enh_10 ENSG00000069275
+3: candidate_enh_11 ENSG00000069275
+4: candidate_enh_12 ENSG00000069275
+5: candidate_enh_13 ENSG00000069275
+6: candidate_enh_14 ENSG00000069275</code></pre>
 </div>
 </div>
-<p>Some users may wish to run both <em>cis</em> and <em>trans</em> analyses on their data. We recommend that such users carry out the <code>sceptre</code> pipeline twice: once using a <em>cis</em> discovery set and once using a <em>trans</em> discovery set. See <a href="faq.html#sec-multiple_analyses"><span>Section&nbsp;B.6</span></a> for more details.</p>
+<p>Some users may wish to run both <em>cis</em> and <em>trans</em> analyses on their data. We recommend that such users carry out the <code>sceptre</code> pipeline twice: once using a <em>cis</em> discovery set and once using a <em>trans</em> discovery set. See <a href="faq.html#sec-multiple_analyses" class="quarto-xref"><span>Section D.7</span></a> for more details.</p>
+<p>The discovery pairs data frame is optional and need not be specified. Users may want to refrain from passing a discovery pairs data frame when runing a <em>control analysis</em>, i.e.&nbsp;an analysis of the negative control pairs and/or positive control pairs exclusively.</p>
 </section><section id="reducing-the-multiplicity-burden" class="level3" data-number="2.2.3"><h3 data-number="2.2.3" class="anchored" data-anchor-id="reducing-the-multiplicity-burden">
 <span class="header-section-number">2.2.3</span> Reducing the multiplicity burden</h3>
-<p><code>sceptre</code> computes a p-value for each target-response pair in the discovery set. These p-values are subjected to a multiple testing correction procedure (by default, the Benjamini-Hochberg method) to produce a discovery set that controls some notion of aggregate type-I error (by default, the false discovery rate). See <a href="#sec-multiple_testing"><span>Section&nbsp;2.9</span></a> for more details on multiple testing. The more pairs that are tested, the more stringest this multiplicity correction is. Therefore, including a large number of uninteresting or “null” pairs (i.e., pairs for which there is no relationship between the target and response) in the discovery set causes the power of the multiple testing correction procedure to decrease, resulting in fewer discoveries. If possible, it is good to restrict one’s attention to pairs that are promising or scientifically interesting a priori.</p>
-</section></section><section id="side" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="side">
+<p><code>sceptre</code> computes a p-value for each target-response pair in the discovery set. These p-values are subjected to a multiple testing correction procedure (by default, the Benjamini-Hochberg method) to produce a discovery set that controls some notion of aggregate type-I error (by default, the false discovery rate). See <a href="#sec-multiple_testing" class="quarto-xref"><span>Section 2.9</span></a> for more details on multiple testing. The more pairs that are tested, the more stringest this multiplicity correction is. Therefore, including a large number of uninteresting or “null” pairs (i.e., pairs for which there is no relationship between the target and response) in the discovery set causes the power of the multiple testing correction procedure to decrease, resulting in fewer discoveries. If possible, it is good to restrict one’s attention to pairs that are promising or scientifically interesting a priori.</p>
+</section></section><section id="sec-set_analysis_parameters_side" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="sec-set_analysis_parameters_side">
 <span class="header-section-number">2.3</span> Side</h2>
 <p><code>sceptre</code> can run left-tailed, right-tailed, and two-tailed tests of association. Left-tailed tests assess a <em>decrease</em> in expression, right-tailed tests assess an <em>increase</em> in expression, and two-tailed tests assess an increase <em>or</em> decrease in expression. The parameter <code>side</code> controls the sidedness of the test and can take values <code>"left"</code>, <code>"right"</code>, or <code>"both"</code>. (<code>"both"</code> indicates a two-tailed test.) Two-tailed tests typically are the best choice for <em>trans</em> analyses, as the direction of <em>trans</em> relationships generally is uncertain. For <em>cis</em> analyses, on the other hand, the sidedness of the test should be chosen on the basis of the type of genomic element targeted and the CRISPR perturbation modality. The following table summarizes whether a left- or right-tailed test is appropriate for a <em>cis</em> analysis as a function of these variables.</p>
 <table class="table">
@@ -540,54 +651,54 @@ Attributes of the data:
 </tbody>
 </table></section><section id="sec-grna_integration_strategy" class="level2" data-number="2.4"><h2 data-number="2.4" class="anchored" data-anchor-id="sec-grna_integration_strategy">
 <span class="header-section-number">2.4</span> gRNA integration strategy</h2>
-<p>Multiple gRNAs typically are designed to target a given genomic element. The parameter <code>grna_integration_strategy</code> controls if and how gRNAs that target the same genomic element are combined. In most cases, users wish to test whether perturbation of a target impacts the responses to which the target is paired. In these cases, users need to choose a strategy for integrating information across gRNAs that share a given target. If users expect that gRNAs sharing a target will have similar effects, then users should choose <code>grna_integration_strategy = "union"</code>. If, on the other hand, users expect that gRNAs sharing a target will have substantially different effects (e.g.&nbsp;due to variable gRNA effectiveness), then users should choose <code>grna_integration_strategy = "bonferroni"</code>. In some cases, users may wish to test each individual gRNA against the responses to which its target is paired. For example, users may wish to assess the variability in the effects of different gRNAs with the same target. In these cases, users should choose <code>grna_integration_strategy = "singleton"</code>.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-16_5970803b79ee4be7708b652398e49538">
+<p>Multiple gRNAs typically are designed to target a given genomic element. The parameter <code>grna_integration_strategy</code> controls if and how gRNAs that target the same genomic element are combined. In most cases, users wish to test whether perturbation of a target impacts the responses to which the target is paired. In these cases, users need to choose a strategy for integrating information across gRNAs that share a given target. If users expect that gRNAs sharing a target will have broadly similar effects, then users should choose <code>grna_integration_strategy = "union"</code>. If, on the other hand, users expect that gRNAs sharing a target will have substantially different effects (e.g.&nbsp;due to variable gRNA effectiveness), then users should choose <code>grna_integration_strategy = "bonferroni"</code>. In some cases users may wish to test each individual gRNA against the responses to which its target is paired. For example, users may wish to assess the variability in the effects of different gRNAs with the same target. In these cases, users should choose <code>grna_integration_strategy = "singleton"</code>.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="grna_integration_strategy_dec_tree.jpg" class="img-fluid figure-img" width="350"></p>
-<figcaption class="figure-caption">Schematic of the choices for gRNA integration strategy.</figcaption></figure>
+<figure class="figure"><p><img src="grna_integration_strategy_dec_tree.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="350"></p>
+<figcaption>Schematic of the choices for gRNA integration strategy.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>The default option for <code>grna_integration_strategy</code> is <code>"union"</code>. This strategy constructs a “grouped gRNA” by combining all gRNAs that target a given genomic element via a union operation; this “grouped gRNA” is then tested for association against the responses to which the element is paired. We illustrate this grouping strategy using an example. Suppose that “gRNA 1” and “gRNA 2” target the same genomic element. Suppose that “gRNA 1” is present in the cells indexed 3, 6, 9 and that “gRNA 2” is present in the cells indexed 1, 4, 6, 10. The “grouped gRNA” formed combining “gRNA 1” and “gRNA 2” via the union operation is defined to be present in the cells indexed 1, 3, 4, 6, 9, 10. (See schematic below.) This “grouped gRNA” is then tested against responses as if it were a single gRNA.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-17_4a4d045da6accb257803ce43535f25a2">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="union_grouping.png" class="img-fluid figure-img" width="450"></p>
-<figcaption class="figure-caption">Schematic of the <code>"union"</code> gRNA grouping strategy. Blue (resp., white) squares indicate cells in which the gRNA is present (resp., absent).</figcaption></figure>
+<figure class="figure"><p><img src="union_grouping.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="450"></p>
+<figcaption>Schematic of the <code>"union"</code> gRNA grouping strategy. Blue (resp., white) squares indicate cells in which the gRNA is present (resp., absent).</figcaption></figure>
 </div>
 </div>
 </div>
-<p>Users who wish to run <em>both</em> a singleton analysis and a grouped analysis should consult <a href="faq.html#sec-multiple_analyses"><span>Section&nbsp;B.6</span></a>.</p>
+<p>Users who wish to run <em>both</em> a singleton analysis and a grouped analysis should consult <a href="faq.html#sec-multiple_analyses" class="quarto-xref"><span>Section D.7</span></a>.</p>
 </section><section id="sec-set-analysis-parameters_control_group" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="sec-set-analysis-parameters_control_group">
 <span class="header-section-number">2.5</span> Control group</h2>
 <p>The primary goal of <code>sceptre</code> is to test for association between a given gRNA target and response. <code>control_group</code> is a parameter related to the set of cells used to carry out this test of association. Suppose for simplicity that we are carrying out a singleton analysis, i.e.&nbsp;suppose that we are testing for association between an individual targeting gRNA and a response. We define the “treatment group” as the set of cells that contain the given targeting gRNA, and we define the “control group” as the set of cells against which the treatment group is compared to conduct the association test. There are two choices for the control group: the “complement set” and the “non-targeting (NT) cells.” The complement set consists of the cells that <em>do not</em> contain the given targeting gRNA; the NT cells, by contrast, consist of the cells that contain a non-targeting gRNA. (See schematic below.) <code>sceptre</code> tests for association between the given targeting gRNA and the response by testing for differential expression of the response across the treatment group and the control group. Users can select the control group to use by passing either <code>"complement"</code> or <code>"nt_cells"</code> to <code>control_group</code>.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-18_c300cba05addf22c178c07d6dc639696">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="control_vs_complement.jpg" class="img-fluid figure-img" width="760"></p>
-<figcaption class="figure-caption">A schematic illustrating the difference between the “complement set” and “NT cells” control groups. The single-cell CRISPR screen experiment produces a pool of cells containing both targeting and non-targeting gRNAs (top). Suppose that we seek to test for association between a given targeting gRNA (e.g., gRNA <span class="math inline">\(T_2\)</span>) and a given response. We first divide the cells into two groups: the treatment group (i.e., the cells containing gRNA <span class="math inline">\(T_2\)</span>) and the control group. The control group either can consist of the cells not containing gRNA <span class="math inline">\(T_2\)</span> (the “complement set”) or the cells containing a non-targeting gRNA (the “NT cells”). <code>sceptre</code> tests for differential expression of the given response across the treatment and control groups, yielding a p-value for the test of association between the given targeting gRNA and the given response.</figcaption></figure>
+<figure class="figure"><p><img src="control_vs_complement.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="760"></p>
+<figcaption>A schematic illustrating the difference between the “complement set” and “NT cells” control groups. The single-cell CRISPR screen experiment produces a pool of cells containing both targeting and non-targeting gRNAs (top). Suppose that we seek to test for association between a given targeting gRNA (e.g., gRNA <span class="math inline">\(T_2\)</span>) and a given response. We first divide the cells into two groups: the treatment group (i.e., the cells containing gRNA <span class="math inline">\(T_2\)</span>) and the control group. The control group either can consist of the cells not containing gRNA <span class="math inline">\(T_2\)</span> (the “complement set”) or the cells containing a non-targeting gRNA (the “NT cells”). <code>sceptre</code> tests for differential expression of the given response across the treatment and control groups, yielding a p-value for the test of association between the given targeting gRNA and the given response.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>The choice of the control group should be made on the basis of the MOI of the dataset and the type of genomic element being targeted. In high-MOI screens each cell contains multiple gRNAs. Very few (if any) cells contain exclusively NT gRNAs, and so the complement set is the only choice for the control group. In low-MOI screens there is more flexibility. The default choice for the control group is the NT cells, as we seek to compare the effect of the targeting gRNA to that of a “null” gRNA rather than to the average of the effects of all other gRNAs introduced in the pooled screen. However, the complement set is a reasonable choice for low-MOI enhancer-targeting screens, as gRNAs in enhancer-targeting screens tend to exert small and local effects, rendering the average effect over gRNAs in the complement set similar to that of a “null” gRNA. Thus, we recommend trying both the complement set and the NT cells for the control group in low-MOI enhancer-targeting screens and selecting between these options on the basis of their performance on the negative control and positive control data. The decision tree below summarizes the control group that we recommend selecting as a function of MOI and genomic element targeted.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-19_8847df8dc08a81dc7ffbcf4ad475a757">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="control_group_dec_tree.png" class="img-fluid figure-img" width="350"></p>
-<figcaption class="figure-caption">A decision tree summarizing the control group to select as a function of the MOI of the data and the genomic element targeted. The only option in high-MOI is the complement set. In low-MOI the NT cells are the default option; however, we recommend trying both the complement set and the NT cells for low-MOI enhancer-targeting screens.</figcaption></figure>
+<figure class="figure"><p><img src="control_group_dec_tree.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="350"></p>
+<figcaption>A decision tree summarizing the control group to select as a function of the MOI of the data and the genomic element targeted. The only option in high-MOI is the complement set. In low-MOI the NT cells are the default option; however, we recommend trying both the complement set and the NT cells for low-MOI enhancer-targeting screens.</figcaption></figure>
 </div>
 </div>
 </div>
-</section><section id="formula" class="level2" data-number="2.6"><h2 data-number="2.6" class="anchored" data-anchor-id="formula">
+</section><section id="sec-set_analysis_parameters_formula" class="level2" data-number="2.6"><h2 data-number="2.6" class="anchored" data-anchor-id="sec-set_analysis_parameters_formula">
 <span class="header-section-number">2.6</span> Formula</h2>
 <p>The parameter <code>formula_object</code> specifies how <code>sceptre</code> is to adjust for the cell-specific covariates. <code>formula_object</code> is optional; if not provided, <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code> constructs a default <code>formula_object</code>. The default <code>formula_object</code> is formed by summing over all covariates and log-transforming the count-based covariates. For example, the high-MOI CRISPRi data contain the cell-specific covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_p_mito</code>, and <code>batch</code>. The first four of these covariates are count-based. Thus, the default formula object for this dataset is as follows:</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-20_9df7c26266788ccbc1a564fa6be0a643">
+<div class="cell">
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_umis</span><span class="op">)</span> <span class="op">+</span></span>
 <span>          <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">grna_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">grna_n_umis</span><span class="op">)</span> <span class="op">+</span> <span class="va">response_p_mito</span> <span class="op">+</span> <span class="va">batch</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Similarly, the low-MOI CRISPRko data contain the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, <code>grna_n_nonzero</code>, <code>grna_n_umis</code>, <code>response_p_mito</code>, and <code>bio_rep</code>. The default formula object for the CRISPRko dataset is as follows:</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-21_3d3ed95157834bce97b82ea11ef1bde4">
+<div class="cell">
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/formula.html">formula</a></span><span class="op">(</span><span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_nonzero</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">response_n_umis</span><span class="op">)</span> <span class="op">+</span></span>
 <span>          <span class="va">response_p_mito</span> <span class="op">+</span> <span class="va">bio_rep</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -596,10 +707,10 @@ Attributes of the data:
 </section><section id="sec-set_analysis_parameters_resampling_mech" class="level2" data-number="2.7"><h2 data-number="2.7" class="anchored" data-anchor-id="sec-set_analysis_parameters_resampling_mech">
 <span class="header-section-number">2.7</span> Resampling mechanism</h2>
 <p>The parameter <code>resampling_mechanism</code> controls the inferential procedure that <code>sceptre</code> uses to compute a p-value for a target-response pair. Suppose for simplicity that we are carrying out a singleton gRNA analysis. There are three pieces of information relevant to testing for association between a given gRNA and response: (1) the vector of UMI counts of the response; (2) the “gRNA indicator vector,” where a given entry of the vector is set to “1” if the corresponding cell is part of the treatment group (i.e., it contains the gRNA) and “0” if it is part of the control group; and (3) the matrix of cell-specific covariates. First, <code>sceptre</code> regresses the response vector onto the gRNA indicator vector and covariate matrix via a negative binomial (NB) GLM. <code>sceptre</code> computes the z-score <span class="math inline">\(z_\textrm{obs}\)</span> corresponding to a test of the null hypothesis that the coefficient corresponding to the gRNA indicator vector in the fitted GLM is zero. Next, <code>sceptre</code> <em>resamples</em> the gRNA indicator vector <em>B</em> times, where <em>B</em> is some large integer (e.g., <em>B</em> = 5000). (We discuss exactly how the gRNA indicator vector is resampled below.) Finally, for each of the resampled gRNA indicator vectors, <code>sceptre</code> recomputes the z-score, producing <em>B</em> “null” z-scores <span class="math inline">\(\tilde z_1, \dots, \tilde z_B\)</span>. The observed z-score <span class="math inline">\(z_\textrm{obs}\)</span> is compared to the null z-scores <span class="math inline">\(\tilde z_1, \dots, \tilde z_B\)</span> to compute a p-value.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-22_504b62c44000f0d12d580b7c732ba49d">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="sceptre_pt_1.png" class="img-fluid figure-img" width="650"></p>
+<figure class="figure"><p><img src="sceptre_pt_1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
 </figure>
 </div>
 </div>
@@ -640,19 +751,19 @@ Attributes of the data:
 </tr>
 </tbody>
 </table>
-<p>Resampling forms the foundation of statistical inference within the <code>sceptre</code> framework. In fact, “sceptre” is a loose acronym for “<strong>s</strong>ingle <strong>c</strong>ell <strong>p</strong>er<strong>t</strong>urbation analysis via <strong>re</strong>sampling.” The resampling machinery of <code>sceptre</code> is reasonably fast due to several algorithmic advances, including the technique of resampling score statistics and a novel sparsity-exploiting algorithm for computing GLM score tests.</p>
+<p>Resampling forms the foundation of statistical inference within the <code>sceptre</code> framework. In fact, “sceptre” is a loose acronym for “<strong>s</strong>ingle <strong>c</strong>ell <strong>p</strong>er<strong>t</strong>urbation analysis via <strong>re</strong>sampling.” The resampling machinery of <code>sceptre</code> is reasonably fast due to several algorithmic advances, including the technique of resampling score statistics, a novel sparsity-exploiting algorithm for computing GLM score tests, and algorithms for sharing compute across permutation tests.</p>
 </section><section id="sec-set_analysis_parameters_parametric_curve" class="level2" data-number="2.8"><h2 data-number="2.8" class="anchored" data-anchor-id="sec-set_analysis_parameters_parametric_curve">
-<span class="header-section-number">2.8</span> Fit parametric curve</h2>
-<p>As described above, for a given gRNA-response pair, <code>sceptre</code> computes an “observed” z-score <span class="math inline">\(z_\textrm{obs}\)</span> and a set of “null” z-scores <span class="math inline">\(\tilde z_1, \dots, \tilde z_B\)</span> (regardless of whether <code>resampling_mechanism</code> is set to <code>permutations</code> or <code>crt</code>). By default, <code>sceptre</code> fits a parametric density (specifically, a skew-normal density) to the distribution of null z-scores and then computes a p-value by evaluating the tail probability of the fitted density at the observed z-score <span class="math inline">\(z_\textrm{obs}\)</span> (see figure below). The parametric density functionality can be deactivated by setting <code>fit_parametric_curve</code> to <code>FALSE</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, in which case a p-value is computed by directly comparing the observed z-score to the null z-scores.</p>
-<div class="cell" data-layout-align="center" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-23_45782e00a961815555cbacda57bac01c">
+<span class="header-section-number">2.8</span> Resampling approximation</h2>
+<p>As described above, for a given gRNA-response pair, <code>sceptre</code> computes an “observed” z-score <span class="math inline">\(z_\textrm{obs}\)</span> and a set of “null” z-scores <span class="math inline">\(\tilde z_1, \dots, \tilde z_B\)</span> (regardless of whether <code>resampling_mechanism</code> is set to <code>"permutations"</code> or <code>"crt"</code>). By default, <code>sceptre</code> fits a parametric density (specifically, a skew-normal density) to the distribution of null z-scores and then computes a p-value by evaluating the tail probability of the fitted density at the observed z-score <span class="math inline">\(z_\textrm{obs}\)</span> (see figure below). This default behavior corresponds to setting <code>resampling_approximation</code> to <code>"skew_normal"</code>. The parametric density functionality can be deactivated by setting <code>resampling_approximation</code> to <code>"no_approximation"</code> in <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code>, in which case a p-value is computed by directly comparing the observed z-score to the null z-scores.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="fit_parametric_curve.png" class="img-fluid figure-img" width="650"></p>
+<figure class="figure"><p><img src="fit_parametric_curve.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="650"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>When <code>fit_parametric_curve</code> is set to <code>FALSE</code>, <code>sceptre</code> must compute a greater number of “null” test statistics to maintain p-value precision. Thus, setting <code>fit_parametric_curve</code> to <code>FALSE</code> increases compute (in some cases substantially). We recommend setting <code>fit_parametric_curve</code> to <code>FALSE</code> only when the negative control p-values exhibit miscalibration (see <a href="run-calibration-check.html#sec-improving_calibration"><span>Section&nbsp;5.4</span></a>).</p>
+<p>When <code>resampling_approximation</code> is set to <code>"no_approximation"</code>, <code>sceptre</code> must compute a greater number of “null” test statistics to maintain p-value precision. Thus, setting <code>resampling_approximation</code> to <code>"no_approximation"</code> increases compute (in some cases substantially). We recommend setting <code>resampling_approximation</code> to <code>"no_approximation"</code> when the negative control p-values exhibit miscalibration (see <a href="run-calibration-check.html#sec-improving_calibration" class="quarto-xref"><span>Section 5.4</span></a>) and the number of pairs to be tested is less than ~10,000.</p>
 </section><section id="sec-multiple_testing" class="level2" data-number="2.9"><h2 data-number="2.9" class="anchored" data-anchor-id="sec-multiple_testing">
 <span class="header-section-number">2.9</span> Multiple testing method and multiple testing <span class="math inline">\(\alpha\)</span>
 </h2>
@@ -661,7 +772,7 @@ Attributes of the data:
 </section><section id="setting-the-analysis-parameters" class="level2" data-number="2.10"><h2 data-number="2.10" class="anchored" data-anchor-id="setting-the-analysis-parameters">
 <span class="header-section-number">2.10</span> Setting the analysis parameters</h2>
 <p>We set the analysis parameters by calling <code><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters()</a></code> on the <code>sceptre_object</code>s, passing <code>discovery_pairs</code> and <code>positive_control_pairs</code> (and, on the high-MOI CRISPRi data, <code>side</code>). We allow all other arguments to take default values.</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-24_68d4a848d5cf97924135ef75c725c681">
+<div class="cell">
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># high-MOI CRISPRi data</span></span>
 <span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/sceptre/man/set_analysis_parameters.html">set_analysis_parameters</a></span><span class="op">(</span></span>
 <span>  sceptre_object <span class="op">=</span> <span class="va">sceptre_object_highmoi</span>,</span>
@@ -678,7 +789,7 @@ Attributes of the data:
 <span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can call <code><a href="https://rdrr.io/r/base/print.html">print()</a></code> on the resulting <code>sceptre_object</code>, which prints to the console a summary tracking the status of the analysis. Notice that the “Analysis parameters” field of the output contains information about the analysis parameters that we have selected (or that have been set by default).</p>
-<div class="cell" data-hash="set-analysis-parameters_cache/html/unnamed-chunk-25_617d8ce094d83e3ec2ebdca435310b9a">
+<div class="cell">
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">sceptre_object_highmoi</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>An object of class sceptre_object.
@@ -704,16 +815,18 @@ Analysis parameters:
     • Discovery pairs: data frame with 610 pairs
     • Positive control pairs: data frame with 10 pairs
     • Sidedness of test: left
-    • N nonzero treatment cells threshold: not specified
-    • N nonzero control cells threshold: not specified
     • Resampling mechanism: conditional resampling
     • gRNA integration strategy: union
+    • Resampling approximation: skew normal
+    • Multiple testing adjustment: BH at level 0.1
+    • N nonzero treatment cells threshold: not specified
+    • N nonzero control cells threshold: not specified
     • Formula object: log(response_n_nonzero) + log(response_n_umis) + log(grna_n_nonzero) + log(grna_n_umis) + batch</code></pre>
 </div>
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-barry2021" class="csl-entry" role="listitem">
 Barry, Timothy, Xuran Wang, John A. Morris, Kathryn Roeder, and Eugene Katsevich. 2021. <span>“<span class="nocase">SCEPTRE improves calibration and sensitivity in single-cell CRISPR screen analysis</span>.”</span> <em>Genome Biology</em> 22 (1): 1–19.
 </div>
@@ -800,10 +913,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -813,8 +925,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -827,6 +948,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -870,6 +1110,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -895,6 +1136,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -954,23 +1221,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./import-data.html" class="pagination-link">
+      <a href="./import-data.html" class="pagination-link  aria-label=" data="">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Import data</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./assign-grnas.html" class="pagination-link">
+      <a href="./assign-grnas.html" class="pagination-link" aria-label="<span class='chapter-number'>3</span>&nbsp; <span class='chapter-title'>Assign gRNAs</span>">
         <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Assign gRNAs</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
-    <div class="nav-footer-left">Hands-On Single-Cell CRISPR Screen Analysis</div>   
+    <div class="nav-footer-left">
+<p>Hands-On Single-Cell CRISPR Screen Analysis</p>
+</div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>
-    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
   </div>
 </footer>
 
