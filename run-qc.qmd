@@ -122,7 +122,7 @@ The parameters `n_nonzero_trt_thresh` and `n_nonzero_cntrl_thresh` control pairw
 knitr::include_graphics("pairwise_qc_schematic.png")
 ```
 
-`sceptre` tabulates `n_nonzero_trt` and `n_nonzero_cntrl` for each target-response pair. Pairs for which `n_nonzero_trt` is less than `n_nonzero_trt_thresh` or `n_nonzero_cntrl` is less than `n_nonzero_cntrl_thresh` are excluded. Both `n_nonzero_trt_thresh` and `n_nonzero_cntrl_thresh` are set to `7` by default. An important special case is to set `n_nonzero_trt_thresh` and `n_nonzero_cntrl` to `0`; in this case *all* cells (regardless of expression level) are counted toward the `n_nonzero_trt_thresh` and `n_nonzero_cntrl_thresh` total.
+`sceptre` tabulates `n_nonzero_trt` and `n_nonzero_cntrl` for each target-response pair. Pairs for which `n_nonzero_trt` is less than `n_nonzero_trt_thresh` or `n_nonzero_cntrl` is less than `n_nonzero_cntrl_thresh` are excluded. Both `n_nonzero_trt_thresh` and `n_nonzero_cntrl_thresh` are set to `7` by default.
 
 ## Run QC
 
