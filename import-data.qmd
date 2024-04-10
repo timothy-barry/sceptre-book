@@ -92,6 +92,10 @@ The additional covariate of `cell_type` is printed in the "covariates" field whe
 sceptre_object
 ```
 
+::: callout-note
+Categorical covariates (e.g., batch or cell type) should be stored as a character vector or a factor vector (not an integer vector).
+:::
+
 ## Import data from a collection of R objects
 
 Users also can import data into `sceptre` from a specified set of R objects. This data import strategy is most appropriate for users employing less standard data preprocessing pipelines for generating the response and gRNA count matrices. We use the high-MOI CRISPRi data as a working example. We can obtain these data in R matrix and data frame format as follows.

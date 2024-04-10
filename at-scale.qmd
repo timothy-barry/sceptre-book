@@ -78,7 +78,7 @@ sceptre_object_2 <- import_data_from_cellranger(
 Calling `list.files()` on `directory_to_write` shows that two files have been created in this directory: `gene.odm`, the file storing the gene expression matrix, and `grna.odm`, the file storing the gRNA expression matrix.
 
 ```{r,eval=FALSE}
-list.files(directory_to_write, full.names = TRUE)
+list.files(directory_to_write)
 ```
 
 ```{r,echo=FALSE}

@@ -440,6 +440,19 @@ Attributes of the data:
     • 7 covariates (batch, cell_type, grna_n_nonzero, grna_n_umis, response_n_nonzero, response_n_umis, response_p_mito)</code></pre>
 </div>
 </div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Categorical covariates (e.g., batch or cell type) should be stored as a character vector or a factor vector (not an integer vector).</p>
+</div>
+</div>
 </section></section><section id="import-data-from-a-collection-of-r-objects" class="level2" data-number="1.2"><h2 data-number="1.2" class="anchored" data-anchor-id="import-data-from-a-collection-of-r-objects">
 <span class="header-section-number">1.2</span> Import data from a collection of R objects</h2>
 <p>Users also can import data into <code>sceptre</code> from a specified set of R objects. This data import strategy is most appropriate for users employing less standard data preprocessing pipelines for generating the response and gRNA count matrices. We use the high-MOI CRISPRi data as a working example. We can obtain these data in R matrix and data frame format as follows.</p>
