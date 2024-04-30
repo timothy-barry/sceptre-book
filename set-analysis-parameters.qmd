@@ -120,7 +120,7 @@ Finally, `response_position_data_frame` is an optional data frame containing the
 gene_position_data_frame_grch38[c(1:4, 8001:8004),]
 ```
 
-`gene_position_data_frame_grch38` was derived from the GrCh38 reference genome, which is the reference genome that all versions of `cellranger count` released since 2021 have used for alignment. `sceptre` also contains the data frame `gene_position_data_frame_grch37`, which stores the genomic coordinate of each gene's TSS with respect to reference genome GRCh37.
+`gene_position_data_frame_grch38` was derived from the GrCh38 reference genome, which is the reference genome that all versions of `cellranger count` released since 2021 have used for alignment. `sceptre` also contains `gene_position_data_frame_grch37`, which is a data frame that stores the genomic coordinate of each gene's TSS with respect to reference genome GRCh37.
 
 ::: callout-note
 Users should select between `gene_position_data_frame_grch38` and `gene_position_data_frame_grch37` on the basis of reference genome that the chromosomal coordinates are defined with respect to.
