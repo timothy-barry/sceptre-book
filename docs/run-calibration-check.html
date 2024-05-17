@@ -52,7 +52,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -415,7 +435,7 @@ window.Quarto = {
 <p>We are now ready to run the calibration check.</p>
 <section id="calibration-check-methodology" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="calibration-check-methodology">
 <span class="header-section-number">5.1</span> Calibration check methodology</h2>
-<p>We begin by describing the methodology underlying the calibration check <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref"><strong>barry2023?</strong></a>)</span>.</p>
+<p>We begin by describing the methodology underlying the calibration check <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref">Barry et al. 2024</a>)</span>.</p>
 <section id="sec-de_paradigm" class="level3" data-number="5.1.1"><h3 data-number="5.1.1" class="anchored" data-anchor-id="sec-de_paradigm">
 <span class="header-section-number">5.1.1</span> Differential expression paradigm</h3>
 <p>The goal of the calibration check is to test for association between subsets of negative control gRNAs and responses. Suppose for simplicity that we are conducting a singleton analysis, i.e.&nbsp;suppose that we seek to test for association between an individual negative control gRNA and a response. The “treatment group” is the set of cells containing the given non-targeting gRNA, and the “control group” is the set of cells against which the treatment group is compared to carry out the test of association. The control group can be either the complement set or the NT cells. Within the context of the calibration check analysis, the complement set consists of the cells that do not contain the given non-targeting gRNA; the NT cells, on the other hand, consist of the cells that contain any non-targeting gRNA <em>excluding</em> the given non-targeting gRNA that we are testing for association against the response (see <a href="#fig-control_vs_complement_undercover" class="quarto-xref">Figure&nbsp;<span>5.1</span></a>). <code>sceptre</code> carries out the test of association by testing for differential expression of the response across the treatment and control groups, yielding a p-value.</p>
@@ -534,7 +554,7 @@ Table&nbsp;5.1: Calibration quality as a (rough) function of the number of false
 </div>
 </figure>
 </div>
-<p>There are three main sources of miscalibration in single-cell CRISPR screen analysis <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref"><strong>barry2023?</strong></a>)</span>: sparsity, the omission of relevant covariates, and misspecification of the negative binomial model. Sparsity — the presence of a large proportion of zeros in the response UMI count matrix — can cause the skew-normal approximation to the distribution of the null test statistics to break down, resulting in miscalibrated p-values. Additionally, the omission of important covariates (such as batch or biological replicate) from the model or misspecification of the underlying negative binomial GLM (due, for example, to the presence of outlier cells) also can lead to miscalibration. Pairwise and cellwise QC (<a href="run-qc.html" class="quarto-xref"><span>Chapter 4</span></a>) provide the first line of defense against sparsity and model misspecification, respectively. Furthermore, the resampling methodology of <code>sceptre</code> protects against misspecification of the negative binomial GLM. In spite of these safeguards, <code>sceptre</code> may still exhibit miscalibration on some datasets.</p>
+<p>There are three main sources of miscalibration in single-cell CRISPR screen analysis <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref">Barry et al. 2024</a>)</span>: sparsity, the omission of relevant covariates, and misspecification of the negative binomial model. Sparsity — the presence of a large proportion of zeros in the response UMI count matrix — can cause the skew-normal approximation to the distribution of the null test statistics to break down, resulting in miscalibrated p-values. Additionally, the omission of important covariates (such as batch or biological replicate) from the model or misspecification of the underlying negative binomial GLM (due, for example, to the presence of outlier cells) also can lead to miscalibration. Pairwise and cellwise QC (<a href="run-qc.html" class="quarto-xref"><span>Chapter 4</span></a>) provide the first line of defense against sparsity and model misspecification, respectively. Furthermore, the resampling methodology of <code>sceptre</code> protects against misspecification of the negative binomial GLM. In spite of these safeguards, <code>sceptre</code> may still exhibit miscalibration on some datasets.</p>
 <p>To provide an example of miscalibration, we again run the calibration check on the high-MOI CRISPRi data, this time setting <code>formula_object</code> to <code>formula(~log(grna_n_umis))</code>, thereby excluding <code>batch</code>, <code>response_n_umis</code>, and other important covariates.</p>
 <div class="cell">
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sceptre_object_highmoi</span> <span class="op">&lt;-</span> <span class="va">sceptre_object_highmoi</span> <span class="op">|&gt;</span></span>
@@ -763,6 +783,11 @@ Summary of results:
 <p>The the first two entries under the field “Summary of results” provide information about the outcome of the calibration check.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-barry2023" class="csl-entry" role="listitem">
+Barry, Timothy, Kaishu Mason, Kathryn Roeder, and Eugene Katsevich. 2024. <span>“<span class="nocase">Robust differential expression testing for single-cell CRISPR screens at low multiplicity of infection</span>.”</span> <em>Genome Biology</em> 25 (124): 1–30.
+</div>
+</div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

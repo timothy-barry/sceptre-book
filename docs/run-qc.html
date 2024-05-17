@@ -52,7 +52,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -342,7 +362,7 @@ window.Quarto = {
 </header><p>The fourth step of the pipeline is to run quality control (QC). We apply QC both at the level of the cell (a common step in most single-cell analyses) and at the level of the target-response pair (specific to single-cell CRISPR screens).</p>
 <ul>
 <li><p><strong>Cellwise QC</strong> involves filtering cells on the covariates <code>response_n_nonzero</code>, <code>response_n_umis</code>, and <code>response_p_mito</code>. In low-MOI we additionally remove cells that contain zero or multiple gRNAs.</p></li>
-<li><p><strong>Pairwise QC</strong> involves filtering out target-response pairs whose data are too sparse to be analyzed reliably <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref"><strong>barry2023?</strong></a>)</span>. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.</p></li>
+<li><p><strong>Pairwise QC</strong> involves filtering out target-response pairs whose data are too sparse to be analyzed reliably <span class="citation" data-cites="barry2023">(<a href="references.html#ref-barry2023" role="doc-biblioref">Barry et al. 2024</a>)</span>. Pairwise quality control is based on metrics that take into account the sparsity of the response variable and the number of cells in which the target has been perturbed.</p></li>
 </ul>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
@@ -529,6 +549,11 @@ gRNA-to-cell assignment information:
 <p>Some users might ask why <code>sceptre</code> does not implement response-wise QC (e.g., filtering out lowly expressed responses). The reason is that pairwise QC is in some sense stronger than response-wise QC. Suppose for example that a given response exhibits zero expression across cells. Target-response pairs containing this response will have <code>n_nonzero_trt</code> and <code>n_nonzero_cntrl</code> values of zero and thus be filtered out, in effect filtering out the response as well.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-barry2023" class="csl-entry" role="listitem">
+Barry, Timothy, Kaishu Mason, Kathryn Roeder, and Eugene Katsevich. 2024. <span>“<span class="nocase">Robust differential expression testing for single-cell CRISPR screens at low multiplicity of infection</span>.”</span> <em>Genome Biology</em> 25 (124): 1–30.
+</div>
+</div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
