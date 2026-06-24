@@ -455,7 +455,7 @@ ds |>
 ```
 
 ```{r,echo=FALSE}
-readRDS("rd7_result_for_given_target.rds")
+read.csv("rd7_result_for_given_target.csv")
 ```
 
 The converse operation is to obtain the p-value and log fold change for all pairs containing a given *response*. We can do that as follows.
@@ -470,7 +470,7 @@ ds |>
 ```
 
 ```{r,echo=FALSE}
-readRDS("rd7_result_for_given_response.rds")
+read.csv("rd7_result_for_given_response.csv")
 ```
 
 The final verb in the chain of verbs always should be `collect()`, which tells `arrow` to load the data frame into memory. Finally, we can load an individual `parqet` file into memory as a standard R data frame using the `read_parquet()` function. The file `response_to_pod_map.rds` --- stored within the output directory --- contains a data frame mapping each response to the `.parquet` file that contains the results for pairs consisting of that response.
