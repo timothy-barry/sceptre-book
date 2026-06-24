@@ -107,7 +107,7 @@ The calibration check entails testing for association between the negative contr
 
 ## Running the calibration check {#sec-run-calibration-check_running_the_calibration_check}
 
-We carry out the calibration check by calling the function `run_calibration_check()` on the `sceptre_object`. `run_calibration_check()` takes the arguments `sceptre_object` (required), `n_calibration_pairs` (optional), `calibration_group_size` (optional), `print_progress` (optional), and `parallel` (optional), and `output_amount` (optional). `n_calibration_pairs` is the number of negative control target-response pairs to test for association. By default `n_calibration_pairs` is set to the number of discovery target-response pairs that passes pairwise QC. Next, `calibration_group_size` is the number of negative control gRNAs to put together to construct each negative control target. By default `calibration_group_size` is set to the median number of gRNAs per discovery target. Finally, `print_progress` and `parallel` control whether to print updates to the console and run the computation in parallel, respectively. We describe the `output_amount` argument in a subsequent section. Below, we run the calibration check on the high-MOI CRISPRi and low-MOI CRISPRko data, setting `parallel` to `TRUE`.
+We carry out the calibration check by calling the function `run_calibration_check()` on the `sceptre_object`. `run_calibration_check()` takes the arguments `sceptre_object` (required), `n_calibration_pairs` (optional), `calibration_group_size` (optional), `print_progress` (optional), and `parallel` (optional), `n_processors` (optional), `log_dir` (optional), and `output_amount` (optional). `n_calibration_pairs` is the number of negative control target-response pairs to test for association. By default `n_calibration_pairs` is set to the number of discovery target-response pairs that passes pairwise QC. Next, `calibration_group_size` is the number of negative control gRNAs to put together to construct each negative control target. By default `calibration_group_size` is set to the median number of gRNAs per discovery target. Finally, `print_progress` and `parallel` control whether to print updates to the console and run the computation in parallel, respectively. We describe the `output_amount` argument in a subsequent section. Below, we run the calibration check on the high-MOI CRISPRi and low-MOI CRISPRko data, setting `parallel` to `TRUE`.
 
 ```{r, results='hide'}
 sceptre_object_highmoi <- run_calibration_check(
@@ -144,7 +144,7 @@ calibration_result <- get_result(
 head(calibration_result)
 ```
 
-Each row of this data frame corresponds to a negative control target-response pair. The columns `response_id` and `grna_target` indicate the response and target that make up a given negative control target-response pair. The individual non-targeting gRNAs that form a negative control target are listed, concatenated into a string via the ampersand ("&") separator. (For example, the negative control gRNA target "NTg4&NTg7&NTg8&NTg9" was formed by combining the negative control gRNAs NTg4, NTg7, NTg8, and NTg9.) The remaining columns of the data frame are as follows: `n_nonzero_trt` (the number of nonzero treatment cells of a given pair), `n_nonzero_cntrl` (the number of nonzero control cells of a given pair), `pass_qc` (whether a given pair passes pairwise QC), `p_value` (the p-value of a given pair), `log_2_fold_change` (the estimated log-2 fold change of a given pair), and `significant` (whether a given pair is called as significant after applying the multiple testing correction adjustment).
+Each row of this data frame corresponds to a negative control target-response pair. The columns `response_id` and `grna_target` indicate the response and target that make up a given negative control target-response pair. The individual non-targeting gRNAs that form a negative control target are listed, concatenated into a string via the ampersand ("&") separator. (For example, the negative control gRNA target "NTg4&NTg7&NTg8&NTg9" was formed by combining the negative control gRNAs NTg4, NTg7, NTg8, and NTg9.) The remaining columns of the data frame are as follows: `n_nonzero_trt` (the number of nonzero treatment cells of a given pair), `n_nonzero_cntrl` (the number of nonzero control cells of a given pair), `pass_qc` (whether a given pair passes pairwise QC), `p_value` (the p-value of a given pair), `fold_change` (the estimated fold change of a given pair), `se_fold_change` (the standard error of the fold change of a given pair), `log_2_fold_change` (the estimated log-2 fold change of a given pair), and `significant` (whether a given pair is called as significant after applying the multiple testing correction adjustment).
 
 ## Diagnosing miscalibration
 
@@ -212,7 +212,7 @@ There are several concrete steps that users can take to improve the calibration 
       )
     ```
 
-    The calibration check, power check, and discovery analyses all run more slowly when `resampling_approximation` is set to `"no_approximation"`, as `sceptre` must compute a greater number of null test statistics to preserve adequate precision of the p-values. Thus, setting `resampling_approximation` to `"no_approximation"` may not be a feasible strategy for users seeking to test a large number (e.g., 10,000+) of pairs. Users should consider using the permutation test (`resampling_mechaism = "permutations"`) rather than the conditional randomization test (`resampling_mechanism = "crt"`) when setting `resampling_approximation` to `"no_approximation"` to improve speed.
+    The calibration check, power check, and discovery analyses all run more slowly when `resampling_approximation` is set to `"no_approximation"`, as `sceptre` must compute a greater number of null test statistics to preserve adequate precision of the p-values. Thus, setting `resampling_approximation` to `"no_approximation"` may not be a feasible strategy for users seeking to test a large number (e.g., 10,000+) of pairs. Users should consider using the permutation test (`resampling_mechanism = "permutations"`) rather than the conditional randomization test (`resampling_mechanism = "crt"`) when setting `resampling_approximation` to `"no_approximation"` to improve speed.
 
     ```{r, eval=FALSE}
     sceptre_object_highmoi <- sceptre_object_highmoi |>
@@ -238,7 +238,7 @@ There are several concrete steps that users can take to improve the calibration 
       )
     ```
 
-4.  **Change the resampling mechanism or the control group**. `sceptre` provides two options for the resampling mechanism (namely, `"permutations"` or `"crt"`; see @sec-set_analysis_parameters_resampling_mech) and two options for the control group (namely, `"complement_set"` or `"nt_cells"`; see @sec-set-analysis-parameters_control_group). (Note that `"nt_cells"` is available as an option only in low-MOI screens.) Switching the resampling mechanism and/or the control group may improve calibration. Below, we set the resampling mechanism to `"crt"` and the control group to `"complement_set"` on the low-MOI CRISPRko data; these choices are the opposites of the defaults.
+4.  **Change the resampling mechanism or the control group**. `sceptre` provides two options for the resampling mechanism (namely, `"permutations"` or `"crt"`; see @sec-set_analysis_parameters_resampling_mech) and two options for the control group (namely, `"complement"` or `"nt_cells"`; see @sec-set-analysis-parameters_control_group). (Note that `"nt_cells"` is available as an option only in low-MOI screens.) Switching the resampling mechanism and/or the control group may improve calibration. Below, we set the resampling mechanism to `"crt"` and the control group to `"complement"` on the low-MOI CRISPRko data; these choices are the opposites of the defaults.
 
     ```{r, eval=FALSE}
     sceptre_object_lowmoi <- sceptre_object_lowmoi |>
@@ -247,7 +247,7 @@ There are several concrete steps that users can take to improve the calibration 
         discovery_pairs = discovery_pairs_lowmoi,
         positive_control_pairs = positive_control_pairs_lowmoi,
         resampling_mechanism = "crt",
-        control_group = "complement_set"
+        control_group = "complement"
       )
     ```
 

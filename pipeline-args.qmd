@@ -193,7 +193,7 @@ The following two arguments relate to the "maximum" assignment strategy (@sec-ma
 
 -   `--umi_fraction_threshold`: a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes less than `umi_fraction_threshold` of the UMIs in that cell. `umi_fraction_threshold` should be a number in the interval \[0,1\].
 
--   `--min_grna_n_umis_threshold`: a cell is flagged as containing zero gRNAs if the total UMI count across gRNAs (i.e., `n_grna_umis`) in that cell is less than `min_grna_n_umis_threshold`. `min_grna_n_umis_threshold` should be a non-negative integer.
+-   `--min_grna_n_umis_threshold`: a cell is flagged as containing zero gRNAs if the total UMI count across gRNAs (i.e., `grna_n_umis`) in that cell is less than `min_grna_n_umis_threshold`. `min_grna_n_umis_threshold` should be a non-negative integer.
 
 The final argument relates to the "thresholding" assignment method (@sec-thresholding_method).
 

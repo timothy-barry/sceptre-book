@@ -121,7 +121,7 @@ data(gene_position_data_frame_grch38)
 gene_position_data_frame_grch38[c(1:4, 8001:8004),]
 ```
 
-`gene_position_data_frame_grch38` was derived from the GrCh38 reference genome, which is the reference genome that all versions of `cellranger count` released since 2021 have used for alignment. `sceptre` also contains `gene_position_data_frame_grch37`, which is a data frame that stores the genomic coordinate of each gene's TSS with respect to reference genome GRCh37.
+`gene_position_data_frame_grch38` was derived from the GRCh38 reference genome, which is the reference genome that all versions of `cellranger count` released since 2020 have used for alignment. `sceptre` also contains `gene_position_data_frame_grch37`, which is a data frame that stores the genomic coordinate of each gene's TSS with respect to reference genome GRCh37.
 
 ::: callout-note
 Users should select between `gene_position_data_frame_grch38` and `gene_position_data_frame_grch37` on the basis of reference genome that the chromosomal coordinates are defined with respect to.
@@ -234,21 +234,20 @@ knitr::include_graphics("control_group_dec_tree.png")
 
 ## Formula {#sec-set_analysis_parameters_formula}
 
-The parameter `formula_object` specifies how `sceptre` is to adjust for the cell-specific covariates. `formula_object` is optional; if not provided, `set_analysis_parameters()` constructs a default `formula_object`. The default `formula_object` is formed by summing over all covariates and log-transforming the count-based covariates. For example, the high-MOI CRISPRi data contain the cell-specific covariates `response_n_nonzero`, `response_n_umis`, `grna_n_nonzero`, `grna_n_umis`, `response_p_mito`, and `batch`. The first four of these covariates are count-based. Thus, the default formula object for this dataset is as follows:
+The parameter `formula_object` specifies how `sceptre` is to adjust for the cell-specific covariates. `formula_object` is optional; if not provided, `set_analysis_parameters()` constructs a default `formula_object`. The default `formula_object` is formed by summing over all covariates and log-transforming the count-based covariates. For example, the high-MOI CRISPRi data contain the cell-specific covariates `response_n_nonzero`, `response_n_umis`, `grna_n_nonzero`, `grna_n_umis`, `response_p_mito`, and `batch`. The first four of these covariates are count-based. The covariate `response_p_mito`, however, is not included in the default formula object. Thus, the default formula object for this dataset is as follows:
 
 ```{r, results='hide'}
 formula(~ log(response_n_nonzero) + log(response_n_umis) +
-          log(grna_n_nonzero) + log(grna_n_umis) + response_p_mito + batch)
+          log(grna_n_nonzero) + log(grna_n_umis) + batch)
 ```
 
 Similarly, the low-MOI CRISPRko data contain the covariates `response_n_nonzero`, `response_n_umis`, `grna_n_nonzero`, `grna_n_umis`, `response_p_mito`, and `bio_rep`. The default formula object for the CRISPRko dataset is as follows:
 
 ```{r, results='hide'}
-formula(~ log(response_n_nonzero) + log(response_n_umis) +
-          response_p_mito + bio_rep)
+formula(~ log(response_n_nonzero) + log(response_n_umis) + bio_rep)
 ```
 
-(The covariates `grna_n_nonzero` and `grna_n_umis` by default are not included in the formula object, as `grna_n_nonzero` and `grna_n_umis` typically do not contain substantial information in low MOI after quality control.)
+(The covariates `grna_n_nonzero` and `grna_n_umis` by default are not included in the formula object, as `grna_n_nonzero` and `grna_n_umis` typically do not contain substantial information in low MOI after quality control. As in the high-MOI case, `response_p_mito` is likewise excluded from the default formula object.)
 
 Users can specify a custom formula by passing a formula object to the argument `formula_object` in `set_analysis_parameters()`. User-specified formulas should be defined in terms of the cell-specific covariates, which can be viewed by evaluating the `sceptre_object` in the console.
 
