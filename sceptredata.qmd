@@ -6,7 +6,7 @@ The `sceptredata` package contains three example single-cell CRISPR screen datas
 
 The first example dataset contained within `sceptredata` is a high-multiplicity-of-infection (MOI) CRISPRi screen of candidate enhancers in K562 cells [@gasperini2019]. The original authors aimed to link candidate enhancers to genes by testing for changes in gene expression in response to CRISPR perturbations of the candidate enhancers. The authors designed a library of gRNAs to target 5,779 candidate enhancers and 381 transcription start sites (TSSs). Each genomic element was targeted by two gRNAs (with a subset of the candidate enhancers targeted by four gRNAs). Additionally, the authors designed 100 negative control gRNAs, each of which targeted a gene desert or no location in the genome at all. The authors sequenced 207,324 single cells, measuring the gene and gRNA expression profile of each.
 
-The `sceptredata` package contains a downsampled version of the Gasperini data, which is stored within the `highmoi_example_data` list. Evaluating `data(highmoi_example_data)` in the console loads the example high-MOI CRISPRi data into the global namespace.
+The `sceptredata` package contains a downsampled version of the Gasperini data, which is stored within the `highmoi_example_data` list. Evaluating `data(highmoi_example_data, package = "sceptredata")` in the console loads the example high-MOI CRISPRi data into the global namespace.
 
 ```{r,echo=FALSE,results="hide"}
 library(Matrix)
@@ -14,7 +14,7 @@ library(Matrix)
 
 ```{r}
 library(sceptredata)
-data(highmoi_example_data)
+data(highmoi_example_data, package = "sceptredata")
 ```
 
 The data consist of several pieces. First, `grna_matrix` is the gRNA-by-cell expression matrix. gRNAs and cells alike are downsampled: the matrix contains 95 gRNAs and 45,919 cells. The gRNAs are downsampled such that there are 50 candidate-enhancer-targeting gRNAs (targeting 25 distinct candidate enhancers), 20 positive control gRNAs (targeting 10 TSSs), and 25 negative control gRNAs. The cells are downsampled such that each contains at least one gRNA.
@@ -48,7 +48,7 @@ head(gene_names)
 Finally, `grna_target_data_frame_highmoi` is a data frame containing information about the target of each gRNA.
 
 ```{r}
-data(grna_target_data_frame_highmoi)
+data(grna_target_data_frame_highmoi, package = "sceptredata")
 head(grna_target_data_frame_highmoi)
 ```
 
@@ -81,7 +81,7 @@ The expression data are stored in "feature barcode matrix" format. Users can lea
 The second example dataset contained within `sceptredata` is a low-MOI CRISPRko screen of gene TSSs in THP1 cells [@papalexi2021]. The original authors aimed to link perturbations of genes to changes in the expression of *other* genes. The authors designed 101 targeting gRNAs to target 26 gene TSSs (with four gRNAs per TSS, on average). The authors additionally designed nine non-targeting gRNAs. The authors profiled the gene and gRNA expression profiles of 20,729 single cells. (The authors additionally measured the expression level of four cell-surface proteins; the protein expressions are not included as part of the example data.) The low-MOI CRISPRko data are stored in the `lowmoi_example_data` list; we can load this list into the global namespace via a call to `data()`.
 
 ```{r}
-data(lowmoi_example_data)
+data(lowmoi_example_data, package = "sceptredata")
 ```
 
 The data consist of four pieces. First, `grna_matrix` is the gRNA-by-cell matrix of gRNA UMI counts. `grna_matrix` is unaltered; it contains all 110 gRNAs and 20,729 cells.
