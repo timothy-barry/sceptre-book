@@ -11,6 +11,7 @@ We load the `sceptre`, `sceptredata`, `dplyr`, and `cowplot` packages.
 ```{r,message = FALSE}
 library(sceptre)
 library(sceptredata)
+data(gene_position_data_frame_grch37, package = "sceptre")
 library(dplyr)
 library(cowplot)
 ```
@@ -68,7 +69,8 @@ positive_control_pairs_highmoi <- construct_positive_control_pairs(
   sceptre_object = sceptre_object_highmoi)
 discovery_pairs_highmoi <- construct_cis_pairs(sceptre_object_highmoi,
   positive_control_pairs = positive_control_pairs_highmoi,
-  distance_threshold = 5e6
+  distance_threshold = 5e6,
+  response_position_data_frame = gene_position_data_frame_grch37
 )
 
 # 2-4. set analysis parameters, assign gRNAs, run qc, run calibration check

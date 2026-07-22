@@ -52,7 +52,7 @@ data(grna_target_data_frame_highmoi, package = "sceptredata")
 head(grna_target_data_frame_highmoi)
 ```
 
-`grna_target_data_frame_highmoi` contains the columns `grna_id` (the ID of an individual gRNA), `grna_target` (the genomic target of the given gRNA), and `chr`, `start`, and `end` (the chromosome, start coordinate, and end coordinate, respectively, of the target location of the given gRNA). Non-targeting gRNAs are assigned a `grna_target` of `"non-targeting"`.
+`grna_target_data_frame_highmoi` contains the columns `grna_id` (the ID of an individual gRNA), `grna_target` (the genomic target of the given gRNA), and `chr`, `start`, and `end` (the chromosome, start coordinate, and end coordinate, respectively, of the target location of the given gRNA). These genomic coordinates are defined with respect to GRCh37 (hg19). Non-targeting gRNAs are assigned a `grna_target` of `"non-targeting"`.
 
 The `sceptredata` package also stores the example high-MOI CRISPRi data in 10x Cell Ranger format. The data are contained in two directories (namely, `gem_group_1` and `gem_group_2`), which correspond to cells sequenced in different batches. One can determine the location of these directories on her computer as follows.
 

@@ -17,6 +17,7 @@ We begin by loading the `sceptre` and `sceptredata` packages.
 ```{r,message = FALSE}
 library(sceptre)
 library(sceptredata)
+data(gene_position_data_frame_grch37, package = "sceptre")
 ```
 
 ## Initialize the CRISPRi and CRISPRko `sceptre_object`s
@@ -67,7 +68,8 @@ sceptre_object_highmoi <- import_data(
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object_highmoi)
 discovery_pairs <- construct_cis_pairs(sceptre_object_highmoi,
   positive_control_pairs = positive_control_pairs,
-  distance_threshold = 5e6
+  distance_threshold = 5e6,
+  response_position_data_frame = gene_position_data_frame_grch37
 )
 sceptre_object_highmoi <- set_analysis_parameters(
   sceptre_object = sceptre_object_highmoi,

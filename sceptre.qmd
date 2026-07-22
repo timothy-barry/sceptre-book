@@ -17,6 +17,7 @@ See the [frequently asked questions page](faq.qmd) for tips on installing `scept
 ```{r,message = FALSE}
 library(sceptre)
 library(sceptredata)
+data(gene_position_data_frame_grch37, package = "sceptre")
 ```
 
 
@@ -52,7 +53,8 @@ sceptre_object <- import_data_from_cellranger(
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object)
 discovery_pairs <- construct_cis_pairs(
   sceptre_object, 
-  positive_control_pairs = positive_control_pairs
+  positive_control_pairs = positive_control_pairs,
+  response_position_data_frame = gene_position_data_frame_grch37
 )
 
 # apply the pipeline functions to the sceptre_object in order
@@ -85,7 +87,8 @@ sceptre_object <- import_data_from_cellranger(
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object)
 discovery_pairs <- construct_cis_pairs(
   sceptre_object, 
-  positive_control_pairs = positive_control_pairs
+  positive_control_pairs = positive_control_pairs,
+  response_position_data_frame = gene_position_data_frame_grch37
 )
 
 # apply the pipeline functions to the sceptre_object in order
@@ -183,7 +186,8 @@ The second step is to set the analysis parameters. The most important analysis p
     discovery_pairs <- construct_cis_pairs(
       sceptre_object = sceptre_object,
       positive_control_pairs = positive_control_pairs,
-      distance_threshold = 5e6
+      distance_threshold = 5e6,
+      response_position_data_frame = gene_position_data_frame_grch37
     )
     discovery_pairs[c(1:4, 101:104),]
     ```
