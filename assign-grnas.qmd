@@ -55,7 +55,8 @@ We do the same for the high-MOI CRISPRi data, creating `sceptre_object_highmoi`.
 ```{r}
 # high-MOI CRISPRi setup
 # 1. import data
-data(highmoi_example_data, package = "sceptredata"); data(grna_target_data_frame_highmoi, package = "sceptredata")
+data(highmoi_example_data, package = "sceptredata")
+data(grna_target_data_frame_highmoi, package = "sceptredata")
 sceptre_object_highmoi <- import_data(
   response_matrix = highmoi_example_data$response_matrix,
   grna_matrix = highmoi_example_data$grna_matrix,
