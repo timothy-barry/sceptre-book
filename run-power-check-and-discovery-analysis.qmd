@@ -24,7 +24,7 @@ We initialize `sceptre_object`s corresponding to the high-MOI CRISPRi data and l
 ```{r,results='hide'}
 # low-MOI CRISPRko data
 # 1. import data
-data(lowmoi_example_data)
+data(lowmoi_example_data, package = "sceptredata")
 sceptre_object_lowmoi <- import_data(
   response_matrix = lowmoi_example_data$response_matrix,
   grna_matrix = lowmoi_example_data$grna_matrix,
@@ -55,7 +55,7 @@ sceptre_object_lowmoi <- sceptre_object_lowmoi |>
 ```{r, results='hide'}
 # high-MOI CRISPRi data
 # 1. import data
-data(highmoi_example_data); data(grna_target_data_frame_highmoi)
+data(highmoi_example_data, package = "sceptredata"); data(grna_target_data_frame_highmoi, package = "sceptredata")
 sceptre_object_highmoi <- import_data(
   response_matrix = highmoi_example_data$response_matrix,
   grna_matrix = highmoi_example_data$grna_matrix,
@@ -177,7 +177,7 @@ discovery_result <- get_result(
 head(discovery_result)
 ```
 
-The data frame `discovery_result` contains the columns `response_id`, `grna_target`, `n_nonzero_trt`, `n_nonzero_cntrl`, `pass_qc`, `p_value`, `log_2_fold_change`, and `significant`; see @sec-run-calibration-check_running_the_calibration_check of *Run calibration check* for a description of these columns. The rows are ordered according to `p_value`. Pairs called as significant are stored in the top rows of the data frame; pairs called as insignificant are stored in the middle rows; and pairs filtered out by pairwise QC are stored in the bottom rows. (The latter pairs have a value of `NA` in the `p_value`, `log_2_fold_change`, and `significant` columns.)
+The data frame `discovery_result` contains the columns `response_id`, `grna_target`, `n_nonzero_trt`, `n_nonzero_cntrl`, `pass_qc`, `p_value`, `fold_change`, `se_fold_change`, `log_2_fold_change`, and `significant`; see @sec-run-calibration-check_running_the_calibration_check of *Run calibration check* for a description of these columns. The rows are ordered according to `p_value`. Pairs called as significant are stored in the top rows of the data frame; pairs called as insignificant are stored in the middle rows; and pairs filtered out by pairwise QC are stored in the bottom rows. (The latter pairs have a value of `NA` in the `p_value`, `fold_change`, `se_fold_change`, `log_2_fold_change`, and `significant` columns.)
 
 The format of the result data frame is slightly different when we use the "singleton" gRNA integration strategy rather than the default "union" strategy. To illustrate, we again analyze the low-MOI CRISPRko data, this time setting `grna_integration_strategy` to `"singleton"` in `set_analysis_parameters()`. We then call `assign_grnas()`, `run_qc()`, and `run_discovery_analysis()`.
 

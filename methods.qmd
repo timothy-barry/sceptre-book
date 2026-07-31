@@ -18,10 +18,10 @@ The thresholding method assigns a gRNA to a cell if the UMI count of the gRNA in
 
 ### Maximum method
 
-The maximum method assigns the gRNA that exhibits the greatest UMI count in a given cell to that cell. Formally, consider a given cell $j$. Let $i^* \in \{1, \dots, r\}$ be the index such that $$ G_{i^*j} = \max_{i \in \{1, \dots, r\}}{G_{ij}}.$$ (If multiple indices satisfy this criterion, select $i^*$ among these arbitrarily.) We assign gRNA $i^*$ to cell $j$, i.e. we set $X_{i^*j}$ to $1$ and $X_{ij}$ to $0$ for $i \neq i^*$. In carrying out the maximum assignment step, `sceptre` also flags cells that likely contain multiple gRNAs. Let $u \in [0,1]$ be a user-specified threshold (default value $0.8$). Suppose that the gRNA assigned to cell $j$ constitutes fewer than $u$ of the UMIs in that cell. In other words, suppose that
+The maximum method assigns the gRNA that exhibits the greatest UMI count in a given cell to that cell. Formally, consider a given cell $j$. Let $i^* \in \{1, \dots, r\}$ be the index such that $$ G_{i^*j} = \max_{i \in \{1, \dots, r\}}{G_{ij}}.$$ (If multiple indices satisfy this criterion, select $i^*$ among these arbitrarily.) We assign gRNA $i^*$ to cell $j$, i.e. we set $X_{i^*j}$ to $1$ and $X_{ij}$ to $0$ for $i \neq i^*$. In carrying out the maximum assignment step, `sceptre` also flags cells that likely contain multiple gRNAs. Let $u \in [0,1]$ be a user-specified threshold (default value $0.8$). Suppose that the gRNA assigned to cell $j$ constitutes at most $u$ of the UMIs in that cell. In other words, suppose that
 
 $$
- \frac{G_{i^*j}}{\sum_{i=1}^{r} G_{ij}} < u.
+ \frac{G_{i^*j}}{\sum_{i=1}^{r} G_{ij}} \le u.
 $$
 
 Then cell $j$ is flagged as containing multiple gRNAs. Similarly, `scepre` flags cells that likely contain zero gRNAs. Suppose that the sum of the gRNA UMI counts in a given cell $j$ is less than $t \in \mathbb{N}$ (default value 5):
@@ -207,7 +207,7 @@ This is not the case in high-MOI; in that setting the intersection of $G_{i_1}$ 
 
 : Union gRNA integration strategy, discovery analysis.
 
-Next, suppose that we are running a calibration check analysis (again using the union gRNA integration strategy). Let $\mathcal{L} \subset \mathcal{N}$ be a set of non-targeting gRNAs that has been randomly combined into a "negative control" gRNA target. (By default, $|\mathcal{L}| = |\mathcal{I}|$, i.e., the discovery target and negative control target contain the same number of gRNAs.) The treatment group, complement set control group, and NT cells control group are defined relative to $\mathcal{L}$ as follows.
+Next, suppose that we are running a calibration check analysis (again using the union gRNA integration strategy). Let $\mathcal{L} \subset \mathcal{N}$ be a set of non-targeting gRNAs that has been randomly combined into a "negative control" gRNA target. (By default, $|\mathcal{L}|$ is set to the median number of gRNAs per target, capped at the number of non-targeting gRNAs; thus $|\mathcal{L}| = |\mathcal{I}|$ when all targets contain the same number of gRNAs.) The treatment group, complement set control group, and NT cells control group are defined relative to $\mathcal{L}$ as follows.
 
 |                                |                                                      |                                                        |
 |:-----------------:|:-------------------------:|:-------------------------:|

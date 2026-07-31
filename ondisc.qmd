@@ -223,7 +223,7 @@ gene_odm
 We recommend that users create an `odm` object via `create_odm_from_cellranger()`, as this function is highly scalable and typically requires only a couple gigabytes of memory. However, users also can convert an R matrix into an `odm` object via the function `create_odm_from_r_matrix()`. `create_odm_from_r_matrix()` takes two main arguments: `mat` and `file_to_write`. `mat` is a standard R matrix (of type `"matrix"`) or a sparse R matrix (of type `"dgCMatrix"`, `"dgRMatrix"`, or `"dgTMatrix"`). `mat` should contain row names giving the ID of each feature. Next, `file_to_write` is a fully-qualified file path specifying the location in which to write the backing `.odm` file. We provide an example of calling `create_odm_from_r_matrix()` on a gene-by-cell expression matrix contained in the `sceptredata` package.
 
 ```{r}
-data(lowmoi_example_data)
+data(lowmoi_example_data, package = "sceptredata")
 gene_mat <- lowmoi_example_data$response_matrix
 ```
 

@@ -29,7 +29,7 @@ library(sceptredata)
 directories <- paste0(
   system.file("extdata", package = "sceptredata"),
   "/highmoi_example/gem_group_", 1:2)
-data(grna_target_data_frame_highmoi)
+data(grna_target_data_frame_highmoi, package = "sceptredata")
 sceptre_object <- import_data_from_cellranger(
   directories = directories,
   moi = "high",
@@ -66,7 +66,7 @@ We encourage Parse users to examine the example Parse data to ensure that their 
 
 ### Add extra covariates
 
-`import_data_from_cellranger()` and `input_data_from_parse()` compute the covariates `grna_n_nonzero`, `grna_n_umis`, `response_n_nonzero`, `response_n_umis`, `response_p_mito`, and `batch`. Users may wish to supply additional covariates (e.g., cell cycle or cell type) to `sceptre`. To do so, users can pass a data frame `extra_covariates` containing additional covariates to `import_data_from_cellranger()` or `input_data_from_parse()`. Below, we simulate an additional covariate `cell_type` and pass this covariate as an argument to the data import function.
+`import_data_from_cellranger()` and `import_data_from_parse()` compute the covariates `grna_n_nonzero`, `grna_n_umis`, `response_n_nonzero`, `response_n_umis`, `response_p_mito`, and `batch`. Users may wish to supply additional covariates (e.g., cell cycle or cell type) to `sceptre`. To do so, users can pass a data frame `extra_covariates` containing additional covariates to `import_data_from_cellranger()` or `import_data_from_parse()`. Below, we simulate an additional covariate `cell_type` and pass this covariate as an argument to the data import function.
 
 ```{r,results='hide'}
 # simulate an extra covariate, namely cell type
@@ -101,7 +101,7 @@ Categorical covariates (e.g., batch or cell type) should be stored as a characte
 Users also can import data into `sceptre` from a specified set of R objects. This data import strategy is most appropriate for users employing less standard data preprocessing pipelines for generating the response and gRNA count matrices. We use the high-MOI CRISPRi data as a working example. We can obtain these data in R matrix and data frame format as follows.
 
 ```{r}
-data(highmoi_example_data)
+data(highmoi_example_data, package = "sceptredata")
 # response matrix
 response_matrix <- highmoi_example_data$response_matrix
 # grna matrix

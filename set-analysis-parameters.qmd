@@ -16,8 +16,8 @@ library(sceptredata)
 Throughout, we examine two example datasets. First, we examine the example high-MOI CRISPRi screen of candidate enhancers in K562 cells. This is the example dataset that we used in *The whole game* and in @sec-import_data. We initialize a `sceptre_object` called `sceptre_object_highmoi` to represent these data.
 
 ```{r}
-data(highmoi_example_data)
-data(grna_target_data_frame_highmoi)
+data(highmoi_example_data, package = "sceptredata")
+data(grna_target_data_frame_highmoi, package = "sceptredata")
 sceptre_object_highmoi <- import_data(
   response_matrix = highmoi_example_data$response_matrix,
   grna_matrix = highmoi_example_data$grna_matrix,
@@ -31,7 +31,7 @@ sceptre_object_highmoi <- import_data(
 We additionally examine an example low-MOI CRISPRko screen of gene transcription start sites in immune cells [@papalexi2021]. We initialize a `sceptre_object` called `sceptre_object_lowmoi` to store this latter dataset.
 
 ```{r}
-data(lowmoi_example_data)
+data(lowmoi_example_data, package = "sceptredata")
 sceptre_object_lowmoi <- import_data(
   response_matrix = lowmoi_example_data$response_matrix,
   grna_matrix = lowmoi_example_data$grna_matrix,
@@ -112,21 +112,22 @@ Discovery pairs are target-response pairs whose association status we do not kno
 
 ### Construct *cis* pairs {#sec-set-analysis-parameters_construct_cis_pairs}
 
-`construct_cis_pairs()` returns the set of target-response pairs for which the target and response are located on the same chromosome and in close physical proximity to one another. `construct_cis_pairs()` is a useful pair constructor function for screens that aim to map noncoding regulatory elements (e.g., enhancers or noncoding GWAS variants) to target genes or proteins in *cis*. `construct_cis_pairs()` assumes that the columns `chr`, `start`, and `stop` are present in the `grna_target_data_frame`, giving the chromosome, start position, and end position of the region that each gRNA targets. `construct_cis_pairs()` takes several arguments: `sceptre_object` (required) `distance_threshold` (optional), `positive_control_pairs` (optional), and `response_position_data_frame` (optional). By default, `construct_cis_pairs()` pairs each gRNA target to the set of responses on the same chromosome as that target and within `distance_threshold` bases of that target. (The default value of `distance_threshold` is 500,000 bases, or half a megabase.) The `positive_control_pairs` data frame optionally can be passed to `construct_cis_pairs()`, in which case the positive control targets (i.e., the entries within the `grna_target` column of `positive_control_pairs`) are excluded from the *cis* pairs. One may want to exclude these from the discovery analysis if these targets are intended for positive control purposes only.
+`construct_cis_pairs()` returns the set of target-response pairs for which the target and response are located on the same chromosome and in close physical proximity to one another. `construct_cis_pairs()` is a useful pair constructor function for screens that aim to map noncoding regulatory elements (e.g., enhancers or noncoding GWAS variants) to target genes or proteins in *cis*. `construct_cis_pairs()` assumes that the columns `chr`, `start`, and `end` are present in the `grna_target_data_frame`, giving the chromosome, start position, and end position of the region that each gRNA targets. `construct_cis_pairs()` takes several arguments: `sceptre_object` (required) `distance_threshold` (optional), `positive_control_pairs` (optional), and `response_position_data_frame` (optional). By default, `construct_cis_pairs()` pairs each gRNA target to the set of responses on the same chromosome as that target and within `distance_threshold` bases of that target. (The default value of `distance_threshold` is 500,000 bases, or half a megabase.) The `positive_control_pairs` data frame optionally can be passed to `construct_cis_pairs()`, in which case the positive control targets (i.e., the entries within the `grna_target` column of `positive_control_pairs`) are excluded from the *cis* pairs. One may want to exclude these from the discovery analysis if these targets are intended for positive control purposes only.
 
-Finally, `response_position_data_frame` is an optional data frame containing the columns `response_id`, `chr`, and `position`, where `chr` and `position` give the genomic coordinate of each `response_id`. The default value of `response_position_data_frame` is `gene_position_data_frame_grch38`, which is a data frame that ships with `sceptre` that contains the genomic coordinate of the TSS of all genes in the human genome with respect to reference genome GRCh38. We print several rows of `gene_position_data_frame_grch38` below.
+Finally, `response_position_data_frame` is an optional data frame containing the columns `response_id`, `chr`, and `position`, where `chr` and `position` give the genomic coordinate of each `response_id`. By default, if `response_position_data_frame` is not supplied, `construct_cis_pairs()` uses the packaged `GRCh38` gene position data frame, `gene_position_data_frame_grch38`, which contains the genomic coordinate of the TSS of all genes in the human genome with respect to reference genome GRCh38. We print several rows of `gene_position_data_frame_grch38` below.
 
 ```{r}
+data(gene_position_data_frame_grch38)
 gene_position_data_frame_grch38[c(1:4, 8001:8004),]
 ```
 
-`gene_position_data_frame_grch38` was derived from the GrCh38 reference genome, which is the reference genome that all versions of `cellranger count` released since 2021 have used for alignment. `sceptre` also contains `gene_position_data_frame_grch37`, which is a data frame that stores the genomic coordinate of each gene's TSS with respect to reference genome GRCh37.
+`gene_position_data_frame_grch38` was derived from the GRCh38 reference genome, which is the reference genome that all versions of `cellranger count` released since 2020 have used for alignment. `sceptre` also contains `gene_position_data_frame_grch37`, which is a data frame that stores the genomic coordinate of each gene's TSS with respect to reference genome GRCh37.
 
 ::: callout-note
 Users should select between `gene_position_data_frame_grch38` and `gene_position_data_frame_grch37` on the basis of reference genome that the chromosomal coordinates are defined with respect to.
 :::
 
-Users also can pass their own `response_position_data_frame` to `construct_cis_pairs()` if `gene_position_data_frame_grch38` and `gene_position_data_frame_grch37` are inadequate for their analysis. For example, some users may wish to map enhancers to proteins in *cis*. Such users could construct the discovery set by coupling each enhancer to the set of proteins whose corresponding gene is in close physical proximity to that enhancer. In such an analysis `response_position_data_frame` would be a data frame mapping each protein to the chromosomal position of the transcription start site of its corresponding gene. Note that `response_position_data_frame` and the `chr`, `start`, and `stop` columns of the `grna_target_data_frame` should be defined with respect to the same reference genome, as `construct_cis_pairs()` implements its functionality by intersecting `response_position_data_frame` with `grna_target_data_frame`.
+Users also can pass their own `response_position_data_frame` to `construct_cis_pairs()` if `gene_position_data_frame_grch38` and `gene_position_data_frame_grch37` are inadequate for their analysis. For example, some users may wish to map enhancers to proteins in *cis*. Such users could construct the discovery set by coupling each enhancer to the set of proteins whose corresponding gene is in close physical proximity to that enhancer. In such an analysis `response_position_data_frame` would be a data frame mapping each protein to the chromosomal position of the transcription start site of its corresponding gene. Note that `response_position_data_frame` and the `chr`, `start`, and `end` columns of the `grna_target_data_frame` should be defined with respect to the same reference genome, as `construct_cis_pairs()` implements its functionality by intersecting `response_position_data_frame` with `grna_target_data_frame`.
 
 We use `construct_cis_pairs()` to construct the discovery pairs for the high-MOI CRISPRi dataset. We set `distance_threshold` to `5e6` (i.e., 5 megabases) so as to increase the number of pairs in the discovery set for illustration purposes. 
 
@@ -233,21 +234,20 @@ knitr::include_graphics("control_group_dec_tree.png")
 
 ## Formula {#sec-set_analysis_parameters_formula}
 
-The parameter `formula_object` specifies how `sceptre` is to adjust for the cell-specific covariates. `formula_object` is optional; if not provided, `set_analysis_parameters()` constructs a default `formula_object`. The default `formula_object` is formed by summing over all covariates and log-transforming the count-based covariates. For example, the high-MOI CRISPRi data contain the cell-specific covariates `response_n_nonzero`, `response_n_umis`, `grna_n_nonzero`, `grna_n_umis`, `response_p_mito`, and `batch`. The first four of these covariates are count-based. Thus, the default formula object for this dataset is as follows:
+The parameter `formula_object` specifies how `sceptre` is to adjust for the cell-specific covariates. `formula_object` is optional; if not provided, `set_analysis_parameters()` constructs a default `formula_object`. The default `formula_object` is formed by summing over all covariates and log-transforming the count-based covariates. For example, the high-MOI CRISPRi data contain the cell-specific covariates `response_n_nonzero`, `response_n_umis`, `grna_n_nonzero`, `grna_n_umis`, `response_p_mito`, and `batch`. The first four of these covariates are count-based. The covariate `response_p_mito`, however, is not included in the default formula object. Thus, the default formula object for this dataset is as follows:
 
 ```{r, results='hide'}
 formula(~ log(response_n_nonzero) + log(response_n_umis) +
-          log(grna_n_nonzero) + log(grna_n_umis) + response_p_mito + batch)
+          log(grna_n_nonzero) + log(grna_n_umis) + batch)
 ```
 
 Similarly, the low-MOI CRISPRko data contain the covariates `response_n_nonzero`, `response_n_umis`, `grna_n_nonzero`, `grna_n_umis`, `response_p_mito`, and `bio_rep`. The default formula object for the CRISPRko dataset is as follows:
 
 ```{r, results='hide'}
-formula(~ log(response_n_nonzero) + log(response_n_umis) +
-          response_p_mito + bio_rep)
+formula(~ log(response_n_nonzero) + log(response_n_umis) + bio_rep)
 ```
 
-(The covariates `grna_n_nonzero` and `grna_n_umis` by default are not included in the formula object, as `grna_n_nonzero` and `grna_n_umis` typically do not contain substantial information in low MOI after quality control.)
+(The covariates `grna_n_nonzero` and `grna_n_umis` by default are not included in the formula object, as `grna_n_nonzero` and `grna_n_umis` typically do not contain substantial information in low MOI after quality control. As in the high-MOI case, `response_p_mito` is likewise excluded from the default formula object.)
 
 Users can specify a custom formula by passing a formula object to the argument `formula_object` in `set_analysis_parameters()`. User-specified formulas should be defined in terms of the cell-specific covariates, which can be viewed by evaluating the `sceptre_object` in the console.
 

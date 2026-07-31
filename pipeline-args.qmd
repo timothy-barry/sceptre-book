@@ -193,7 +193,7 @@ The following two arguments relate to the "maximum" assignment strategy (@sec-ma
 
 -   `--umi_fraction_threshold`: a cell is flagged as containing multiple gRNAs if the maximally expressed gRNA constitutes less than `umi_fraction_threshold` of the UMIs in that cell. `umi_fraction_threshold` should be a number in the interval \[0,1\].
 
--   `--min_grna_n_umis_threshold`: a cell is flagged as containing zero gRNAs if the total UMI count across gRNAs (i.e., `n_grna_umis`) in that cell is less than `min_grna_n_umis_threshold`. `min_grna_n_umis_threshold` should be a non-negative integer.
+-   `--min_grna_n_umis_threshold`: a cell is flagged as containing zero gRNAs if the total UMI count across gRNAs (i.e., `grna_n_umis`) in that cell is less than `min_grna_n_umis_threshold`. `min_grna_n_umis_threshold` should be a non-negative integer.
 
 The final argument relates to the "thresholding" assignment method (@sec-thresholding_method).
 
@@ -295,7 +295,7 @@ directories <- paste0(
   system.file("extdata", package = "sceptredata"),
   "/highmoi_example/gem_group_", 1:2
 )
-data(grna_target_data_frame_highmoi)
+data(grna_target_data_frame_highmoi, package = "sceptredata")
 sceptre_object <- import_data_from_cellranger(
   directories = directories,
   moi = "high",
@@ -315,7 +315,7 @@ sceptre_object <- sceptre_object |>
 Next, to analyze the example low-MOI CRISPRko data, we first create an `ondisc`-backed `sceptre_object` from a collection of R objects via the function `import_data()` (setting `use_ondisc` to `TRUE`). We then proceed through the pipeline in the standard way.
 
 ```{r, results="hide",message=FALSE,warning=FALSE}
-data(lowmoi_example_data)
+data(lowmoi_example_data, package = "sceptredata")
 sceptre_object <- import_data(
   response_matrix = lowmoi_example_data$response_matrix,
   grna_matrix = lowmoi_example_data$grna_matrix,
