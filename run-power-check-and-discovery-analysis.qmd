@@ -11,6 +11,7 @@ We load the `sceptre`, `sceptredata`, `dplyr`, and `cowplot` packages.
 ```{r,message = FALSE}
 library(sceptre)
 library(sceptredata)
+data(gene_position_data_frame_grch37, package = "sceptre")
 library(dplyr)
 library(cowplot)
 ```
@@ -55,7 +56,8 @@ sceptre_object_lowmoi <- sceptre_object_lowmoi |>
 ```{r, results='hide'}
 # high-MOI CRISPRi data
 # 1. import data
-data(highmoi_example_data, package = "sceptredata"); data(grna_target_data_frame_highmoi, package = "sceptredata")
+data(highmoi_example_data, package = "sceptredata")
+data(grna_target_data_frame_highmoi, package = "sceptredata")
 sceptre_object_highmoi <- import_data(
   response_matrix = highmoi_example_data$response_matrix,
   grna_matrix = highmoi_example_data$grna_matrix,
@@ -68,7 +70,8 @@ positive_control_pairs_highmoi <- construct_positive_control_pairs(
   sceptre_object = sceptre_object_highmoi)
 discovery_pairs_highmoi <- construct_cis_pairs(sceptre_object_highmoi,
   positive_control_pairs = positive_control_pairs_highmoi,
-  distance_threshold = 5e6
+  distance_threshold = 5e6,
+  response_position_data_frame = gene_position_data_frame_grch37
 )
 
 # 2-4. set analysis parameters, assign gRNAs, run qc, run calibration check
