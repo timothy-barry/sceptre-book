@@ -11,6 +11,7 @@ We begin by loading `sceptre` and `sceptredata`.
 ```{r,message = FALSE}
 library(sceptre)
 library(sceptredata)
+data(gene_position_data_frame_grch37, package = "sceptre")
 ```
 
 We initialize `sceptre_object`s corresponding to the low-MOI CRISPRko data and high-MOI CRISPRi data. We call the pipeline functions that precede `run_calibration_check()` (namely, `import_data()`, `set_analysis_parameters()`, `assign_grnas()`, and `run_qc()`) on both datasets.
@@ -46,7 +47,8 @@ sceptre_object_lowmoi <- sceptre_object_lowmoi |>
 ```{r, results='hide'}
 # high-MOI CRISPRi data
 # 1. import data
-data(highmoi_example_data, package = "sceptredata"); data(grna_target_data_frame_highmoi, package = "sceptredata")
+data(highmoi_example_data, package = "sceptredata")
+data(grna_target_data_frame_highmoi, package = "sceptredata")
 sceptre_object_highmoi <- import_data(
   response_matrix = highmoi_example_data$response_matrix,
   grna_matrix = highmoi_example_data$grna_matrix,
@@ -58,7 +60,8 @@ sceptre_object_highmoi <- import_data(
 positive_control_pairs <- construct_positive_control_pairs(sceptre_object_highmoi)
 discovery_pairs <- construct_cis_pairs(sceptre_object_highmoi,
   positive_control_pairs = positive_control_pairs,
-  distance_threshold = 5e6
+  distance_threshold = 5e6,
+  response_position_data_frame = gene_position_data_frame_grch37
 )
 
 # 2-4. set analysis parameters, assign gRNAs, run qc
@@ -251,12 +254,13 @@ There are several concrete steps that users can take to improve the calibration 
       )
     ```
 
-5.  **Test fewer pairs**. Obtaining good calibration becomes increasingly challenging as the number of target-response pairs in the discovery set grows. This is because the p-values must maintain uniformity further and further out into the tail of the distribution. A simple strategy to improve calibration is to reduce the number of target-response pairs by more selectively choosing pairs for inclusion in the discovery set. For example, we could construct the discovery set for the high-MOI CRISPRi data by coupling each candidate enhancer to the set of genes within *one* megabase of that candidate enhancer (as opposed to *five* megabases, as we have done previously). This change reduces the number of pairs in the discovery set (before applying QC) from 610 to 353, which makes obtaining good calibration considerably easier.
+5.  **Test fewer pairs**. Obtaining good calibration becomes increasingly challenging as the number of target-response pairs in the discovery set grows. This is because the p-values must maintain uniformity further and further out into the tail of the distribution. A simple strategy to improve calibration is to reduce the number of target-response pairs by more selectively choosing pairs for inclusion in the discovery set. For example, we could construct the discovery set for the high-MOI CRISPRi data by coupling each candidate enhancer to the set of genes within *one* megabase of that candidate enhancer (as opposed to *five* megabases, as we have done previously). This change reduces the number of pairs in the discovery set (before applying QC) from `r nrow(discovery_pairs)` to `r nrow(sceptre::construct_cis_pairs(sceptre_object_highmoi, positive_control_pairs = positive_control_pairs, distance_threshold = 1e6, response_position_data_frame = gene_position_data_frame_grch37))`, which makes obtaining good calibration considerably easier.
 
     ```{r, eval=FALSE}
     discovery_pairs <- construct_cis_pairs(sceptre_object_highmoi,
       positive_control_pairs = positive_control_pairs,
-      distance_threshold = 1e6 # previous value: 5e6
+      distance_threshold = 1e6, # previous value: 5e6
+      response_position_data_frame = gene_position_data_frame_grch37
     )
     sceptre_object_highmoi <- sceptre_object_highmoi |>
       set_analysis_parameters(

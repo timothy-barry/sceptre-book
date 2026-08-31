@@ -291,6 +291,7 @@ Users can analyze an `ondisc`-backed `sceptre_object` within the R console (as o
 # create an ondisc-backed sceptre object
 library(sceptre)
 library(sceptredata)
+data(gene_position_data_frame_grch37, package = "sceptre")
 directories <- paste0(
   system.file("extdata", package = "sceptredata"),
   "/highmoi_example/gem_group_", 1:2
@@ -305,7 +306,10 @@ sceptre_object <- import_data_from_cellranger(
 )
 
 # apply the pipeline functions to the sceptre_object in order
-discovery_pairs <- construct_cis_pairs(sceptre_object)
+discovery_pairs <- construct_cis_pairs(
+  sceptre_object,
+  response_position_data_frame = gene_position_data_frame_grch37
+)
 sceptre_object <- sceptre_object |>
   set_analysis_parameters(discovery_pairs = discovery_pairs,
                           resampling_mechanism = "permutations") |>
